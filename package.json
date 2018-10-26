@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "build": "bsb -make-world",
+    "test": "npm run build && jest",
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world"
   },
@@ -12,6 +13,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.4",
     "bs-platform": "^4.0.6"
   }
 }
