@@ -1,23 +1,11 @@
-*.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
+# macOS
+.DS_Store
 
-# ocamlbuild working directory
-_build/
+# Node.js
+npm-debug.log
+/node_modules/
 
-# ocamlbuild targets
-*.byte
-*.native
-
-# oasis generated files
-setup.data
-setup.log
-
-# Merlin configuring file for Vim and Emacs
+# OCaml/BuckleScript/ReasonML
 .merlin
+.bsb.lock
+/lib/bs/
