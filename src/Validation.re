@@ -51,19 +51,21 @@ let toResult: t('a, 'b) => Belt.Result.t('a, 'b) = validation => switch (validat
 };
 
 module type FUNCTOR_F = (Errors: SEMIGROUP_ANY, Error: TYPE) => FUNCTOR with type t('a) = t('a, Errors.t(Error.t));
+
 module Functor: FUNCTOR_F = (Errors: SEMIGROUP_ANY, Error: TYPE) => {
-  type t_('a, 'b) = t('a, 'b); /* TODO: Compiler seems to dislike trying to use the `t` from above in the line below */
-  type t('a) = t_('a, Errors.t(Error.t));
+  type nonrec t('a) = t('a, Errors.t(Error.t));
   let map = map;
 };
 
 module type APPLY_F = (Errors: SEMIGROUP_ANY, Error: TYPE) => APPLY with type t('a) = t('a, Errors.t(Error.t));
+
 module Apply: APPLY_F = (Errors: SEMIGROUP_ANY, Error: TYPE) => {
   include Functor(Errors, Error);
   let apply = (f, v) => apply(f, v, Errors.append);
 };
 
 module type APPLICATIVE_F = (Errors: SEMIGROUP_ANY, Error: TYPE) => APPLICATIVE with type t('a) = t('a, Errors.t(Error.t));
+
 module Applicative: APPLICATIVE_F = (Errors: SEMIGROUP_ANY, Error: TYPE) => {
   include Apply(Errors, Error)
   let pure = pure;

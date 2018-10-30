@@ -1,5 +1,7 @@
 Js.log("Hello, BuckleScript and Reason!");
 
+/* This is all just random junk to play around with */
+
 module type SHOW = {
   type t;
   let show: t => string;
@@ -121,3 +123,86 @@ let y = OptionStringPrinter2.print(Some("bye"));
 Js.Console.log(x);
 Js.Console.log(y);
 
+
+/*
+type myError = { value: string };
+
+module MyError: TYPE = { type t = myError };
+module MyListValidation = ListF.Validation.TraversableNonEmptyList(MyError);
+
+let x = ListF.Validation.TraversableNonEmptyList((module { type t = myError }))
+*/
+
+module type MyModuleType {
+  let f1: int => bool;
+  let f2: int => string;
+};
+
+module MyModule: MyModuleType {
+  let f1 = _ => true;
+  let f2 = _ => "abc";
+};
+
+let myModuleAnon: (module MyModuleType) = (module {
+  let f1 = _ => true;
+  let f2 = _ => "abc";
+});
+
+MyModule.f1(123);
+
+module MyModuleFromAnon = (val myModuleAnon: MyModuleType);
+MyModuleFromAnon.f1(123);
+
+/*
+let y = (val myModuleAnon: MyModuleType).f1(123);
+*/
+
+module MyFunctor = (M: MyModuleType) => {
+  let x = M.f1(123);
+};
+
+module X = MyFunctor(val myModuleAnon: MyModuleType);
+
+module Y = MyFunctor({
+  let f1 = _ => true;
+  let f2 = _ => "abc";
+});
+
+
+module type ShowType {
+  type t;
+  let show: t => string;
+}
+
+module IntShow: ShowType with type t = int {
+  type t = int;
+  let show = i => string_of_int(i);
+}
+
+module Logger = (S: ShowType) => {
+  let log: 'a => unit = a => Js.Console.log(S.show(a));
+};
+
+/* This works */
+module IntLogger = Logger(IntShow);
+IntLogger.log(123);
+
+/* Is there any way to do this (i.e. applying the module functor inline)? */
+
+/* inline module? */
+/*
+Logger(IntShow).log(123);
+*/
+
+/* anonymous inline module? */
+/*
+Logger({ type t = string; let show = i => string_of_int(i); }).log(123);
+*/
+
+let log (type t, show: (module ShowType with type t = t), value: t): unit = {
+  let module Show = (val show);
+
+  Js.Console.log(Show.show(value));
+};
+
+log((module IntShow), 123);
