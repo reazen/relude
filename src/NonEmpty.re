@@ -3,10 +3,10 @@ open Relude.Interface;
 
 module type NON_EMPTY_F =
   (
-    M: MONOID_ANY,
-    F: FOLDABLE with type t('a) = M.t('a),
-    A: APPLICATIVE with type t('a) = M.t('a),
-    S: SEQUENCE with type t('a) = M.t('a),
+    S: SEQUENCE,
+    M: MONOID_ANY with type t('a) = S.t('a),
+    F: FOLDABLE with type t('a) = S.t('a),
+    A: APPLICATIVE with type t('a) = S.t('a),
   ) =>
    {
     /*
@@ -17,25 +17,30 @@ module type NON_EMPTY_F =
 
     /* Related modules that we will provide for free for an NonEmpty module */
     module SemigroupAny: SEMIGROUP_ANY;
-    /*module Foldable: FOLDABLE;*/
+    /* No Monoid for this type, as there is no empty */
+    /* TODO:
+       module Foldable: FOLDABLE;
+       ...
+       */
 
     /* Utility methods for NonEmpty */
-    let fromT: M.t('a) => option(t('a));
-    let toT: t('a) => M.t('a);
+    let fromSequence: S.t('a) => option(t('a));
+    let toSequence: t('a) => S.t('a);
     let pure: 'a => t('a);
     let one: 'a => t('a);
     let single: 'a => t('a);
-    let make: ('a, M.t('a)) => t('a);
+    let make: ('a, S.t('a)) => t('a);
     let head: t('a) => 'a;
-    let tail: t('a) => M.t('a);
+    let tail: t('a) => S.t('a);
+    let cons: ('a, t('a)) => t('a);
   };
 
 module NonEmptyF: NON_EMPTY_F =
   (
-    M: MONOID_ANY,
-    F: FOLDABLE with type t('a) = M.t('a),
-    A: APPLICATIVE with type t('a) = M.t('a),
-    S: SEQUENCE with type t('a) = M.t('a),
+    S: SEQUENCE,
+    M: MONOID_ANY with type t('a) = S.t('a),
+    F: FOLDABLE with type t('a) = S.t('a),
+    A: APPLICATIVE with type t('a) = S.t('a),
   ) => {
     type t('a) =
       | NonEmpty('a, M.t('a));
@@ -45,10 +50,10 @@ module NonEmptyF: NON_EMPTY_F =
       let append = (a, _b) => a;
     };
 
-    let fromT = t =>
+    let fromSequence = t =>
       S.head(t)->Belt.Option.map(head => NonEmpty(head, S.tailOrEmpty(t)));
 
-    let toT =
+    let toSequence =
       fun
       | NonEmpty(head, tail) => M.append(A.pure(head), tail);
 
@@ -67,13 +72,19 @@ module NonEmptyF: NON_EMPTY_F =
     let tail =
       fun
       | NonEmpty(_, tail) => tail;
+
+    let cons = (h, nel) => NonEmpty(h, toSequence(nel));
   };
 
 /* NonEmpty.List */
 module List =
-  NonEmptyF(List.MonoidAny, List.Foldable, List.Applicative, List.Sequence);
+  NonEmptyF(List.Sequence, List.MonoidAny, List.Foldable, List.Applicative);
 
 /* NonEmpty.Array */
-/*
- module Array = NonEmpty(Array.MonoidAny);
- */
+module Array =
+  NonEmptyF(
+    Array.Sequence,
+    Array.MonoidAny,
+    Array.Foldable,
+    Array.Applicative,
+  );
