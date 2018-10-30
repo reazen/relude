@@ -1,5 +1,4 @@
 let identity: 'a => 'a = a => a;
-
 let id = identity;
 
 let const: ('a, 'b) => 'a = (a, _) => a;

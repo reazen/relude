@@ -10,7 +10,7 @@ module type SEQUENCE = {
   type t('a);
   let length: t('a) => int;
   let isEmpty: t('a) => bool;
-  let isNonEmpty: t('a) => bool;
+  let isNotEmpty: t('a) => bool;
   let head: t('a) => option('a);
   let tail: t('a) => option(t('a));
   let tailOrEmpty: t('a) => t('a);
