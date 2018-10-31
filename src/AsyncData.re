@@ -19,9 +19,10 @@ let map: ('a => 'b, t('a, 'e)) => t('b, 'e) = (f, fa) => switch (fa) {
 | Failed(e) => Failed(e)
 }
 
+/* TODO: maybe we want to require a SEMIGROUP to collect errors for the Failed case */
 let apply: (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) = (ff, fa) => switch (ff, fa) {
 | (Idle, Idle) => Idle
-| (Idle, Loading) => Idle
+| (Idle, Loading) => Loading
 | (Idle, Loaded(_)) => Idle
 | (Idle, Refreshing(_)) => Idle
 | (Idle, Failed(e2)) => Failed(e2)

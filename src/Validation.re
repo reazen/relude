@@ -1,6 +1,3 @@
-open BsAbstract.Interface;
-open Belt.Result;
-
 /**
  * Similar to Belt.Result, but has an Applicative instance that collects the errors using a semigroup, rather than fail-fast
  * semantics.
@@ -16,11 +13,9 @@ let ok = pure;
 let error = e => VError(e);
 
 let isOk: t('a, 'b) => bool =
-  a =>
-    switch (a) {
-    | VOk(_) => true
-    | VError(_) => false
-    };
+  fun
+  | VOk(_) => true
+  | VError(_) => false;
 
 let isError: t('a, 'b) => bool = a => !isOk(a);
 
@@ -72,31 +67,51 @@ let toResult: t('a, 'b) => Belt.Result.t('a, 'b) =
 /* Modules */
 
 module type FUNCTOR_F =
-  (Errors: SEMIGROUP_ANY, Error: TYPE) =>
-   FUNCTOR with type t('a) = t('a, Errors.t(Error.t));
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+   BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Errors.t(Error.t));
 
 module Functor: FUNCTOR_F =
-  (Errors: SEMIGROUP_ANY, Error: TYPE) => {
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
     type nonrec t('a) = t('a, Errors.t(Error.t));
     let map = map;
   };
 
 module type APPLY_F =
-  (Errors: SEMIGROUP_ANY, Error: TYPE) =>
-   APPLY with type t('a) = t('a, Errors.t(Error.t));
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+   BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t));
 
 module Apply: APPLY_F =
-  (Errors: SEMIGROUP_ANY, Error: TYPE) => {
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
     include Functor(Errors, Error);
     let apply = (f, v) => apply(f, v, Errors.append);
   };
 
 module type APPLICATIVE_F =
-  (Errors: SEMIGROUP_ANY, Error: TYPE) =>
-   APPLICATIVE with type t('a) = t('a, Errors.t(Error.t));
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+
+    BsAbstract.Interface.APPLICATIVE with
+      type t('a) = t('a, Errors.t(Error.t));
 
 module Applicative: APPLICATIVE_F =
-  (Errors: SEMIGROUP_ANY, Error: TYPE) => {
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
     include Apply(Errors, Error);
     let pure = pure;
   };

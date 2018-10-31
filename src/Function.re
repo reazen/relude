@@ -12,6 +12,10 @@ let flipCompose = (f: 'a => 'b, g: 'b => 'c, a: 'a) => g(f(a));
 
 let andThen = flipCompose;
 
+module Functor = BsAbstract.Function.Functor;
+
+module Apply = BsAbstract.Function.Apply;
+
 module Infix {
   let (<<) = compose;
   let (>>) = flipCompose;

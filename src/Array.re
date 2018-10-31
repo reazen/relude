@@ -17,13 +17,13 @@ let tailOrEmpty: array('a) => array('a) = arr => tail(arr)->Belt.Option.getWithD
 
 let concat: (array('a), array('a)) => array('a) = Belt.Array.concat;
 
+let append: ('a, array('a)) => array('a) = (item, array) => concat(array, [|item|]);
+
+let prepend: ('a, array('a)) => array('a) = (item, array) => concat([|item|], array);
+
 let toList: array('a) => list('a) = Belt.List.fromArray;
 
 let fromList: list('a) => array('a) = Belt.List.toArray;
-
-module Eq = BsAbstract.Array.Eq;
-
-module Show = BsAbstract.Array.Show;
 
 module SemigroupAny:
   BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = array('a) = {
@@ -44,9 +44,31 @@ module Applicative = BsAbstract.Array.Applicative;
 
 module Monad = BsAbstract.Array.Monad;
 
+module Alt = BsAbstract.Array.Alt;
+
+module Plus = BsAbstract.Array.Plus;
+
+module Alternative = BsAbstract.Array.Alternative;
+
 module Foldable = BsAbstract.Array.Foldable;
 
 module Traversable = BsAbstract.Array.Foldable;
+
+module Eq = BsAbstract.Array.Eq;
+
+module Ord = BsAbstract.Array.Ord;
+
+module Show = BsAbstract.Array.Show;
+
+module Invariant = BsAbstract.Array.Invariant;
+
+module MonadZero = BsAbstract.Array.Monad_Zero;
+
+module MonadPlus = BsAbstract.Array.Monad_Plus;
+
+module Extend = BsAbstract.Array.Extend;
+
+module Infix = BsAbstract.Array.Infix;
 
 module Sequence: Interface.SEQUENCE with type t('a) = array('a) = {
   type t('a) = array('a);
@@ -56,10 +78,10 @@ module Sequence: Interface.SEQUENCE with type t('a) = array('a) = {
   let head = head;
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
+}
+
+module IsoList: Interface.ISO_LIST with type t('a) = array('a) = {
+  type t('a) = array('a);
   let fromList = fromList;
   let toList = toList;
-  let fromArray = Function.identity;
-  let toArray = Function.identity;
-};
-
-module Infix = BsAbstract.Array.Infix;
+}

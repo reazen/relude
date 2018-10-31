@@ -1,12 +1,9 @@
-open BsAbstract.Interface;
-open Relude.Interface;
-
 module NonEmptyF =
        (
-         S: SEQUENCE,
-         M: MONOID_ANY with type t('a) = S.t('a),
-         F: FOLDABLE with type t('a) = S.t('a),
-         A: APPLICATIVE with type t('a) = S.t('a),
+         S: Interface.SEQUENCE,
+         M: BsAbstract.Interface.MONOID_ANY with type t('a) = S.t('a),
+         F: BsAbstract.Interface.FOLDABLE with type t('a) = S.t('a),
+         A: BsAbstract.Interface.APPLICATIVE with type t('a) = S.t('a),
        ) => {
   type t('a) =
     | NonEmpty('a, S.t('a));
@@ -73,32 +70,32 @@ module NonEmptyF =
 
   let flatMap = (nonEmpty, f) => map(f, nonEmpty) |> flatten;
 
-  module SemigroupAny: SEMIGROUP_ANY with type t('a) = t('a) = {
+  module SemigroupAny: BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let append = concat;
   };
 
-  module MagmaAny: MAGMA_ANY with type t('a) = t('a) = {
+  module MagmaAny: BsAbstract.Interface.MAGMA_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let append = concat;
   };
 
-  module Functor: FUNCTOR with type t('a) = t('a) = {
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
 
-  module Apply: APPLY with type t('a) = t('a) = {
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
 
-  module Applicative: APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
 
-  module Monad: MONAD with type t('a) = t('a) = {
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = flatMap;
   };
