@@ -1,16 +1,12 @@
-/* List */
-
-/* Functions */
-
 let empty: list('a) = [];
 
-let pure: 'a => list('a) = BsAbstract.List.Applicative.pure;
+let pure: 'a => list('a) = a => [a]; /*BsAbstract.List.Applicative.pure;*/
 
-let one = pure;
+let one: 'a => list('a) = pure;
 
-let single = pure;
+let single: 'a => list('a) = pure;
 
-let cons: ('a, list('a)) => list('a) = (h, t) => Belt.List.concat([h], t); /* TODO: there must be a better way */
+let cons: ('a, list('a)) => list('a) = (h, t) => [h, ...t];
 
 let fromArray = Belt.List.fromArray;
 
@@ -35,8 +31,24 @@ let tailOrEmpty: list('a) => list('a) =
    let last =
 
    let keep =
+   let keepWithIndex =
 
-   let filter =
+   let filter = keep
+   let filterWithIndex = keepWithIndex
+
+   let find =
+   let findWithIndex =
+
+   let partition =
+
+   let zip =
+   let zipWithIndex =
+
+   let sort =
+   let sortWith =
+
+   let distinct =
+   let uniq = distinct
    */
 
 let map: ('a => 'b, list('a)) => list('b) = BsAbstract.List.Functor.map;
@@ -75,8 +87,6 @@ let eqM =
   module ListEq = BsAbstract.List.Eq((val eq));
   ListEq.eq(l1, l2);
 };
-
-/* Modules */
 
 module Eq = BsAbstract.List.Eq;
 
@@ -121,8 +131,10 @@ module Sequence: Interface.SEQUENCE with type t('a) = list('a) = {
   let head = head;
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
-  let fromList = Function.identity;
-  let toList = Function.identity;
+}
+
+module IsoArray: Interface.ISO_ARRAY with type t('a) = list('a) = {
+  type t('a) = list('a);
   let fromArray = fromArray;
   let toArray = toArray;
 };

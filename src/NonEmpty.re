@@ -1,92 +1,128 @@
 open BsAbstract.Interface;
 open Relude.Interface;
 
-module type NON_EMPTY_F =
-  (
-    S: SEQUENCE,
-    M: MONOID_ANY with type t('a) = S.t('a),
-    F: FOLDABLE with type t('a) = S.t('a),
-    A: APPLICATIVE with type t('a) = S.t('a),
-  ) =>
-   {
-    /*
-     Basically the same as { head: 'a, tail: M.t('a) }, but easier to construct and pattern match.
-     */
-    type t('a) =
-      | NonEmpty('a, S.t('a));
+module NonEmptyF =
+       (
+         S: SEQUENCE,
+         M: MONOID_ANY with type t('a) = S.t('a),
+         F: FOLDABLE with type t('a) = S.t('a),
+         A: APPLICATIVE with type t('a) = S.t('a),
+       ) => {
+  type t('a) =
+    | NonEmpty('a, S.t('a));
 
-    /* Utility methods for NonEmpty */
-    let fromSequence: S.t('a) => option(t('a));
-    let toSequence: t('a) => S.t('a);
-    let pure: 'a => t('a);
-    let one: 'a => t('a);
-    let single: 'a => t('a);
-    let make: ('a, S.t('a)) => t('a);
-    let cons: ('a, t('a)) => t('a);
-    let concat: (t('a), t('a)) => t('a);
-    let head: t('a) => 'a;
-    let tail: t('a) => S.t('a);
+  let fromSequence: S.t('a) => option(t('a)) =
+    sequence =>
+      S.head(sequence)
+      ->Belt.Option.map(head => NonEmpty(head, S.tailOrEmpty(sequence)));
 
-    /* Related modules that we will provide for free for an NonEmpty module */
-    module SemigroupAny: SEMIGROUP_ANY with type t('a) = t('a);
-    /* No Monoid for this type, as there is no empty */
-    /* TODO:
-       module Foldable: FOLDABLE;
-       ...
-       */
+  let toSequence: t('a) => S.t('a) =
+    fun
+    | NonEmpty(head, tail) => M.append(A.pure(head), tail);
+
+  let pure: 'a => t('a) = head => NonEmpty(head, M.empty);
+
+  let one: 'a => t('a) = pure;
+
+  let single: 'a => t('a) = pure;
+
+  let make: ('a, S.t('a)) => t('a) =
+    (head, tailSequence) => NonEmpty(head, tailSequence);
+
+  let cons: ('a, t('a)) => t('a) =
+    (head, tailNonEmpty) => NonEmpty(head, toSequence(tailNonEmpty));
+
+  let length: t('a) => int =
+    fun
+    | NonEmpty(_, t) => 1 + S.length(t);
+
+  let head: t('a) => 'a =
+    fun
+    | NonEmpty(head, _) => head;
+
+  let tail: t('a) => S.t('a) =
+    fun
+    | NonEmpty(_, tail) => tail;
+
+  let concat: (t('a), t('a)) => t('a) =
+    (nonEmpty1, nonEmpty2) =>
+      NonEmpty(
+        head(nonEmpty1),
+        M.append(tail(nonEmpty1), toSequence(nonEmpty2)),
+      );
+
+  let reduceLeft: (('a, 'a) => 'a, t('a)) => 'a =
+    (f, NonEmpty(x, xs)) => F.fold_left(f, x, xs);
+
+  let foldLeft: (('b, 'a) => 'b, 'b, t('a)) => 'b =
+    (f, init, NonEmpty(x, xs)) => F.fold_left(f, f(init, x), xs);
+
+  let foldRight: (('a, 'b) => 'b, 'b, t('a)) => 'b =
+    (f, init, NonEmpty(x, xs)) => f(x, F.fold_right(f, init, xs));
+
+  let flatten: t(t('a)) => t('a) =
+    nonEmpty => reduceLeft(concat, nonEmpty);
+
+  let join = flatten;
+
+  let map: ('a => 'b, t('a)) => t('b) =
+    (f, NonEmpty(x, xs)) => NonEmpty(f(x), A.map(f, xs));
+
+  let apply: (t('a => 'b), t('a)) => t('b) =
+    (ff, fa) => map(f => map(f, fa), ff) |> flatten;
+
+  let flatMap = (nonEmpty, f) => map(f, nonEmpty) |> flatten;
+
+  module SemigroupAny: SEMIGROUP_ANY with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
+    let append = concat;
   };
 
-module NonEmptyF: NON_EMPTY_F =
-  (
-    S: SEQUENCE,
-    M: MONOID_ANY with type t('a) = S.t('a),
-    F: FOLDABLE with type t('a) = S.t('a),
-    A: APPLICATIVE with type t('a) = S.t('a),
-  ) => {
-    type t('a) =
-      | NonEmpty('a, S.t('a));
-
-    let fromSequence: S.t('a) => option(t('a)) =
-      sequence =>
-        S.head(sequence)
-        ->Belt.Option.map(head => NonEmpty(head, S.tailOrEmpty(sequence)));
-
-    let toSequence: t('a) => S.t('a) =
-      fun
-      | NonEmpty(head, tail) => M.append(A.pure(head), tail);
-
-    let pure: 'a => t('a) = head => NonEmpty(head, M.empty);
-
-    let one = pure;
-
-    let single = pure;
-
-    let make: ('a, S.t('a)) => t('a) =
-      (head, tail) => NonEmpty(head, tail);
-
-    let cons: ('a, t('a)) => t('a) =
-      (head, nonEmptyTail) => NonEmpty(head, toSequence(nonEmptyTail));
-
-    let head: t('a) => 'a =
-      fun
-      | NonEmpty(head, _) => head;
-
-    let tail: t('a) => S.t('a) =
-      fun
-      | NonEmpty(_, tail) => tail;
-
-    let concat: (t('a), t('a)) => t('a) =
-      (nonEmpty1, nonEmpty2) =>
-        NonEmpty(
-          head(nonEmpty1),
-          M.append(tail(nonEmpty1), toSequence(nonEmpty2)),
-        );
-
-    module SemigroupAny: SEMIGROUP_ANY with type t('a) = t('a) = {
-      type nonrec t('a) = t('a);
-      let append = concat;
-    };
+  module MagmaAny: MAGMA_ANY with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
+    let append = concat;
   };
+
+  module Functor: FUNCTOR with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
+    let map = map;
+  };
+
+  module Apply: APPLY with type t('a) = t('a) = {
+    include Functor;
+    let apply = apply;
+  };
+
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
+    include Apply;
+    let pure = pure;
+  };
+
+  module Monad: MONAD with type t('a) = t('a) = {
+    include Applicative;
+    let flat_map = flatMap;
+  };
+  /*
+   module Foldable: FOLDABLE with type t('a) = t('a) = {
+     type nonrec t('a) = t('a);
+     let fold_left = foldLeft;
+     let fold_right = foldRight;
+
+     module Fold_Map_Plus {
+     }
+
+     module Fold_Map_Any {
+     }
+
+     module Fold_Map {
+       let fold_map = foldMap;
+     }
+   };
+   */
+  /*
+   module Traversable
+   */
+};
 
 /* NonEmpty.List */
 module List =

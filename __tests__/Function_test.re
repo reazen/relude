@@ -2,8 +2,8 @@
 open Jest;
 open Expect;
 
-let (<<) = Function.(<<);
-let (>>) = Function.(>>);
+let (<<) = Function.Infix.(<<);
+let (>>) = Function.Infix.(>>);
 
 describe("Function", () => {
   test("identity returns the input", () => {

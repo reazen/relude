@@ -1,6 +1,3 @@
-/* Array */
-
-/* Functions */
 let empty: array('a) = [||];
 
 let length: array('a) => int = Belt.Array.length;
@@ -24,9 +21,6 @@ let toList: array('a) => list('a) = Belt.List.fromArray;
 
 let fromList: list('a) => array('a) = Belt.List.toArray;
 
-/* TODO more functions */
-
-/* Modules */
 module Eq = BsAbstract.Array.Eq;
 
 module Show = BsAbstract.Array.Show;
