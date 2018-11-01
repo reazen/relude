@@ -26,8 +26,10 @@ let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
 let alt: (option('a), option('a)) => option('a) =
   (a, b) => BsAbstract.Option.Alt.alt(a, b);
 
+let empty: option('a) = BsAbstract.Option.Plus.empty;
+
 let filter: ('a => bool, option('a)) => option('a) =
-  fn => flatMap(v => fn(v) ? Some(v) : None);
+  fn => foldLeft((default, v) => fn(v) ? pure(v) : default, empty);
 
 let flatten: option(option('a)) => option('a) =
   opt => flatMap(a => a, opt);
