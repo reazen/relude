@@ -8,6 +8,15 @@ module NonEmptyF =
   type t('a) =
     | NonEmpty('a, S.t('a));
 
+  let length: t('a) => int =
+    fun
+    | NonEmpty(_, t) => 1 + S.length(t);
+
+  let pure: 'a => t('a) = head => NonEmpty(head, M.empty);
+
+  let make: ('a, S.t('a)) => t('a) =
+    (head, tailSequence) => NonEmpty(head, tailSequence);
+
   let fromSequence: S.t('a) => option(t('a)) =
     sequence =>
       S.head(sequence)
@@ -17,21 +26,8 @@ module NonEmptyF =
     fun
     | NonEmpty(head, tail) => M.append(A.pure(head), tail);
 
-  let pure: 'a => t('a) = head => NonEmpty(head, M.empty);
-
-  let one: 'a => t('a) = pure;
-
-  let single: 'a => t('a) = pure;
-
-  let make: ('a, S.t('a)) => t('a) =
-    (head, tailSequence) => NonEmpty(head, tailSequence);
-
   let cons: ('a, t('a)) => t('a) =
     (head, tailNonEmpty) => NonEmpty(head, toSequence(tailNonEmpty));
-
-  let length: t('a) => int =
-    fun
-    | NonEmpty(_, t) => 1 + S.length(t);
 
   let head: t('a) => 'a =
     fun
