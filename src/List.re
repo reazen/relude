@@ -131,7 +131,7 @@ module Sequence: Interface.SEQUENCE with type t('a) = list('a) = {
   let head = head;
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
-}
+};
 
 module IsoArray: Interface.ISO_ARRAY with type t('a) = list('a) = {
   type t('a) = list('a);
