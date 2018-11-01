@@ -98,6 +98,78 @@ describe("List", () => {
     expect(List.tailOrEmpty([1, 2, 3])) |> toEqual([2, 3]);
   });
 
+  test("init empty list", () => {
+    expect(List.init([])) |> toEqual(None);
+  });
+
+  test("init single item list", () => {
+    expect(List.init([1])) |> toEqual(Some([]));
+  });
+
+  test("init multi item list", () => {
+    expect(List.init([1, 2, 3, 4])) |> toEqual(Some([1, 2, 3]));
+  });
+
+  test("last empty list", () => {
+    expect(List.last([])) |> toEqual(None);
+  });
+
+  test("last single item list", () => {
+    expect(List.last([1])) |> toEqual(Some(1));
+  });
+
+  test("last multi item list", () => {
+    expect(List.last([1, 2, 3, 4])) |> toEqual(Some(4));
+  });
+
+  test("take zero from empty list", () => {
+    expect(List.take(0, [])) |> toEqual(Some([]));
+  });
+
+  test("take non-zero from empty list", () => {
+    expect(List.take(2, [])) |> toEqual(None);
+  });
+
+  test("take non-zero from short list", () => {
+    expect(List.take(2, [1])) |> toEqual(None);
+  });
+
+  test("take non-zero from equal list", () => {
+    expect(List.take(2, [1, 2])) |> toEqual(Some([1, 2]));
+  });
+
+  test("take non-zero from long list", () => {
+    expect(List.take(2, [1, 2, 3])) |> toEqual(Some([1, 2]));
+  });
+
+  test("takeUpTo zero from empty list", () => {
+    expect(List.takeUpTo(0, [])) |> toEqual([]);
+  });
+
+  test("takeUpTo non-zero from empty list", () => {
+    expect(List.takeUpTo(2, [])) |> toEqual([]);
+  });
+
+  test("takeUpTo non-zero from short list", () => {
+    expect(List.takeUpTo(2, [1])) |> toEqual([1]);
+  });
+
+  test("takeUpTo non-zero from equal list", () => {
+    expect(List.takeUpTo(2, [1, 2])) |> toEqual([1, 2]);
+  });
+
+  test("takeUpTo non-zero from long list", () => {
+    expect(List.takeUpTo(2, [1, 2, 3])) |> toEqual([1, 2]);
+  });
+
+  test("takeWhile empty list", () => {
+    expect(List.takeWhile(a => a < 2, [])) |> toEqual([]);
+  });
+
+  test("takeWhile list", () => {
+    expect(List.takeWhile(a => a < 2, [0, 1, 2, 3])) |> toEqual([0, 1]);
+  });
+
   test("zip same length lists", () => {
     expect(List.zip([1, 2, 3], ["4", "5", "6"])) |> toEqual([(1, "4"), (2, "5"), (3, "6")]);
   });

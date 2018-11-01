@@ -62,20 +62,32 @@ let tailOrEmpty: list('a) => list('a) =
 
 let reverse: list('a) => list('a) = Belt.List.reverse;
 
-/* TODO */
-let init: list('a) => option(list('a)) = _ => None;
+let rec init: list('a) => option(list('a)) =
+  fun
+  | [] => None
+  | [_] => Some([])
+  | [x, ...xs] => Some(cons(x, init(xs)->Belt.Option.getWithDefault([])))
 
-/* TODO */
-let last: list('a) => option('a) = _ => None;
+let rec last: list('a) => option('a) =
+  fun
+  | [] => None
+  | [x] => Some(x)
+  | [_, ...xs] => last(xs);
 
 let take: (int, list('a)) => option(list('a)) =
   (i, xs) => Belt.List.take(xs, i);
 
-/* TODO */
-let takeUpTo: (int, list('a)) => list('a) = (_i, xs) => xs;
+let rec takeUpTo: (int, list('a)) => list('a) = (i, xs) =>
+  switch(xs) {
+    | [] => []
+    | [y, ...ys] => if (i == 0) [] else [y, ...takeUpTo(i - 1, ys)]
+  }
 
-/* TODO */
-let takeWhile: ('a => bool, list('a)) => list('a) = (_f, xs) => xs;
+let rec takeWhile: ('a => bool, list('a)) => list('a) = (f, xs) =>
+  switch(xs) {
+    | [] => []
+    | [x, ...xs] => if (f(x)) [x, ...takeWhile(f, xs)] else []
+  };
 
 let drop: (int, list('a)) => option(list('a)) =
   (i, xs) => Belt.List.drop(xs, i);
@@ -136,9 +148,8 @@ let intersperse: ('a, list('a)) => list('a) =
     | [y, ...ys] => [y, ...prependToAll(delim, ys)]
     };
 
-let replicate: (int, list('a)) => list('a) = (i, xs) => {
-  foldLeft((acc, _i) => concat(acc, xs), [], Int.range(0, i));
-};
+let replicate: (int, list('a)) => list('a) =
+  (i, xs) => foldLeft((acc, _i) => concat(acc, xs), [], Int.range(0, i));
 
 let zip: (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 
