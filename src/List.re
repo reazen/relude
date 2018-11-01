@@ -1,8 +1,8 @@
 let length: list('a) => int = Belt.List.length;
 
-let isEmpty: list('a) => bool = list => length(list) == 0;
+let isEmpty: list('a) => bool = xs => length(xs) == 0;
 
-let isNotEmpty: list('a) => bool = list => length(list) > 0;
+let isNotEmpty: list('a) => bool = xs => length(xs) > 0;
 
 let empty: list('a) = [];
 
@@ -12,11 +12,16 @@ let one: 'a => list('a) = pure;
 
 let concat: (list('a), list('a)) => list('a) = Belt.List.concat;
 
-let cons: ('a, list('a)) => list('a) = (h, t) => [h, ...t];
+let cons: ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
+
+let uncons: list('a) => option(('a, list('a))) =
+  fun
+  | [] => None
+  | [x, ...xs] => Some((x, xs));
 
 let prepend: ('a, list('a)) => list('a) = cons;
 
-let append: ('a, list('a)) => list('a) = (a, l) => concat(l, [a]);
+let append: ('a, list('a)) => list('a) = (x, xs) => concat(xs, [x]);
 
 let foldLeft: (('b, 'a) => 'b, 'b, list('a)) => 'b = BsAbstract.List.Foldable.fold_left;
 
@@ -53,87 +58,98 @@ let head: list('a) => option('a) = Belt.List.head;
 let tail: list('a) => option(list('a)) = Belt.List.tail;
 
 let tailOrEmpty: list('a) => list('a) =
-  list => tail(list)->Belt.Option.getWithDefault(empty);
+  xs => tail(xs)->Belt.Option.getWithDefault(empty);
 
 let reverse: list('a) => list('a) = Belt.List.reverse;
 
 /* TODO */
-let init: list('a) => option(list('a)) = _l => None;
+let init: list('a) => option(list('a)) = _ => None;
 
 /* TODO */
 let last: list('a) => option('a) = _ => None;
 
 let take: (int, list('a)) => option(list('a)) =
-  (i, l) => Belt.List.take(l, i);
+  (i, xs) => Belt.List.take(xs, i);
 
 /* TODO */
-let takeUpTo: (int, list('a)) => list('a) = (_i, l) => l;
+let takeUpTo: (int, list('a)) => list('a) = (_i, xs) => xs;
+
+/* TODO */
+let takeWhile: ('a => bool, list('a)) => list('a) = (_f, xs) => xs;
 
 let drop: (int, list('a)) => option(list('a)) =
-  (i, l) => Belt.List.drop(l, i);
+  (i, xs) => Belt.List.drop(xs, i);
 
 /* TODO */
-let dropUpTo: (int, list('a)) => list('a) = (_i, l) => l;
+let dropUpTo: (int, list('a)) => list('a) = (_i, xs) => xs;
+
+/* TODO */
+let dropWhile: ('a => bool, list('a)) => list('a) = (_f, xs) => xs;
 
 let filter: ('a => bool, list('a)) => list('a) =
-  (f, l) => Belt.List.keep(l, f);
+  (f, xs) => Belt.List.keep(xs, f);
 
 let filterWithIndex: (('a, int) => bool, list('a)) => list('a) =
-  (f, l) => Belt.List.keepWithIndex(l, f);
+  (f, xs) => Belt.List.keepWithIndex(xs, f);
 
 let rec find: ('a => bool, list('a)) => option('a) =
-  (f, l) =>
-    switch (l) {
+  (f, xs) =>
+    switch (xs) {
     | [] => None
-    | [h, ...tail] =>
-      if (f(h)) {
-        Some(h);
+    | [y, ...ys] =>
+      if (f(y)) {
+        Some(y);
       } else {
-        find(f, tail);
+        find(f, ys);
       }
     };
 
 let findWithIndex: (('a, int) => bool, list('a)) => option('a) =
-  (f, l) => {
-    let rec _findWithIndex = (f, l, i) =>
-      switch (l) {
+  (f, xs) => {
+    let rec _findWithIndex = (f, ys, i) =>
+      switch (ys) {
       | [] => None
-      | [h, ...tail] =>
-        if (f(h, i)) {
-          Some(h);
+      | [z, ...zs] =>
+        if (f(z, i)) {
+          Some(z);
         } else {
-          _findWithIndex(f, tail, i + 1);
+          _findWithIndex(f, zs, i + 1);
         }
       };
-    _findWithIndex(f, l, 0);
+    _findWithIndex(f, xs, 0);
   };
 
 let partition: ('a => bool, list('a)) => (list('a), list('a)) =
-  (f, l) => Belt.List.partition(l, f);
+  (f, xs) => Belt.List.partition(xs, f);
 
-let rec prependToAll: ('a, list('a)) => list('a) = (delim, l) => {
-  switch (l) {
+let rec prependToAll: ('a, list('a)) => list('a) =
+  (delim, xs) =>
+    switch (xs) {
     | [] => []
-    | [h, ...tail] => [delim, h, ...prependToAll(delim, tail)]
-  };
-};
+    | [y, ...ys] => [delim, y, ...prependToAll(delim, ys)]
+    };
 
-let intersperse: ('a, list('a)) => list('a) = (delim, l) => {
-  switch (l) {
+let intersperse: ('a, list('a)) => list('a) =
+  (delim, xs) =>
+    switch (xs) {
     | [] => []
-    | [h, ...tail] => [h, ...prependToAll(delim, tail)]
-  };
+    | [y, ...ys] => [y, ...prependToAll(delim, ys)]
+    };
+
+let replicate: (int, list('a)) => list('a) = (i, xs) => {
+  foldLeft((acc, _i) => concat(acc, xs), [], Int.range(0, i));
 };
 
 let zip: (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 
 let zipWithIndex: list('a) => list(('a, int)) =
-  l => zip(l, Int.range(0, length(l)));
+  xs => zip(xs, Int.range(0, length(xs)));
 
-let sort: (('a, 'a) => int, list('a)) => list('a) = (f, l) => Belt.List.sort(l, f);
+let sort: (('a, 'a) => int, list('a)) => list('a) =
+  (f, xs) => Belt.List.sort(xs, f);
 
 /* TODO: */
-let distinct: list('a) => list('a) = _ => [];
+let distinct: (('a, 'a) => bool, list('a)) => list('a) = (_f, _xs) => _xs;
 
 let map: ('a => 'b, list('a)) => list('b) = BsAbstract.List.Functor.map;
 
@@ -142,7 +158,7 @@ let apply: (list('a => 'b), list('a)) => list('b) = BsAbstract.List.Applicative.
 let flatMap: (list('a), 'a => list('b)) => list('b) = BsAbstract.List.Monad.flat_map;
 
 let flatten: list(list('a)) => list('a) =
-  lists => flatMap(lists, Function.identity);
+  xss => flatMap(xss, Function.identity);
 
 let fromArray: array('a) => list('a) = Belt.List.fromArray;
 
@@ -153,24 +169,26 @@ let eq: (list('a), list('a), ('a, 'a) => bool) => bool = Belt.List.eq;
 let eqM =
     (
       type t,
-      l1: list(t),
-      l2: list(t),
+      xs: list(t),
+      ys: list(t),
       eq: (module BsAbstract.Interface.EQ with type t = t),
     )
     : bool => {
   module ListEq = BsAbstract.List.Eq((val eq));
-  ListEq.eq(l1, l2);
+  ListEq.eq(xs, ys);
 };
 
-let mkString: (string, list(string)) => string = (delim, strings) => {
-  let delimited = intersperse(delim, strings);
-  foldLeft((acc, curr) => acc ++ curr, "", delimited);
-};
+let mkString: (string, list(string)) => string =
+  (delim, xs) => {
+    let delimited = intersperse(delim, xs);
+    foldLeft((acc, curr) => acc ++ curr, "", delimited);
+  };
 
-let show: ('a => string, list('a)) => string = (showA, l) => {
-  let strings = map(showA, l);
-  "[" ++ mkString(", ", strings) ++ "]"
-};
+let show: ('a => string, list('a)) => string =
+  (showX, xs) => {
+    let strings = map(showX, xs);
+    "[" ++ mkString(", ", strings) ++ "]";
+  };
 
 module Eq = BsAbstract.List.Eq;
 

@@ -114,6 +114,10 @@ describe("List", () => {
     expect(List.intersperse(",", ["a", "b", "c"])) |> toEqual(["a", ",", "b", ",", "c"]);
   });
 
+  test("replicate", () => {
+    expect(List.replicate(3, ["a", "b", "c"])) |> toEqual(["a", "b", "c", "a", "b", "c", "a", "b", "c"]);
+  });
+
   test("mkString", () => {
     expect(List.mkString(", ", ["a", "b", "c"])) |> toEqual("a, b, c");
   });
