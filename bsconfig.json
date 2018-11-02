@@ -1,5 +1,9 @@
 {
   "name": "relude",
+  "bsc-flags": [
+    "-bs-no-version-header",
+    "-bs-super-errors"
+  ],
   "version": "0.1.0",
   "sources": [
     {
@@ -24,7 +28,7 @@
     "@glennsl/bs-jest"
   ],
   "warnings": {
-    "error": "+101"
+    "error": "+8+11+101"
   },
   "namespace": true,
   "refmt": 3
