@@ -79,4 +79,9 @@ describe("Option", () => {
   test("flatten is Some when both options are Some", () =>
     expect(Option.flatten(Some(Some(1)))) |> toEqual(Some(1))
   );
+
+  /**
+   * TODO: test infix functions
+   */
+   ();
 });
