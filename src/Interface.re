@@ -32,3 +32,20 @@ module type ISO_ARRAY = {
   let fromArray: array('a) => t('a);
   let toArray: t('a) => array('a);
 };
+
+/**
+Typeclass module for a monad type with value and error type parameters that can be lifted into an Aff.
+*/
+module type MONAD_AFF = {
+  type t('a, 'e);
+  let liftAff: t('a, 'e) => Aff.t('a, 'e);
+}
+
+/**
+Typeclass module functor for a monad type with a value type parameter that can be lifted into an Aff.
+This functor should be used for types like Option, which don't have an error type parameter.
+*/
+module type MONAD_AFF_F = (Error: BsAbstract.Interface.TYPE) => {
+  type t('a);
+  let liftAff: t('a) => Aff.t('a, Error.t);
+}
