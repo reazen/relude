@@ -1,24 +1,35 @@
 open Belt.Result;
 
 /*
- Aff is an pure, lazy, asynchronous effect monad that should be able to handle any type of effect
- a program could possibly need, including effects like Option, Result, Js.Promise, Future, etc.  It basically boils down
- to a continuation callback, where the `onDone` callback is invoked with a `Result.t('a, 'e)`
- to either provide a value or an error.  The error type is left open (bifunctor IO), but for many JS FFI functions,
- the error type will be Js.Exn.t.
+ Aff is an pure, lazy, asynchronous effect monad that should be able to
+ handle any type of effect a program could possibly need, including effects
+ like Option, Result, Js.Promise, Future, or any combination of these. It
+ basically boils down to a continuation callback, where the `onDone` callback
+ is invoked with a `Result.t('a, 'e)` to either provide a value or an error.
+ The error type is kept open as a type parameter, so that the user of Aff can
+ decide exactly how to encode errors in his/her program. For many JS FFI
+ functions, the error type will be Js.Exn.t, but this can be wrapped or converted
+ into another error type using `Aff.mapError`.
 
- This is inspired by bs-effects `Affect` and John De Goes' basic Async IO monad described here: http://degoes.net/articles/only-one-io
+ This is inspired by bs-effects `Affect` and John De Goes' basic Async IO
+ monad described here: http://degoes.net/articles/only-one-io
 
- Aff should be similar in spirit to the `IO` type Haskell, or the new row-less Effect type of purescript.
+ Aff should be similar in spirit to the `IO` type Haskell, or the new
+ row-less Effect type of purescript.
 
- See the unit tests (Aff_test.re) for an example of how this works with asynchronous functions that can fail.
+ See the unit tests (Aff_test.re) for an example of how this works with
+ asynchronous functions that can fail.
 
  TODO:
- I'm not sure whether we need to return Eff.t(unit) in these methods, but that's what John De Goes' basic IO type is doing.  I think
- the idea is that the callback is itself an effect, so it should be treated as an effect rather than just something that returns `unit`.
 
- However, making the callback return Eff and the onDone function return Eff means we have to add extra layers of `() => ...` and `onDone(...)()`
- everywhere.  I'm not sure if that's useful or not.
+ I'm not sure whether we need/want to return Eff.t(unit) in these methods,
+ but that's what John De Goes' basic Async IO type is doing. I think the idea
+ is that the callback is itself a synchronous effect, so it should be treated
+ as an effect rather than just a function that returns `unit`.
+
+ However, making the callback return Eff and the onDone function return Eff
+ means we have to add extra layers of `() => ...` and `onDone(...)()` in
+ various places. I'm not sure if that's useful or not.
  */
 
 type t('a, 'e) = (Belt.Result.t('a, 'e) => Eff.t(unit)) => Eff.t(unit);
@@ -111,7 +122,10 @@ module Monad: MONAD_F =
     let flat_map = flatMap;
   };
 
-/* Infix operators for any arbitrary (given) error type */
+/*
+ Infix operators for any arbitrary (given) error type
+ This is needed because our error type is left open as a type parameter.
+ */
 module Infix = (Error: BsAbstract.Interface.TYPE) => {
   include BsAbstract.Infix.Monad((Monad(Error)));
 };

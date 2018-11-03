@@ -2,10 +2,11 @@
   "name": "relude",
   "version": "0.1.0",
   "scripts": {
+    "clean": "bsb -clean-world",
     "build": "bsb -make-world",
     "test": "npm run build && jest",
-    "start": "bsb -make-world -w",
-    "clean": "bsb -clean-world"
+    "cleantest": "npm run clean && npm run test",
+    "start": "bsb -make-world -w"
   },
   "keywords": [
     "BuckleScript"

@@ -1,9 +1,22 @@
 /**
-Eff is a pure, lazy, synchronous effect monad that allows for monadic chaining of purely synchronous
-actions that are not expected to ever fail (or failure are not recoverable).
+Eff is a pure, lazy, synchronous effect monad that allows for chaining of
+synchronous effectful functions that are not expected to fail.
 
-console.log is a prime example of such a function that can be wrapped in Eff - it is purely synchronous and is highly likely
-to never fail with an exception.
+It's basically just a thunk or a lazy function that produces a value.
+Laziness is the key to achieving referential transparency and delaying side
+effects until the monadic chain is run by calling the effect with `myEff()`
+or equivalently `myEff |> Eff.run`
+
+This is inspired by bs-effects `Effect` and John De Goes' basic synchronous
+IO monad described here: http://degoes.net/articles/only-one-io
+
+Eff should be similar in spirit to the Eff type of purescript (minus the
+effect row) for encoding synchronous effects with no accomodation for errors.
+
+console.log is a good example of a function that can be wrapped in Eff - it
+is purely synchronous and is not likely to ever fail with an exception.
+Certain DOM functions might also work well with Eff - the key is that Eff
+cannot deal with errors nor exceptions.
 
 If your action can fail, you should use Aff instead.
 */
@@ -11,7 +24,9 @@ If your action can fail, you should use Aff instead.
 type t('a) = unit => 'a;
 
 /**
-Unsafe run effect.  For Eff, this is the same as just calling the effect as a function.
+Unsafely runs the effect or chain of effects. For Eff, this is the same as
+just calling the effect as a function. If any of the thunks throw an
+exception, the exception will not be caught here.
  */
 let run: t('a) => 'a = eff => eff();
 
