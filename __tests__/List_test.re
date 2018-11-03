@@ -288,7 +288,8 @@ describe("List", () => {
   );
 
   test("dropWhile list", () =>
-    expect(List.dropWhile(a => a < 2, [0, 1, 2, 3])) |> toEqual([2, 3])
+    expect(List.dropWhile(a => a < 2, [0, 1, 2, 1, 3]))
+    |> toEqual([2, 1, 3])
   );
 
   test("dropWhile list condition never true", () =>
@@ -322,7 +323,7 @@ describe("List", () => {
   );
 
   test("find found", () =>
-    expect(List.find(a => a == 3, [0, 1, 2, 3, 4])) |> toEqual(Some(3))
+    expect(List.find(a => a == 2, [0, 1, 2, 3, 4])) |> toEqual(Some(2))
   );
 
   test("findWithIndex", () =>

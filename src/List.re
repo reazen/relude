@@ -1,11 +1,9 @@
 let length: list('a) => int = Belt.List.length;
 
 let isEmpty: list('a) => bool =
-  xs =>
-    switch (xs) {
-    | [] => true
-    | _ => false
-    };
+  fun
+  | [] => true
+  | _ => false;
 
 let isNotEmpty: list('a) => bool = xs => !isEmpty(xs);
 
@@ -90,24 +88,16 @@ let rec takeUpTo: (int, list('a)) => list('a) =
   (i, xs) =>
     switch (xs) {
     | [] => []
-    | [y, ...ys] =>
-      if (i == 0) {
-        [];
-      } else {
-        [y, ...takeUpTo(i - 1, ys)];
-      }
+    | _ when i == 0 => []
+    | [y, ...ys] => [y, ...takeUpTo(i - 1, ys)]
     };
 
 let rec takeWhile: ('a => bool, list('a)) => list('a) =
   (f, xs) =>
     switch (xs) {
     | [] => []
-    | [x, ...xs] =>
-      if (f(x)) {
-        [x, ...takeWhile(f, xs)];
-      } else {
-        [];
-      }
+    | [x, ...xs] when f(x) => [x, ...takeWhile(f, xs)]
+    | _ => []
     };
 
 let drop: (int, list('a)) => option(list('a)) =
@@ -117,24 +107,15 @@ let rec dropUpTo: (int, list('a)) => list('a) =
   (i, xs) =>
     switch (xs) {
     | [] => []
-    | [_, ...ys] =>
-      if (i == 0) {
-        xs;
-      } else {
-        dropUpTo(i - 1, ys);
-      }
+    | [_, ..._] when i == 0 => xs
+    | [_, ...ys] => dropUpTo(i - 1, ys)
     };
 
 let rec dropWhile: ('a => bool, list('a)) => list('a) =
   (f, xs) =>
     switch (xs) {
-    | [] => []
-    | [y, ...ys] =>
-      if (f(y)) {
-        dropWhile(f, ys);
-      } else {
-        xs;
-      }
+    | [y, ...ys] when f(y) => dropWhile(f, ys)
+    | _ => xs
     };
 
 let filter: ('a => bool, list('a)) => list('a) =
@@ -147,27 +128,19 @@ let rec find: ('a => bool, list('a)) => option('a) =
   (f, xs) =>
     switch (xs) {
     | [] => None
-    | [y, ...ys] =>
-      if (f(y)) {
-        Some(y);
-      } else {
-        find(f, ys);
-      }
+    | [y, ..._] when f(y) => Some(y)
+    | [_, ...ys] => find(f, ys)
     };
 
 let findWithIndex: (('a, int) => bool, list('a)) => option('a) =
   (f, xs) => {
-    let rec _findWithIndex = (f, ys, i) =>
+    let rec go = (f, ys, i) =>
       switch (ys) {
       | [] => None
-      | [z, ...zs] =>
-        if (f(z, i)) {
-          Some(z);
-        } else {
-          _findWithIndex(f, zs, i + 1);
-        }
+      | [z, ..._] when f(z, i) => Some(z)
+      | [_, ...zs] => go(f, zs, i + 1)
       };
-    _findWithIndex(f, xs, 0);
+    go(f, xs, 0);
   };
 
 let partition: ('a => bool, list('a)) => (list('a), list('a)) =
@@ -213,40 +186,23 @@ let shuffle: list('a) => list('a) = Belt.List.shuffle;
 
 let reverse: list('a) => list('a) = Belt.List.reverse;
 
-let rec contains: (('a, 'a) => bool, 'a, list('a)) => bool =
-  (f, x, xs) =>
-    switch (xs) {
-    | [] => false
-    | [y, ...ys] =>
-      if (f(x, y)) {
-        true;
-      } else {
-        contains(f, x, ys);
-      }
-    };
-
 let rec any: ('a => bool, list('a)) => bool =
   (f, xs) =>
     switch (xs) {
     | [] => false
-    | [y, ...ys] =>
-      if (f(y)) {
-        true;
-      } else {
-        any(f, ys);
-      }
+    | [y, ..._] when f(y) => true
+    | [_, ...ys] => any(f, ys)
     };
+
+let contains: (('a, 'a) => bool, 'a, list('a)) => bool =
+  (f, x, xs) => any(f(x), xs);
 
 let rec all: ('a => bool, list('a)) => bool =
   (f, xs) =>
     switch (xs) {
     | [] => true
-    | [y, ...ys] =>
-      if (f(y)) {
-        all(f, ys);
-      } else {
-        false;
-      }
+    | [y, ...ys] when f(y) => all(f, ys)
+    | _ => false
     };
 
 /* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
