@@ -457,11 +457,15 @@ describe("List", () => {
   );
 
   test("eq returns true if list items are equal", () =>
-    expect(List.eq([1, 2, 3], [1, 2, 3], Int.eq)) |> toBe(true)
+    expect(List.eq(Int.eq, [1, 2, 3], [1, 2, 3])) |> toBe(true)
   );
 
   test("eq returns false if list items are not equal", () =>
-    expect(List.eq([1, 2, 3], [1, 2, 4], Int.eq)) |> toBe(false)
+    expect(List.eq(Int.eq, [1, 2, 3], [1, 2, 4])) |> toBe(false)
+  );
+
+  test("eq returns false if lists are of different sizes", () =>
+    expect(List.eq(Int.eq, [1, 2], [1, 2])) |> toBe(false)
   );
 
   test("eqM returns true if list items are equal", () =>
@@ -480,23 +484,52 @@ describe("List", () => {
     expect(List.show(string_of_int, [1, 2, 3])) |> toEqual("[1, 2, 3]")
   );
 
-  test("void", () => {
-    expect(List.void([1, 2, 3])) |> toEqual([(), (), ()]);
-  });
+  test("void", () =>
+    expect(List.void([1, 2, 3])) |> toEqual([(), (), ()])
+  );
 
-  test("flap", () => {
-    expect(List.flap([a => a + 1, a => a + 2, a => a + 3], 5)) |> toEqual([6, 7, 8]);
-  });
+  test("flap", () =>
+    expect(List.flap([a => a + 1, a => a + 2, a => a + 3], 5))
+    |> toEqual([6, 7, 8])
+  );
 
-  test("map2", () => {
-    expect(List.map2((a, b) => a + b, [1, 2], [3, 4])) |> toEqual([4, 5, 5, 6]);
-  });
+  test("map2", () =>
+    expect(List.map2((a, b) => a + b, [1, 2], [3, 4]))
+    |> toEqual([4, 5, 5, 6])
+  );
 
-  test("map3", () => {
-    expect(List.map3((a, b, c) => a + b + c, [1, 2], [3, 4], [10, 20])) |> toEqual([14, 24, 15, 25, 15, 25, 16, 26]);
-  });
+  test("map3", () =>
+    expect(List.map3((a, b, c) => a + b + c, [1, 2], [3, 4], [10, 20]))
+    |> toEqual([14, 24, 15, 25, 15, 25, 16, 26])
+  );
 
-  test("map4", () => {
-    expect(List.map4((a, b, c, d) => a + b + c + d, [1, 2], [3, 4], [10, 20], [100, 200])) |> toEqual([114, 214, 124, 224, 115, 215, 125, 225, 115, 215, 125, 225, 116, 216, 126, 226]);
-  });
+  test("map4", () =>
+    expect(
+      List.map4(
+        (a, b, c, d) => a + b + c + d,
+        [1, 2],
+        [3, 4],
+        [10, 20],
+        [100, 200],
+      ),
+    )
+    |> toEqual([
+         114,
+         214,
+         124,
+         224,
+         115,
+         215,
+         125,
+         225,
+         115,
+         215,
+         125,
+         225,
+         116,
+         216,
+         126,
+         226,
+       ])
+  );
 });

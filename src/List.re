@@ -285,7 +285,13 @@ let fromArray: array('a) => list('a) = Belt.List.fromArray;
 
 let toArray: list('a) => array('a) = Belt.List.toArray;
 
-let eq: (list('a), list('a), ('a, 'a) => bool) => bool = Belt.List.eq;
+let rec eq: (('a, 'a) => bool, list('a), list('a)) => bool =
+  (innerEq, a, b) =>
+    switch (a, b) {
+    | ([], []) => true
+    | ([x, ...xs], [y, ...ys]) when innerEq(x, y) => eq(innerEq, xs, ys)
+    | _ => false
+    };
 
 let eqM =
     (
@@ -351,9 +357,20 @@ let map2: (('a, 'b) => 'c, list('a), list('b)) => list('c) = ListApply.lift2;
 
 let map3: (('a, 'b, 'c) => 'd, list('a), list('b), list('c)) => list('d) = ListApply.lift3;
 
-let map4: (('a, 'b, 'c, 'd) => 'e, list('a), list('b), list('c), list('d)) => list('e) = ListApply.lift4;
+let map4:
+  (('a, 'b, 'c, 'd) => 'e, list('a), list('b), list('c), list('d)) =>
+  list('e) = ListApply.lift4;
 
-let map5: (('a, 'b, 'c, 'd, 'e) => 'f, list('a), list('b), list('c), list('d), list('e)) => list('f) = ListApply.lift5;
+let map5:
+  (
+    ('a, 'b, 'c, 'd, 'e) => 'f,
+    list('a),
+    list('b),
+    list('c),
+    list('d),
+    list('e)
+  ) =>
+  list('f) = ListApply.lift5;
 
 module Applicative = BsAbstract.List.Applicative;
 
@@ -382,4 +399,4 @@ module IsoArray: Interface.ISO_ARRAY with type t('a) = list('a) = {
 module Infix = {
   include BsAbstract.List.Infix;
   include ListApply.Infix;
-}
+};
