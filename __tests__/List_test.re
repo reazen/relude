@@ -465,7 +465,7 @@ describe("List", () => {
   );
 
   test("eq returns false if lists are of different sizes", () =>
-    expect(List.eq(Int.eq, [1, 2], [1, 2])) |> toBe(false)
+    expect(List.eq(Int.eq, [1], [1, 2])) |> toBe(false)
   );
 
   test("eqM returns true if list items are equal", () =>

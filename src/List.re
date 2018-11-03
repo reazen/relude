@@ -1,8 +1,13 @@
 let length: list('a) => int = Belt.List.length;
 
-let isEmpty: list('a) => bool = xs => length(xs) == 0;
+let isEmpty: list('a) => bool =
+  xs =>
+    switch (xs) {
+    | [] => true
+    | _ => false
+    };
 
-let isNotEmpty: list('a) => bool = xs => length(xs) > 0;
+let isNotEmpty: list('a) => bool = xs => !isEmpty(xs);
 
 let empty: list('a) = [];
 
