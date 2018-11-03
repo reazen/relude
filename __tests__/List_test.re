@@ -470,11 +470,11 @@ describe("List", () => {
   );
 
   test("eqM returns true if list items are equal", () =>
-    expect(List.eqM([1, 2, 3], [1, 2, 3], (module Int.Eq))) |> toBe(true)
+    expect(List.eqM((module Int.Eq), [1, 2, 3], [1, 2, 3])) |> toBe(true)
   );
 
   test("eqM returns false if list items are not equal", () =>
-    expect(List.eqM([1, 2, 3], [1, 2, 4], (module Int.Eq))) |> toBe(false)
+    expect(List.eqM((module Int.Eq), [1, 2, 3], [1, 2, 4])) |> toBe(false)
   );
 
   test("mkString", () =>

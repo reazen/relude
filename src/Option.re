@@ -20,6 +20,9 @@ let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
 let flatMap: ('a => option('b), option('a)) => option('b) =
   (fn, opt) => BsAbstract.Option.Monad.flat_map(opt, fn);
 
+let flipFlatMap: (option('a), 'a => option('b)) => option('b) =
+  (opt, fn) => flatMap(fn, opt);
+
 let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   (fn, default) => BsAbstract.Option.Foldable.fold_left(fn, default);
 
@@ -66,10 +69,30 @@ let map5:
   option('f) =
   (fn, a, b, c, d, e) => OptApply.lift5(fn, a, b, c, d, e);
 
+let eq: (('a, 'a) => bool, option('a), option('a)) => bool =
+  (innerEq, a, b) =>
+    switch (a, b) {
+    | (Some(va), Some(vb)) => innerEq(va, vb)
+    | (None, None) => true
+    | _ => false
+    };
+
+let eqM =
+    (
+      type t,
+      innerEq: (module BsAbstract.Interface.EQ with type t = t),
+      a: option(t),
+      b: option(t),
+    )
+    : bool => {
+  module OptEq = BsAbstract.Option.Eq((val innerEq));
+  OptEq.eq(a, b);
+};
+
 module Infix = {
   let (|?) = (opt, default) => getOrElse(default, opt);
   let (<|>) = alt;
   let (<$>) = map;
   let (<*>) = apply;
-  let (>>=) = (opt, fn) => flatMap(fn, opt);
+  let (>>=) = flipFlatMap;
 };

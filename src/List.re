@@ -257,9 +257,9 @@ let rec eq: (('a, 'a) => bool, list('a), list('a)) => bool =
 let eqM =
     (
       type t,
+      eq: (module BsAbstract.Interface.EQ with type t = t),
       xs: list(t),
       ys: list(t),
-      eq: (module BsAbstract.Interface.EQ with type t = t),
     )
     : bool => {
   module ListEq = BsAbstract.List.Eq((val eq));
