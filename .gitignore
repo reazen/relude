@@ -10,3 +10,5 @@ npm-debug.log
 .bsb.lock
 /lib/bs/
 *.bs.js
+# TODO: change the test that creates this file
+**/testUtils/test.txt

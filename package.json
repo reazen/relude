@@ -18,5 +18,11 @@
   },
   "dependencies": {
     "bs-abstract": "^0.16.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/testUtils/"
+    ]
   }
 }
