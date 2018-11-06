@@ -96,9 +96,24 @@ module Apply: APPLY =
     let apply = apply;
   };
 
-/* Provides the map2/map3/etc. functions, but requires an Error type */
+/*
 module AsyncDataApply = (Error: TYPE) =>
   BsAbstract.Functions.Apply((Apply(Error)));
+*/
+
+/* These can be derived from BsAbstract.Functions.Apply, but because we have an error type, it becomes a module functor with an error type */
+let map2: (('a, 'b) => 'c, t('a, 'x), t('b, 'x)) => t('c, 'x) = (f, fa, fb) =>
+  apply(map(f, fa), fb)
+
+let map3: (('a, 'b ,'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x)) => t('d, 'x) = (f, fa, fb, fc) =>
+  apply(map2(f, fa, fb), fc)
+
+let map4: (('a, 'b ,'c, 'd) => 'e, t('a, 'x), t('b, 'x), t('c, 'x), t('d, 'x)) => t('e, 'x) = (f, fa, fb, fc, fd) =>
+  apply(map3(f, fa, fb, fc), fd)
+
+let map5: (('a, 'b ,'c, 'd, 'e) => 'f, t('a, 'x), t('b, 'x), t('c, 'x), t('d, 'x), t('e, 'x)) => t('f, 'x) = (f, fa, fb, fc, fd, fe) =>
+  apply(map4(f, fa, fb, fc, fd), fe)
+
 
 module type APPLICATIVE =
   (E: TYPE) => APPLICATIVE with type t('a) = t('a, E.t);

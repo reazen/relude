@@ -47,14 +47,18 @@ module Eff = {
   /* Read a file with no accomodation for errors */
   let readFileSync: string => Eff.t(string) =
     (path, ()) => {
+      /*
       Js.Console.log("Fs.Eff.readFileSync: reading file: " ++ path ++ "...");
+      */
       FFI.readFileSync(path, `utf8);
     }
 
   /* Write a file with no accomodation for errors */
   let writeFileSync: (string, string) => Eff.t(unit) =
     (path, content, ()) => {
+      /*
       Js.Console.log("Fs.Eff.writeFileSync: writing file: " ++ path ++ "...");
+      */
       FFI.writeFileSync(path, content, `utf8);
     }
 };
@@ -66,7 +70,9 @@ These functions can fail with async callback errors, which are captured by the A
 module Aff = {
   let readFile: string => Aff.t(string, Js.Exn.t) =
     (path, onDone, ()) => {
+      /*
       Js.Console.log("Fs.Aff.readFile: reading " ++ path ++ "...");
+      */
       FFI.readFile(path, `utf8, (err, content) =>
         switch (Js.Null.toOption(err), content) {
         | (Some(err'), _) =>
@@ -76,7 +82,9 @@ module Aff = {
           );
           onDone(Error(err'), ());
         | (_, content) =>
+          /*
           Js.Console.log("Read success!");
+          */
           onDone(Ok(content), ());
         }
       );
@@ -84,7 +92,9 @@ module Aff = {
 
   let writeFile: (string, string) => Aff.t(unit, Js.Exn.t) =
     (path, content, onDone, ()) => {
+      /*
       Js.Console.log("Fs.Aff.writeFile: writing file: " ++ path ++ "...");
+      */
       FFI.writeFile(path, content, `utf8, err =>
         switch (Js.Null.toOption(err)) {
         | Some(err') =>
@@ -94,7 +104,9 @@ module Aff = {
           );
           onDone(Error(err'), ());
         | None =>
+          /*
           Js.Console.log("Write success!");
+          */
           onDone(Ok(), ());
         }
       );
