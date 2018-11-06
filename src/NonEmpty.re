@@ -1,30 +1,43 @@
 module NonEmptyF =
        (
-         S: Interface.SEQUENCE,
-         M: BsAbstract.Interface.MONOID_ANY with type t('a) = S.t('a),
-         F: BsAbstract.Interface.FOLDABLE with type t('a) = S.t('a),
-         A: BsAbstract.Interface.APPLICATIVE with type t('a) = S.t('a),
+         TailSequence: Interface.SEQUENCE,
+         TailMonoid:
+           BsAbstract.Interface.MONOID_ANY with
+             type t('a) = TailSequence.t('a),
+         TailApplicative:
+           BsAbstract.Interface.APPLICATIVE with
+             type t('a) = TailSequence.t('a),
+         TailFoldable:
+           BsAbstract.Interface.FOLDABLE with
+             type t('a) = TailSequence.t('a),
        ) => {
+  /*
+   TailTraversable: BsAbstract.Interface.TRAVERSABLE with type t('a) = TailSequence.t('a),
+   */
+
   type t('a) =
-    | NonEmpty('a, S.t('a));
+    | NonEmpty('a, TailSequence.t('a));
 
   let length: t('a) => int =
     fun
-    | NonEmpty(_, t) => 1 + S.length(t);
+    | NonEmpty(_, t) => 1 + TailSequence.length(t);
 
-  let pure: 'a => t('a) = head => NonEmpty(head, M.empty);
+  let pure: 'a => t('a) = head => NonEmpty(head, TailMonoid.empty);
 
-  let make: ('a, S.t('a)) => t('a) =
+  let make: ('a, TailSequence.t('a)) => t('a) =
     (head, tailSequence) => NonEmpty(head, tailSequence);
 
-  let fromSequence: S.t('a) => option(t('a)) =
+  let fromSequence: TailSequence.t('a) => option(t('a)) =
     sequence =>
-      S.head(sequence)
-      ->Belt.Option.map(head => NonEmpty(head, S.tailOrEmpty(sequence)));
+      TailSequence.head(sequence)
+      ->Belt.Option.map(head =>
+          NonEmpty(head, TailSequence.tailOrEmpty(sequence))
+        );
 
-  let toSequence: t('a) => S.t('a) =
+  let toSequence: t('a) => TailSequence.t('a) =
     fun
-    | NonEmpty(head, tail) => M.append(A.pure(head), tail);
+    | NonEmpty(head, tail) =>
+      TailMonoid.append(TailApplicative.pure(head), tail);
 
   let cons: ('a, t('a)) => t('a) =
     (head, tailNonEmpty) => NonEmpty(head, toSequence(tailNonEmpty));
@@ -33,7 +46,7 @@ module NonEmptyF =
     fun
     | NonEmpty(head, _) => head;
 
-  let tail: t('a) => S.t('a) =
+  let tail: t('a) => TailSequence.t('a) =
     fun
     | NonEmpty(_, tail) => tail;
 
@@ -41,17 +54,19 @@ module NonEmptyF =
     (nonEmpty1, nonEmpty2) =>
       NonEmpty(
         head(nonEmpty1),
-        M.append(tail(nonEmpty1), toSequence(nonEmpty2)),
+        TailMonoid.append(tail(nonEmpty1), toSequence(nonEmpty2)),
       );
 
   let reduceLeft: (('a, 'a) => 'a, t('a)) => 'a =
-    (f, NonEmpty(x, xs)) => F.fold_left(f, x, xs);
+    (f, NonEmpty(x, xs)) => TailFoldable.fold_left(f, x, xs);
 
   let foldLeft: (('b, 'a) => 'b, 'b, t('a)) => 'b =
-    (f, init, NonEmpty(x, xs)) => F.fold_left(f, f(init, x), xs);
+    (f, init, NonEmpty(x, xs)) =>
+      TailFoldable.fold_left(f, f(init, x), xs);
 
   let foldRight: (('a, 'b) => 'b, 'b, t('a)) => 'b =
-    (f, init, NonEmpty(x, xs)) => f(x, F.fold_right(f, init, xs));
+    (f, init, NonEmpty(x, xs)) =>
+      f(x, TailFoldable.fold_right(f, init, xs));
 
   let flatten: t(t('a)) => t('a) =
     nonEmpty => reduceLeft(concat, nonEmpty);
@@ -59,14 +74,15 @@ module NonEmptyF =
   let join = flatten;
 
   let map: ('a => 'b, t('a)) => t('b) =
-    (f, NonEmpty(x, xs)) => NonEmpty(f(x), A.map(f, xs));
+    (f, NonEmpty(x, xs)) => NonEmpty(f(x), TailApplicative.map(f, xs));
 
   let apply: (t('a => 'b), t('a)) => t('b) =
     (ff, fa) => map(f => map(f, fa), ff) |> flatten;
 
   let flatMap = (nonEmpty, f) => map(f, nonEmpty) |> flatten;
 
-  module SemigroupAny: BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a) = {
+  module SemigroupAny:
+    BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let append = concat;
   };
@@ -86,7 +102,8 @@ module NonEmptyF =
     let apply = apply;
   };
 
-  module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative:
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -95,37 +112,61 @@ module NonEmptyF =
     include Applicative;
     let flat_map = flatMap;
   };
+
+  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
+
+    let fold_left = foldLeft;
+
+    let fold_right = foldRight;
+
+    module Fold_Map = (FoldMapMonoid: BsAbstract.Interface.MONOID) => {
+      module TailFoldMap = TailFoldable.Fold_Map(FoldMapMonoid);
+      let fold_map: ('a => FoldMapMonoid.t, t('a)) => FoldMapMonoid.t =
+        (f, NonEmpty(x, xs)) =>
+          FoldMapMonoid.append(f(x), TailFoldMap.fold_map(f, xs));
+    };
+
+    module Fold_Map_Plus = (FoldMapPlus: BsAbstract.Interface.PLUS) => {
+      module TailFoldMapPlus = TailFoldable.Fold_Map_Plus(FoldMapPlus);
+      let fold_map: ('a => FoldMapPlus.t('a), t('a)) => FoldMapPlus.t('a) =
+        (f, NonEmpty(x, xs)) =>
+          FoldMapPlus.alt(f(x), TailFoldMapPlus.fold_map(f, xs));
+    };
+
+    module Fold_Map_Any = (FoldMapAny: BsAbstract.Interface.MONOID_ANY) => {
+      module SequenceFoldMapAny = TailFoldable.Fold_Map_Any(FoldMapAny);
+      let fold_map: ('a => FoldMapAny.t('a), t('a)) => FoldMapAny.t('a) =
+        (f, NonEmpty(x, xs)) =>
+          FoldMapAny.append(f(x), SequenceFoldMapAny.fold_map(f, xs));
+    };
+  };
   /*
-   module Foldable: FOLDABLE with type t('a) = t('a) = {
+   module type TRAVERSABLE_F = (A: BsAbstract.Interface.APPLICATIVE) => BsAbstract.Interface.TRAVERSABLE with type t('a) = t('a) and type applicative_t('a) = A.t('a);
+
+   module Traversable: TRAVERSABLE_F = (A: BsAbstract.Interface.APPLICATIVE) => {
      type nonrec t('a) = t('a);
-     let fold_left = foldLeft;
-     let fold_right = foldRight;
+     type applicative_t('a) = A.t('a);
+     include (Functor: BsAbstract.Interface.FUNCTOR with type t('a) := t('a));
+     include (Foldable: BsAbstract.Interface.FOLDABLE with type t('a) := t('a));
 
-     module Fold_Map_Plus {
+     let traverse: ('a => applicative_t('a), t('a)) => applicative_t(t('a)) = (f, NonEmpty(x, xs)) => {
+       let headA: A.t('a) = f(x);
+       let tailA = TailTraversable.traverse(f, xs);
      }
-
-     module Fold_Map_Any {
-     }
-
-     module Fold_Map {
-       let fold_map = foldMap;
-     }
-   };
-   */
-  /*
-   module Traversable
+   }
    */
 };
 
 /* NonEmpty.List */
 module List =
-  NonEmptyF(List.Sequence, List.MonoidAny, List.Foldable, List.Applicative);
+  NonEmptyF(List.Sequence, List.MonoidAny, List.Applicative, List.Foldable);
 
 /* NonEmpty.Array */
 module Array =
   NonEmptyF(
     Array.Sequence,
     Array.MonoidAny,
-    Array.Foldable,
     Array.Applicative,
+    Array.Foldable,
   );

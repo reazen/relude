@@ -89,6 +89,11 @@ let eqM =
   OptEq.eq(a, b);
 };
 
+let liftAff: option('a) => Aff.t('a, string) = (option, onDone) => switch (option) {
+  | None => onDone(Error("Option value was None"))
+  | Some(value) => onDone(Ok(value));
+};
+
 module Infix = {
   let (|?) = (opt, default) => getOrElse(default, opt);
   let (<|>) = alt;
@@ -96,3 +101,8 @@ module Infix = {
   let (<*>) = apply;
   let (>>=) = flipFlatMap;
 };
+
+module MonadAff: Interface.MONAD_AFF_WITH_ERROR_STRING {
+  type t('a) = option('a);
+  let liftAff = liftAff
+}

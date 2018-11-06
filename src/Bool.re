@@ -1,4 +1,4 @@
-let fold: (unit => 'a, unit => 'a, bool) => 'a = (onTrue, onFalse, value) => if (value) onTrue() else onFalse();
+let ifElse: (unit => 'a, unit => 'a, bool) => 'a = (onTrue, onFalse, value) => if (value) onTrue() else onFalse();
 
 module Conjunctive = BsAbstract.Bool.Conjunctive;
 

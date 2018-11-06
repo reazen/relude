@@ -41,11 +41,18 @@ module type MONAD_AFF = {
   let liftAff: t('a, 'e) => Aff.t('a, 'e);
 }
 
-/**
-Typeclass module functor for a monad type with a value type parameter that can be lifted into an Aff.
-This functor should be used for types like Option, which don't have an error type parameter.
-*/
-module type MONAD_AFF_F = (Error: BsAbstract.Interface.TYPE) => {
+module type ERROR_TYPE = {
+  type t;
+  let error: 'e;
+};
+
+module type MONAD_AFF_WITH_ERROR = (Error: ERROR_TYPE) => {
   type t('a);
   let liftAff: t('a) => Aff.t('a, Error.t);
 }
+
+module type MONAD_AFF_WITH_ERROR_STRING = {
+  type t('a);
+  let liftAff: t('a) => Aff.t('a, string);
+}
+
