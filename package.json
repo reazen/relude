@@ -21,6 +21,7 @@
     "bs-abstract": "^0.16.0"
   },
   "jest": {
+    "verbose": true,
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/testUtils/"

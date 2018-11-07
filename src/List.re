@@ -164,7 +164,7 @@ let intersperse: ('a, list('a)) => list('a) =
     };
 
 let replicate: (int, list('a)) => list('a) =
-  (i, xs) => foldLeft((acc, _i) => concat(acc, xs), [], Int.range(0, i));
+  (i, xs) => foldLeft((acc, _i) => concat(acc, xs), [], Int.rangeAsList(0, i));
 
 let zip: (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 
@@ -172,7 +172,7 @@ let zipWith: (('a, 'b) => 'c, list('a), list('b)) => list('c) =
   (f, xs, ys) => Belt.List.zipBy(xs, ys, f);
 
 let zipWithIndex: list('a) => list(('a, int)) =
-  xs => zip(xs, Int.range(0, length(xs)));
+  xs => zip(xs, Int.rangeAsList(0, length(xs)));
 
 let unzip: list(('a, 'b)) => (list('a), list('b)) = Belt.List.unzip;
 
