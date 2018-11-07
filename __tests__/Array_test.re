@@ -2,10 +2,9 @@ open Jest;
 open Expect;
 
 describe("Array", () => {
-  test("length empty array", () => {
-    Js.Console.log("Array");
+  test("length empty array", () =>
     expect(Array.length([||])) |> toEqual(0)
-  });
+  );
 
   test("length non-empty array", () =>
     expect(Array.length([|1, 2, 3|])) |> toEqual(3)
@@ -464,7 +463,8 @@ describe("Array", () => {
   );
 
   test("flatten", () =>
-    expect(Array.flatten([|[|1, 2, 3|], [|4, 5|]|])) |> toEqual([|1, 2, 3, 4, 5|])
+    expect(Array.flatten([|[|1, 2, 3|], [|4, 5|]|]))
+    |> toEqual([|1, 2, 3, 4, 5|])
   );
 
   test("fromList", () =>
@@ -488,7 +488,8 @@ describe("Array", () => {
   );
 
   test("eqM returns true if array items are equal", () =>
-    expect(Array.eqM((module Int.Eq), [|1, 2, 3|], [|1, 2, 3|])) |> toBe(true)
+    expect(Array.eqM((module Int.Eq), [|1, 2, 3|], [|1, 2, 3|]))
+    |> toBe(true)
   );
 
   test("eqM returns false if array items are not equal", () =>
@@ -503,7 +504,6 @@ describe("Array", () => {
   test("show", () =>
     expect(Array.show(string_of_int, [|1, 2, 3|])) |> toEqual("[1, 2, 3]")
   );
-
   /*
    test("void", () =>
      expect(Array.void([1, 2, 3])) |> toEqual([(), (), ()])
