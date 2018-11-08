@@ -30,7 +30,21 @@ exception, the exception will not be caught here.
  */
 let run: t('a) => 'a = eff => eff();
 
+/*
+ Lifts a value into the Eff monad.  Note this isn't lazy, so the given value will be evaluated prior to being wrapped in Eff.
+ */
 let pure: 'a => t('a) = (a, ()) => a;
+
+let fromThunk: (_ => 'a) => t('a) = Function.identity;
+
+/*
+Attempts to run an Eff.t('a) and catches any JS exception thrown by the effect and lifts into into Eff.t(Belt.Result.t('a, Js.Exn.t))
+*/
+let attemptJS: t('a) => t(Belt.Result.t('a, Js.Exn.t)) =
+  (effA, ()) =>
+    try (Belt.Result.Ok(effA |> run)) {
+    | Js.Exn.Error(e) => Belt.Result.Error(e)
+    };
 
 let map: ('a => 'b, t('a)) => t('b) = (f, effA, ()) => f(effA());
 

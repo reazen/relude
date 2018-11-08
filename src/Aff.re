@@ -38,6 +38,22 @@ let run: t(unit, 'e) => unit = onDone => onDone(_ => Eff.pure(), ());
 
 let pure: 'a => t('a, 'e) = (a, onDone) => onDone(Ok(a));
 
+let ok: 'a => t('a, 'e) = pure;
+
+let error: 'e => t('a, 'e) = (e, onDone) => onDone(Error(e));
+
+let fromOption: ('e, option('a)) => t('a, 'e) =
+  (e, opt) => opt |> Option.fold(error(e), ok);
+
+let fromResult: Belt.Result.t('a, 'e) => t('a, 'e) =
+  r => r |> Result.fold(ok, error);
+
+let fromEff: Eff.t('a) => t('a, 'e) =
+  (eff, onDone) => onDone(Ok(eff |> Eff.run));
+
+let fromEffAttemptJS: Eff.t(Belt.Result.t('a, Js.Exn.t)) => t('a, Js.Exn.t) =
+  (eff, onDone) => onDone(eff |> Eff.run);
+
 let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, onDoneA, onDoneB) =>
     onDoneA(resultA =>

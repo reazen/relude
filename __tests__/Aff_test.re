@@ -38,6 +38,7 @@ describe("Aff", () => {
     Fs.Aff.writeFile(testFilePath, "Aff test")
     |> Aff.mapError(e => JsExn(e))  /* Fs methods have error type Js.Exn.t, but we want to work in our affTestError type, so we need to wrap the Js.Exn.t */
     >>= (_ => Fs.Aff.readFile(testFilePath) |> Aff.mapError(e => JsExn(e)))
+    >>= (content => Strings.toNonWhitespace(content) |> Aff.fromOption(ErrorMessage("Failed to get non-empty file content")))
     >>= (content => Aff.pure(expect(content) |> toEqual("Aff test")))
     >>= (
       assertion => {

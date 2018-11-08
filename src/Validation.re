@@ -64,9 +64,6 @@ let toResult: t('a, 'b) => Belt.Result.t('a, 'b) =
     | VError(a) => Error(a)
     };
 
-let liftAff: t('a, 'e) => Aff.t('a, 'e) =
-  (validation, onDone, ()) => onDone(validation |> toResult, ());
-
 /* Modules */
 
 module type FUNCTOR_F =
@@ -118,8 +115,3 @@ module Applicative: APPLICATIVE_F =
     include Apply(Errors, Error);
     let pure = pure;
   };
-
-module MonadAff: Interface.MONAD_AFF with type t('a, 'e) = t('a, 'e) = {
-  type nonrec t('a, 'e) = t('a, 'e);
-  let liftAff = liftAff;
-};

@@ -116,16 +116,3 @@ let toValidationNel:
   | Belt.Result.Ok(value) => Validation.VOk(value)
   | Belt.Result.Error(error) =>
     Validation.VError(NonEmpty.List.pure(error));
-
-let liftAff: Belt.Result.t('a, 'e) => Aff.t('a, 'e) =
-  (result, onDone, ()) =>
-    switch (result) {
-    | Ok(_) as okA => onDone(okA, ())
-    | Error(_) as err => onDone(err, ())
-    };
-
-module MonadAff:
-  Interface.MONAD_AFF with type t('a, 'e) = Belt.Result.t('a, 'e) = {
-  type t('a, 'e) = Belt.Result.t('a, 'e);
-  let liftAff = liftAff;
-};

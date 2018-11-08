@@ -32,27 +32,3 @@ module type ISO_ARRAY = {
   let fromArray: array('a) => t('a);
   let toArray: t('a) => array('a);
 };
-
-/**
-Typeclass module for a monad type with value and error type parameters that can be lifted into an Aff.
-*/
-module type MONAD_AFF = {
-  type t('a, 'e);
-  let liftAff: t('a, 'e) => Aff.t('a, 'e);
-}
-
-module type ERROR_TYPE = {
-  type t;
-  let error: 'e;
-};
-
-module type MONAD_AFF_WITH_ERROR = (Error: ERROR_TYPE) => {
-  type t('a);
-  let liftAff: t('a) => Aff.t('a, Error.t);
-}
-
-module type MONAD_AFF_WITH_ERROR_STRING = {
-  type t('a);
-  let liftAff: t('a) => Aff.t('a, string);
-}
-
