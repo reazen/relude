@@ -1,0 +1,270 @@
+
+    
+<!doctype html>
+<meta charset=utf8>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel=stylesheet href='../styles.css'>
+<script defer src='../script.js'></script>
+<title>Eff</title>
+<body>
+<script>window.relativeToRoot=".."</script>
+<script defer src="../block-script.js"></script>
+<div id='error-message'>
+  ⚠️ Oops! This page doesn't appear to define a <span>type</span> called <code>_</code>.
+</div>
+
+    <script>window.shouldCheckHashes=true</script>
+    <div class='container'>
+    
+    <div class='sidebar-wrapper'>
+    <div class='sidebar-expander'>Show navigation</div>
+    <div class='sidebar'>
+      <a href="../search.html" style="display: block; padding: 0 8px;">Search</a>
+      
+      <div class='docs-listing'><a href="../index.html">Home</a></div>
+      <div class='toc-header'>Page Contents</div>
+      <div class='table-of-contents'>
+      <a href="#Eff" class='level-1 header'>Eff</a>
+<a href="#type-t" class='level-2 type'>t</a>
+<a href="#value-run" class='level-2 value'>run</a>
+<a href="#value-pure" class='level-2 value'>pure</a>
+<a href="#value-fromThunk" class='level-2 value'>fromThunk</a>
+<a href="#value-attemptJS" class='level-2 value'>attemptJS</a>
+<a href="#value-map" class='level-2 value'>map</a>
+<a href="#value-apply" class='level-2 value'>apply</a>
+<a href="#value-flatMap" class='level-2 value'>flatMap</a>
+<a href="#module-Functor" class='level-2 module'>Functor</a>
+<a href="#type-Functor.t" class='level-3 type'>t</a>
+<a href="#value-Functor.map" class='level-3 value'>map</a>
+<a href="#module-Apply" class='level-2 module'>Apply</a>
+<a href="#type-Apply.t" class='level-3 type'>t</a>
+<a href="#value-Apply.map" class='level-3 value'>map</a>
+<a href="#value-Apply.apply" class='level-3 value'>apply</a>
+<a href="#module-Applicative" class='level-2 module'>Applicative</a>
+<a href="#type-Applicative.t" class='level-3 type'>t</a>
+<a href="#value-Applicative.map" class='level-3 value'>map</a>
+<a href="#value-Applicative.apply" class='level-3 value'>apply</a>
+<a href="#value-Applicative.pure" class='level-3 value'>pure</a>
+<a href="#module-Monad" class='level-2 module'>Monad</a>
+<a href="#type-Monad.t" class='level-3 type'>t</a>
+<a href="#value-Monad.map" class='level-3 value'>map</a>
+<a href="#value-Monad.apply" class='level-3 value'>apply</a>
+<a href="#value-Monad.pure" class='level-3 value'>pure</a>
+<a href="#value-Monad.flat_map" class='level-3 value'>flat_map</a>
+<a href="#module-Infix" class='level-2 module'>Infix</a>
+<a href="#value-Infix.<$>" class='level-3 value'><$></a>
+<a href="#value-Infix.<#>" class='level-3 value'><#></a>
+<a href="#value-Infix.<*>" class='level-3 value'><*></a>
+<a href="#value-Infix.>>=" class='level-3 value'>>>=</a>
+<a href="#value-Infix.=<<" class='level-3 value'>=<<</a>
+<a href="#value-Infix.>=>" class='level-3 value'>>=></a>
+<a href="#value-Infix.<=<" class='level-3 value'><=<</a>
+      </div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Aff.html">Aff</a>
+<a href="Array.html">Array</a>
+<a href="AsyncData.html">AsyncData</a>
+<a href="Bool.html">Bool</a>
+<a href="Demo.html">Demo</a>
+<a href="Eff.html">Eff</a>
+<a href="Float.html">Float</a>
+<a href="Function.html">Function</a>
+<a href="Int.html">Int</a>
+<a href="Interface.html">Interface</a>
+<a href="List.html">List</a>
+<a href="ListF.html">ListF</a>
+<a href="MonadAff.html">MonadAff</a>
+<a href="MonadEff.html">MonadEff</a>
+<a href="NonEmpty.html">NonEmpty</a>
+<a href="Option.html">Option</a>
+<a href="Ordering.html">Ordering</a>
+<a href="Result.html">Result</a>
+<a href="Strings.html">Strings</a>
+<a href="Validation.html">Validation</a>
+<a href="Aff.html">Aff</a>
+<a href="Array.html">Array</a>
+<a href="AsyncData.html">AsyncData</a>
+<a href="Bool.html">Bool</a>
+<a href="Demo.html">Demo</a>
+<a href="Eff.html">Eff</a>
+<a href="Float.html">Float</a>
+<a href="Function.html">Function</a>
+<a href="Int.html">Int</a>
+<a href="Interface.html">Interface</a>
+<a href="List.html">List</a>
+<a href="ListF.html">ListF</a>
+<a href="MonadAff.html">MonadAff</a>
+<a href="MonadEff.html">MonadEff</a>
+<a href="NonEmpty.html">NonEmpty</a>
+<a href="Option.html">Option</a>
+<a href="Ordering.html">Ordering</a>
+<a href="Result.html">Result</a>
+<a href="Strings.html">Strings</a>
+<a href="Validation.html">Validation</a></div>
+    </div>
+    </div>
+  
+    <div class='main'>
+    
+    <a href="#Eff" id="Eff"><h1>Eff</h1></a>
+
+<p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a) = unit => 'a</h4>
+
+<div class='body '><p>Eff is a pure, lazy, synchronous effect monad that allows for chaining of
+synchronous effectful functions that are not expected to fail.</p>
+<p>It&#39;s basically just a thunk or a lazy function that produces a value.
+Laziness is the key to achieving referential transparency and delaying side
+effects until the monadic chain is run by calling the effect with <code>myEff()</code>
+or equivalently <code>myEff |&gt; Eff.run</code></p>
+<p>This is inspired by bs-effects <code>Effect</code> and John De Goes&#39; basic synchronous
+IO monad described here: http://degoes.net/articles/only-one-io</p>
+<p>Eff should be similar in spirit to the Eff type of purescript (minus the
+effect row) for encoding synchronous effects with no accomodation for errors.</p>
+<p>console.log is a good example of a function that can be wrapped in Eff - it
+is purely synchronous and is not likely to ever fail with an exception.
+Certain DOM functions might also work well with Eff - the key is that Eff
+cannot deal with errors nor exceptions.</p>
+<p>If your action can fail, you should use Aff instead.</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-run" id="value-run">run</a>: <a href="#type-t">t</a>('a) => 'a</h4>
+
+<div class='body '><p>Unsafely runs the effect or chain of effects. For Eff, this is the same as
+just calling the effect as a function. If any of the thunks throw an
+exception, the exception will not be caught here.</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromThunk" id="value-fromThunk">fromThunk</a>: unit => 'a => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-attemptJS" id="value-attemptJS">attemptJS</a>: <a href="#type-t">t</a>('a) => <a href="#type-t">t</a>(Belt.Result.t('a, Js.Exn.t))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: ('a => 'b, <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (<a href="#type-t">t</a>('a => 'b), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: (<a href="#type-t">t</a>('a), 'a => <a href="#type-t">t</a>('b)) => <a href="#type-t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Functor" id="module-Functor">Functor</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Functor.t" id="type-Functor.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functor.map" id="value-Functor.map">map</a>: ('a => 'a, <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Apply" id="module-Apply">Apply</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include Functor</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Apply.t" id="type-Apply.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.map" id="value-Apply.map">map</a>: ('a => 'b, <a href="#type-Apply.t">t</a>('a)) => <a href="#type-Apply.t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.apply" id="value-Apply.apply">apply</a>: (<a href="#type-t">t</a>('a => 'a), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include Apply</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Applicative.t" id="type-Applicative.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.map" id="value-Applicative.map">map</a>: ('a => 'b, <a href="#type-Applicative.t">t</a>('a)) => <a href="#type-Applicative.t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.apply" id="value-Applicative.apply">apply</a>: (<a href="#type-Applicative.t">t</a>('a => 'b), <a href="#type-Applicative.t">t</a>('a)) => <a href="#type-Applicative.t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.pure" id="value-Applicative.pure">pure</a>: 'a => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monad" id="module-Monad">Monad</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include Applicative</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Monad.t" id="type-Monad.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.map" id="value-Monad.map">map</a>: ('a => 'b, <a href="#type-Monad.t">t</a>('a)) => <a href="#type-Monad.t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.apply" id="value-Monad.apply">apply</a>: (<a href="#type-Monad.t">t</a>('a => 'b), <a href="#type-Monad.t">t</a>('a)) => <a href="#type-Monad.t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.pure" id="value-Monad.pure">pure</a>: 'a => <a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.flat_map" id="value-Monad.flat_map">flat_map</a>: (<a href="#type-t">t</a>('a), 'a => <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<$>" id="value-Infix.<$>"><$></a>: ('a => 'a, <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<#>" id="value-Infix.<#>"><#></a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), 'a => 'a) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<*>" id="value-Infix.<*>"><*></a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a => 'a), <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>>=" id="value-Infix.>>=">>>=</a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), 'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.=<<" id="value-Infix.=<<">=<<</a>: ('a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>=>" id="value-Infix.>=>">>=></a>: (
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a
+) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<=<" id="value-Infix.<=<"><=<</a>: (
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a
+) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+</div></div>
+
+    </div>
+    <div class='right-blank'></div>
+    </div>
+  

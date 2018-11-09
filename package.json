@@ -1,11 +1,17 @@
 {
   "name": "relude",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reazen/relude.git"
+  },
   "scripts": {
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
+    "cleanbuild": "npm run clean && npm run build",
     "test": "npm run build && jest",
     "cleantest": "npm run clean && npm run test",
+    "docs": "npm run cleanbuild && rm -rf docs && redoc --debug",
     "start": "bsb -make-world -w"
   },
   "keywords": [
@@ -15,7 +21,8 @@
   "license": "MIT",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.5",
-    "bs-platform": "^4.0.6"
+    "bs-platform": "^4.0.6",
+    "redoc": "jaredly/redoc#fe46bc7"
   },
   "dependencies": {
     "bs-abstract": "^0.16.0"

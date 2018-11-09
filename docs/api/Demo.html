@@ -1,0 +1,289 @@
+
+    
+<!doctype html>
+<meta charset=utf8>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel=stylesheet href='../styles.css'>
+<script defer src='../script.js'></script>
+<title>Demo</title>
+<body>
+<script>window.relativeToRoot=".."</script>
+<script defer src="../block-script.js"></script>
+<div id='error-message'>
+  ⚠️ Oops! This page doesn't appear to define a <span>type</span> called <code>_</code>.
+</div>
+
+    <script>window.shouldCheckHashes=true</script>
+    <div class='container'>
+    
+    <div class='sidebar-wrapper'>
+    <div class='sidebar-expander'>Show navigation</div>
+    <div class='sidebar'>
+      <a href="../search.html" style="display: block; padding: 0 8px;">Search</a>
+      
+      <div class='docs-listing'><a href="../index.html">Home</a></div>
+      <div class='toc-header'>Page Contents</div>
+      <div class='table-of-contents'>
+      <a href="#Demo" class='level-1 header'>Demo</a>
+<a href="#type-ordering" class='level-2 type'>ordering</a>
+<a href="#module-Ordering" class='level-2 module'>Ordering</a>
+<a href="#value-Ordering.lessThan" class='level-3 value'>lessThan</a>
+<a href="#value-Ordering.lessThanOrEqual" class='level-3 value'>lessThanOrEqual</a>
+<a href="#value-Ordering.greaterThan" class='level-3 value'>greaterThan</a>
+<a href="#value-Ordering.greaterThanOrEqual" class='level-3 value'>greaterThanOrEqual</a>
+<a href="#module-String" class='level-2 module'>String</a>
+<a href="#module-String.Show" class='level-3 module'>Show</a>
+<a href="#type-String.Show.t" class='level-4 type'>t</a>
+<a href="#value-String.Show.show" class='level-4 value'>show</a>
+<a href="#module-String.Eq" class='level-3 module'>Eq</a>
+<a href="#type-String.Eq.t" class='level-4 type'>t</a>
+<a href="#value-String.Eq.eq" class='level-4 value'>eq</a>
+<a href="#module-String.Ord" class='level-3 module'>Ord</a>
+<a href="#type-String.Ord.t" class='level-4 type'>t</a>
+<a href="#value-String.Ord.eq" class='level-4 value'>eq</a>
+<a href="#value-String.Ord.compare" class='level-4 value'>compare</a>
+<a href="#module-Option" class='level-2 module'>Option</a>
+<a href="#module-Option.Show" class='level-3 module'>Show</a>
+<a href="#type-Option.Show.t" class='level-4 type'>t</a>
+<a href="#value-Option.Show.show" class='level-4 value'>show</a>
+<a href="#module-Option.Eq" class='level-3 module'>Eq</a>
+<a href="#type-Option.Eq.t" class='level-4 type'>t</a>
+<a href="#value-Option.Eq.eq" class='level-4 value'>eq</a>
+<a href="#module-Option.Functor" class='level-3 module'>Functor</a>
+<a href="#type-Option.Functor.t" class='level-4 type'>t</a>
+<a href="#value-Option.Functor.map" class='level-4 value'>map</a>
+<a href="#module-MyPrinter" class='level-2 module'>MyPrinter</a>
+<a href="#value-MyPrinter.print" class='level-3 value'>print</a>
+<a href="#module-OptionStringPrinter" class='level-2 module'>OptionStringPrinter</a>
+<a href="#module-OptionStringPrinter2" class='level-2 module'>OptionStringPrinter2</a>
+<a href="#value-x" class='level-2 value'>x</a>
+<a href="#value-y" class='level-2 value'>y</a>
+<a href="#module-MyModule" class='level-2 module'>MyModule</a>
+<a href="#value-MyModule.f1" class='level-3 value'>f1</a>
+<a href="#value-MyModule.f2" class='level-3 value'>f2</a>
+<a href="#value-myModuleAnon" class='level-2 value'>myModuleAnon</a>
+<a href="#module-MyModuleFromAnon" class='level-2 module'>MyModuleFromAnon</a>
+<a href="#module-MyFunctor" class='level-2 module'>MyFunctor</a>
+<a href="#value-MyFunctor.x" class='level-3 value'>x</a>
+<a href="#module-X" class='level-2 module'>X</a>
+<a href="#module-Y" class='level-2 module'>Y</a>
+<a href="#module-IntShow" class='level-2 module'>IntShow</a>
+<a href="#type-IntShow.t" class='level-3 type'>t</a>
+<a href="#value-IntShow.show" class='level-3 value'>show</a>
+<a href="#module-Logger" class='level-2 module'>Logger</a>
+<a href="#value-Logger.log" class='level-3 value'>log</a>
+<a href="#module-IntLogger" class='level-2 module'>IntLogger</a>
+<a href="#value-log" class='level-2 value'>log</a>
+      </div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Aff.html">Aff</a>
+<a href="Array.html">Array</a>
+<a href="AsyncData.html">AsyncData</a>
+<a href="Bool.html">Bool</a>
+<a href="Demo.html">Demo</a>
+<a href="Eff.html">Eff</a>
+<a href="Float.html">Float</a>
+<a href="Function.html">Function</a>
+<a href="Int.html">Int</a>
+<a href="Interface.html">Interface</a>
+<a href="List.html">List</a>
+<a href="ListF.html">ListF</a>
+<a href="MonadAff.html">MonadAff</a>
+<a href="MonadEff.html">MonadEff</a>
+<a href="NonEmpty.html">NonEmpty</a>
+<a href="Option.html">Option</a>
+<a href="Ordering.html">Ordering</a>
+<a href="Result.html">Result</a>
+<a href="Strings.html">Strings</a>
+<a href="Validation.html">Validation</a>
+<a href="Aff.html">Aff</a>
+<a href="Array.html">Array</a>
+<a href="AsyncData.html">AsyncData</a>
+<a href="Bool.html">Bool</a>
+<a href="Demo.html">Demo</a>
+<a href="Eff.html">Eff</a>
+<a href="Float.html">Float</a>
+<a href="Function.html">Function</a>
+<a href="Int.html">Int</a>
+<a href="Interface.html">Interface</a>
+<a href="List.html">List</a>
+<a href="ListF.html">ListF</a>
+<a href="MonadAff.html">MonadAff</a>
+<a href="MonadEff.html">MonadEff</a>
+<a href="NonEmpty.html">NonEmpty</a>
+<a href="Option.html">Option</a>
+<a href="Ordering.html">Ordering</a>
+<a href="Result.html">Result</a>
+<a href="Strings.html">Strings</a>
+<a href="Validation.html">Validation</a></div>
+    </div>
+    </div>
+  
+    <div class='main'>
+    
+    <a href="#Demo" id="Demo"><h1>Demo</h1></a>
+
+<p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-ordering" id="type-ordering">ordering</a> = [ `greater_than | `less_than | `equal_to ]</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Ordering" id="module-Ordering">Ordering</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Ordering.lessThan" id="value-Ordering.lessThan">lessThan</a>: (O.t, O.t) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Ordering.lessThanOrEqual" id="value-Ordering.lessThanOrEqual">lessThanOrEqual</a>: (O.t, O.t) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Ordering.greaterThan" id="value-Ordering.greaterThan">greaterThan</a>: (O.t, O.t) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Ordering.greaterThanOrEqual" id="value-Ordering.greaterThanOrEqual">greaterThanOrEqual</a>: (O.t, O.t) => bool</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-String" id="module-String">String</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-String.Show" id="module-String.Show">Show</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-String.Show.t" id="type-String.Show.t">t</a> = string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.Show.show" id="value-String.Show.show">show</a>: 'a => 'a</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-String.Eq" id="module-String.Eq">Eq</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-String.Eq.t" id="type-String.Eq.t">t</a> = string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.Eq.eq" id="value-String.Eq.eq">eq</a>: ('a, 'a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-String.Ord" id="module-String.Ord">Ord</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include Eq</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-String.Ord.t" id="type-String.Ord.t">t</a> = <a href="#module-String.Eq">Eq</a>.<a href="#type-String.Eq.t">t</a></h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.Ord.eq" id="value-String.Ord.eq">eq</a>: (<a href="#type-String.Ord.t">t</a>, <a href="#type-String.Ord.t">t</a>) => bool</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.Ord.compare" id="value-String.Ord.compare">compare</a>: (
+  'a,
+  'a
+) => [&gt; `less_than | `greater_than | `equal_to ]</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Option" id="module-Option">Option</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Option.Show" id="module-Option.Show">Show</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Option.Show.t" id="type-Option.Show.t">t</a> = option(S.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Option.Show.show" id="value-Option.Show.show">show</a>: option(S.t) => string</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Option.Eq" id="module-Option.Eq">Eq</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Option.Eq.t" id="type-Option.Eq.t">t</a> = option(E.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Option.Eq.eq" id="value-Option.Eq.eq">eq</a>: (option(E.t), option(E.t)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Option.Functor" id="module-Option.Functor">Functor</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Option.Functor.t" id="type-Option.Functor.t">t</a>('a) = option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Option.Functor.map" id="value-Option.Functor.map">map</a>: ('a => 'a, option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-MyPrinter" id="module-MyPrinter">MyPrinter</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-MyPrinter.print" id="value-MyPrinter.print">print</a>: S.t => string</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-OptionStringPrinter" id="module-OptionStringPrinter">OptionStringPrinter</a> : <a href="#module-MyPrinter">MyPrinter</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-OptionStringPrinter2" id="module-OptionStringPrinter2">OptionStringPrinter2</a> : <a href="#module-MyPrinter">MyPrinter</a></h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-x" id="value-x">x</a>: string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-y" id="value-y">y</a>: string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-MyModule" id="module-MyModule">MyModule</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-MyModule.f1" id="value-MyModule.f1">f1</a>: 'a => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MyModule.f2" id="value-MyModule.f2">f2</a>: 'a => string</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-myModuleAnon" id="value-myModuleAnon">myModuleAnon</a>: (module MyModuleType)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-MyModuleFromAnon" id="module-MyModuleFromAnon">MyModuleFromAnon</a> : <a href="#module-MyModuleType">MyModuleType</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-MyFunctor" id="module-MyFunctor">MyFunctor</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-MyFunctor.x" id="value-MyFunctor.x">x</a>: bool</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-X" id="module-X">X</a> : <a href="#module-MyFunctor">MyFunctor</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Y" id="module-Y">Y</a> : <a href="#module-MyFunctor">MyFunctor</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-IntShow" id="module-IntShow">IntShow</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-IntShow.t" id="type-IntShow.t">t</a> = int</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-IntShow.show" id="value-IntShow.show">show</a>: int => string</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Logger" id="module-Logger">Logger</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Logger.log" id="value-Logger.log">log</a>: S.t => unit</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-IntLogger" id="module-IntLogger">IntLogger</a> : <a href="#module-Logger">Logger</a></h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-log" id="value-log">log</a>: ((module ShowType with type t = 'f), 'a) => unit</h4>
+
+<div class='body body-empty'></div></div>
+
+    </div>
+    <div class='right-blank'></div>
+    </div>
+  

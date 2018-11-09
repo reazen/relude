@@ -1,0 +1,249 @@
+
+    
+<!doctype html>
+<meta charset=utf8>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel=stylesheet href='../styles.css'>
+<script defer src='../script.js'></script>
+<title>Option</title>
+<body>
+<script>window.relativeToRoot=".."</script>
+<script defer src="../block-script.js"></script>
+<div id='error-message'>
+  ⚠️ Oops! This page doesn't appear to define a <span>type</span> called <code>_</code>.
+</div>
+
+    <script>window.shouldCheckHashes=true</script>
+    <div class='container'>
+    
+    <div class='sidebar-wrapper'>
+    <div class='sidebar-expander'>Show navigation</div>
+    <div class='sidebar'>
+      <a href="../search.html" style="display: block; padding: 0 8px;">Search</a>
+      
+      <div class='docs-listing'><a href="../index.html">Home</a></div>
+      <div class='toc-header'>Page Contents</div>
+      <div class='table-of-contents'>
+      <a href="#Option" class='level-1 header'>Option</a>
+<a href="#value-fold" class='level-2 value'>fold</a>
+<a href="#value-getOrElse" class='level-2 value'>getOrElse</a>
+<a href="#value-toList" class='level-2 value'>toList</a>
+<a href="#value-toArray" class='level-2 value'>toArray</a>
+<a href="#value-isSome" class='level-2 value'>isSome</a>
+<a href="#value-isNone" class='level-2 value'>isNone</a>
+<a href="#value-map" class='level-2 value'>map</a>
+<a href="#value-apply" class='level-2 value'>apply</a>
+<a href="#value-pure" class='level-2 value'>pure</a>
+<a href="#value-flatMap" class='level-2 value'>flatMap</a>
+<a href="#value-flipFlatMap" class='level-2 value'>flipFlatMap</a>
+<a href="#value-foldLeft" class='level-2 value'>foldLeft</a>
+<a href="#value-alt" class='level-2 value'>alt</a>
+<a href="#value-empty" class='level-2 value'>empty</a>
+<a href="#value-filter" class='level-2 value'>filter</a>
+<a href="#value-flatten" class='level-2 value'>flatten</a>
+<a href="#module-OptApply" class='level-2 module'>OptApply</a>
+<a href="#value-map2" class='level-2 value'>map2</a>
+<a href="#value-map3" class='level-2 value'>map3</a>
+<a href="#value-map4" class='level-2 value'>map4</a>
+<a href="#value-map5" class='level-2 value'>map5</a>
+<a href="#value-eq" class='level-2 value'>eq</a>
+<a href="#value-eqM" class='level-2 value'>eqM</a>
+<a href="#module-Infix" class='level-2 module'>Infix</a>
+<a href="#value-Infix.|?" class='level-3 value'>|?</a>
+<a href="#value-Infix.<|>" class='level-3 value'><|></a>
+<a href="#value-Infix.<$>" class='level-3 value'><$></a>
+<a href="#value-Infix.<*>" class='level-3 value'><*></a>
+<a href="#value-Infix.>>=" class='level-3 value'>>>=</a>
+      </div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Aff.html">Aff</a>
+<a href="Array.html">Array</a>
+<a href="AsyncData.html">AsyncData</a>
+<a href="Bool.html">Bool</a>
+<a href="Demo.html">Demo</a>
+<a href="Eff.html">Eff</a>
+<a href="Float.html">Float</a>
+<a href="Function.html">Function</a>
+<a href="Int.html">Int</a>
+<a href="Interface.html">Interface</a>
+<a href="List.html">List</a>
+<a href="ListF.html">ListF</a>
+<a href="MonadAff.html">MonadAff</a>
+<a href="MonadEff.html">MonadEff</a>
+<a href="NonEmpty.html">NonEmpty</a>
+<a href="Option.html">Option</a>
+<a href="Ordering.html">Ordering</a>
+<a href="Result.html">Result</a>
+<a href="Strings.html">Strings</a>
+<a href="Validation.html">Validation</a>
+<a href="Aff.html">Aff</a>
+<a href="Array.html">Array</a>
+<a href="AsyncData.html">AsyncData</a>
+<a href="Bool.html">Bool</a>
+<a href="Demo.html">Demo</a>
+<a href="Eff.html">Eff</a>
+<a href="Float.html">Float</a>
+<a href="Function.html">Function</a>
+<a href="Int.html">Int</a>
+<a href="Interface.html">Interface</a>
+<a href="List.html">List</a>
+<a href="ListF.html">ListF</a>
+<a href="MonadAff.html">MonadAff</a>
+<a href="MonadEff.html">MonadEff</a>
+<a href="NonEmpty.html">NonEmpty</a>
+<a href="Option.html">Option</a>
+<a href="Ordering.html">Ordering</a>
+<a href="Result.html">Result</a>
+<a href="Strings.html">Strings</a>
+<a href="Validation.html">Validation</a></div>
+    </div>
+    </div>
+  
+    <div class='main'>
+    
+    <a href="#Option" id="Option"><h1>Option</h1></a>
+
+<p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fold" id="value-fold">fold</a>: ('b, 'a => 'b, option('a)) => 'b</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getOrElse" id="value-getOrElse">getOrElse</a>: ('a, option('a)) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-toList" id="value-toList">toList</a>: option('a) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-toArray" id="value-toArray">toArray</a>: option('a) => array('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isSome" id="value-isSome">isSome</a>: option('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isNone" id="value-isNone">isNone</a>: option('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: ('a => 'b, option('a)) => option('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (option('a => 'b), option('a)) => option('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: ('a => option('b), option('a)) => option('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-flipFlatMap" id="value-flipFlatMap">flipFlatMap</a>: (option('a), 'a => option('b)) => option(
+  'b
+)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-foldLeft" id="value-foldLeft">foldLeft</a>: (('b, 'a) => 'b, 'b, option('a)) => 'b</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-alt" id="value-alt">alt</a>: (option('a), option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-empty" id="value-empty">empty</a>: option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-filter" id="value-filter">filter</a>: ('a => bool, option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatten" id="value-flatten">flatten</a>: option(option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-OptApply" id="module-OptApply">OptApply</a> : BsAbstract.Functions.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (
+  ('a, 'b) => 'c,
+  option('a),
+  option('b)
+) => option('c)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: (
+  ('a, 'b, 'c) => 'd,
+  option('a),
+  option('b),
+  option('c)
+) => option('d)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map4" id="value-map4">map4</a>: (
+  ('a, 'b, 'c, 'd) => 'e,
+  option('a),
+  option('b),
+  option('c),
+  option('d)
+) => option('e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map5" id="value-map5">map5</a>: (
+  ('a, 'b, 'c, 'd, 'e) => 'f,
+  option('a),
+  option('b),
+  option('c),
+  option('d),
+  option('e)
+) => option('f)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (('a, 'a) => bool, option('a), option('a)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-eqM" id="value-eqM">eqM</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'h),
+  option('a),
+  option('a)
+) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.|?" id="value-Infix.|?">|?</a>: (option('a), 'a) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<|>" id="value-Infix.<|>"><|></a>: (option('a), option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<$>" id="value-Infix.<$>"><$></a>: ('a => 'a, option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<*>" id="value-Infix.<*>"><*></a>: (option('a => 'a), option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>>=" id="value-Infix.>>=">>>=</a>: (option('a), 'a => option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+    </div>
+    <div class='right-blank'></div>
+    </div>
+  

@@ -138,16 +138,12 @@ module Monad: MONAD_F =
     let flat_map = flatMap;
   };
 
-/*
- Infix operators for any arbitrary (given) error type
- This is needed because our error type is left open as a type parameter.
- */
 module Infix = (Error: BsAbstract.Interface.TYPE) => {
-  include BsAbstract.Infix.Monad((Monad(Error)));
+  module Monad = Monad(Error);
+  include BsAbstract.Infix.Monad(Monad);
 };
 
-/* Infix operators for when your error type is Js.Exn.t */
-module InfixJsExn =
-  Infix({
-    type t = Js.Exn.t;
-  });
+module InfixJsExn {
+  module JsExnType: BsAbstract.Interface.TYPE { type t = Js.Exn.t };
+  include Infix(JsExnType);
+}
