@@ -21,7 +21,7 @@ The library is not published to npm yet, but you can install it via a GitHub ref
 
 # Documentation
 
-* TODO
+* [API documentation](https://reazen.github.io/relude)
 
 # Development scripts
 
