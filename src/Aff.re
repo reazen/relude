@@ -64,11 +64,11 @@ let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
     );
 
 let mapError: ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
-  (f, onDone1, onDone2) =>
-    onDone1(result1 =>
-      switch (result1) {
-      | Ok(_) as okA => onDone2(okA)
-      | Error(e) => onDone2(Error(f(e)))
+  (f, onDoneA, onDoneB) =>
+    onDoneA(resultA =>
+      switch (resultA) {
+      | Ok(_) as okA => onDoneB(okA)
+      | Error(e) => onDoneB(Error(f(e)))
       }
     );
 
