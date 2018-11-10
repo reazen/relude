@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel=stylesheet href='../styles.css'>
 <script defer src='../script.js'></script>
-<title>Aff</title>
+<title>Relude_Aff</title>
 <body>
 <script>window.relativeToRoot=".."</script>
 <script defer src="../block-script.js"></script>
@@ -24,7 +24,10 @@
       <div class='docs-listing'><a href="../index.html">Home</a></div>
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
-      <a href="#Aff" class='level-1 header'>Aff</a>
+      <a href="#Relude_Aff" class='level-1 header'>Relude_Aff</a>
+<a href="#module-Eff" class='level-2 module'>Eff</a>
+<a href="#module-Option" class='level-2 module'>Option</a>
+<a href="#module-Result" class='level-2 module'>Result</a>
 <a href="#type-t" class='level-2 type'>t</a>
 <a href="#value-run" class='level-2 value'>run</a>
 <a href="#value-pure" class='level-2 value'>pure</a>
@@ -83,57 +86,63 @@
 <a href="#value-InfixJsExn.>=>" class='level-3 value'>>=></a>
 <a href="#value-InfixJsExn.<=<" class='level-3 value'><=<</a>
       </div>
-      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Aff.html">Aff</a>
-<a href="Array.html">Array</a>
-<a href="AsyncData.html">AsyncData</a>
-<a href="Bool.html">Bool</a>
-<a href="Demo.html">Demo</a>
-<a href="Eff.html">Eff</a>
-<a href="Float.html">Float</a>
-<a href="Function.html">Function</a>
-<a href="Int.html">Int</a>
-<a href="Interface.html">Interface</a>
-<a href="List.html">List</a>
-<a href="ListF.html">ListF</a>
-<a href="MonadAff.html">MonadAff</a>
-<a href="MonadEff.html">MonadEff</a>
-<a href="NonEmpty.html">NonEmpty</a>
-<a href="Option.html">Option</a>
-<a href="Ordering.html">Ordering</a>
-<a href="Result.html">Result</a>
-<a href="Strings.html">Strings</a>
-<a href="Validation.html">Validation</a>
-<a href="Aff.html">Aff</a>
-<a href="Array.html">Array</a>
-<a href="AsyncData.html">AsyncData</a>
-<a href="Bool.html">Bool</a>
-<a href="Demo.html">Demo</a>
-<a href="Eff.html">Eff</a>
-<a href="Float.html">Float</a>
-<a href="Function.html">Function</a>
-<a href="Int.html">Int</a>
-<a href="Interface.html">Interface</a>
-<a href="List.html">List</a>
-<a href="ListF.html">ListF</a>
-<a href="MonadAff.html">MonadAff</a>
-<a href="MonadEff.html">MonadEff</a>
-<a href="NonEmpty.html">NonEmpty</a>
-<a href="Option.html">Option</a>
-<a href="Ordering.html">Ordering</a>
-<a href="Result.html">Result</a>
-<a href="Strings.html">Strings</a>
-<a href="Validation.html">Validation</a></div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
+<a href="Relude_Aff.html">Relude_Aff</a>
+<a href="Relude_Array.html">Relude_Array</a>
+<a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_Bool.html">Relude_Bool</a>
+<a href="Relude_Eff.html">Relude_Eff</a>
+<a href="Relude_Float.html">Relude_Float</a>
+<a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_Int.html">Relude_Int</a>
+<a href="Relude_Interface.html">Relude_Interface</a>
+<a href="Relude_List.html">Relude_List</a>
+<a href="Relude_ListF.html">Relude_ListF</a>
+<a href="Relude_MonadAff.html">Relude_MonadAff</a>
+<a href="Relude_MonadEff.html">Relude_MonadEff</a>
+<a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
+<a href="Relude_Option.html">Relude_Option</a>
+<a href="Relude_Ordering.html">Relude_Ordering</a>
+<a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_String.html">Relude_String</a>
+<a href="Relude_Validation.html">Relude_Validation</a>
+<a href="Relude.html">Relude</a>
+<a href="Relude_Aff.html">Relude_Aff</a>
+<a href="Relude_Array.html">Relude_Array</a>
+<a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_Bool.html">Relude_Bool</a>
+<a href="Relude_Eff.html">Relude_Eff</a>
+<a href="Relude_Float.html">Relude_Float</a>
+<a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_Int.html">Relude_Int</a>
+<a href="Relude_Interface.html">Relude_Interface</a>
+<a href="Relude_List.html">Relude_List</a>
+<a href="Relude_ListF.html">Relude_ListF</a>
+<a href="Relude_MonadAff.html">Relude_MonadAff</a>
+<a href="Relude_MonadEff.html">Relude_MonadEff</a>
+<a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
+<a href="Relude_Option.html">Relude_Option</a>
+<a href="Relude_Ordering.html">Relude_Ordering</a>
+<a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_String.html">Relude_String</a>
+<a href="Relude_Validation.html">Relude_Validation</a></div>
     </div>
     </div>
   
     <div class='main'>
     
-    <a href="#Aff" id="Aff"><h1>Aff</h1></a>
+    <a href="#Relude_Aff" id="Relude_Aff"><h1>Relude_Aff</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = Belt.Result.t('a, 'e) => Relude.Eff.t(
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Eff" id="module-Eff">Eff</a> : <a href="Relude_Eff.html">Relude_Eff</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Option" id="module-Option">Option</a> : <a href="Relude_Option.html">Relude_Option</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Result" id="module-Result">Result</a> : <a href="Relude_Result.html">Relude_Result</a></h4></div>
+
+<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = Belt.Result.t('a, 'e) => <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>(
   unit
-) => Relude.Eff.t(unit)</h4>
+) => <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>(unit)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -161,11 +170,11 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-fromEff" id="value-fromEff">fromEff</a>: Relude.Eff.t('a) => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromEff" id="value-fromEff">fromEff</a>: <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>('a) => <a href="#type-t">t</a>('a, 'e)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-fromEffAttemptJS" id="value-fromEffAttemptJS">fromEffAttemptJS</a>: Relude.Eff.t(
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromEffAttemptJS" id="value-fromEffAttemptJS">fromEffAttemptJS</a>: <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>(
   Belt.Result.t('a, Js.Exn.t)
 ) => <a href="#type-t">t</a>('a, Js.Exn.t)</h4>
 
