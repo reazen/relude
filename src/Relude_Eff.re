@@ -1,3 +1,5 @@
+module Function = Relude_Function;
+
 /**
 Eff is a pure, lazy, synchronous effect monad that allows for chaining of
 synchronous effectful functions that are not expected to fail.

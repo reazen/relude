@@ -1,3 +1,8 @@
+module Function = Relude_Function;
+module Int = Relude_Int;
+module Interface = Relude_Interface;
+module Ordering = Relude_Ordering;
+
 let length: list('a) => int = Belt.List.length;
 
 let isEmpty: list('a) => bool =

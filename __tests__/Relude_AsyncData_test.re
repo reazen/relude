@@ -1,6 +1,8 @@
 open Jest;
 open Expect;
 
+module AsyncData = Relude_AsyncData;
+
 describe("AsyncData", () => {
   test("map2 Idle Idle", () => {
     expect(AsyncData.map2((_, _) => (), Idle, Idle)) |> toEqual(AsyncData.Idle);

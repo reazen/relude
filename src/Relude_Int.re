@@ -1,3 +1,5 @@
+module Ordering = Relude_Ordering;
+
 type ordering = BsAbstract.Interface.ordering;
 
 let rec rangeAsList = (start: int, end_: int): list(int) =>

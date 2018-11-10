@@ -1,4 +1,6 @@
-open Belt.Result;
+module Eff = Relude_Eff;
+module Option = Relude_Option;
+module Result = Relude_Result;
 
 /*
  Aff is an pure, lazy, asynchronous effect monad that should be able to

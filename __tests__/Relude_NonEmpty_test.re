@@ -2,6 +2,8 @@
 open Jest;
 open Expect;
 
+module NonEmpty = Relude_NonEmpty;
+
 describe("NonEmpty.List", () => {
   test("concat with two full NonEmpty.Lists", () => {
     let l1 = NonEmpty.List.make(1, [2, 3]);

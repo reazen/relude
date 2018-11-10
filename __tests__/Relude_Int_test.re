@@ -2,6 +2,8 @@
 open Jest;
 open Expect;
 
+module Int = Relude_Int;
+
 describe("Int", () => {
   test("rangeAsList for valid range", () => {
     expect(Int.rangeAsList(0, 5)) |> toEqual([0, 1, 2, 3, 4]);

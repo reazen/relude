@@ -1,6 +1,9 @@
 open Jest;
 open Expect;
 
+module Int = Relude_Int;
+module Option = Relude_Option;
+
 describe("Option", () => {
   test("fold maps value when option is Some", () =>
     expect(Option.fold("", string_of_int, Some(1))) |> toEqual("1")

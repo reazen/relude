@@ -1,6 +1,9 @@
 open Jest;
 open Expect;
 
+module Array = Relude_Array;
+module Int = Relude_Int;
+
 describe("Array", () => {
   test("length empty array", () =>
     expect(Array.length([||])) |> toEqual(0)

@@ -1,3 +1,5 @@
+module Interface = Relude_Interface;
+
 module NonEmptyF =
        (
          TailSequence: Interface.SEQUENCE,
@@ -160,13 +162,13 @@ module NonEmptyF =
 
 /* NonEmpty.List */
 module List =
-  NonEmptyF(List.Sequence, List.MonoidAny, List.Applicative, List.Foldable);
+  NonEmptyF(Relude_List.Sequence, Relude_List.MonoidAny, Relude_List.Applicative, Relude_List.Foldable);
 
 /* NonEmpty.Array */
 module Array =
   NonEmptyF(
-    Array.Sequence,
-    Array.MonoidAny,
-    Array.Applicative,
-    Array.Foldable,
+    Relude_Array.Sequence,
+    Relude_Array.MonoidAny,
+    Relude_Array.Applicative,
+    Relude_Array.Foldable,
   );

@@ -1,6 +1,8 @@
 open Jest;
 open Expect;
 
+module ListF = Relude_ListF;
+
 describe("ListF", () => {
   test("Option.traverse success", () => {
     expect([1, 2, 3, 4] |> ListF.Option.traverse(a => Some(a))) |> toEqual(Some([1, 2, 3, 4]))
@@ -11,11 +13,11 @@ describe("ListF", () => {
   });
 
   test("Validation.traverse success", () => {
-    expect(ListF.Validation.traverse(a => Ok(a), [1, 2, 3, 4, 5])) |> toEqual(Validation.VOk([1, 2, 3, 4, 5]));
+    expect(ListF.Validation.traverse(a => Ok(a), [1, 2, 3, 4, 5])) |> toEqual(Relude_Validation.VOk([1, 2, 3, 4, 5]));
   });
 
   test("Validation.traverse failure", () => {
     expect(ListF.Validation.traverse(a => Error(string_of_int(a) ++ " is bad"), [1, 2, 3, 4, 5]))
-      |> toEqual(Validation.VError(NonEmpty.List.make("1 is bad", ["2 is bad", "3 is bad", "4 is bad", "5 is bad"])));
+      |> toEqual(Relude_Validation.VError(Relude_NonEmpty.List.make("1 is bad", ["2 is bad", "3 is bad", "4 is bad", "5 is bad"])));
   });
 });

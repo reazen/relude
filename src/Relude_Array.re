@@ -1,3 +1,7 @@
+module Int = Relude_Int;
+module Interface = Relude_Interface;
+module Ordering = Relude_Ordering;
+
 let length: array('a) => int = Belt.Array.length;
 
 let isEmpty: array('a) => bool = arr => length(arr) == 0;

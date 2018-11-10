@@ -2,6 +2,8 @@
 open Jest;
 open Expect;
 
+module Function = Relude_Function;
+
 let (<<) = Function.Infix.(<<);
 let (>>) = Function.Infix.(>>);
 

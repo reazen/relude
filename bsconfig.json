@@ -30,6 +30,6 @@
   "warnings": {
     "error": "+8+11+101"
   },
-  "namespace": true,
+  "namespace": false,
   "refmt": 3
 }

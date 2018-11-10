@@ -1,3 +1,6 @@
+module Aff = Relude_Aff;
+module Function = Relude_Function;
+
 /**
 Typeclass that provides the ability to lift an Aff into another effect monad.
 */

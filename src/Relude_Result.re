@@ -1,3 +1,6 @@
+module NonEmpty = Relude_NonEmpty;
+module Validation = Relude_Validation;
+
 let pure: 'a => Belt.Result.t('a, 'e) = a => Ok(a);
 
 let ok: 'a => Belt.Result.t('a, 'e) = pure;

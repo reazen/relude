@@ -1,6 +1,8 @@
 open Jest;
 open Expect;
 
+module Result = Relude_Result;
+
 describe("Result", () => {
   test("pure", () =>
     expect(Result.pure(1)) |> toEqual(Belt.Result.Ok(1))
