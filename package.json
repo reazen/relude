@@ -21,7 +21,8 @@
   "license": "MIT",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.5",
-    "bs-platform": "^4.0.6"
+    "bs-platform": "^4.0.6",
+    "redoc": "github:jaredly/redoc#fe46bc7"
   },
   "dependencies": {
     "bs-abstract": "^0.16.0"
