@@ -13,7 +13,7 @@ let idle: t('a, 'e) = Idle;
 let loading: t('a, 'e) = Loading;
 let loaded: 'a => t('a, 'e) = a => Loaded(a);
 let refreshing: 'a => t('a, 'e) = a => Refreshing(a);
-let failed: 'e => t('a, 'e) = e => Refreshing(e);
+let failed: 'e => t('a, 'e) = e => Failed(e);
 
 let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, fa) =>
