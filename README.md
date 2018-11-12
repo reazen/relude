@@ -2,6 +2,17 @@
 
 A prelude for `Bucklescript` and `ReasonML` projects
 
+# Warning: WIP
+
+This project is being actively developed, and is subject to major changes
+until we figure out all the conventions for APIs and project organization.
+Also, some of the function implementations are likely not ideal and need
+optimization.
+
+If you have trouble installing dependencies with `npm install`, try removing
+the `redoc` dependency in the package.json. Removing this will make the `npm
+run docs` command non-functional, but this command is not essential.
+
 # Overview
 
 * This goal of `Relude` is to be an alternative, somewhat-opinionated, and FP-inspired prelude for `Bucklescript` and `ReasonML` projects.
@@ -25,15 +36,14 @@ The library is not published to npm yet, but you can install it via a GitHub ref
 
 # Development scripts
 
-| Action                 | Command              |
-| ---------------------- | -------------------- |
-| Clean                  | `npm run clean`      |
-| Build                  | `npm run build`      |
-| Clean & build          | `npm run cleanbuild` |
-| Test                   | `npm run test`       |
-| Clean & test           | `npm run cleantest`  |
-| Gen docs               | `npm run docs`       |
-| Start compiler watcher | `npm run start`      |
+* Clean: `npm run clean`
+* Build: `npm run build`
+* Clean & build: `npm run cleanbuild`
+* Test: `npm run test`
+* Clean & test: `npm run cleantest`
+* Gen docs: `npm run docs`
+  * Note: this currently uses `jaredly/redoc` but this may change
+* Start compiler watcher: `npm run start`
 
 # Editor
 
