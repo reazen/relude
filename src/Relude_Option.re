@@ -69,7 +69,7 @@ let map5:
   option('f) =
   (fn, a, b, c, d, e) => OptApply.lift5(fn, a, b, c, d, e);
 
-let eq: (('a, 'a) => bool, option('a), option('a)) => bool =
+let eqF: (('a, 'a) => bool, option('a), option('a)) => bool =
   (innerEq, a, b) =>
     switch (a, b) {
     | (Some(va), Some(vb)) => innerEq(va, vb)
@@ -77,7 +77,7 @@ let eq: (('a, 'a) => bool, option('a), option('a)) => bool =
     | _ => false
     };
 
-let eqM =
+let eq =
     (
       type t,
       innerEq: (module BsAbstract.Interface.EQ with type t = t),

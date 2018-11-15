@@ -262,15 +262,15 @@ let fromArray: array('a) => list('a) = Belt.List.fromArray;
 
 let toArray: list('a) => array('a) = Belt.List.toArray;
 
-let rec eq: (('a, 'a) => bool, list('a), list('a)) => bool =
+let rec eqF: (('a, 'a) => bool, list('a), list('a)) => bool =
   (innerEq, a, b) =>
     switch (a, b) {
     | ([], []) => true
-    | ([x, ...xs], [y, ...ys]) when innerEq(x, y) => eq(innerEq, xs, ys)
+    | ([x, ...xs], [y, ...ys]) when innerEq(x, y) => eqF(innerEq, xs, ys)
     | _ => false
     };
 
-let eqM =
+let eq =
     (
       type t,
       eq: (module BsAbstract.Interface.EQ with type t = t),

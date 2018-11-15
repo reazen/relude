@@ -486,25 +486,25 @@ describe("Array", () => {
     expect(Array.toList([|1, 2, 3|])) |> toEqual([1, 2, 3])
   );
 
+  test("eqF returns true if array items are equal", () =>
+    expect(Array.eqF(Int.eq, [|1, 2, 3|], [|1, 2, 3|])) |> toBe(true)
+  );
+
+  test("eqF returns false if array items are not equal", () =>
+    expect(Array.eqF(Int.eq, [|1, 2, 3|], [|1, 2, 4|])) |> toBe(false)
+  );
+
+  test("eqF returns false if array are of different sizes", () =>
+    expect(Array.eqF(Int.eq, [|1|], [|1, 2|])) |> toBe(false)
+  );
+
   test("eq returns true if array items are equal", () =>
-    expect(Array.eq(Int.eq, [|1, 2, 3|], [|1, 2, 3|])) |> toBe(true)
-  );
-
-  test("eq returns false if array items are not equal", () =>
-    expect(Array.eq(Int.eq, [|1, 2, 3|], [|1, 2, 4|])) |> toBe(false)
-  );
-
-  test("eq returns false if array are of different sizes", () =>
-    expect(Array.eq(Int.eq, [|1|], [|1, 2|])) |> toBe(false)
-  );
-
-  test("eqM returns true if array items are equal", () =>
-    expect(Array.eqM((module Int.Eq), [|1, 2, 3|], [|1, 2, 3|]))
+    expect(Array.eq((module Int.Eq), [|1, 2, 3|], [|1, 2, 3|]))
     |> toBe(true)
   );
 
-  test("eqM returns false if array items are not equal", () =>
-    expect(Array.eqM((module Int.Eq), [|1, 2, 3|], [|1, 2, 4|]))
+  test("eq returns false if array items are not equal", () =>
+    expect(Array.eq((module Int.Eq), [|1, 2, 3|], [|1, 2, 4|]))
     |> toBe(false)
   );
 

@@ -468,24 +468,24 @@ describe("List", () => {
     expect(List.toArray([1, 2, 3])) |> toEqual([|1, 2, 3|])
   );
 
+  test("eqF returns true if list items are equal", () =>
+    expect(List.eqF(Int.eq, [1, 2, 3], [1, 2, 3])) |> toBe(true)
+  );
+
+  test("eqF returns false if list items are not equal", () =>
+    expect(List.eqF(Int.eq, [1, 2, 3], [1, 2, 4])) |> toBe(false)
+  );
+
+  test("eqF returns false if lists are of different sizes", () =>
+    expect(List.eqF(Int.eq, [1], [1, 2])) |> toBe(false)
+  );
+
   test("eq returns true if list items are equal", () =>
-    expect(List.eq(Int.eq, [1, 2, 3], [1, 2, 3])) |> toBe(true)
+    expect(List.eq((module Int.Eq), [1, 2, 3], [1, 2, 3])) |> toBe(true)
   );
 
   test("eq returns false if list items are not equal", () =>
-    expect(List.eq(Int.eq, [1, 2, 3], [1, 2, 4])) |> toBe(false)
-  );
-
-  test("eq returns false if lists are of different sizes", () =>
-    expect(List.eq(Int.eq, [1], [1, 2])) |> toBe(false)
-  );
-
-  test("eqM returns true if list items are equal", () =>
-    expect(List.eqM((module Int.Eq), [1, 2, 3], [1, 2, 3])) |> toBe(true)
-  );
-
-  test("eqM returns false if list items are not equal", () =>
-    expect(List.eqM((module Int.Eq), [1, 2, 3], [1, 2, 4])) |> toBe(false)
+    expect(List.eq((module Int.Eq), [1, 2, 3], [1, 2, 4])) |> toBe(false)
   );
 
   test("mkString", () =>

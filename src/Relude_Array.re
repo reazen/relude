@@ -288,16 +288,16 @@ let fromList: list('a) => array('a) = Belt.List.toArray;
 
 let toList: array('a) => list('a) = Belt.List.fromArray;
 
-let rec eq: (('a, 'a) => bool, array('a), array('a)) => bool =
+let rec eqF: (('a, 'a) => bool, array('a), array('a)) => bool =
   (innerEq, xs, ys) =>
     switch (head(xs), head(ys)) {
     | (None, None) => true
     | (Some(x), Some(y)) when innerEq(x, y) =>
-      eq(innerEq, tailOrEmpty(xs), tailOrEmpty(ys))
+      eqF(innerEq, tailOrEmpty(xs), tailOrEmpty(ys))
     | _ => false
     };
 
-let eqM =
+let eq =
     (
       type t,
       eq: (module BsAbstract.Interface.EQ with type t = t),

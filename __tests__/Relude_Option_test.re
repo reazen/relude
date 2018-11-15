@@ -83,37 +83,37 @@ describe("Option", () => {
     expect(Option.flatten(Some(Some(1)))) |> toEqual(Some(1))
   );
 
+  test("eqF is true when inner values match", () =>
+    expect(Option.eqF(Int.eq, Some(1), Some(1))) |> toEqual(true)
+  );
+
+  test("eqF is false when inner values do not match", () =>
+    expect(Option.eqF(Int.eq, Some(1), Some(2))) |> toEqual(false)
+  );
+
+  test("eqF is false when one option is Some and one is None", () =>
+    expect(Option.eqF(Int.eq, Some(1), None)) |> toEqual(false)
+  );
+
+  test("eqF is true when both options are None", () =>
+    expect(Option.eqF(Int.eq, None, None)) |> toEqual(true)
+  );
+
   test("eq is true when inner values match", () =>
-    expect(Option.eq(Int.eq, Some(1), Some(1))) |> toEqual(true)
+    expect(Option.eq((module Int.Eq), Some(1), Some(1))) |> toEqual(true)
   );
 
   test("eq is false when inner values do not match", () =>
-    expect(Option.eq(Int.eq, Some(1), Some(2))) |> toEqual(false)
-  );
-
-  test("eq is false when one option is Some and one is None", () =>
-    expect(Option.eq(Int.eq, Some(1), None)) |> toEqual(false)
-  );
-
-  test("eq is true when both options are None", () =>
-    expect(Option.eq(Int.eq, None, None)) |> toEqual(true)
-  );
-
-  test("eqM is true when inner values match", () =>
-    expect(Option.eqM((module Int.Eq), Some(1), Some(1))) |> toEqual(true)
-  );
-
-  test("eqM is false when inner values do not match", () =>
-    expect(Option.eqM((module Int.Eq), Some(1), Some(2)))
+    expect(Option.eq((module Int.Eq), Some(1), Some(2)))
     |> toEqual(false)
   );
 
-  test("eqM is true when both values are None", () =>
-    expect(Option.eqM((module Int.Eq), None, None)) |> toEqual(true)
+  test("eq is true when both values are None", () =>
+    expect(Option.eq((module Int.Eq), None, None)) |> toEqual(true)
   );
 
-  test("eqM is false when one value is Some and one is None", () =>
-    expect(Option.eqM((module Int.Eq), None, Some(1))) |> toEqual(false)
+  test("eq is false when one value is Some and one is None", () =>
+    expect(Option.eq((module Int.Eq), None, Some(1))) |> toEqual(false)
   );
 
   /**

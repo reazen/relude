@@ -90,8 +90,8 @@
 <a href="#value-flatten" class='level-2 value'>flatten</a>
 <a href="#value-fromList" class='level-2 value'>fromList</a>
 <a href="#value-toList" class='level-2 value'>toList</a>
+<a href="#value-eqF" class='level-2 value'>eqF</a>
 <a href="#value-eq" class='level-2 value'>eq</a>
-<a href="#value-eqM" class='level-2 value'>eqM</a>
 <a href="#value-mkString" class='level-2 value'>mkString</a>
 <a href="#value-show" class='level-2 value'>show</a>
 <a href="#module-SemigroupAny" class='level-2 module'>SemigroupAny</a>
@@ -139,6 +139,7 @@
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
 <a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
 <a href="Relude_Interface.html">Relude_Interface</a>
 <a href="Relude_List.html">Relude_List</a>
@@ -159,6 +160,7 @@
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
 <a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
 <a href="Relude_Interface.html">Relude_Interface</a>
 <a href="Relude_List.html">Relude_List</a>
@@ -457,12 +459,12 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (('a, 'a) => bool, array('a), array('a)) => bool</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-eqF" id="value-eqF">eqF</a>: (('a, 'a) => bool, array('a), array('a)) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-eqM" id="value-eqM">eqM</a>: (
-  (module BsAbstract.Interface.EQ with type t = 'd),
+<div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'f),
   array('a),
   array('a)
 ) => bool</h4>

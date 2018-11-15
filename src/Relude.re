@@ -5,6 +5,7 @@ module Bool = Relude_Bool;
 module Eff = Relude_Eff;
 module Float = Relude_Float;
 module Function = Relude_Function;
+module Identity = Relude_Identity;
 module Int = Relude_Int;
 module Interface = Relude_Interface;
 module List = Relude_List;
