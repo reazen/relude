@@ -41,13 +41,33 @@
 <a href="#value-empty" class='level-2 value'>empty</a>
 <a href="#value-filter" class='level-2 value'>filter</a>
 <a href="#value-flatten" class='level-2 value'>flatten</a>
-<a href="#module-OptApply" class='level-2 module'>OptApply</a>
+<a href="#value-eqF" class='level-2 value'>eqF</a>
+<a href="#value-eq" class='level-2 value'>eq</a>
+<a href="#module-Semigroup" class='level-2 module'>Semigroup</a>
+<a href="#module-Monoid" class='level-2 module'>Monoid</a>
+<a href="#module-Semigroup_Any" class='level-2 module'>Semigroup_Any</a>
+<a href="#type-Semigroup_Any.t" class='level-3 type'>t</a>
+<a href="#value-Semigroup_Any.append" class='level-3 value'>append</a>
+<a href="#module-Monoid_Any" class='level-2 module'>Monoid_Any</a>
+<a href="#type-Monoid_Any.t" class='level-3 type'>t</a>
+<a href="#value-Monoid_Any.append" class='level-3 value'>append</a>
+<a href="#value-Monoid_Any.empty" class='level-3 value'>empty</a>
+<a href="#module-Alt" class='level-2 module'>Alt</a>
+<a href="#module-Plus" class='level-2 module'>Plus</a>
+<a href="#module-Alternative" class='level-2 module'>Alternative</a>
+<a href="#module-Functor" class='level-2 module'>Functor</a>
+<a href="#module-Apply" class='level-2 module'>Apply</a>
+<a href="#module-Applicative" class='level-2 module'>Applicative</a>
+<a href="#module-Monad" class='level-2 module'>Monad</a>
+<a href="#module-Foldable" class='level-2 module'>Foldable</a>
+<a href="#module-Traversable" class='level-2 module'>Traversable</a>
+<a href="#module-Eq" class='level-2 module'>Eq</a>
+<a href="#module-Show" class='level-2 module'>Show</a>
+<a href="#module-ApplyFunctions" class='level-2 module'>ApplyFunctions</a>
 <a href="#value-map2" class='level-2 value'>map2</a>
 <a href="#value-map3" class='level-2 value'>map3</a>
 <a href="#value-map4" class='level-2 value'>map4</a>
 <a href="#value-map5" class='level-2 value'>map5</a>
-<a href="#value-eqF" class='level-2 value'>eqF</a>
-<a href="#value-eq" class='level-2 value'>eq</a>
 <a href="#module-Infix" class='level-2 module'>Infix</a>
 <a href="#value-Infix.|?" class='level-3 value'>|?</a>
 <a href="#value-Infix.<|>" class='level-3 value'><|></a>
@@ -105,11 +125,11 @@
     <a href="#Relude_Option" id="Relude_Option"><h1>Relude_Option</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>let <a href="#value-fold" id="value-fold">fold</a>: ('b, 'a => 'b, option('a)) => 'b</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fold" id="value-fold">fold</a>: (unit => 'b, 'a => 'b, option('a)) => 'b</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-getOrElse" id="value-getOrElse">getOrElse</a>: ('a, option('a)) => 'a</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-getOrElse" id="value-getOrElse">getOrElse</a>: (unit => 'a, option('a)) => 'a</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -171,7 +191,70 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-OptApply" id="module-OptApply">OptApply</a> : BsAbstract.Functions.Apply</h4></div>
+<div class='doc-item'><h4 class='item'>let <a href="#value-eqF" id="value-eqF">eqF</a>: (('a, 'a) => bool, option('a), option('a)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'j),
+  option('a),
+  option('a)
+) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Semigroup" id="module-Semigroup">Semigroup</a> : BsAbstract.Option.Semigroup</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monoid" id="module-Monoid">Monoid</a> : BsAbstract.Option.Monoid</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Semigroup_Any" id="module-Semigroup_Any">Semigroup_Any</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Semigroup_Any.t" id="type-Semigroup_Any.t">t</a>('a) = option('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Semigroup_Any.append" id="value-Semigroup_Any.append">append</a>: (option('a), option('a)) => option('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monoid_Any" id="module-Monoid_Any">Monoid_Any</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include Semigroup_Any</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Monoid_Any.t" id="type-Monoid_Any.t">t</a>('a) = <a href="#module-Semigroup_Any">Semigroup_Any</a>.<a href="#type-Semigroup_Any.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monoid_Any.append" id="value-Monoid_Any.append">append</a>: (<a href="#type-Monoid_Any.t">t</a>('a), <a href="#type-Monoid_Any.t">t</a>('a)) => <a href="#type-Monoid_Any.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monoid_Any.empty" id="value-Monoid_Any.empty">empty</a>: option('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Alt" id="module-Alt">Alt</a> : BsAbstract.Option.Alt</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Plus" id="module-Plus">Plus</a> : BsAbstract.Option.Plus</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Alternative" id="module-Alternative">Alternative</a> : BsAbstract.Option.Alternative</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Functor" id="module-Functor">Functor</a> : BsAbstract.Option.Functor</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Apply" id="module-Apply">Apply</a> : BsAbstract.Option.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a> : BsAbstract.Option.Applicative</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monad" id="module-Monad">Monad</a> : BsAbstract.Option.Monad</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Foldable" id="module-Foldable">Foldable</a> : BsAbstract.Option.Foldable</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Traversable" id="module-Traversable">Traversable</a> : BsAbstract.Option.Traversable</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Eq" id="module-Eq">Eq</a> : BsAbstract.Option.Eq</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Show" id="module-Show">Show</a> : BsAbstract.Option.Show</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-ApplyFunctions" id="module-ApplyFunctions">ApplyFunctions</a> : BsAbstract.Functions.Apply</h4></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (
   ('a, 'b) => 'c,
@@ -211,20 +294,8 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-eqF" id="value-eqF">eqF</a>: (('a, 'a) => bool, option('a), option('a)) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (
-  (module BsAbstract.Interface.EQ with type t = 'j),
-  option('a),
-  option('a)
-) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.|?" id="value-Infix.|?">|?</a>: (option('a), 'a) => 'a</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.|?" id="value-Infix.|?">|?</a>: (option('a), unit => 'a) => 'a</h4>
 
 <div class='body body-empty'></div></div>
 

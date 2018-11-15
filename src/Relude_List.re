@@ -169,7 +169,8 @@ let intersperse: ('a, list('a)) => list('a) =
     };
 
 let replicate: (int, list('a)) => list('a) =
-  (i, xs) => foldLeft((acc, _i) => concat(acc, xs), [], Int.rangeAsList(0, i));
+  (i, xs) =>
+    foldLeft((acc, _i) => concat(acc, xs), [], Int.rangeAsList(0, i));
 
 let zip: (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 
@@ -202,16 +203,16 @@ let rec any: ('a => bool, list('a)) => bool =
 let contains: (('a, 'a) => bool, 'a, list('a)) => bool =
   (f, x, xs) => any(f(x), xs);
 
-let indexOf: (('a, 'a) => bool, 'a, list('a)) => option(int) = (f, x, xs) => {
-  let rec go = (f, ys, i) => {
-    switch(ys) {
+let indexOf: (('a, 'a) => bool, 'a, list('a)) => option(int) =
+  (f, x, xs) => {
+    let rec go = (f, ys, i) =>
+      switch (ys) {
       | [] => None
       | [z, ..._] when f(x, z) => Some(i)
       | [_, ...zs] => go(f, zs, i + 1)
-    }
-  }
-  go(f, xs, 0)
-}
+      };
+    go(f, xs, 0);
+  };
 
 let rec all: ('a => bool, list('a)) => bool =
   (f, xs) =>
@@ -319,24 +320,24 @@ module Alternative = BsAbstract.List.Alternative;
 
 module Functor = BsAbstract.List.Functor;
 
-module ListFunctor = BsAbstract.Functions.Functor(Functor);
+module FunctorFunctions = BsAbstract.Functions.Functor(Functor);
 
-let void: list('a) => list(unit) = ListFunctor.void;
+let void: list('a) => list(unit) = FunctorFunctions.void;
 
-let flap: (list('a => 'b), 'a) => list('b) = ListFunctor.flap;
+let flap: (list('a => 'b), 'a) => list('b) = FunctorFunctions.flap;
 
 module Apply = BsAbstract.List.Apply;
 
-module ListApply = BsAbstract.Functions.Apply(Apply);
+module ApplyFunctions = BsAbstract.Functions.Apply(Apply);
 
 /* TODO: not sure if we want to include these... these apply the function to all combinations of values (apply lift semantics), not index-by-index */
-let map2: (('a, 'b) => 'c, list('a), list('b)) => list('c) = ListApply.lift2;
+let map2: (('a, 'b) => 'c, list('a), list('b)) => list('c) = ApplyFunctions.lift2;
 
-let map3: (('a, 'b, 'c) => 'd, list('a), list('b), list('c)) => list('d) = ListApply.lift3;
+let map3: (('a, 'b, 'c) => 'd, list('a), list('b), list('c)) => list('d) = ApplyFunctions.lift3;
 
 let map4:
   (('a, 'b, 'c, 'd) => 'e, list('a), list('b), list('c), list('d)) =>
-  list('e) = ListApply.lift4;
+  list('e) = ApplyFunctions.lift4;
 
 let map5:
   (
@@ -347,7 +348,7 @@ let map5:
     list('d),
     list('e)
   ) =>
-  list('f) = ListApply.lift5;
+  list('f) = ApplyFunctions.lift5;
 
 module Applicative = BsAbstract.List.Applicative;
 
@@ -375,5 +376,5 @@ module IsoArray: Interface.ISO_ARRAY with type t('a) = list('a) = {
 
 module Infix = {
   include BsAbstract.List.Infix;
-  include ListApply.Infix;
+  include ApplyFunctions.Infix;
 };

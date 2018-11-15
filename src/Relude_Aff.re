@@ -45,7 +45,7 @@ let ok: 'a => t('a, 'e) = pure;
 let error: 'e => t('a, 'e) = (e, onDone) => onDone(Error(e));
 
 let fromOption: ('e, option('a)) => t('a, 'e) =
-  (e, opt) => opt |> Option.fold(error(e), ok);
+  (e, opt) => opt |> Option.fold(_ => error(e), ok);
 
 let fromResult: Belt.Result.t('a, 'e) => t('a, 'e) =
   r => r |> Result.fold(ok, error);

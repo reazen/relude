@@ -78,7 +78,7 @@ module Aff = {
         | (Some(err'), _) =>
           Js.Console.error(
             "Read failed: "
-            ++ (Js.Exn.message(err') |> Relude_Option.getOrElse("No error")),
+            ++ (Js.Exn.message(err') |> Relude_Option.getOrElse(_ => "No error")),
           );
           onDone(Error(err'), ());
         | (_, content) =>
@@ -100,7 +100,7 @@ module Aff = {
         | Some(err') =>
           Js.Console.error(
             "Write failed: "
-            ++ (Js.Exn.message(err') |> Relude_Option.getOrElse("No error")),
+            ++ (Js.Exn.message(err') |> Relude_Option.getOrElse(_ => "No error")),
           );
           onDone(Error(err'), ());
         | None =>
