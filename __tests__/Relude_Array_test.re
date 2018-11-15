@@ -418,6 +418,14 @@ describe("Array", () => {
     expect(Array.contains(Int.eq, 10, [|0, 1, 2, 3, 4|])) |> toEqual(false)
   );
 
+  test("indexOf success", () =>
+    expect(Array.indexOf(Int.eq, 30, [|0, 10, 20, 30, 40|])) |> toEqual(Some(3))
+  );
+
+  test("indexOf failure", () =>
+    expect(Array.indexOf(Int.eq, 500, [|0, 10, 20, 30, 40|])) |> toEqual(None)
+  );
+
   test("contains true", () =>
     expect(Array.contains(Int.eq, 3, [|0, 1, 2, 3, 4|])) |> toEqual(true)
   );

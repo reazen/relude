@@ -1,6 +1,6 @@
-let length: string => int = String.length;
+let length: string => int = Js.String.length;
 
-let trim: string => string = String.trim;
+let trim: string => string = Js.String.trim;
 
 let isEmpty: string => bool = s => length(s) == 0;
 
@@ -24,40 +24,110 @@ let toNonWhitespace: string => option(string) =
       Some(s);
     };
 
-let makeWithIndex: (int, int => char) => string = String.init;
+let make: 'a => string = Js.String.make;
 
-let repeat: (int, char) => string = String.make;
+let fromCharCode: int => string = Js.String.fromCharCode;
 
-let toUpperCase: string => string = String.uppercase;
+let makeWithIndex: (int, int => string) => string =
+  (i, f) =>
+    Relude_Int.rangeAsList(0, i)
+    |> Relude_List.foldRight((i, acc) => [f(i), ...acc], [])
+    |> Relude_List.mkString("");
 
-let toLowerCase: string => string = String.lowercase;
-
-let capitalize: string => string = String.capitalize;
-
-let uncapitalize: string => string = String.uncapitalize;
-
-let unsafeGet: (int, string) => char = (i, str) => str.[i];
-
-let get: (int, string) => option(char) =
+let repeat: (int, string) => string =
   (i, str) =>
-    try (Some(unsafeGet(i, str))) {
-    | _ => None
+    Relude_Int.rangeAsList(0, i)
+    |> Relude_List.foldRight((_, acc) => [str, ...acc], [])
+    |> Relude_List.mkString("");
+
+let toUpperCase: string => string = Js.String.toUpperCase;
+
+let toLowerCase: string => string = Js.String.toLowerCase;
+
+let get: (int, string) => option(string) =
+  (i, str) =>
+    Js.String.get(str, i) |> Js.Nullable.return |> Js.Nullable.toOption;
+
+let getNullable: (int, string) => Js.Nullable.t(string) =
+  (i, str) => Js.String.get(str, i) |> Js.Nullable.return;
+
+let getOrThrow: (int, string) => string =
+  (i, str) =>
+    switch (get(i, str)) {
+    | None =>
+      Js.Exn.raiseRangeError(
+        "Failed to get string at index "
+        ++ string_of_int(i)
+        ++ " for string: "
+        ++ str,
+      )
+    | Some(v) => v
     };
 
-let toCharList: string => list(char) =
-  str => Relude_List.makeWithIndex(length(str), i => unsafeGet(i, str));
+let toList: string => list(string) =
+  str => Relude_List.makeWithIndex(length(str), i => getOrThrow(i, str));
 
-let toCharArray: string => array(char) =
-  str => Relude_Array.makeWithIndex(length(str), i => unsafeGet(i, str));
+let toArray: string => array(string) =
+  str => Relude_Array.makeWithIndex(length(str), i => getOrThrow(i, str));
 
-let map: (char => char, string) => string = String.map;
+let map: (string => string, string) => string =
+  (f, str) =>
+    toList(str) |> Relude_List.map(f) |> Relude_List.mkString("");
 
-let foldLeft: (('b, char) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List.foldLeft(f, init, toCharList(str)); /* TODO performance */
+let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
+  (f, init, str) => Relude_List.foldLeft(f, init, toList(str));
 
-let foldRight: ((char, 'b) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List.foldRight(f, init, toCharList(str)); /* TODO performance */
+let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
+  (f, init, str) => Relude_List.foldRight(f, init, toList(str));
 
-/*
- let split: (char, string) => list(string) = StringLabels.(
- */
+let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js.String.concat has unexpected argument order */
+
+let concatArray: array(string) => string =
+  strs => Relude_Array.foldLeft((acc, str) => acc ++ str, "", strs);
+
+let concatList: list(string) => string =
+  strs => Relude_List.foldLeft((acc, str) => acc ++ str, "", strs);
+
+let endsWith: (string, string) => bool =
+  (test, str) => Js.String.endsWith(test, str);
+
+let startsWith: (string, string) => bool =
+  (test, str) => Js.String.startsWith(test, str);
+
+let contains: (string, string) => bool =
+  (test, str) => Js.String.includes(test, str);
+
+let indexOf: (string, string) => option(int) =
+  (test, str) => {
+    let index = Js.String.indexOf(test, str);
+    if (index < 0) {
+      None;
+    } else {
+      Some(index);
+    };
+  };
+
+let lastIndexOf: (string, string) => option(int) =
+  (test, str) => {
+    let index = Js.String.lastIndexOf(test, str);
+    if (index < 0) {
+      None;
+    } else {
+      Some(index);
+    };
+  };
+
+let replace: (string, string, string) => string =
+  (target, newValue, source) => Js.String.replace(target, newValue, source);
+
+let replaceRegex: (Js.Re.t, string, string) => string =
+  (target, newValue, source) => Js.String.replaceByRe(target, newValue, source);
+
+let slice: (int, int, string) => string = (fromIndex, toIndex, str) => Js.String.slice(~from=fromIndex, ~to_=toIndex, str);
+
+let sliceToEnd: (int, string) => string = (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
+
+let splitArray: (string, string) => array(string) = Js.String.split;
+
+let splitList: (string, string) => list(string) =
+  (delim, str) => splitArray(delim, str) |> Relude_List.fromArray;

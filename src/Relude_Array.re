@@ -234,6 +234,17 @@ let any: ('a => bool, array('a)) => bool =
 let contains: (('a, 'a) => bool, 'a, array('a)) => bool =
   (f, x, xs) => any(f(x), xs);
 
+let indexOf: (('a, 'a) => bool, 'a, array('a)) => option(int) = (f, x, xs) => {
+  let rec go = (f, ys, i) => {
+    switch(head(ys)) {
+      | None => None
+      | Some(z) when f(x, z) => Some(i)
+      | _ => go(f, tailOrEmpty(ys), i + 1)
+    }
+  }
+  go(f, xs, 0)
+}
+
 let all: ('a => bool, array('a)) => bool =
   (f, xs) => Belt.Array.every(xs, f);
 

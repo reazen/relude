@@ -405,6 +405,14 @@ describe("List", () => {
     expect(List.contains(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
   );
 
+  test("indexOf success", () =>
+    expect(List.indexOf(Int.eq, 30, [0, 10, 20, 30, 40])) |> toEqual(Some(3))
+  );
+
+  test("indexOf failure", () =>
+    expect(List.indexOf(Int.eq, 500, [0, 10, 20, 30, 40])) |> toEqual(None)
+  );
+
   test("any empty", () =>
     expect(List.any(a => a > 2, [])) |> toEqual(false)
   );

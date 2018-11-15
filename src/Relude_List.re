@@ -202,6 +202,17 @@ let rec any: ('a => bool, list('a)) => bool =
 let contains: (('a, 'a) => bool, 'a, list('a)) => bool =
   (f, x, xs) => any(f(x), xs);
 
+let indexOf: (('a, 'a) => bool, 'a, list('a)) => option(int) = (f, x, xs) => {
+  let rec go = (f, ys, i) => {
+    switch(ys) {
+      | [] => None
+      | [z, ..._] when f(x, z) => Some(i)
+      | [_, ...zs] => go(f, zs, i + 1)
+    }
+  }
+  go(f, xs, 0)
+}
+
 let rec all: ('a => bool, list('a)) => bool =
   (f, xs) =>
     switch (xs) {

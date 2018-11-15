@@ -32,19 +32,34 @@
 <a href="#value-toNonEmpty" class='level-2 value'>toNonEmpty</a>
 <a href="#value-isWhitespace" class='level-2 value'>isWhitespace</a>
 <a href="#value-toNonWhitespace" class='level-2 value'>toNonWhitespace</a>
+<a href="#value-make" class='level-2 value'>make</a>
+<a href="#value-fromCharCode" class='level-2 value'>fromCharCode</a>
 <a href="#value-makeWithIndex" class='level-2 value'>makeWithIndex</a>
 <a href="#value-repeat" class='level-2 value'>repeat</a>
 <a href="#value-toUpperCase" class='level-2 value'>toUpperCase</a>
 <a href="#value-toLowerCase" class='level-2 value'>toLowerCase</a>
-<a href="#value-capitalize" class='level-2 value'>capitalize</a>
-<a href="#value-uncapitalize" class='level-2 value'>uncapitalize</a>
-<a href="#value-unsafeGet" class='level-2 value'>unsafeGet</a>
 <a href="#value-get" class='level-2 value'>get</a>
-<a href="#value-toCharList" class='level-2 value'>toCharList</a>
-<a href="#value-toCharArray" class='level-2 value'>toCharArray</a>
+<a href="#value-getNullable" class='level-2 value'>getNullable</a>
+<a href="#value-getOrThrow" class='level-2 value'>getOrThrow</a>
+<a href="#value-toList" class='level-2 value'>toList</a>
+<a href="#value-toArray" class='level-2 value'>toArray</a>
 <a href="#value-map" class='level-2 value'>map</a>
 <a href="#value-foldLeft" class='level-2 value'>foldLeft</a>
 <a href="#value-foldRight" class='level-2 value'>foldRight</a>
+<a href="#value-concat" class='level-2 value'>concat</a>
+<a href="#value-concatArray" class='level-2 value'>concatArray</a>
+<a href="#value-concatList" class='level-2 value'>concatList</a>
+<a href="#value-endsWith" class='level-2 value'>endsWith</a>
+<a href="#value-startsWith" class='level-2 value'>startsWith</a>
+<a href="#value-contains" class='level-2 value'>contains</a>
+<a href="#value-indexOf" class='level-2 value'>indexOf</a>
+<a href="#value-lastIndexOf" class='level-2 value'>lastIndexOf</a>
+<a href="#value-replace" class='level-2 value'>replace</a>
+<a href="#value-replaceRegex" class='level-2 value'>replaceRegex</a>
+<a href="#value-slice" class='level-2 value'>slice</a>
+<a href="#value-sliceToEnd" class='level-2 value'>sliceToEnd</a>
+<a href="#value-splitArray" class='level-2 value'>splitArray</a>
+<a href="#value-splitList" class='level-2 value'>splitList</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Aff.html">Relude_Aff</a>
@@ -122,11 +137,19 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-makeWithIndex" id="value-makeWithIndex">makeWithIndex</a>: (int, int => char) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-make" id="value-make">make</a>: 'a => string</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-repeat" id="value-repeat">repeat</a>: (int, char) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromCharCode" id="value-fromCharCode">fromCharCode</a>: int => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-makeWithIndex" id="value-makeWithIndex">makeWithIndex</a>: (int, int => string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-repeat" id="value-repeat">repeat</a>: (int, string) => string</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -138,39 +161,91 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-capitalize" id="value-capitalize">capitalize</a>: string => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-get" id="value-get">get</a>: (int, string) => option(string)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-uncapitalize" id="value-uncapitalize">uncapitalize</a>: string => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-getNullable" id="value-getNullable">getNullable</a>: (int, string) => Js.Nullable.t(string)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-unsafeGet" id="value-unsafeGet">unsafeGet</a>: (int, string) => char</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-getOrThrow" id="value-getOrThrow">getOrThrow</a>: (int, string) => string</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-get" id="value-get">get</a>: (int, string) => option(char)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-toList" id="value-toList">toList</a>: string => list(string)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-toCharList" id="value-toCharList">toCharList</a>: string => list(char)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-toArray" id="value-toArray">toArray</a>: string => array(string)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-toCharArray" id="value-toCharArray">toCharArray</a>: string => array(char)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: (string => string, string) => string</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: (char => char, string) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-foldLeft" id="value-foldLeft">foldLeft</a>: (('b, string) => 'b, 'b, string) => 'b</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-foldLeft" id="value-foldLeft">foldLeft</a>: (('b, char) => 'b, 'b, string) => 'b</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-foldRight" id="value-foldRight">foldRight</a>: ((string, 'b) => 'b, 'b, string) => 'b</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-foldRight" id="value-foldRight">foldRight</a>: ((char, 'b) => 'b, 'b, string) => 'b</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-concat" id="value-concat">concat</a>: (string, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-concatArray" id="value-concatArray">concatArray</a>: array(string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-concatList" id="value-concatList">concatList</a>: list(string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-endsWith" id="value-endsWith">endsWith</a>: (string, string) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-startsWith" id="value-startsWith">startsWith</a>: (string, string) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-contains" id="value-contains">contains</a>: (string, string) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-indexOf" id="value-indexOf">indexOf</a>: (string, string) => option(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-lastIndexOf" id="value-lastIndexOf">lastIndexOf</a>: (string, string) => option(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-replace" id="value-replace">replace</a>: (string, string, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-replaceRegex" id="value-replaceRegex">replaceRegex</a>: (Js.Re.t, string, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-slice" id="value-slice">slice</a>: (int, int, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-sliceToEnd" id="value-sliceToEnd">sliceToEnd</a>: (int, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-splitArray" id="value-splitArray">splitArray</a>: (string, string) => array(string)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-splitList" id="value-splitList">splitList</a>: (string, string) => list(string)</h4>
 
 <div class='body body-empty'></div></div>
 
