@@ -26,7 +26,9 @@
       <div class='table-of-contents'>
       <a href="#Relude_Option" class='level-1 header'>Relude_Option</a>
 <a href="#value-fold" class='level-2 value'>fold</a>
+<a href="#value-foldStrict" class='level-2 value'>foldStrict</a>
 <a href="#value-getOrElse" class='level-2 value'>getOrElse</a>
+<a href="#value-getOrElseStrict" class='level-2 value'>getOrElseStrict</a>
 <a href="#value-toList" class='level-2 value'>toList</a>
 <a href="#value-toArray" class='level-2 value'>toArray</a>
 <a href="#value-isSome" class='level-2 value'>isSome</a>
@@ -37,6 +39,7 @@
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
 <a href="#value-flipFlatMap" class='level-2 value'>flipFlatMap</a>
 <a href="#value-foldLeft" class='level-2 value'>foldLeft</a>
+<a href="#value-foldRight" class='level-2 value'>foldRight</a>
 <a href="#value-alt" class='level-2 value'>alt</a>
 <a href="#value-empty" class='level-2 value'>empty</a>
 <a href="#value-filter" class='level-2 value'>filter</a>
@@ -94,6 +97,7 @@
 <a href="Relude_Option.html">Relude_Option</a>
 <a href="Relude_Ordering.html">Relude_Ordering</a>
 <a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_ResultIor.html">Relude_ResultIor</a>
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude.html">Relude</a>
@@ -115,6 +119,7 @@
 <a href="Relude_Option.html">Relude_Option</a>
 <a href="Relude_Ordering.html">Relude_Ordering</a>
 <a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_ResultIor.html">Relude_ResultIor</a>
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a></div>
     </div>
@@ -129,7 +134,15 @@
 
 <div class='body body-empty'></div></div>
 
+<div class='doc-item'><h4 class='item'>let <a href="#value-foldStrict" id="value-foldStrict">foldStrict</a>: ('b, 'a => 'b, option('a)) => 'b</h4>
+
+<div class='body body-empty'></div></div>
+
 <div class='doc-item'><h4 class='item'>let <a href="#value-getOrElse" id="value-getOrElse">getOrElse</a>: (unit => 'a, option('a)) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getOrElseStrict" id="value-getOrElseStrict">getOrElseStrict</a>: ('a, option('a)) => 'a</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -161,17 +174,21 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: ('a => option('b), option('a)) => option('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: (option('a), 'a => option('b)) => option('b)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-flipFlatMap" id="value-flipFlatMap">flipFlatMap</a>: (option('a), 'a => option('b)) => option(
+<div class='doc-item'><h4 class='item'>let <a href="#value-flipFlatMap" id="value-flipFlatMap">flipFlatMap</a>: ('a => option('b), option('a)) => option(
   'b
 )</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-foldLeft" id="value-foldLeft">foldLeft</a>: (('b, 'a) => 'b, 'b, option('a)) => 'b</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-foldRight" id="value-foldRight">foldRight</a>: (('a, 'b) => 'b, 'b, option('a)) => 'b</h4>
 
 <div class='body body-empty'></div></div>
 

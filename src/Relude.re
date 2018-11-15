@@ -15,5 +15,6 @@ module NonEmpty = Relude_NonEmpty;
 module Option = Relude_Option;
 module Ordering = Relude_Ordering;
 module Result = Relude_Result;
+module ResultIor = Relude_ResultIor;
 module String = Relude_String;
 module Validation = Relude_Validation;
