@@ -16,12 +16,9 @@ type affTestError =
   | ErrorMessage(string)
   | Unknown;
 
-module AffTestErrorInfix =
-  Aff.Infix({
-    type t = affTestError;
-  });
+module AffInfix = Aff.Infix({ type t = affTestError; });
 
-let (>>=) = AffTestErrorInfix.(>>=);
+let (>>=) = AffInfix.Monad.(>>=);
 
 /* TODO: remove live file tests, and replace with in-memory async tests */
 let testFilePath = FS.testFilePath("Aff_test.txt");

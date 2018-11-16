@@ -25,11 +25,11 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_Eff" class='level-1 header'>Relude_Eff</a>
-<a href="#module-Function" class='level-2 module'>Function</a>
 <a href="#type-t" class='level-2 type'>t</a>
 <a href="#value-run" class='level-2 value'>run</a>
 <a href="#value-pure" class='level-2 value'>pure</a>
 <a href="#value-fromThunk" class='level-2 value'>fromThunk</a>
+<a href="#value-attempt" class='level-2 value'>attempt</a>
 <a href="#value-attemptJS" class='level-2 value'>attemptJS</a>
 <a href="#value-map" class='level-2 value'>map</a>
 <a href="#value-apply" class='level-2 value'>apply</a>
@@ -65,6 +65,7 @@
 <a href="Relude_Aff.html">Relude_Aff</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
 <a href="Relude_Bool.html">Relude_Bool</a>
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
@@ -87,6 +88,7 @@
 <a href="Relude_Aff.html">Relude_Aff</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
 <a href="Relude_Bool.html">Relude_Bool</a>
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
@@ -113,32 +115,18 @@
     <a href="#Relude_Eff" id="Relude_Eff"><h1>Relude_Eff</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Function" id="module-Function">Function</a> : <a href="Relude_Function.html">Relude_Function</a></h4></div>
-
 <div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a) = unit => 'a</h4>
 
-<div class='body '><p>Eff is a pure, lazy, synchronous effect monad that allows for chaining of
-synchronous effectful functions that are not expected to fail.</p>
-<p>It&#39;s basically just a thunk or a lazy function that produces a value.
-Laziness is the key to achieving referential transparency and delaying side
-effects until the monadic chain is run by calling the effect with <code>myEff()</code>
-or equivalently <code>myEff |&gt; Eff.run</code></p>
-<p>This is inspired by bs-effects <code>Effect</code> and John De Goes&#39; basic synchronous
-IO monad described here: http://degoes.net/articles/only-one-io</p>
-<p>Eff should be similar in spirit to the Eff type of purescript (minus the
-effect row) for encoding synchronous effects with no accomodation for errors.</p>
-<p>console.log is a good example of a function that can be wrapped in Eff - it
-is purely synchronous and is not likely to ever fail with an exception.
-Certain DOM functions might also work well with Eff - the key is that Eff
-cannot deal with errors nor exceptions.</p>
-<p>If your action can fail, you should use Aff instead.</p>
+<div class='body '><p>Eff is a synchronous effect monad.</p>
+<p>This is inspired by bs-effects <code>Effect</code>, purescript Eff and Effect, and John
+De Goes&#39; basic synchronous IO monad described here:
+http://degoes.net/articles/only-one-io</p>
 </div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-run" id="value-run">run</a>: <a href="#type-t">t</a>('a) => 'a</h4>
 
 <div class='body '><p>Unsafely runs the effect or chain of effects. For Eff, this is the same as
-just calling the effect as a function. If any of the thunks throw an
-exception, the exception will not be caught here.</p>
+just calling the effect as a function.</p>
 </div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a)</h4>
@@ -148,6 +136,11 @@ exception, the exception will not be caught here.</p>
 <div class='doc-item'><h4 class='item'>let <a href="#value-fromThunk" id="value-fromThunk">fromThunk</a>: unit => 'a => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-attempt" id="value-attempt">attempt</a>: <a href="#type-t">t</a>('a) => <a href="#type-t">t</a>(Belt.Result.t('a, exn))</h4>
+
+<div class='body '><p>Attempts to run an Eff.t(&#39;a) and catches any exn thrown by the effect and lifts it into Eff.t(Belt.Result.t(&#39;a, exn))</p>
+</div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-attemptJS" id="value-attemptJS">attemptJS</a>: <a href="#type-t">t</a>('a) => <a href="#type-t">t</a>(Belt.Result.t('a, Js.Exn.t))</h4>
 

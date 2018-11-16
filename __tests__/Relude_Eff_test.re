@@ -5,10 +5,32 @@ module Eff = Relude_Eff;
 
 let (>>=) = Eff.Infix.(>>=);
 
+describe("Eff", () => {
+  test("pure", () => {
+    expect(Eff.pure(1) |> Eff.run) |> toEqual(1)
+  });
+
+  test("fromThunk", () => {
+    expect(Eff.fromThunk(_ => 1) |> Eff.run) |> toEqual(1)
+  });
+
+  test("map", () => {
+    expect(Eff.map(a => a + 2, Eff.pure(1)) |> Eff.run) |> toEqual(3)
+  });
+
+  test("apply", () => {
+    expect(Eff.apply(Eff.pure(a => a + 2), Eff.pure(1)) |> Eff.run) |> toEqual(3)
+  });
+
+  test("flatMap", () => {
+    expect(Eff.flatMap(Eff.pure(1), i => Eff.pure(i + 2)) |> Eff.run) |> toEqual(3)
+  });
+});
+
 /* Note: these tests currently write an actual file - get rid of this and use an in-memory test instead */
 let testFilePath = FS.testFilePath("Eff_test.txt");
 
-describe("Eff", () => {
+describe("Eff file test", () => {
   beforeAll(() => FS.Eff.writeFileSync(testFilePath, "") |> Eff.run);
 
   test("read and writeFileSync", () =>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel=stylesheet href='../styles.css'>
 <script defer src='../script.js'></script>
-<title>Relude_ResultIor</title>
+<title>Relude_AsyncResult</title>
 <body>
 <script>window.relativeToRoot=".."</script>
 <script defer src="../block-script.js"></script>
@@ -24,19 +24,21 @@
       <div class='docs-listing'><a href="../index.html">Home</a></div>
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
-      <a href="#Relude_ResultIor" class='level-1 header'>Relude_ResultIor</a>
+      <a href="#Relude_AsyncResult" class='level-1 header'>Relude_AsyncResult</a>
 <a href="#type-t" class='level-2 type'>t</a>
-<a href="#value-pure" class='level-2 value'>pure</a>
+<a href="#value-init" class='level-2 value'>init</a>
+<a href="#value-loading" class='level-2 value'>loading</a>
+<a href="#value-reloadingOk" class='level-2 value'>reloadingOk</a>
+<a href="#value-reloadingError" class='level-2 value'>reloadingError</a>
+<a href="#value-completeOk" class='level-2 value'>completeOk</a>
+<a href="#value-completeError" class='level-2 value'>completeError</a>
 <a href="#value-ok" class='level-2 value'>ok</a>
 <a href="#value-error" class='level-2 value'>error</a>
-<a href="#value-both" class='level-2 value'>both</a>
+<a href="#value-pure" class='level-2 value'>pure</a>
 <a href="#value-map" class='level-2 value'>map</a>
+<a href="#value-mapError" class='level-2 value'>mapError</a>
 <a href="#value-apply" class='level-2 value'>apply</a>
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
-<a href="#value-map2" class='level-2 value'>map2</a>
-<a href="#value-map3" class='level-2 value'>map3</a>
-<a href="#value-map4" class='level-2 value'>map4</a>
-<a href="#value-map5" class='level-2 value'>map5</a>
 <a href="#module-Functor" class='level-2 module'>Functor</a>
 <a href="#type-Functor.t" class='level-3 type'>t</a>
 <a href="#value-Functor.map" class='level-3 value'>map</a>
@@ -44,6 +46,7 @@
 <a href="#type-Apply.t" class='level-3 type'>t</a>
 <a href="#value-Apply.map" class='level-3 value'>map</a>
 <a href="#value-Apply.apply" class='level-3 value'>apply</a>
+<a href="#module-ApplyFunctions" class='level-2 module'>ApplyFunctions</a>
 <a href="#module-Applicative" class='level-2 module'>Applicative</a>
 <a href="#type-Applicative.t" class='level-3 type'>t</a>
 <a href="#value-Applicative.map" class='level-3 value'>map</a>
@@ -55,6 +58,10 @@
 <a href="#value-Monad.apply" class='level-3 value'>apply</a>
 <a href="#value-Monad.pure" class='level-3 value'>pure</a>
 <a href="#value-Monad.flat_map" class='level-3 value'>flat_map</a>
+<a href="#module-Infix" class='level-2 module'>Infix</a>
+<a href="#module-Infix.Functor" class='level-3 module'>Functor</a>
+<a href="#module-Infix.Apply" class='level-3 module'>Apply</a>
+<a href="#module-Infix.Monad" class='level-3 module'>Monad</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Aff.html">Relude_Aff</a>
@@ -107,30 +114,46 @@
   
     <div class='main'>
     
-    <a href="#Relude_ResultIor" id="Relude_ResultIor"><h1>Relude_ResultIor</h1></a>
+    <a href="#Relude_AsyncResult" id="Relude_AsyncResult"><h1>Relude_AsyncResult</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = | IOk('a) | IError('e) | IBoth('a, 'e)</h4>
-
-<div class='body '><p>ResultIor is similar to Belt.Result, but it has the ability to collect &quot;non-fatal warning&quot; information
-during applicative validation.</p>
-<p>E.g. if you are doing applicative validation to construct a User model, you could parse a phone number and
-allow it, but collect a warning that certain phone number formats are deprecated.</p>
-</div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = <a href="Relude_AsyncData.html">Relude_AsyncData</a>.<a href="Relude_AsyncData.html#type-t">t</a>(Belt.Result.t('a, 'e))</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-ok" id="value-ok">ok</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-init" id="value-init">init</a>: <a href="#type-t">t</a>('a, 'e)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-error" id="value-error">error</a>: 'e => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-loading" id="value-loading">loading</a>: <a href="#type-t">t</a>('a, 'e)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-both" id="value-both">both</a>: ('a, 'e) => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-reloadingOk" id="value-reloadingOk">reloadingOk</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-reloadingError" id="value-reloadingError">reloadingError</a>: 'e => <a href="#type-t">t</a>('a, 'e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-completeOk" id="value-completeOk">completeOk</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-completeError" id="value-completeError">completeError</a>: 'e => <a href="#type-t">t</a>('a, 'e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-ok" id="value-ok">ok</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-error" id="value-error">error</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -138,57 +161,15 @@ allow it, but collect a warning that certain phone number formats are deprecated
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (
-  <a href="#type-t">t</a>('a => 'b, 'e),
-  <a href="#type-t">t</a>('a, 'e),
-  ('e, 'e) => 'e
-) => <a href="#type-t">t</a>('b, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-mapError" id="value-mapError">mapError</a>: ('e1 => 'e2, <a href="#type-t">t</a>('a, 'e1)) => <a href="#type-t">t</a>('a, 'e2)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (<a href="#type-t">t</a>('a => 'b, 'e), <a href="#type-t">t</a>('a, 'e)) => <a href="#type-t">t</a>('b, 'e)</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: (<a href="#type-t">t</a>('a, 'e), 'a => <a href="#type-t">t</a>('b, 'e)) => <a href="#type-t">t</a>('b, 'e)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (
-  ('a, 'b) => 'c,
-  <a href="#type-t">t</a>('a, 'x),
-  <a href="#type-t">t</a>('b, 'x),
-  ('x, 'x) => 'x
-) => <a href="#type-t">t</a>('c, 'x)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: (
-  ('a, 'b, 'c) => 'd,
-  <a href="#type-t">t</a>('a, 'x),
-  <a href="#type-t">t</a>('b, 'x),
-  <a href="#type-t">t</a>('c, 'x),
-  ('x, 'x) => 'x
-) => <a href="#type-t">t</a>('d, 'x)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map4" id="value-map4">map4</a>: (
-  ('a, 'b, 'c, 'd) => 'e,
-  <a href="#type-t">t</a>('a, 'x),
-  <a href="#type-t">t</a>('b, 'x),
-  <a href="#type-t">t</a>('c, 'x),
-  <a href="#type-t">t</a>('d, 'x),
-  ('x, 'x) => 'x
-) => <a href="#type-t">t</a>('e, 'x)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map5" id="value-map5">map5</a>: (
-  ('a, 'b, 'c, 'd, 'e) => 'f,
-  <a href="#type-t">t</a>('a, 'x),
-  <a href="#type-t">t</a>('b, 'x),
-  <a href="#type-t">t</a>('c, 'x),
-  <a href="#type-t">t</a>('d, 'x),
-  <a href="#type-t">t</a>('e, 'x),
-  ('x, 'x) => 'x
-) => <a href="#type-t">t</a>('f, 'x)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -212,10 +193,12 @@ allow it, but collect a warning that certain phone number formats are deprecated
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.apply" id="value-Apply.apply">apply</a>: (<a href="#type-t">t</a>('a => 'a, E.t), <a href="#type-t">t</a>('a, E.t)) => <a href="#type-t">t</a>('a, E.t)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.apply" id="value-Apply.apply">apply</a>: (<a href="#type-t">t</a>('a => 'a, 'a), <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-ApplyFunctions" id="module-ApplyFunctions">ApplyFunctions</a> : BsAbstract.Functions.Apply</h4></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Applicative.t" id="type-Applicative.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
@@ -257,6 +240,14 @@ allow it, but collect a warning that certain phone number formats are deprecated
 <div class='doc-item'><h4 class='item'>let <a href="#value-Monad.flat_map" id="value-Monad.flat_map">flat_map</a>: (<a href="#type-t">t</a>('a, 'a), 'a => <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Functor" id="module-Infix.Functor">Functor</a> : BsAbstract.Infix.Functor</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Apply" id="module-Infix.Apply">Apply</a> : BsAbstract.Infix.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Monad" id="module-Infix.Monad">Monad</a> : BsAbstract.Infix.Monad</h4></div>
 </div></div>
 
     </div>

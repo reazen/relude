@@ -1,34 +1,16 @@
-module Function = Relude_Function;
-
 /**
-Eff is a pure, lazy, synchronous effect monad that allows for chaining of
-synchronous effectful functions that are not expected to fail.
+Eff is a synchronous effect monad.
 
-It's basically just a thunk or a lazy function that produces a value.
-Laziness is the key to achieving referential transparency and delaying side
-effects until the monadic chain is run by calling the effect with `myEff()`
-or equivalently `myEff |> Eff.run`
-
-This is inspired by bs-effects `Effect` and John De Goes' basic synchronous
-IO monad described here: http://degoes.net/articles/only-one-io
-
-Eff should be similar in spirit to the Eff type of purescript (minus the
-effect row) for encoding synchronous effects with no accomodation for errors.
-
-console.log is a good example of a function that can be wrapped in Eff - it
-is purely synchronous and is not likely to ever fail with an exception.
-Certain DOM functions might also work well with Eff - the key is that Eff
-cannot deal with errors nor exceptions.
-
-If your action can fail, you should use Aff instead.
+This is inspired by bs-effects `Effect`, purescript Eff and Effect, and John
+De Goes' basic synchronous IO monad described here:
+http://degoes.net/articles/only-one-io
 */
 
 type t('a) = unit => 'a;
 
 /**
 Unsafely runs the effect or chain of effects. For Eff, this is the same as
-just calling the effect as a function. If any of the thunks throw an
-exception, the exception will not be caught here.
+just calling the effect as a function.
  */
 let run: t('a) => 'a = eff => eff();
 
@@ -37,11 +19,20 @@ let run: t('a) => 'a = eff => eff();
  */
 let pure: 'a => t('a) = (a, ()) => a;
 
-let fromThunk: (_ => 'a) => t('a) = Function.identity;
+let fromThunk: (unit => 'a) => t('a) = Relude_Function.identity;
+
+/**
+Attempts to run an Eff.t('a) and catches any exn thrown by the effect and lifts it into Eff.t(Belt.Result.t('a, exn))
+*/
+let attempt: t('a) => t(Belt.Result.t('a, exn)) =
+  (effA, ()) =>
+    try (Belt.Result.Ok(effA |> run)) {
+    | exn => Belt.Result.Error(exn)
+    };
 
 /*
-Attempts to run an Eff.t('a) and catches any JS exception thrown by the effect and lifts into into Eff.t(Belt.Result.t('a, Js.Exn.t))
-*/
+ Attempts to run an Eff.t('a) and catches any JS exception thrown by the effect and lifts into into Eff.t(Belt.Result.t('a, Js.Exn.t))
+ */
 let attemptJS: t('a) => t(Belt.Result.t('a, Js.Exn.t)) =
   (effA, ()) =>
     try (Belt.Result.Ok(effA |> run)) {

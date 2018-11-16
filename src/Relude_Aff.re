@@ -1,17 +1,5 @@
-module Eff = Relude_Eff;
-module Option = Relude_Option;
-module Result = Relude_Result;
-
 /*
- Aff is an pure, lazy, asynchronous effect monad that should be able to
- handle any type of effect a program could possibly need, including effects
- like Option, Result, Js.Promise, Future, or any combination of these. It
- basically boils down to a continuation callback, where the `onDone` callback
- is invoked with a `Result.t('a, 'e)` to either provide a value or an error.
- The error type is kept open as a type parameter, so that the user of Aff can
- decide exactly how to encode errors in his/her program. For many JS FFI
- functions, the error type will be Js.Exn.t, but this can be wrapped or converted
- into another error type using `Aff.mapError`.
+ Aff is an pure, lazy, asynchronous effect monad.
 
  This is inspired by bs-effects `Affect` and John De Goes' basic Async IO
  monad described here: http://degoes.net/articles/only-one-io
@@ -34,9 +22,9 @@ module Result = Relude_Result;
  various places. I'm not sure if that's useful or not.
  */
 
-type t('a, 'e) = (Belt.Result.t('a, 'e) => Eff.t(unit)) => Eff.t(unit);
+type t('a, 'e) = (Belt.Result.t('a, 'e) => Relude_Eff.t(unit)) => Relude_Eff.t(unit);
 
-let run: t(unit, 'e) => unit = onDone => onDone(_ => Eff.pure(), ());
+let run: t(unit, 'e) => unit = onDone => onDone(_ => Relude_Eff.pure(), ());
 
 let pure: 'a => t('a, 'e) = (a, onDone) => onDone(Ok(a));
 
@@ -45,16 +33,16 @@ let ok: 'a => t('a, 'e) = pure;
 let error: 'e => t('a, 'e) = (e, onDone) => onDone(Error(e));
 
 let fromOption: ('e, option('a)) => t('a, 'e) =
-  (e, opt) => opt |> Option.fold(_ => error(e), ok);
+  (e, opt) => opt |> Relude_Option.fold(_ => error(e), ok);
 
 let fromResult: Belt.Result.t('a, 'e) => t('a, 'e) =
-  r => r |> Result.fold(ok, error);
+  r => r |> Relude_Result.fold(ok, error);
 
-let fromEff: Eff.t('a) => t('a, 'e) =
-  (eff, onDone) => onDone(Ok(eff |> Eff.run));
+let fromEff: Relude_Eff.t('a) => t('a, 'e) =
+  (eff, onDone) => onDone(Ok(eff |> Relude_Eff.run));
 
-let fromEffAttemptJS: Eff.t(Belt.Result.t('a, Js.Exn.t)) => t('a, Js.Exn.t) =
-  (eff, onDone) => onDone(eff |> Eff.run);
+let fromEffAttemptJS: Relude_Eff.t(Belt.Result.t('a, Js.Exn.t)) => t('a, Js.Exn.t) =
+  (eff, onDone) => onDone(eff |> Relude_Eff.run);
 
 let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, onDoneA, onDoneB) =>
@@ -141,11 +129,15 @@ module Monad: MONAD_F =
   };
 
 module Infix = (Error: BsAbstract.Interface.TYPE) => {
-  module Monad = Monad(Error);
-  include BsAbstract.Infix.Monad(Monad);
+  module Functor = BsAbstract.Infix.Functor(Functor(Error));
+  module Apply = BsAbstract.Infix.Apply(Apply(Error));
+  module Monad = BsAbstract.Infix.Monad(Monad(Error));
 };
 
-module InfixJsExn {
-  module JsExnType: BsAbstract.Interface.TYPE { type t = Js.Exn.t };
-  include Infix(JsExnType);
+module JsExn {
+  module ErrorType: BsAbstract.Interface.TYPE = {
+    type t = Js.Exn.t;
+  };
+
+  module Infix = Infix(ErrorType);
 }

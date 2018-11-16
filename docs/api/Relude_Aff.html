@@ -25,9 +25,6 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_Aff" class='level-1 header'>Relude_Aff</a>
-<a href="#module-Eff" class='level-2 module'>Eff</a>
-<a href="#module-Option" class='level-2 module'>Option</a>
-<a href="#module-Result" class='level-2 module'>Result</a>
 <a href="#type-t" class='level-2 type'>t</a>
 <a href="#value-run" class='level-2 value'>run</a>
 <a href="#value-pure" class='level-2 value'>pure</a>
@@ -61,35 +58,19 @@
 <a href="#value-Monad.pure" class='level-3 value'>pure</a>
 <a href="#value-Monad.flat_map" class='level-3 value'>flat_map</a>
 <a href="#module-Infix" class='level-2 module'>Infix</a>
+<a href="#module-Infix.Functor" class='level-3 module'>Functor</a>
+<a href="#module-Infix.Apply" class='level-3 module'>Apply</a>
 <a href="#module-Infix.Monad" class='level-3 module'>Monad</a>
-<a href="#value-Infix.<$>" class='level-3 value'><$></a>
-<a href="#value-Infix.<#>" class='level-3 value'><#></a>
-<a href="#value-Infix.<*>" class='level-3 value'><*></a>
-<a href="#value-Infix.>>=" class='level-3 value'>>>=</a>
-<a href="#value-Infix.=<<" class='level-3 value'>=<<</a>
-<a href="#value-Infix.>=>" class='level-3 value'>>=></a>
-<a href="#value-Infix.<=<" class='level-3 value'><=<</a>
-<a href="#module-InfixJsExn" class='level-2 module'>InfixJsExn</a>
-<a href="#module-InfixJsExn.JsExnType" class='level-3 module'>JsExnType</a>
-<a href="#type-InfixJsExn.JsExnType.t" class='level-4 type'>t</a>
-<a href="#module-InfixJsExn.Monad" class='level-3 module'>Monad</a>
-<a href="#type-InfixJsExn.Monad.t" class='level-4 type'>t</a>
-<a href="#value-InfixJsExn.Monad.map" class='level-4 value'>map</a>
-<a href="#value-InfixJsExn.Monad.apply" class='level-4 value'>apply</a>
-<a href="#value-InfixJsExn.Monad.pure" class='level-4 value'>pure</a>
-<a href="#value-InfixJsExn.Monad.flat_map" class='level-4 value'>flat_map</a>
-<a href="#value-InfixJsExn.<$>" class='level-3 value'><$></a>
-<a href="#value-InfixJsExn.<#>" class='level-3 value'><#></a>
-<a href="#value-InfixJsExn.<*>" class='level-3 value'><*></a>
-<a href="#value-InfixJsExn.>>=" class='level-3 value'>>>=</a>
-<a href="#value-InfixJsExn.=<<" class='level-3 value'>=<<</a>
-<a href="#value-InfixJsExn.>=>" class='level-3 value'>>=></a>
-<a href="#value-InfixJsExn.<=<" class='level-3 value'><=<</a>
+<a href="#module-JsExn" class='level-2 module'>JsExn</a>
+<a href="#module-JsExn.ErrorType" class='level-3 module'>ErrorType</a>
+<a href="#type-JsExn.ErrorType.t" class='level-4 type'>t</a>
+<a href="#module-JsExn.Infix" class='level-3 module'>Infix</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Aff.html">Relude_Aff</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
 <a href="Relude_Bool.html">Relude_Bool</a>
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
@@ -112,6 +93,7 @@
 <a href="Relude_Aff.html">Relude_Aff</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
 <a href="Relude_Bool.html">Relude_Bool</a>
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
@@ -138,15 +120,9 @@
     <a href="#Relude_Aff" id="Relude_Aff"><h1>Relude_Aff</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Eff" id="module-Eff">Eff</a> : <a href="Relude_Eff.html">Relude_Eff</a></h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Option" id="module-Option">Option</a> : <a href="Relude_Option.html">Relude_Option</a></h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Result" id="module-Result">Result</a> : <a href="Relude_Result.html">Relude_Result</a></h4></div>
-
-<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = Belt.Result.t('a, 'e) => <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>(
+<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = Belt.Result.t('a, 'e) => <a href="Relude_Eff.html">Relude_Eff</a>.<a href="Relude_Eff.html#type-t">t</a>(
   unit
-) => <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>(unit)</h4>
+) => <a href="Relude_Eff.html">Relude_Eff</a>.<a href="Relude_Eff.html#type-t">t</a>(unit)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -174,11 +150,11 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-fromEff" id="value-fromEff">fromEff</a>: <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>('a) => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromEff" id="value-fromEff">fromEff</a>: <a href="Relude_Eff.html">Relude_Eff</a>.<a href="Relude_Eff.html#type-t">t</a>('a) => <a href="#type-t">t</a>('a, 'e)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-fromEffAttemptJS" id="value-fromEffAttemptJS">fromEffAttemptJS</a>: <a href="#module-Eff">Eff</a>.<a href="#type-Eff.t">t</a>(
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromEffAttemptJS" id="value-fromEffAttemptJS">fromEffAttemptJS</a>: <a href="Relude_Eff.html">Relude_Eff</a>.<a href="Relude_Eff.html#type-t">t</a>(
   Belt.Result.t('a, Js.Exn.t)
 ) => <a href="#type-t">t</a>('a, Js.Exn.t)</h4>
 
@@ -272,111 +248,21 @@
 </div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Monad" id="module-Infix.Monad">Monad</a> : <a href="#module-Monad">Monad</a></h4></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Functor" id="module-Infix.Functor">Functor</a> : BsAbstract.Infix.Functor</h4></div>
 
-<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<$>" id="value-Infix.<$>"><$></a>: ('a => 'a, Monad.t('a)) => Monad.t('a)</h4>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Apply" id="module-Infix.Apply">Apply</a> : BsAbstract.Infix.Apply</h4></div>
 
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<#>" id="value-Infix.<#>"><#></a>: (Monad.t('a), 'a => 'a) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<*>" id="value-Infix.<*>"><*></a>: (Monad.t('a => 'a), Monad.t('a)) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>>=" id="value-Infix.>>=">>>=</a>: (Monad.t('a), 'a => Monad.t('a)) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.=<<" id="value-Infix.=<<">=<<</a>: ('a => Monad.t('a), Monad.t('a)) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>=>" id="value-Infix.>=>">>=></a>: (
-  'a => Monad.t('a),
-  'a => Monad.t('a),
-  'a
-) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<=<" id="value-Infix.<=<"><=<</a>: (
-  'a => Monad.t('a),
-  'a => Monad.t('a),
-  'a
-) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-</div></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Monad" id="module-Infix.Monad">Monad</a> : BsAbstract.Infix.Monad</h4></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-InfixJsExn" id="module-InfixJsExn">InfixJsExn</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-InfixJsExn.JsExnType" id="module-InfixJsExn.JsExnType">JsExnType</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>type <a href="#type-InfixJsExn.JsExnType.t" id="type-InfixJsExn.JsExnType.t">t</a> = Js.Exn.t</h4>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-JsExn" id="module-JsExn">JsExn</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-JsExn.ErrorType" id="module-JsExn.ErrorType">ErrorType</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-JsExn.ErrorType.t" id="type-JsExn.ErrorType.t">t</a> = Js.Exn.t</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item module'>module <a href="#module-InfixJsExn.Monad" id="module-InfixJsExn.Monad">Monad</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>type <a href="#type-InfixJsExn.Monad.t" id="type-InfixJsExn.Monad.t">t</a>('a) = <a href="#type-t">t</a>('a, <a href="#module-InfixJsExn.JsExnType">JsExnType</a>.<a href="#type-InfixJsExn.JsExnType.t">t</a>)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.Monad.map" id="value-InfixJsExn.Monad.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.Monad.apply" id="value-InfixJsExn.Monad.apply">apply</a>: (t('a => 'b), t('a)) => t('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.Monad.pure" id="value-InfixJsExn.Monad.pure">pure</a>: 'a => t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.Monad.flat_map" id="value-InfixJsExn.Monad.flat_map">flat_map</a>: (t('a), 'a => t('b)) => t('b)</h4>
-
-<div class='body body-empty'></div></div>
-</div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.<$>" id="value-InfixJsExn.<$>"><$></a>: ('a => 'a, Monad.t('a)) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.<#>" id="value-InfixJsExn.<#>"><#></a>: (Monad.t('a), 'a => 'a) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.<*>" id="value-InfixJsExn.<*>"><*></a>: (Monad.t('a => 'a), Monad.t('a)) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.>>=" id="value-InfixJsExn.>>=">>>=</a>: (Monad.t('a), 'a => Monad.t('a)) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.=<<" id="value-InfixJsExn.=<<">=<<</a>: ('a => Monad.t('a), Monad.t('a)) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.>=>" id="value-InfixJsExn.>=>">>=></a>: (
-  'a => Monad.t('a),
-  'a => Monad.t('a),
-  'a
-) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-InfixJsExn.<=<" id="value-InfixJsExn.<=<"><=<</a>: (
-  'a => Monad.t('a),
-  'a => Monad.t('a),
-  'a
-) => Monad.t('a)</h4>
-
-<div class='body body-empty'></div></div>
-</div></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-JsExn.Infix" id="module-JsExn.Infix">Infix</a> : <a href="#module-Infix">Infix</a></h4></div>
 </div></div>
 
     </div>

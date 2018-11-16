@@ -27,22 +27,26 @@
       <a href="#Relude_AsyncData" class='level-1 header'>Relude_AsyncData</a>
 <a href="#type-t" class='level-2 type'>t</a>
 <a href="#value-pure" class='level-2 value'>pure</a>
-<a href="#value-idle" class='level-2 value'>idle</a>
+<a href="#value-init" class='level-2 value'>init</a>
 <a href="#value-loading" class='level-2 value'>loading</a>
-<a href="#value-loaded" class='level-2 value'>loaded</a>
-<a href="#value-refreshing" class='level-2 value'>refreshing</a>
-<a href="#value-failed" class='level-2 value'>failed</a>
+<a href="#value-reloading" class='level-2 value'>reloading</a>
+<a href="#value-complete" class='level-2 value'>complete</a>
 <a href="#value-map" class='level-2 value'>map</a>
-<a href="#value-mapError" class='level-2 value'>mapError</a>
+<a href="#value-alt" class='level-2 value'>alt</a>
 <a href="#value-apply" class='level-2 value'>apply</a>
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
 <a href="#module-Functor" class='level-2 module'>Functor</a>
 <a href="#type-Functor.t" class='level-3 type'>t</a>
 <a href="#value-Functor.map" class='level-3 value'>map</a>
+<a href="#module-Alt" class='level-2 module'>Alt</a>
+<a href="#type-Alt.t" class='level-3 type'>t</a>
+<a href="#value-Alt.map" class='level-3 value'>map</a>
+<a href="#value-Alt.alt" class='level-3 value'>alt</a>
 <a href="#module-Apply" class='level-2 module'>Apply</a>
 <a href="#type-Apply.t" class='level-3 type'>t</a>
 <a href="#value-Apply.map" class='level-3 value'>map</a>
 <a href="#value-Apply.apply" class='level-3 value'>apply</a>
+<a href="#module-ApplyFunctions" class='level-2 module'>ApplyFunctions</a>
 <a href="#value-map2" class='level-2 value'>map2</a>
 <a href="#value-map3" class='level-2 value'>map3</a>
 <a href="#value-map4" class='level-2 value'>map4</a>
@@ -58,11 +62,25 @@
 <a href="#value-Monad.apply" class='level-3 value'>apply</a>
 <a href="#value-Monad.pure" class='level-3 value'>pure</a>
 <a href="#value-Monad.flat_map" class='level-3 value'>flat_map</a>
+<a href="#module-Infix" class='level-2 module'>Infix</a>
+<a href="#value-Infix.<$>" class='level-3 value'><$></a>
+<a href="#value-Infix.<#>" class='level-3 value'><#></a>
+<a href="#value-Infix.<$>" class='level-3 value'><$></a>
+<a href="#value-Infix.<#>" class='level-3 value'><#></a>
+<a href="#value-Infix.<*>" class='level-3 value'><*></a>
+<a href="#value-Infix.<$>" class='level-3 value'><$></a>
+<a href="#value-Infix.<#>" class='level-3 value'><#></a>
+<a href="#value-Infix.<*>" class='level-3 value'><*></a>
+<a href="#value-Infix.>>=" class='level-3 value'>>>=</a>
+<a href="#value-Infix.=<<" class='level-3 value'>=<<</a>
+<a href="#value-Infix.>=>" class='level-3 value'>>=></a>
+<a href="#value-Infix.<=<" class='level-3 value'><=<</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Aff.html">Relude_Aff</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
 <a href="Relude_Bool.html">Relude_Bool</a>
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
@@ -85,6 +103,7 @@
 <a href="Relude_Aff.html">Relude_Aff</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
 <a href="Relude_Bool.html">Relude_Bool</a>
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
@@ -111,157 +130,218 @@
     <a href="#Relude_AsyncData" id="Relude_AsyncData"><h1>Relude_AsyncData</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = 
-  | Idle
-  | Loading
-  | Loaded('a)
-  | Refreshing('a)
-  | Failed('e)</h4>
+<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a) = | Init | Loading | Reloading('a) | Complete('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-idle" id="value-idle">idle</a>: <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-init" id="value-init">init</a>: <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-loading" id="value-loading">loading</a>: <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-loading" id="value-loading">loading</a>: <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-loaded" id="value-loaded">loaded</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-reloading" id="value-reloading">reloading</a>: 'a => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-refreshing" id="value-refreshing">refreshing</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-complete" id="value-complete">complete</a>: 'a => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-failed" id="value-failed">failed</a>: 'e => <a href="#type-t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: ('a => 'b, <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: ('a => 'b, <a href="#type-t">t</a>('a, 'e)) => <a href="#type-t">t</a>('b, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-alt" id="value-alt">alt</a>: (<a href="#type-t">t</a>('a), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-mapError" id="value-mapError">mapError</a>: ('e1 => 'e2, <a href="#type-t">t</a>('a, 'e1)) => <a href="#type-t">t</a>('a, 'e2)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (<a href="#type-t">t</a>('a => 'b), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (<a href="#type-t">t</a>('a => 'b, 'e), <a href="#type-t">t</a>('a, 'e)) => <a href="#type-t">t</a>('b, 'e)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: (<a href="#type-t">t</a>('a, 'e), 'a => <a href="#type-t">t</a>('b, 'e)) => <a href="#type-t">t</a>('b, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: (<a href="#type-t">t</a>('a), 'a => <a href="#type-t">t</a>('b)) => <a href="#type-t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Functor" id="module-Functor">Functor</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>type <a href="#type-Functor.t" id="type-Functor.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Functor.t" id="type-Functor.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Functor.map" id="value-Functor.map">map</a>: ('a => 'a, <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functor.map" id="value-Functor.map">map</a>: ('a => 'a, <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Alt" id="module-Alt">Alt</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include Functor</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Alt.t" id="type-Alt.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Alt.map" id="value-Alt.map">map</a>: ('a => 'b, <a href="#type-Alt.t">t</a>('a)) => <a href="#type-Alt.t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Alt.alt" id="value-Alt.alt">alt</a>: (<a href="#type-t">t</a>('a), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Apply" id="module-Apply">Apply</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Apply.t" id="type-Apply.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+<div class='doc-item'><h4 class='item module'>include Functor</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Apply.t" id="type-Apply.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.map" id="value-Apply.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
-
-<div class='body body-empty'></div></div>
-</div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.apply" id="value-Apply.apply">apply</a>: (<a href="#type-t">t</a>('a => 'a, 'a), <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.map" id="value-Apply.map">map</a>: ('a => 'b, <a href="#type-Apply.t">t</a>('a)) => <a href="#type-Apply.t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (('a, 'b) => 'c, <a href="#type-t">t</a>('a, 'x), <a href="#type-t">t</a>('b, 'x)) => <a href="#type-t">t</a>(
-  'c,
-  'x
-)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.apply" id="value-Apply.apply">apply</a>: (<a href="#type-t">t</a>('a => 'a), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-ApplyFunctions" id="module-ApplyFunctions">ApplyFunctions</a> : BsAbstract.Functions.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (('a, 'b) => 'c, <a href="#type-t">t</a>('a), <a href="#type-t">t</a>('b)) => <a href="#type-t">t</a>('c)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: (
-  ('a, 'b, 'c) => 'd,
-  <a href="#type-t">t</a>('a, 'x),
-  <a href="#type-t">t</a>('b, 'x),
-  <a href="#type-t">t</a>('c, 'x)
-) => <a href="#type-t">t</a>('d, 'x)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: (('a, 'b, 'c) => 'd, <a href="#type-t">t</a>('a), <a href="#type-t">t</a>('b), <a href="#type-t">t</a>('c)) => <a href="#type-t">t</a>('d)</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-map4" id="value-map4">map4</a>: (
   ('a, 'b, 'c, 'd) => 'e,
-  <a href="#type-t">t</a>('a, 'x),
-  <a href="#type-t">t</a>('b, 'x),
-  <a href="#type-t">t</a>('c, 'x),
-  <a href="#type-t">t</a>('d, 'x)
-) => <a href="#type-t">t</a>('e, 'x)</h4>
+  <a href="#type-t">t</a>('a),
+  <a href="#type-t">t</a>('b),
+  <a href="#type-t">t</a>('c),
+  <a href="#type-t">t</a>('d)
+) => <a href="#type-t">t</a>('e)</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-map5" id="value-map5">map5</a>: (
   ('a, 'b, 'c, 'd, 'e) => 'f,
-  <a href="#type-t">t</a>('a, 'x),
-  <a href="#type-t">t</a>('b, 'x),
-  <a href="#type-t">t</a>('c, 'x),
-  <a href="#type-t">t</a>('d, 'x),
-  <a href="#type-t">t</a>('e, 'x)
-) => <a href="#type-t">t</a>('f, 'x)</h4>
+  <a href="#type-t">t</a>('a),
+  <a href="#type-t">t</a>('b),
+  <a href="#type-t">t</a>('c),
+  <a href="#type-t">t</a>('d),
+  <a href="#type-t">t</a>('e)
+) => <a href="#type-t">t</a>('f)</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Applicative.t" id="type-Applicative.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+<div class='doc-item'><h4 class='item module'>include Apply</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Applicative.t" id="type-Applicative.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.map" id="value-Applicative.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.map" id="value-Applicative.map">map</a>: ('a => 'b, <a href="#type-Applicative.t">t</a>('a)) => <a href="#type-Applicative.t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.apply" id="value-Applicative.apply">apply</a>: (t('a => 'b), t('a)) => t('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.apply" id="value-Applicative.apply">apply</a>: (<a href="#type-Applicative.t">t</a>('a => 'b), <a href="#type-Applicative.t">t</a>('a)) => <a href="#type-Applicative.t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.pure" id="value-Applicative.pure">pure</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.pure" id="value-Applicative.pure">pure</a>: 'a => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Monad" id="module-Monad">Monad</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Monad.t" id="type-Monad.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+<div class='doc-item'><h4 class='item module'>include Applicative</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Monad.t" id="type-Monad.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.map" id="value-Monad.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.map" id="value-Monad.map">map</a>: ('a => 'b, <a href="#type-Monad.t">t</a>('a)) => <a href="#type-Monad.t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.apply" id="value-Monad.apply">apply</a>: (t('a => 'b), t('a)) => t('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.apply" id="value-Monad.apply">apply</a>: (<a href="#type-Monad.t">t</a>('a => 'b), <a href="#type-Monad.t">t</a>('a)) => <a href="#type-Monad.t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.pure" id="value-Monad.pure">pure</a>: 'a => t('a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.pure" id="value-Monad.pure">pure</a>: 'a => <a href="#type-Monad.t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.flat_map" id="value-Monad.flat_map">flat_map</a>: (<a href="#type-t">t</a>('a, 'a), 'a => <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.flat_map" id="value-Monad.flat_map">flat_map</a>: (<a href="#type-t">t</a>('a), 'a => <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<$>" id="value-Infix.<$>"><$></a>: ('a => 'a, <a href="#module-Functor">Functor</a>.<a href="#type-Functor.t">t</a>('a)) => <a href="#module-Functor">Functor</a>.<a href="#type-Functor.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<#>" id="value-Infix.<#>"><#></a>: (<a href="#module-Functor">Functor</a>.<a href="#type-Functor.t">t</a>('a), 'a => 'a) => <a href="#module-Functor">Functor</a>.<a href="#type-Functor.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<$>" id="value-Infix.<$>"><$></a>: ('a => 'a, <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)) => <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<#>" id="value-Infix.<#>"><#></a>: (<a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a), 'a => 'a) => <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<*>" id="value-Infix.<*>"><*></a>: (<a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a => 'a), <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)) => <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<$>" id="value-Infix.<$>"><$></a>: ('a => 'a, <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<#>" id="value-Infix.<#>"><#></a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), 'a => 'a) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<*>" id="value-Infix.<*>"><*></a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a => 'a), <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>>=" id="value-Infix.>>=">>>=</a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), 'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.=<<" id="value-Infix.=<<">=<<</a>: ('a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>=>" id="value-Infix.>=>">>=></a>: (
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a
+) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<=<" id="value-Infix.<=<"><=<</a>: (
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a),
+  'a
+) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
 </div></div>
 
     </div>

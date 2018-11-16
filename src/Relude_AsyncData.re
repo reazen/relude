@@ -1,133 +1,137 @@
-open BsAbstract.Interface;
-
-type t('a, 'e) =
-  | Idle
-  | Loading
-  | Loaded('a)
-  | Refreshing('a)
-  | Failed('e);
-
-let pure: 'a => t('a, 'e) = a => Loaded(a);
-
-let idle: t('a, 'e) = Idle;
-let loading: t('a, 'e) = Loading;
-let loaded: 'a => t('a, 'e) = a => Loaded(a);
-let refreshing: 'a => t('a, 'e) = a => Refreshing(a);
-let failed: 'e => t('a, 'e) = e => Failed(e);
-
-let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
-  (f, fa) =>
-    switch (fa) {
-    | Idle => Idle
-    | Loading => Loading
-    | Loaded(a) => Loaded(f(a))
-    | Refreshing(a) => Refreshing(f(a))
-    | Failed(e) => Failed(e)
-    };
-
-let mapError: ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
-  (f, fa) =>
-    switch (fa) {
-    | Idle => Idle
-    | Loading => Loading
-    | Loaded(_) as loaded => loaded
-    | Refreshing(_) as refreshing => refreshing
-    | Failed(e) => Failed(f(e))
-    };
-
-/* TODO: maybe we want to require a SEMIGROUP to collect errors for the Failed case */
-let apply: (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
-  (ff, fa) =>
-    switch (ff, fa) {
-    | (Idle, Idle) => Idle
-    | (Idle, Loading) => Loading
-    | (Idle, Loaded(_)) => Idle
-    | (Idle, Refreshing(_)) => Idle
-    | (Idle, Failed(e2)) => Failed(e2)
-
-    | (Loading, Idle) => Loading
-    | (Loading, Loading) => Loading
-    | (Loading, Loaded(_)) => Loading
-    | (Loading, Refreshing(_)) => Loading
-    | (Loading, Failed(e2)) => Failed(e2)
-
-    | (Loaded(_), Idle) => Idle
-    | (Loaded(_), Loading) => Loading
-    | (Loaded(f), Loaded(a)) => Loaded(f(a))
-    | (Loaded(f), Refreshing(a)) => Refreshing(f(a))
-    | (Loaded(_), Failed(e2)) => Failed(e2)
-
-    | (Refreshing(_), Idle) => Idle
-    | (Refreshing(_), Loading) => Loading
-    | (Refreshing(f), Refreshing(a)) => Refreshing(f(a))
-    | (Refreshing(f), Loaded(a)) => Refreshing(f(a))
-    | (Refreshing(_), Failed(e2)) => Failed(e2)
-
-    | (Failed(e1), Idle) => Failed(e1)
-    | (Failed(e1), Loading) => Failed(e1)
-    | (Failed(e1), Loaded(_)) => Failed(e1)
-    | (Failed(e1), Refreshing(_)) => Failed(e1)
-    | (Failed(_), Failed(e2)) => Failed(e2)
-    };
-
-let flatMap: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
-  (fa, f) =>
-    switch (fa) {
-    | Idle => Idle
-    | Loading => Loading
-    | Loaded(a) => f(a)
-    | Refreshing(a) => f(a)
-    | Failed(e) => Failed(e)
-    };
-
-module type FUNCTOR = (E: TYPE) => FUNCTOR with type t('a) = t('a, E.t);
-
-module Functor: FUNCTOR =
-  (E: TYPE) => {
-    type nonrec t('a) = t('a, E.t);
-    let map = map;
-  };
-
-module type APPLY = (E: TYPE) => APPLY with type t('a) = t('a, E.t);
-
-module Apply: APPLY =
-  (E: TYPE) => {
-    include Functor(E);
-    let apply = apply;
-  };
-
 /*
-module AsyncDataApply = (Error: TYPE) =>
-  BsAbstract.Functions.Apply((Apply(Error)));
+AsyncData represents the state of data that is being loaded asynchronously.
+
+This type does not represent failures by default, but it can by using Belt.Result.t as your 'a type.
+
+The reason for this is that not all async data loading mechanisms will necessarily fail.
+
+The other interesting bit is that `Reloading` can be used if you already have data (e.g. an Ok or Error Result),
+but you need to reload the data to get a new Result.
 */
 
+type t('a) =
+  | Init
+  | Loading
+  | Reloading('a)
+  | Complete('a);
+
+let pure: 'a => t('a) = a => Complete(a);
+
+let init: t('a) = Init;
+
+let loading: t('a) = Loading;
+
+let reloading: 'a => t('a) = a => Reloading(a);
+
+let complete: 'a => t('a) = a => Complete(a);
+
+let map: ('a => 'b, t('a)) => t('b) =
+  (f, fa) =>
+    switch (fa) {
+    | Init => Init
+    | Loading => Loading
+    | Reloading(a) => Reloading(f(a))
+    | Complete(a) => Complete(f(a))
+    };
+
+/* TODO: not sure about this */
+let alt: (t('a), t('a)) => t('a) =
+  (fa, fb) =>
+    switch (fa, fb) {
+    | (Init, Init) => Init
+    | (Init, Loading) => Loading
+    | (Init, Reloading(_) as r) => r
+    | (Init, Complete(_) as c) => c
+
+    | (Loading, Init) => Loading
+    | (Loading, Loading) => Loading
+    | (Loading, Reloading(_) as r) => r
+    | (Loading, Complete(_) as c) => c
+
+    | (Reloading(_) as r, Init) => r
+    | (Reloading(_) as r, Loading) => r
+    | (Reloading(_) as r, Reloading(_)) => r
+    | (Reloading(_), Complete(_) as c) => c
+
+    | (Complete(_) as c, Init) => c
+    | (Complete(_) as c, Loading) => c
+    | (Complete(_) as c, Reloading(_)) => c
+    | (Complete(_) as c, Complete(_)) => c
+    };
+
+let apply: (t('a => 'b), t('a)) => t('b) =
+  (ff, fa) =>
+    switch (ff, fa) {
+    | (Init, Init) => Init
+    | (Init, Loading) => Loading /* prefer Loading over Init */
+    | (Init, Reloading(_)) => Init
+    | (Init, Complete(_)) => Init
+
+    | (Loading, Init) => Loading
+    | (Loading, Loading) => Loading
+    | (Loading, Reloading(_)) => Loading
+    | (Loading, Complete(_)) => Loading
+
+    | (Reloading(_), Init) => Init
+    | (Reloading(_), Loading) => Loading
+    | (Reloading(f), Reloading(a)) => Reloading(f(a))
+    | (Reloading(f), Complete(a)) => Reloading(f(a))
+
+    | (Complete(_), Init) => Init
+    | (Complete(_), Loading) => Loading
+    | (Complete(f), Reloading(a)) => Reloading(f(a))
+    | (Complete(f), Complete(a)) => Complete(f(a))
+    };
+
+let flatMap: (t('a), 'a => t('b)) => t('b) =
+  (fa, f) =>
+    switch (fa) {
+    | Init => Init
+    | Loading => Loading
+    | Reloading(a) => f(a)
+    | Complete(a) => f(a)
+    };
+
+module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  type nonrec t('a) = t('a);
+  let map = map;
+};
+
+module Alt: BsAbstract.Interface.ALT with type t('a) = t('a) = {
+  include Functor;
+  let alt = alt;
+};
+
+module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+  include Functor;
+  let apply = apply;
+};
+
+module ApplyFunctions = BsAbstract.Functions.Apply(Apply);
+
 /* These can be derived from BsAbstract.Functions.Apply, but because we have an error type, it becomes a module functor with an error type */
-let map2: (('a, 'b) => 'c, t('a, 'x), t('b, 'x)) => t('c, 'x) = (f, fa, fb) =>
-  apply(map(f, fa), fb)
+let map2: (('a, 'b) => 'c, t('a), t('b)) => t('c) = ApplyFunctions.lift2;
 
-let map3: (('a, 'b ,'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x)) => t('d, 'x) = (f, fa, fb, fc) =>
-  apply(map2(f, fa, fb), fc)
+let map3: (('a, 'b, 'c) => 'd, t('a), t('b), t('c)) => t('d) = ApplyFunctions.lift3;
 
-let map4: (('a, 'b ,'c, 'd) => 'e, t('a, 'x), t('b, 'x), t('c, 'x), t('d, 'x)) => t('e, 'x) = (f, fa, fb, fc, fd) =>
-  apply(map3(f, fa, fb, fc), fd)
+let map4: (('a, 'b, 'c, 'd) => 'e, t('a), t('b), t('c), t('d)) => t('e) = ApplyFunctions.lift4;
 
-let map5: (('a, 'b ,'c, 'd, 'e) => 'f, t('a, 'x), t('b, 'x), t('c, 'x), t('d, 'x), t('e, 'x)) => t('f, 'x) = (f, fa, fb, fc, fd, fe) =>
-  apply(map4(f, fa, fb, fc, fd), fe)
+let map5:
+  (('a, 'b, 'c, 'd, 'e) => 'f, t('a), t('b), t('c), t('d), t('e)) =>
+  t('f) = ApplyFunctions.lift5;
 
+module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  include Apply;
+  let pure = pure;
+};
 
-module type APPLICATIVE =
-  (E: TYPE) => APPLICATIVE with type t('a) = t('a, E.t);
+module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+  include Applicative;
+  let flat_map = flatMap;
+};
 
-module Applicative: APPLICATIVE =
-  (E: TYPE) => {
-    include Apply(E);
-    let pure = pure;
-  };
-
-module type MONAD = (E: TYPE) => MONAD with type t('a) = t('a, E.t);
-
-module Monad: MONAD =
-  (E: TYPE) => {
-    include Applicative(E);
-    let flat_map = flatMap;
-  };
+module Infix {
+  include BsAbstract.Infix.Functor(Functor);
+  include BsAbstract.Infix.Apply(Apply);
+  include BsAbstract.Infix.Monad(Monad);
+}
