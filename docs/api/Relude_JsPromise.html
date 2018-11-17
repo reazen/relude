@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel=stylesheet href='../styles.css'>
 <script defer src='../script.js'></script>
-<title>Relude_MonadAff</title>
+<title>Relude_JsPromise</title>
 <body>
 <script>window.relativeToRoot=".."</script>
 <script defer src="../block-script.js"></script>
@@ -24,12 +24,9 @@
       <div class='docs-listing'><a href="../index.html">Home</a></div>
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
-      <a href="#Relude_MonadAff" class='level-1 header'>Relude_MonadAff</a>
-<a href="#module-Aff" class='level-2 module'>Aff</a>
-<a href="#module-Function" class='level-2 module'>Function</a>
-<a href="#module-MonadAffAff" class='level-2 module'>MonadAffAff</a>
-<a href="#type-MonadAffAff.t" class='level-3 type'>t</a>
-<a href="#value-MonadAffAff.liftAff" class='level-3 value'>liftAff</a>
+      <a href="#Relude_JsPromise" class='level-1 header'>Relude_JsPromise</a>
+<a href="#value-toAff" class='level-2 value'>toAff</a>
+<a href="#value-fromAff" class='level-2 value'>fromAff</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Aff.html">Relude_Aff</a>
@@ -88,22 +85,19 @@
   
     <div class='main'>
     
-    <a href="#Relude_MonadAff" id="Relude_MonadAff"><h1>Relude_MonadAff</h1></a>
+    <a href="#Relude_JsPromise" id="Relude_JsPromise"><h1>Relude_JsPromise</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Aff" id="module-Aff">Aff</a> : <a href="Relude_Aff.html">Relude_Aff</a></h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Function" id="module-Function">Function</a> : <a href="Relude_Function.html">Relude_Function</a></h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-MonadAffAff" id="module-MonadAffAff">MonadAffAff</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>type <a href="#type-MonadAffAff.t" id="type-MonadAffAff.t">t</a>('a, 'e) = <a href="#module-Aff">Aff</a>.<a href="#type-Aff.t">t</a>('a, 'e)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-toAff" id="value-toAff">toAff</a>: Js.Promise.t('a) => <a href="Relude_Aff.html">Relude_Aff</a>.<a href="Relude_Aff.html#type-t">t</a>(
+  'a,
+  Js.Promise.error
+)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-MonadAffAff.liftAff" id="value-MonadAffAff.liftAff">liftAff</a>: 'a => 'a</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromAff" id="value-fromAff">fromAff</a>: <a href="Relude_Aff.html">Relude_Aff</a>.<a href="Relude_Aff.html#type-t">t</a>('a, exn) => Js.Promise.t('a)</h4>
 
 <div class='body body-empty'></div></div>
-</div></div>
 
     </div>
     <div class='right-blank'></div>

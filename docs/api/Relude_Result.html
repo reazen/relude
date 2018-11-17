@@ -25,8 +25,6 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_Result" class='level-1 header'>Relude_Result</a>
-<a href="#module-NonEmpty" class='level-2 module'>NonEmpty</a>
-<a href="#module-Validation" class='level-2 module'>Validation</a>
 <a href="#value-pure" class='level-2 value'>pure</a>
 <a href="#value-ok" class='level-2 value'>ok</a>
 <a href="#value-error" class='level-2 value'>error</a>
@@ -47,6 +45,17 @@
 <a href="#value-toValidation" class='level-2 value'>toValidation</a>
 <a href="#value-fromValidation" class='level-2 value'>fromValidation</a>
 <a href="#value-toValidationNel" class='level-2 value'>toValidationNel</a>
+<a href="#module-Functor" class='level-2 module'>Functor</a>
+<a href="#module-Alt" class='level-2 module'>Alt</a>
+<a href="#module-Apply" class='level-2 module'>Apply</a>
+<a href="#module-Applicative" class='level-2 module'>Applicative</a>
+<a href="#module-Monad" class='level-2 module'>Monad</a>
+<a href="#module-Foldable" class='level-2 module'>Foldable</a>
+<a href="#module-Traversable" class='level-2 module'>Traversable</a>
+<a href="#module-Eq" class='level-2 module'>Eq</a>
+<a href="#module-Show" class='level-2 module'>Show</a>
+<a href="#module-Ord" class='level-2 module'>Ord</a>
+<a href="#module-Infix" class='level-2 module'>Infix</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Aff.html">Relude_Aff</a>
@@ -61,6 +70,7 @@
 <a href="Relude_Int.html">Relude_Int</a>
 <a href="Relude_IsoArray.html">Relude_IsoArray</a>
 <a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_JsPromise.html">Relude_JsPromise</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
@@ -86,6 +96,7 @@
 <a href="Relude_Int.html">Relude_Int</a>
 <a href="Relude_IsoArray.html">Relude_IsoArray</a>
 <a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_JsPromise.html">Relude_JsPromise</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
@@ -106,10 +117,6 @@
     <a href="#Relude_Result" id="Relude_Result"><h1>Relude_Result</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmpty" id="module-NonEmpty">NonEmpty</a> : <a href="Relude_NonEmpty.html">Relude_NonEmpty</a></h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Validation" id="module-Validation">Validation</a> : <a href="Relude_Validation.html">Relude_Validation</a></h4></div>
-
 <div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => Belt.Result.t('a, 'e)</h4>
 
 <div class='body body-empty'></div></div>
@@ -218,26 +225,48 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-toValidation" id="value-toValidation">toValidation</a>: Belt.Result.t('a, 'a) => <a href="#module-Validation">Validation</a>.<a href="#type-Validation.t">t</a>(
+<div class='doc-item'><h4 class='item'>let <a href="#value-toValidation" id="value-toValidation">toValidation</a>: Belt.Result.t(
   'a,
   'a
-)</h4>
+) => <a href="Relude_Validation.html">Relude_Validation</a>.<a href="Relude_Validation.html#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-fromValidation" id="value-fromValidation">fromValidation</a>: <a href="#module-Validation">Validation</a>.<a href="#type-Validation.t">t</a>('a, 'a) => Belt.Result.t(
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromValidation" id="value-fromValidation">fromValidation</a>: <a href="Relude_Validation.html">Relude_Validation</a>.<a href="Relude_Validation.html#type-t">t</a>(
   'a,
   'a
-)</h4>
+) => Belt.Result.t('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-toValidationNel" id="value-toValidationNel">toValidationNel</a>: Belt.Result.t('a, 'e) => <a href="#module-Validation">Validation</a>.<a href="#type-Validation.t">t</a>(
+<div class='doc-item'><h4 class='item'>let <a href="#value-toValidationNel" id="value-toValidationNel">toValidationNel</a>: Belt.Result.t(
   'a,
-  <a href="#module-NonEmpty.List" title="NonEmpty.List">List</a>.<a href="#type-NonEmpty.List.t">t</a>('e)
-)</h4>
+  'e
+) => <a href="Relude_Validation.html">Relude_Validation</a>.<a href="Relude_Validation.html#type-t">t</a>('a, <a href="Relude_NonEmpty.html#module-List" title="Relude_NonEmpty.List">List</a>.<a href="Relude_NonEmpty.html#type-List.t">t</a>('e))</h4>
 
 <div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Functor" id="module-Functor">Functor</a> : BsAbstract.Result.Functor</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Alt" id="module-Alt">Alt</a> : BsAbstract.Result.Alt</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Apply" id="module-Apply">Apply</a> : BsAbstract.Result.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a> : BsAbstract.Result.Applicative</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monad" id="module-Monad">Monad</a> : BsAbstract.Result.Monad</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Foldable" id="module-Foldable">Foldable</a> : BsAbstract.Result.Foldable</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Traversable" id="module-Traversable">Traversable</a> : BsAbstract.Result.Traversable</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Eq" id="module-Eq">Eq</a> : BsAbstract.Result.Eq</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Show" id="module-Show">Show</a> : BsAbstract.Result.Show</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Ord" id="module-Ord">Ord</a> : BsAbstract.Result.Ord</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a> : BsAbstract.Result.Infix</h4></div>
 
     </div>
     <div class='right-blank'></div>
