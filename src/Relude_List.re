@@ -1,8 +1,3 @@
-module Function = Relude_Function;
-module Int = Relude_Int;
-module Interface = Relude_Interface;
-module Ordering = Relude_Ordering;
-
 let length: list('a) => int = Belt.List.length;
 
 let isEmpty: list('a) => bool =
@@ -170,7 +165,7 @@ let intersperse: ('a, list('a)) => list('a) =
 
 let replicate: (int, list('a)) => list('a) =
   (i, xs) =>
-    foldLeft((acc, _i) => concat(acc, xs), [], Int.rangeAsList(0, i));
+    foldLeft((acc, _i) => concat(acc, xs), [], Relude_Int.rangeAsList(0, i));
 
 let zip: (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 
@@ -178,7 +173,7 @@ let zipWith: (('a, 'b) => 'c, list('a), list('b)) => list('c) =
   (f, xs, ys) => Belt.List.zipBy(xs, ys, f);
 
 let zipWithIndex: list('a) => list(('a, int)) =
-  xs => zip(xs, Int.rangeAsList(0, length(xs)));
+  xs => zip(xs, Relude_Int.rangeAsList(0, length(xs)));
 
 let unzip: list(('a, 'b)) => (list('a), list('b)) = Belt.List.unzip;
 
@@ -186,7 +181,7 @@ let sortWithInt: (('a, 'a) => int, list('a)) => list('a) =
   (f, xs) => Belt.List.sort(xs, f);
 
 let sort: (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a) =
-  (f, xs) => sortWithInt((a, b) => f(a, b) |> Ordering.toInt, xs);
+  (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
 let shuffle: list('a) => list('a) = Belt.List.shuffle;
 
@@ -257,11 +252,19 @@ let flipFlatMap: ('a => list('b), list('a)) => list('b) =
   (f, xs) => flatMap(xs, f);
 
 let flatten: list(list('a)) => list('a) =
-  xss => flatMap(xss, Function.identity);
+  xss => flatMap(xss, Relude_Function.identity);
 
 let fromArray: array('a) => list('a) = Belt.List.fromArray;
 
 let toArray: list('a) => array('a) = Belt.List.toArray;
+
+let mkString: (string, list(string)) => string =
+  (delim, xs) => {
+    let delimited = intersperse(delim, xs);
+    foldLeft((acc, curr) => acc ++ curr, "", delimited);
+  };
+
+module Eq = BsAbstract.List.Eq;
 
 let rec eqF: (('a, 'a) => bool, list('a), list('a)) => bool =
   (innerEq, a, b) =>
@@ -273,40 +276,41 @@ let rec eqF: (('a, 'a) => bool, list('a), list('a)) => bool =
 
 let eq =
     (
-      type t,
-      eq: (module BsAbstract.Interface.EQ with type t = t),
-      xs: list(t),
-      ys: list(t),
+      type a,
+      eqA: (module BsAbstract.Interface.EQ with type t = a),
+      xs: list(a),
+      ys: list(a),
     )
     : bool => {
-  module ListEq = BsAbstract.List.Eq((val eq));
-  ListEq.eq(xs, ys);
+  module EqA = (val eqA);
+  eqF(EqA.eq, xs, ys);
 };
-
-let mkString: (string, list(string)) => string =
-  (delim, xs) => {
-    let delimited = intersperse(delim, xs);
-    foldLeft((acc, curr) => acc ++ curr, "", delimited);
-  };
-
-let show: ('a => string, list('a)) => string =
-  (showX, xs) => {
-    let strings = map(showX, xs);
-    "[" ++ mkString(", ", strings) ++ "]";
-  };
-
-module Eq = BsAbstract.List.Eq;
 
 module Show = BsAbstract.List.Show;
 
-/* bs-abstract didn't have this b/c it's the same as Alt, but we wanted to have it. */
+let showF: ('a => string, list('a)) => string =
+  (showA, xs) => {
+    let strings = map(showA, xs);
+    "[" ++ mkString(", ", strings) ++ "]";
+  };
+
+let show =
+    (
+      type a,
+      showA: (module BsAbstract.Interface.SHOW with type t = a),
+      xs: list(a),
+    )
+    : string => {
+  module ShowA = (val showA);
+  showF(ShowA.show, xs);
+};
+
 module SemigroupAny:
   BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = list('a) = {
   type t('a) = list('a);
   let append = concat;
 };
 
-/* bs-abstract didn't have this b/c it's the same as Plus, but we wanted to have it. */
 module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = list('a) = {
   include SemigroupAny;
   let empty = empty;
@@ -356,25 +360,40 @@ module Monad = BsAbstract.List.Monad;
 
 module Foldable = BsAbstract.List.Foldable;
 
-module Traversable = BsAbstract.List.Foldable;
+module Traversable = BsAbstract.List.Traversable;
 
-module Sequence: Interface.SEQUENCE with type t('a) = list('a) = {
+module Infix = {
+  include BsAbstract.List.Infix;
+  include ApplyFunctions.Infix;
+};
+
+module Sequence: Relude_Sequence.SEQUENCE with type t('a) = list('a) = {
   type t('a) = list('a);
+
   let length = length;
   let isEmpty = isEmpty;
   let isNotEmpty = isNotEmpty;
   let head = head;
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
+  let mkString = mkString;
+  let eqF = eqF;
+  let showF = showF;
+
+  module SemigroupAny = SemigroupAny;
+  module MonoidAny = MonoidAny;
+  module Functor = Functor;
+  module Apply = Apply;
+  module Applicative = Applicative;
+  module Monad = Monad;
+  module Foldable = Foldable;
+  module Traversable = Traversable;
+  module Eq = Eq;
+  module Show = Show;
 };
 
-module IsoArray: Interface.ISO_ARRAY with type t('a) = list('a) = {
+module IsoArray: Relude_IsoArray.ISO_ARRAY with type t('a) = list('a) = {
   type t('a) = list('a);
   let fromArray = fromArray;
   let toArray = toArray;
-};
-
-module Infix = {
-  include BsAbstract.List.Infix;
-  include ApplyFunctions.Infix;
 };

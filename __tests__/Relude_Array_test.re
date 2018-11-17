@@ -512,8 +512,8 @@ describe("Array", () => {
     expect(Array.mkString(", ", [|"a", "b", "c"|])) |> toEqual("a, b, c")
   );
 
-  test("show", () =>
-    expect(Array.show(string_of_int, [|1, 2, 3|])) |> toEqual("[1, 2, 3]")
+  test("showF", () =>
+    expect(Array.showF(string_of_int, [|1, 2, 3|])) |> toEqual("[1, 2, 3]")
   );
   /*
    test("void", () =>

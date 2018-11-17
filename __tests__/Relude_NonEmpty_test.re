@@ -32,13 +32,34 @@ describe("NonEmpty.List", () => {
     let expected = NonEmpty.List.make(1, [2, 3, 4, 5, 6]);
     expect(result) |> toEqual(expected);
   });
-});
 
+  test("eq", () => {
+    let ne = NonEmpty.List.make(1, [2, 3]);
+    expect(NonEmpty.List.eq((module Relude_Int.Eq), ne, ne)) |> toEqual(true);
+  });
+
+  test("show", () => {
+    let ne = NonEmpty.List.make(1, [2, 3]);
+    expect(NonEmpty.List.show((module Relude_Int.Show), ne)) |> toEqual("[!1, 2, 3!]");
+  });
+
+  module NonEmptyListTraversableOption = NonEmpty.List.Traversable(Relude_Option.Applicative);
+
+  test("traverse option", () => {
+    expect(NonEmptyListTraversableOption.traverse(a => Some(a), NonEmpty(1, [2, 3]))) |> toEqual(Some(NonEmpty.List.NonEmpty(1, [2, 3])));
+  });
+});
 
 describe("NonEmpty.Array", () => {
   test("concat with two full NonEmpty.Arrays", () => {
     let l1 = NonEmpty.Array.make(1, [| 2, 3 |]);
     let l2 = NonEmpty.Array.make(4, [| 5 |]);
     expect(NonEmpty.Array.concat(l1, l2)) |> toEqual(NonEmpty.Array.make(1, [| 2, 3, 4, 5 |]));
+  });
+
+  module NonEmptyArrayTraversableOption = NonEmpty.Array.Traversable(Relude_Option.Applicative);
+
+  test("traverse option", () => {
+    expect(NonEmptyArrayTraversableOption.traverse(a => Some(a), NonEmpty(1, [|2, 3|]))) |> toEqual(Some(NonEmpty.Array.NonEmpty(1, [|2, 3|])));
   });
 });

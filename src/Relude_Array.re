@@ -1,7 +1,3 @@
-module Int = Relude_Int;
-module Interface = Relude_Interface;
-module Ordering = Relude_Ordering;
-
 let length: array('a) => int = Belt.Array.length;
 
 let isEmpty: array('a) => bool = arr => length(arr) == 0;
@@ -82,7 +78,7 @@ let tail: array('a) => option(array('a)) =
       let ys = Belt.Array.sliceToEnd(xs, 1);
       Belt.Array.length(ys) > 0 ? Some(ys) : None;
     };
-  }
+  };
 
 let tailOrEmpty: array('a) => array('a) =
   arr => tail(arr)->Belt.Option.getWithDefault(empty);
@@ -134,11 +130,17 @@ let drop: (int, array('a)) => option(array('a)) =
     };
 
 let dropUpTo: (int, array('a)) => array('a) =
-
   (i, xs) => {
     let l = length(xs);
-    Belt.Array.sliceToEnd(xs, if (i > l) l else i);
-  }
+    Belt.Array.sliceToEnd(
+      xs,
+      if (i > l) {
+        l;
+      } else {
+        i;
+      },
+    );
+  };
 
 let rec dropWhile: ('a => bool, array('a)) => array('a) =
   (f, xs) =>
@@ -202,7 +204,7 @@ let intersperse: ('a, array('a)) => array('a) =
 
 let replicate: (int, array('a)) => array('a) =
   (i, xs) =>
-    foldLeft((acc, _i) => concat(acc, xs), [||], Int.rangeAsArray(0, i));
+    foldLeft((acc, _i) => concat(acc, xs), [||], Relude_Int.rangeAsArray(0, i));
 
 let zip: (array('a), array('b)) => array(('a, 'b)) = Belt.Array.zip;
 
@@ -210,7 +212,7 @@ let zipWith: (('a, 'b) => 'c, array('a), array('b)) => array('c) =
   (f, xs, ys) => Belt.Array.zipBy(xs, ys, f);
 
 let zipWithIndex: array('a) => array(('a, int)) =
-  xs => zip(xs, Int.rangeAsArray(0, length(xs)));
+  xs => zip(xs, Relude_Int.rangeAsArray(0, length(xs)));
 
 let unzip: array(('a, 'b)) => (array('a), array('b)) = Belt.Array.unzip;
 
@@ -218,7 +220,7 @@ let sortWithInt: (('a, 'a) => int, array('a)) => array('a) =
   (f, xs) => Belt.SortArray.stableSortBy(xs, f);
 
 let sort: (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => array('a) =
-  (f, xs) => sortWithInt((a, b) => f(a, b) |> Ordering.toInt, xs);
+  (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
 let shuffleInPlace: array('a) => array('a) =
   xs => {
@@ -234,16 +236,16 @@ let any: ('a => bool, array('a)) => bool =
 let contains: (('a, 'a) => bool, 'a, array('a)) => bool =
   (f, x, xs) => any(f(x), xs);
 
-let indexOf: (('a, 'a) => bool, 'a, array('a)) => option(int) = (f, x, xs) => {
-  let rec go = (f, ys, i) => {
-    switch(head(ys)) {
+let indexOf: (('a, 'a) => bool, 'a, array('a)) => option(int) =
+  (f, x, xs) => {
+    let rec go = (f, ys, i) =>
+      switch (head(ys)) {
       | None => None
       | Some(z) when f(x, z) => Some(i)
       | _ => go(f, tailOrEmpty(ys), i + 1)
-    }
-  }
-  go(f, xs, 0)
-}
+      };
+    go(f, xs, 0);
+  };
 
 let all: ('a => bool, array('a)) => bool =
   (f, xs) => Belt.Array.every(xs, f);
@@ -288,6 +290,14 @@ let fromList: list('a) => array('a) = Belt.List.toArray;
 
 let toList: array('a) => list('a) = Belt.List.fromArray;
 
+let mkString: (string, array(string)) => string =
+  (delim, xs) => {
+    let delimited = intersperse(delim, xs);
+    foldLeft((acc, curr) => acc ++ curr, "", delimited);
+  };
+
+module Eq = BsAbstract.Array.Eq;
+
 let rec eqF: (('a, 'a) => bool, array('a), array('a)) => bool =
   (innerEq, xs, ys) =>
     switch (head(xs), head(ys)) {
@@ -299,27 +309,34 @@ let rec eqF: (('a, 'a) => bool, array('a), array('a)) => bool =
 
 let eq =
     (
-      type t,
-      eq: (module BsAbstract.Interface.EQ with type t = t),
-      xs: array(t),
-      ys: array(t),
+      type a,
+      eqA: (module BsAbstract.Interface.EQ with type t = a),
+      xs: array(a),
+      ys: array(a),
     )
     : bool => {
-  module ArrayEq = BsAbstract.Array.Eq((val eq));
-  ArrayEq.eq(xs, ys);
+  module EqA = (val eqA);
+  eqF(EqA.eq, xs, ys);
 };
 
-let mkString: (string, array(string)) => string =
-  (delim, xs) => {
-    let delimited = intersperse(delim, xs);
-    foldLeft((acc, curr) => acc ++ curr, "", delimited);
-  };
+module Show = BsAbstract.Array.Show;
 
-let show: ('a => string, array('a)) => string =
+let showF: ('a => string, array('a)) => string =
   (showX, xs) => {
     let strings = map(showX, xs);
     "[" ++ mkString(", ", strings) ++ "]";
   };
+
+let show =
+    (
+      type a,
+      showA: (module BsAbstract.Interface.SHOW with type t = a),
+      xs: array(a),
+    )
+    : string => {
+  module ShowA = (val showA);
+  showF(ShowA.show, xs);
+};
 
 module SemigroupAny:
   BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = array('a) = {
@@ -348,13 +365,9 @@ module Alternative = BsAbstract.Array.Alternative;
 
 module Foldable = BsAbstract.Array.Foldable;
 
-module Traversable = BsAbstract.Array.Foldable;
-
-module Eq = BsAbstract.Array.Eq;
+module Traversable = BsAbstract.Array.Traversable;
 
 module Ord = BsAbstract.Array.Ord;
-
-module Show = BsAbstract.Array.Show;
 
 module Invariant = BsAbstract.Array.Invariant;
 
@@ -366,17 +379,32 @@ module Extend = BsAbstract.Array.Extend;
 
 module Infix = BsAbstract.Array.Infix;
 
-module Sequence: Interface.SEQUENCE with type t('a) = array('a) = {
+module Sequence: Relude_Sequence.SEQUENCE with type t('a) = array('a) = {
   type t('a) = array('a);
+
   let length = length;
   let isEmpty = isEmpty;
   let isNotEmpty = isNotEmpty;
   let head = head;
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
+  let eqF = eqF;
+  let showF = showF;
+  let mkString = mkString;
+
+  module SemigroupAny = SemigroupAny;
+  module MonoidAny = MonoidAny;
+  module Functor = Functor;
+  module Apply = Apply;
+  module Applicative = Applicative;
+  module Monad = Monad;
+  module Foldable = Foldable;
+  module Traversable = Traversable;
+  module Eq = Eq;
+  module Show = Show;
 };
 
-module IsoList: Interface.ISO_LIST with type t('a) = array('a) = {
+module IsoList: Relude_IsoList.ISO_LIST with type t('a) = array('a) = {
   type t('a) = array('a);
   let fromList = fromList;
   let toList = toList;

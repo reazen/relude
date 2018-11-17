@@ -25,7 +25,6 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_NonEmpty" class='level-1 header'>Relude_NonEmpty</a>
-<a href="#module-Interface" class='level-2 module'>Interface</a>
 <a href="#module-NonEmptyF" class='level-2 module'>NonEmptyF</a>
 <a href="#type-NonEmptyF.t" class='level-3 type'>t</a>
 <a href="#value-NonEmptyF.length" class='level-3 value'>length</a>
@@ -45,6 +44,11 @@
 <a href="#value-NonEmptyF.map" class='level-3 value'>map</a>
 <a href="#value-NonEmptyF.apply" class='level-3 value'>apply</a>
 <a href="#value-NonEmptyF.flatMap" class='level-3 value'>flatMap</a>
+<a href="#value-NonEmptyF.mkString" class='level-3 value'>mkString</a>
+<a href="#value-NonEmptyF.eqF" class='level-3 value'>eqF</a>
+<a href="#value-NonEmptyF.eq" class='level-3 value'>eq</a>
+<a href="#value-NonEmptyF.showF" class='level-3 value'>showF</a>
+<a href="#value-NonEmptyF.show" class='level-3 value'>show</a>
 <a href="#module-NonEmptyF.SemigroupAny" class='level-3 module'>SemigroupAny</a>
 <a href="#type-NonEmptyF.SemigroupAny.t" class='level-4 type'>t</a>
 <a href="#value-NonEmptyF.SemigroupAny.append" class='level-4 value'>append</a>
@@ -82,6 +86,18 @@
 <a href="#module-NonEmptyF.Foldable.Fold_Map_Any" class='level-4 module'>Fold_Map_Any</a>
 <a href="#module-NonEmptyF.Foldable.Fold_Map_Any.SequenceFoldMapAny" class='level-5 module'>SequenceFoldMapAny</a>
 <a href="#value-NonEmptyF.Foldable.Fold_Map_Any.fold_map" class='level-5 value'>fold_map</a>
+<a href="#module-NonEmptyF.Traversable" class='level-3 module'>Traversable</a>
+<a href="#type-NonEmptyF.Traversable.t" class='level-4 type'>t</a>
+<a href="#type-NonEmptyF.Traversable.applicative_t" class='level-4 type'>applicative_t</a>
+<a href="#value-NonEmptyF.Traversable.map" class='level-4 value'>map</a>
+<a href="#module-NonEmptyF.Traversable.Fold_Map_Plus" class='level-4 module'>Fold_Map_Plus</a>
+<a href="#value-NonEmptyF.Traversable.Fold_Map_Plus.fold_map" class='level-5 value'>fold_map</a>
+<a href="#module-NonEmptyF.Traversable.TailTraversable" class='level-4 module'>TailTraversable</a>
+<a href="#value-NonEmptyF.Traversable.traverse" class='level-4 value'>traverse</a>
+<a href="#value-NonEmptyF.Traversable.sequence" class='level-4 value'>sequence</a>
+<a href="#module-NonEmptyF.Eq" class='level-3 module'>Eq</a>
+<a href="#type-NonEmptyF.Eq.t" class='level-4 type'>t</a>
+<a href="#value-NonEmptyF.Eq.eq" class='level-4 value'>eq</a>
 <a href="#module-List" class='level-2 module'>List</a>
 <a href="#module-Array" class='level-2 module'>Array</a>
       </div>
@@ -96,7 +112,8 @@
 <a href="Relude_Function.html">Relude_Function</a>
 <a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
-<a href="Relude_Interface.html">Relude_Interface</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
@@ -106,6 +123,7 @@
 <a href="Relude_Ordering.html">Relude_Ordering</a>
 <a href="Relude_Result.html">Relude_Result</a>
 <a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude.html">Relude</a>
@@ -119,7 +137,8 @@
 <a href="Relude_Function.html">Relude_Function</a>
 <a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
-<a href="Relude_Interface.html">Relude_Interface</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
@@ -129,6 +148,7 @@
 <a href="Relude_Ordering.html">Relude_Ordering</a>
 <a href="Relude_Result.html">Relude_Result</a>
 <a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a></div>
     </div>
@@ -139,8 +159,6 @@
     <a href="#Relude_NonEmpty" id="Relude_NonEmpty"><h1>Relude_NonEmpty</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Interface" id="module-Interface">Interface</a> : <a href="Relude_Interface.html">Relude_Interface</a></h4></div>
-
 <div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF" id="module-NonEmptyF">NonEmptyF</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item'>type <a href="#type-NonEmptyF.t" id="type-NonEmptyF.t">t</a>('a) = | NonEmpty('a, TailSequence.t('a))</h4>
 
@@ -211,6 +229,33 @@
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.flatMap" id="value-NonEmptyF.flatMap">flatMap</a>: (t('a), 'a => t('a)) => t('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.mkString" id="value-NonEmptyF.mkString">mkString</a>: (string, t(string)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.eqF" id="value-NonEmptyF.eqF">eqF</a>: (('a, 'a) => bool, t('a), t('a)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.eq" id="value-NonEmptyF.eq">eq</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'p),
+  t('a),
+  t('a)
+) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.showF" id="value-NonEmptyF.showF">showF</a>: ('a => string, t('a)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.show" id="value-NonEmptyF.show">show</a>: (
+  (module BsAbstract.Interface.SHOW with type t = 'q),
+  t('a)
+) => string</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -315,7 +360,7 @@
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map" id="module-NonEmptyF.Foldable.Fold_Map">Fold_Map</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map.TailFoldMap" id="module-NonEmptyF.Foldable.Fold_Map.TailFoldMap">TailFoldMap</a> : TailFoldable.Fold_Map</h4></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map.TailFoldMap" id="module-NonEmptyF.Foldable.Fold_Map.TailFoldMap">TailFoldMap</a> : TailSequence.Foldable.Fold_Map</h4></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Foldable.Fold_Map.fold_map" id="value-NonEmptyF.Foldable.Fold_Map.fold_map">fold_map</a>: (
   'a => FoldMapMonoid.t,
@@ -326,7 +371,7 @@
 </div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map_Plus" id="module-NonEmptyF.Foldable.Fold_Map_Plus">Fold_Map_Plus</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map_Plus.TailFoldMapPlus" id="module-NonEmptyF.Foldable.Fold_Map_Plus.TailFoldMapPlus">TailFoldMapPlus</a> : TailFoldable.Fold_Map_Plus</h4></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map_Plus.TailFoldMapPlus" id="module-NonEmptyF.Foldable.Fold_Map_Plus.TailFoldMapPlus">TailFoldMapPlus</a> : TailSequence.Foldable.Fold_Map_Plus</h4></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Foldable.Fold_Map_Plus.fold_map" id="value-NonEmptyF.Foldable.Fold_Map_Plus.fold_map">fold_map</a>: (
   'a => FoldMapPlus.t('a),
@@ -337,7 +382,7 @@
 </div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map_Any" id="module-NonEmptyF.Foldable.Fold_Map_Any">Fold_Map_Any</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map_Any.SequenceFoldMapAny" id="module-NonEmptyF.Foldable.Fold_Map_Any.SequenceFoldMapAny">SequenceFoldMapAny</a> : TailFoldable.Fold_Map_Any</h4></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Foldable.Fold_Map_Any.SequenceFoldMapAny" id="module-NonEmptyF.Foldable.Fold_Map_Any.SequenceFoldMapAny">SequenceFoldMapAny</a> : TailSequence.Foldable.Fold_Map_Any</h4></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Foldable.Fold_Map_Any.fold_map" id="value-NonEmptyF.Foldable.Fold_Map_Any.fold_map">fold_map</a>: (
   'a => FoldMapAny.t('a),
@@ -346,6 +391,51 @@
 
 <div class='body body-empty'></div></div>
 </div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Traversable" id="module-NonEmptyF.Traversable">Traversable</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-NonEmptyF.Traversable.t" id="type-NonEmptyF.Traversable.t">t</a>('a) = t('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>type <a href="#type-NonEmptyF.Traversable.applicative_t" id="type-NonEmptyF.Traversable.applicative_t">applicative_t</a>('a) = A.t('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Traversable.map" id="value-NonEmptyF.Traversable.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Traversable.Fold_Map_Plus" id="module-NonEmptyF.Traversable.Fold_Map_Plus">Fold_Map_Plus</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Traversable.Fold_Map_Plus.fold_map" id="value-NonEmptyF.Traversable.Fold_Map_Plus.fold_map">fold_map</a>: ('a => P.t('a), t('a)) => P.t('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Traversable.TailTraversable" id="module-NonEmptyF.Traversable.TailTraversable">TailTraversable</a> : TailSequence.Traversable</h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Traversable.traverse" id="value-NonEmptyF.Traversable.traverse">traverse</a>: (
+  'a => applicative_t('b),
+  t('a)
+) => applicative_t(t('b))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Traversable.sequence" id="value-NonEmptyF.Traversable.sequence">sequence</a>: t(applicative_t('a)) => applicative_t(t('a))</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-NonEmptyF.Eq" id="module-NonEmptyF.Eq">Eq</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-NonEmptyF.Eq.t" id="type-NonEmptyF.Eq.t">t</a> = t(EqA.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.Eq.eq" id="value-NonEmptyF.Eq.eq">eq</a>: (t(EqA.t), t(EqA.t)) => bool</h4>
+
+<div class='body body-empty'></div></div>
 </div></div>
 </div></div>
 

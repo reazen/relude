@@ -25,9 +25,6 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_Array" class='level-1 header'>Relude_Array</a>
-<a href="#module-Int" class='level-2 module'>Int</a>
-<a href="#module-Interface" class='level-2 module'>Interface</a>
-<a href="#module-Ordering" class='level-2 module'>Ordering</a>
 <a href="#value-length" class='level-2 value'>length</a>
 <a href="#value-isEmpty" class='level-2 value'>isEmpty</a>
 <a href="#value-isNotEmpty" class='level-2 value'>isNotEmpty</a>
@@ -90,9 +87,12 @@
 <a href="#value-flatten" class='level-2 value'>flatten</a>
 <a href="#value-fromList" class='level-2 value'>fromList</a>
 <a href="#value-toList" class='level-2 value'>toList</a>
+<a href="#value-mkString" class='level-2 value'>mkString</a>
+<a href="#module-Eq" class='level-2 module'>Eq</a>
 <a href="#value-eqF" class='level-2 value'>eqF</a>
 <a href="#value-eq" class='level-2 value'>eq</a>
-<a href="#value-mkString" class='level-2 value'>mkString</a>
+<a href="#module-Show" class='level-2 module'>Show</a>
+<a href="#value-showF" class='level-2 value'>showF</a>
 <a href="#value-show" class='level-2 value'>show</a>
 <a href="#module-SemigroupAny" class='level-2 module'>SemigroupAny</a>
 <a href="#type-SemigroupAny.t" class='level-3 type'>t</a>
@@ -110,9 +110,7 @@
 <a href="#module-Alternative" class='level-2 module'>Alternative</a>
 <a href="#module-Foldable" class='level-2 module'>Foldable</a>
 <a href="#module-Traversable" class='level-2 module'>Traversable</a>
-<a href="#module-Eq" class='level-2 module'>Eq</a>
 <a href="#module-Ord" class='level-2 module'>Ord</a>
-<a href="#module-Show" class='level-2 module'>Show</a>
 <a href="#module-Invariant" class='level-2 module'>Invariant</a>
 <a href="#module-MonadZero" class='level-2 module'>MonadZero</a>
 <a href="#module-MonadPlus" class='level-2 module'>MonadPlus</a>
@@ -126,6 +124,19 @@
 <a href="#value-Sequence.head" class='level-3 value'>head</a>
 <a href="#value-Sequence.tail" class='level-3 value'>tail</a>
 <a href="#value-Sequence.tailOrEmpty" class='level-3 value'>tailOrEmpty</a>
+<a href="#value-Sequence.eqF" class='level-3 value'>eqF</a>
+<a href="#value-Sequence.showF" class='level-3 value'>showF</a>
+<a href="#value-Sequence.mkString" class='level-3 value'>mkString</a>
+<a href="#module-Sequence.SemigroupAny" class='level-3 module'>SemigroupAny</a>
+<a href="#module-Sequence.MonoidAny" class='level-3 module'>MonoidAny</a>
+<a href="#module-Sequence.Functor" class='level-3 module'>Functor</a>
+<a href="#module-Sequence.Apply" class='level-3 module'>Apply</a>
+<a href="#module-Sequence.Applicative" class='level-3 module'>Applicative</a>
+<a href="#module-Sequence.Monad" class='level-3 module'>Monad</a>
+<a href="#module-Sequence.Foldable" class='level-3 module'>Foldable</a>
+<a href="#module-Sequence.Traversable" class='level-3 module'>Traversable</a>
+<a href="#module-Sequence.Eq" class='level-3 module'>Eq</a>
+<a href="#module-Sequence.Show" class='level-3 module'>Show</a>
 <a href="#module-IsoList" class='level-2 module'>IsoList</a>
 <a href="#type-IsoList.t" class='level-3 type'>t</a>
 <a href="#value-IsoList.fromList" class='level-3 value'>fromList</a>
@@ -142,7 +153,8 @@
 <a href="Relude_Function.html">Relude_Function</a>
 <a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
-<a href="Relude_Interface.html">Relude_Interface</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
@@ -152,6 +164,7 @@
 <a href="Relude_Ordering.html">Relude_Ordering</a>
 <a href="Relude_Result.html">Relude_Result</a>
 <a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude.html">Relude</a>
@@ -165,7 +178,8 @@
 <a href="Relude_Function.html">Relude_Function</a>
 <a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
-<a href="Relude_Interface.html">Relude_Interface</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
@@ -175,6 +189,7 @@
 <a href="Relude_Ordering.html">Relude_Ordering</a>
 <a href="Relude_Result.html">Relude_Result</a>
 <a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a></div>
     </div>
@@ -185,12 +200,6 @@
     <a href="#Relude_Array" id="Relude_Array"><h1>Relude_Array</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Int" id="module-Int">Int</a> : <a href="Relude_Int.html">Relude_Int</a></h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Interface" id="module-Interface">Interface</a> : <a href="Relude_Interface.html">Relude_Interface</a></h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Ordering" id="module-Ordering">Ordering</a> : <a href="Relude_Ordering.html">Relude_Ordering</a></h4></div>
-
 <div class='doc-item'><h4 class='item'>let <a href="#value-length" id="value-length">length</a>: array('a) => int</h4>
 
 <div class='body body-empty'></div></div>
@@ -463,23 +472,34 @@
 
 <div class='body body-empty'></div></div>
 
+<div class='doc-item'><h4 class='item'>let <a href="#value-mkString" id="value-mkString">mkString</a>: (string, array(string)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Eq" id="module-Eq">Eq</a> : BsAbstract.Array.Eq</h4></div>
+
 <div class='doc-item'><h4 class='item'>let <a href="#value-eqF" id="value-eqF">eqF</a>: (('a, 'a) => bool, array('a), array('a)) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (
-  (module BsAbstract.Interface.EQ with type t = 'f),
+  (module BsAbstract.Interface.EQ with type t = 'j),
   array('a),
   array('a)
 ) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-mkString" id="value-mkString">mkString</a>: (string, array(string)) => string</h4>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Show" id="module-Show">Show</a> : BsAbstract.Array.Show</h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-showF" id="value-showF">showF</a>: ('a => string, array('a)) => string</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-show" id="value-show">show</a>: ('a => string, array('a)) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-show" id="value-show">show</a>: (
+  (module BsAbstract.Interface.SHOW with type t = 'k),
+  array('a)
+) => string</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -524,13 +544,9 @@
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Foldable" id="module-Foldable">Foldable</a> : BsAbstract.Array.Foldable</h4></div>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Traversable" id="module-Traversable">Traversable</a> : BsAbstract.Array.Foldable</h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Eq" id="module-Eq">Eq</a> : BsAbstract.Array.Eq</h4></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Traversable" id="module-Traversable">Traversable</a> : BsAbstract.Array.Traversable</h4></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Ord" id="module-Ord">Ord</a> : BsAbstract.Array.Ord</h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Show" id="module-Show">Show</a> : BsAbstract.Array.Show</h4></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Invariant" id="module-Invariant">Invariant</a> : BsAbstract.Array.Invariant</h4></div>
 
@@ -570,6 +586,38 @@
 <div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.tailOrEmpty" id="value-Sequence.tailOrEmpty">tailOrEmpty</a>: array('a) => array('a)</h4>
 
 <div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.eqF" id="value-Sequence.eqF">eqF</a>: (('a, 'a) => bool, array('a), array('a)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.showF" id="value-Sequence.showF">showF</a>: ('a => string, array('a)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.mkString" id="value-Sequence.mkString">mkString</a>: (string, array(string)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.SemigroupAny" id="module-Sequence.SemigroupAny">SemigroupAny</a> : <a href="#module-SemigroupAny">SemigroupAny</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.MonoidAny" id="module-Sequence.MonoidAny">MonoidAny</a> : <a href="#module-MonoidAny">MonoidAny</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Functor" id="module-Sequence.Functor">Functor</a> : <a href="#module-Functor">Functor</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Apply" id="module-Sequence.Apply">Apply</a> : <a href="#module-Apply">Apply</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Applicative" id="module-Sequence.Applicative">Applicative</a> : <a href="#module-Applicative">Applicative</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Monad" id="module-Sequence.Monad">Monad</a> : <a href="#module-Monad">Monad</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Foldable" id="module-Sequence.Foldable">Foldable</a> : <a href="#module-Foldable">Foldable</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Traversable" id="module-Sequence.Traversable">Traversable</a> : <a href="#module-Traversable">Traversable</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Eq" id="module-Sequence.Eq">Eq</a> : <a href="#module-Eq">Eq</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Sequence.Show" id="module-Sequence.Show">Show</a> : <a href="#module-Show">Show</a></h4></div>
 </div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-IsoList" id="module-IsoList">IsoList</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
