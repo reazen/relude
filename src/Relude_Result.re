@@ -14,6 +14,14 @@ let mapError: ('e1 => 'e2, Belt.Result.t('a, 'e1)) => Belt.Result.t('a, 'e2) =
     | Error(e) => Error(f(e))
     };
 
+let bimap:
+  ('a => 'b, 'e1 => 'e2, Belt.Result.t('a, 'e1)) => Belt.Result.t('b, 'e2) =
+  (mapA, mapE, result) =>
+    switch (result) {
+    | Ok(a) => Ok(mapA(a))
+    | Error(e1) => Error(mapE(e1))
+    };
+
 let tap: ('a => unit, Belt.Result.t('a, 'e)) => unit =
   (f, ra) =>
     switch (ra) {
@@ -111,7 +119,8 @@ let toValidation = Relude_Validation.fromResult;
 let fromValidation = Relude_Validation.toResult;
 
 let toValidationNel:
-  Belt.Result.t('a, 'e) => Relude_Validation.t('a, Relude_NonEmpty.List.t('e)) =
+  Belt.Result.t('a, 'e) =>
+  Relude_Validation.t('a, Relude_NonEmpty.List.t('e)) =
   fun
   | Belt.Result.Ok(value) => Relude_Validation.VOk(value)
   | Belt.Result.Error(error) =>
@@ -131,10 +140,10 @@ module Foldable = BsAbstract.Result.Foldable;
 
 module Traversable = BsAbstract.Result.Traversable;
 
-module Eq =  BsAbstract.Result.Eq;
+module Eq = BsAbstract.Result.Eq;
 
-module Show =  BsAbstract.Result.Show;
+module Show = BsAbstract.Result.Show;
 
-module Ord =  BsAbstract.Result.Ord;
+module Ord = BsAbstract.Result.Ord;
 
 module Infix = BsAbstract.Result.Infix;
