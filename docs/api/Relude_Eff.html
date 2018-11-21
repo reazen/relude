@@ -33,6 +33,7 @@
 <a href="#value-attemptJS" class='level-2 value'>attemptJS</a>
 <a href="#value-map" class='level-2 value'>map</a>
 <a href="#value-apply" class='level-2 value'>apply</a>
+<a href="#value-bind" class='level-2 value'>bind</a>
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
 <a href="#module-Functor" class='level-2 module'>Functor</a>
 <a href="#type-Functor.t" class='level-3 type'>t</a>
@@ -70,15 +71,20 @@
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
 <a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_IO.html">Relude_IO</a>
 <a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
 <a href="Relude_IsoArray.html">Relude_IsoArray</a>
 <a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_Js.html">Relude_Js</a>
+<a href="Relude_JsConsole.html">Relude_JsConsole</a>
+<a href="Relude_JsExn.html">Relude_JsExn</a>
 <a href="Relude_JsPromise.html">Relude_JsPromise</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
 <a href="Relude_MonadEff.html">Relude_MonadEff</a>
+<a href="Relude_MonadError.html">Relude_MonadError</a>
 <a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
 <a href="Relude_Option.html">Relude_Option</a>
 <a href="Relude_Ordering.html">Relude_Ordering</a>
@@ -87,6 +93,8 @@
 <a href="Relude_Sequence.html">Relude_Sequence</a>
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
+<a href="Relude_Void.html">Relude_Void</a>
+<a href="Test.html">Test</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Aff.html">Relude_Aff</a>
 <a href="Relude_Array.html">Relude_Array</a>
@@ -96,15 +104,20 @@
 <a href="Relude_Eff.html">Relude_Eff</a>
 <a href="Relude_Float.html">Relude_Float</a>
 <a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_IO.html">Relude_IO</a>
 <a href="Relude_Identity.html">Relude_Identity</a>
 <a href="Relude_Int.html">Relude_Int</a>
 <a href="Relude_IsoArray.html">Relude_IsoArray</a>
 <a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_Js.html">Relude_Js</a>
+<a href="Relude_JsConsole.html">Relude_JsConsole</a>
+<a href="Relude_JsExn.html">Relude_JsExn</a>
 <a href="Relude_JsPromise.html">Relude_JsPromise</a>
 <a href="Relude_List.html">Relude_List</a>
 <a href="Relude_ListF.html">Relude_ListF</a>
 <a href="Relude_MonadAff.html">Relude_MonadAff</a>
 <a href="Relude_MonadEff.html">Relude_MonadEff</a>
+<a href="Relude_MonadError.html">Relude_MonadError</a>
 <a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
 <a href="Relude_Option.html">Relude_Option</a>
 <a href="Relude_Ordering.html">Relude_Ordering</a>
@@ -112,7 +125,9 @@
 <a href="Relude_ResultIor.html">Relude_ResultIor</a>
 <a href="Relude_Sequence.html">Relude_Sequence</a>
 <a href="Relude_String.html">Relude_String</a>
-<a href="Relude_Validation.html">Relude_Validation</a></div>
+<a href="Relude_Validation.html">Relude_Validation</a>
+<a href="Relude_Void.html">Relude_Void</a>
+<a href="Test.html">Test</a></div>
     </div>
     </div>
   
@@ -160,7 +175,11 @@ just calling the effect as a function.</p>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: (<a href="#type-t">t</a>('a), 'a => <a href="#type-t">t</a>('b)) => <a href="#type-t">t</a>('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-bind" id="value-bind">bind</a>: (<a href="#type-t">t</a>('a), 'a => <a href="#type-t">t</a>('b)) => <a href="#type-t">t</a>('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: ('a => <a href="#type-t">t</a>('b), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
 

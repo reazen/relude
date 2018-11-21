@@ -1,0 +1,481 @@
+
+    
+<!doctype html>
+<meta charset=utf8>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel=stylesheet href='../styles.css'>
+<script defer src='../script.js'></script>
+<title>Relude_IO</title>
+<body>
+<script>window.relativeToRoot=".."</script>
+<script defer src="../block-script.js"></script>
+<div id='error-message'>
+  ⚠️ Oops! This page doesn't appear to define a <span>type</span> called <code>_</code>.
+</div>
+
+    <script>window.shouldCheckHashes=true</script>
+    <div class='container'>
+    
+    <div class='sidebar-wrapper'>
+    <div class='sidebar-expander'>Show navigation</div>
+    <div class='sidebar'>
+      <a href="../search.html" style="display: block; padding: 0 8px;">Search</a>
+      
+      <div class='docs-listing'><a href="../index.html">Home</a></div>
+      <div class='toc-header'>Page Contents</div>
+      <div class='table-of-contents'>
+      <a href="#Relude_IO" class='level-1 header'>Relude_IO</a>
+<a href="#module-Function" class='level-2 module'>Function</a>
+<a href="#module-JsExn" class='level-2 module'>JsExn</a>
+<a href="#module-Option" class='level-2 module'>Option</a>
+<a href="#module-Result" class='level-2 module'>Result</a>
+<a href="#module-Void" class='level-2 module'>Void</a>
+<a href="#value-<<" class='level-2 value'><<</a>
+<a href="#value->>" class='level-2 value'>>></a>
+<a href="#type-t" class='level-2 type'>t</a>
+<a href="#value-pure" class='level-2 value'>pure</a>
+<a href="#value-pureWithVoid" class='level-2 value'>pureWithVoid</a>
+<a href="#value-unit" class='level-2 value'>unit</a>
+<a href="#value-unitWithVoid" class='level-2 value'>unitWithVoid</a>
+<a href="#value-throw" class='level-2 value'>throw</a>
+<a href="#value-throwWithVoid" class='level-2 value'>throwWithVoid</a>
+<a href="#value-suspend" class='level-2 value'>suspend</a>
+<a href="#value-suspendWithVoid" class='level-2 value'>suspendWithVoid</a>
+<a href="#value-suspendThrow" class='level-2 value'>suspendThrow</a>
+<a href="#value-suspendIO" class='level-2 value'>suspendIO</a>
+<a href="#value-async" class='level-2 value'>async</a>
+<a href="#value-fromOption" class='level-2 value'>fromOption</a>
+<a href="#value-fromResult" class='level-2 value'>fromResult</a>
+<a href="#value-map" class='level-2 value'>map</a>
+<a href="#value-tap" class='level-2 value'>tap</a>
+<a href="#value-flatMap" class='level-2 value'>flatMap</a>
+<a href="#value-bind" class='level-2 value'>bind</a>
+<a href="#value-apply" class='level-2 value'>apply</a>
+<a href="#value-mapError" class='level-2 value'>mapError</a>
+<a href="#value-tapError" class='level-2 value'>tapError</a>
+<a href="#value-bimap" class='level-2 value'>bimap</a>
+<a href="#value-bitap" class='level-2 value'>bitap</a>
+<a href="#value-catchError" class='level-2 value'>catchError</a>
+<a href="#value-tries" class='level-2 value'>tries</a>
+<a href="#value-triesJS" class='level-2 value'>triesJS</a>
+<a href="#value-summonError" class='level-2 value'>summonError</a>
+<a href="#value-unsummonError" class='level-2 value'>unsummonError</a>
+<a href="#value-unsafeRunAsync" class='level-2 value'>unsafeRunAsync</a>
+<a href="#value-delay" class='level-2 value'>delay</a>
+<a href="#value-delayWithVoid" class='level-2 value'>delayWithVoid</a>
+<a href="#value-withDelay" class='level-2 value'>withDelay</a>
+<a href="#module-Functor" class='level-2 module'>Functor</a>
+<a href="#type-Functor.t" class='level-3 type'>t</a>
+<a href="#value-Functor.map" class='level-3 value'>map</a>
+<a href="#module-Bifunctor" class='level-2 module'>Bifunctor</a>
+<a href="#type-Bifunctor.t" class='level-3 type'>t</a>
+<a href="#value-Bifunctor.bimap" class='level-3 value'>bimap</a>
+<a href="#module-Apply" class='level-2 module'>Apply</a>
+<a href="#type-Apply.t" class='level-3 type'>t</a>
+<a href="#value-Apply.map" class='level-3 value'>map</a>
+<a href="#value-Apply.apply" class='level-3 value'>apply</a>
+<a href="#module-Applicative" class='level-2 module'>Applicative</a>
+<a href="#type-Applicative.t" class='level-3 type'>t</a>
+<a href="#value-Applicative.map" class='level-3 value'>map</a>
+<a href="#value-Applicative.apply" class='level-3 value'>apply</a>
+<a href="#value-Applicative.pure" class='level-3 value'>pure</a>
+<a href="#module-Monad" class='level-2 module'>Monad</a>
+<a href="#type-Monad.t" class='level-3 type'>t</a>
+<a href="#value-Monad.map" class='level-3 value'>map</a>
+<a href="#value-Monad.apply" class='level-3 value'>apply</a>
+<a href="#value-Monad.pure" class='level-3 value'>pure</a>
+<a href="#value-Monad.flat_map" class='level-3 value'>flat_map</a>
+<a href="#module-MonadThrow" class='level-2 module'>MonadThrow</a>
+<a href="#type-MonadThrow.t" class='level-3 type'>t</a>
+<a href="#value-MonadThrow.map" class='level-3 value'>map</a>
+<a href="#value-MonadThrow.apply" class='level-3 value'>apply</a>
+<a href="#value-MonadThrow.pure" class='level-3 value'>pure</a>
+<a href="#value-MonadThrow.flat_map" class='level-3 value'>flat_map</a>
+<a href="#value-MonadThrow.throwError" class='level-3 value'>throwError</a>
+<a href="#module-MonadError" class='level-2 module'>MonadError</a>
+<a href="#type-MonadError.t" class='level-3 type'>t</a>
+<a href="#value-MonadError.map" class='level-3 value'>map</a>
+<a href="#value-MonadError.apply" class='level-3 value'>apply</a>
+<a href="#value-MonadError.pure" class='level-3 value'>pure</a>
+<a href="#value-MonadError.flat_map" class='level-3 value'>flat_map</a>
+<a href="#value-MonadError.throwError" class='level-3 value'>throwError</a>
+<a href="#value-MonadError.catchError" class='level-3 value'>catchError</a>
+<a href="#module-Infix" class='level-2 module'>Infix</a>
+<a href="#module-Infix.Functor" class='level-3 module'>Functor</a>
+<a href="#module-Infix.Apply" class='level-3 module'>Apply</a>
+<a href="#module-Infix.Monad" class='level-3 module'>Monad</a>
+      </div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
+<a href="Relude_Aff.html">Relude_Aff</a>
+<a href="Relude_Array.html">Relude_Array</a>
+<a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
+<a href="Relude_Bool.html">Relude_Bool</a>
+<a href="Relude_Eff.html">Relude_Eff</a>
+<a href="Relude_Float.html">Relude_Float</a>
+<a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_IO.html">Relude_IO</a>
+<a href="Relude_Identity.html">Relude_Identity</a>
+<a href="Relude_Int.html">Relude_Int</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_Js.html">Relude_Js</a>
+<a href="Relude_JsConsole.html">Relude_JsConsole</a>
+<a href="Relude_JsExn.html">Relude_JsExn</a>
+<a href="Relude_JsPromise.html">Relude_JsPromise</a>
+<a href="Relude_List.html">Relude_List</a>
+<a href="Relude_ListF.html">Relude_ListF</a>
+<a href="Relude_MonadAff.html">Relude_MonadAff</a>
+<a href="Relude_MonadEff.html">Relude_MonadEff</a>
+<a href="Relude_MonadError.html">Relude_MonadError</a>
+<a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
+<a href="Relude_Option.html">Relude_Option</a>
+<a href="Relude_Ordering.html">Relude_Ordering</a>
+<a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
+<a href="Relude_String.html">Relude_String</a>
+<a href="Relude_Validation.html">Relude_Validation</a>
+<a href="Relude_Void.html">Relude_Void</a>
+<a href="Test.html">Test</a>
+<a href="Relude.html">Relude</a>
+<a href="Relude_Aff.html">Relude_Aff</a>
+<a href="Relude_Array.html">Relude_Array</a>
+<a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
+<a href="Relude_Bool.html">Relude_Bool</a>
+<a href="Relude_Eff.html">Relude_Eff</a>
+<a href="Relude_Float.html">Relude_Float</a>
+<a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_IO.html">Relude_IO</a>
+<a href="Relude_Identity.html">Relude_Identity</a>
+<a href="Relude_Int.html">Relude_Int</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_Js.html">Relude_Js</a>
+<a href="Relude_JsConsole.html">Relude_JsConsole</a>
+<a href="Relude_JsExn.html">Relude_JsExn</a>
+<a href="Relude_JsPromise.html">Relude_JsPromise</a>
+<a href="Relude_List.html">Relude_List</a>
+<a href="Relude_ListF.html">Relude_ListF</a>
+<a href="Relude_MonadAff.html">Relude_MonadAff</a>
+<a href="Relude_MonadEff.html">Relude_MonadEff</a>
+<a href="Relude_MonadError.html">Relude_MonadError</a>
+<a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
+<a href="Relude_Option.html">Relude_Option</a>
+<a href="Relude_Ordering.html">Relude_Ordering</a>
+<a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
+<a href="Relude_String.html">Relude_String</a>
+<a href="Relude_Validation.html">Relude_Validation</a>
+<a href="Relude_Void.html">Relude_Void</a>
+<a href="Test.html">Test</a></div>
+    </div>
+    </div>
+  
+    <div class='main'>
+    
+    <a href="#Relude_IO" id="Relude_IO"><h1>Relude_IO</h1></a>
+
+<p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Function" id="module-Function">Function</a> : <a href="Relude_Function.html">Relude_Function</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-JsExn" id="module-JsExn">JsExn</a> : <a href="Relude_JsExn.html">Relude_JsExn</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Option" id="module-Option">Option</a> : <a href="Relude_Option.html">Relude_Option</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Result" id="module-Result">Result</a> : <a href="Relude_Result.html">Relude_Result</a></h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Void" id="module-Void">Void</a> : <a href="Relude_Void.html">Relude_Void</a></h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-<<" id="value-<<"><<</a>: ('a => 'a, 'a => 'a, 'a) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value->>" id="value->>">>></a>: ('a => 'a, 'a => 'a, 'a) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a, 'e) = 
+  | Pure('a): <a href="#type-t">t</a>('a, 'e)
+  | Throw('e): <a href="#type-t">t</a>('a, 'e)
+  | Suspend(unit => 'a): <a href="#type-t">t</a>('a, 'e)
+  | SuspendIO(unit => <a href="#type-t">t</a>('a, 'e)): <a href="#type-t">t</a>('a, 'e)
+  | Async(<a href="#module-Result">Result</a>.<a href="#type-Result.t">t</a>('a, 'e) => unit => unit): <a href="#type-t">t</a>('a, 'e)
+  | Map('r => 'a, <a href="#type-t">t</a>('r, 'e)): <a href="#type-t">t</a>('a, 'e)
+  | FlatMap('r => <a href="#type-t">t</a>('a, 'e), <a href="#type-t">t</a>('r, 'e)): <a href="#type-t">t</a>('a, 'e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-pureWithVoid" id="value-pureWithVoid">pureWithVoid</a>: 'a0. 'a0 -&gt; ('a0, Void.t) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-unit" id="value-unit">unit</a>: 'e0. (unit, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-unitWithVoid" id="value-unitWithVoid">unitWithVoid</a>: <a href="#type-t">t</a>(unit, <a href="#module-Void">Void</a>.<a href="#type-Void.t">t</a>)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-throw" id="value-throw">throw</a>: 'a0 'e0. 'e0 -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-throwWithVoid" id="value-throwWithVoid">throwWithVoid</a>: 'e0. 'e0 -&gt; (Void.t, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-suspend" id="value-suspend">suspend</a>: 'a0 'e0. (unit -&gt; 'a0) -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-suspendWithVoid" id="value-suspendWithVoid">suspendWithVoid</a>: 'a0. (unit -&gt; 'a0) -&gt; ('a0, Void.t) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-suspendThrow" id="value-suspendThrow">suspendThrow</a>: 'a0 'e0. (unit -&gt; 'e0) -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-suspendIO" id="value-suspendIO">suspendIO</a>: 'a0 'e0. (unit -&gt; ('a0, 'e0) t) -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-async" id="value-async">async</a>: 'a0 'e0. ((('a0, 'e0) Result.t -&gt; unit) -&gt; unit) -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromOption" id="value-fromOption">fromOption</a>: 'a0 'e0. (unit -&gt; 'e0) -&gt; 'a0 option -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromResult" id="value-fromResult">fromResult</a>: 'a0 'e0. ('a0, 'e0) Result.t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: 'a0 'b0 'e0. ('a0 -&gt; 'b0) -&gt; ('a0, 'e0) t -&gt; ('b0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-tap" id="value-tap">tap</a>: 'a0 'e0. ('a0 -&gt; unit) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: 'a0 'b0 'e0. ('a0 -&gt; ('b0, 'e0) t) -&gt; ('a0, 'e0) t -&gt; ('b0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-bind" id="value-bind">bind</a>: 'a0 'b0 'e0. ('a0, 'e0) t -&gt; ('a0 -&gt; ('b0, 'e0) t) -&gt; ('b0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: 'a0 'b0 'e0. ('a0 -&gt; 'b0, 'e0) t -&gt; ('a0, 'e0) t -&gt; ('b0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-mapError" id="value-mapError">mapError</a>: 'a0 'e1 'e2. ('e1 -&gt; 'e2) -&gt; ('a0, 'e1) t -&gt; ('a0, 'e2) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-tapError" id="value-tapError">tapError</a>: 'a0 'e0. ('e0 -&gt; unit) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-bimap" id="value-bimap">bimap</a>: 'a0 'b0 'e1 'e2. ('a0 -&gt; 'b0) -&gt; ('e1 -&gt; 'e2) -&gt; ('a0, 'e1) t -&gt; ('b0, 'e2) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-bitap" id="value-bitap">bitap</a>: 'a0 'e0. ('a0 -&gt; unit) -&gt; ('e0 -&gt; unit) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-catchError" id="value-catchError">catchError</a>: 'a0 'e0. ('e0 -&gt; ('a0, 'e0) t) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-tries" id="value-tries">tries</a>: 'a0. (unit -&gt; 'a0) -&gt; ('a0, exn) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-triesJS" id="value-triesJS">triesJS</a>: 'a0. (unit -&gt; 'a0) -&gt; ('a0, Js.Exn.t) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-summonError" id="value-summonError">summonError</a>: 'a0 'e0. ('a0, 'e0) t -&gt; (('a0, 'e0) Result.t, Void.t) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-unsummonError" id="value-unsummonError">unsummonError</a>: 'a0 'e0. (('a0, 'e0) Result.t, Void.t) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-unsafeRunAsync" id="value-unsafeRunAsync">unsafeRunAsync</a>: 'a0 'e0. (('a0, 'e0) Result.t -&gt; unit) -&gt; ('a0, 'e0) t -&gt; unit</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-delay" id="value-delay">delay</a>: 'e0. int -&gt; (unit, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-delayWithVoid" id="value-delayWithVoid">delayWithVoid</a>: int => <a href="#type-t">t</a>(unit, <a href="#module-Void">Void</a>.<a href="#type-Void.t">t</a>)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-withDelay" id="value-withDelay">withDelay</a>: 'a0 'e0. int -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Functor" id="module-Functor">Functor</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Functor.t" id="type-Functor.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functor.map" id="value-Functor.map">map</a>: ('a => 'a, <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Bifunctor" id="module-Bifunctor">Bifunctor</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>type <a href="#type-Bifunctor.t" id="type-Bifunctor.t">t</a>('a, 'e) = <a href="#type-t">t</a>('a, 'e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Bifunctor.bimap" id="value-Bifunctor.bimap">bimap</a>: ('a => 'a, 'a => 'a, <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Apply" id="module-Apply">Apply</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Apply.t" id="type-Apply.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.map" id="value-Apply.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Apply.apply" id="value-Apply.apply">apply</a>: (<a href="#type-t">t</a>('a => 'a, 'a), <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Applicative.t" id="type-Applicative.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.map" id="value-Applicative.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.apply" id="value-Applicative.apply">apply</a>: (t('a => 'b), t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Applicative.pure" id="value-Applicative.pure">pure</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monad" id="module-Monad">Monad</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Monad.t" id="type-Monad.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.map" id="value-Monad.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.apply" id="value-Monad.apply">apply</a>: (t('a => 'b), t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.pure" id="value-Monad.pure">pure</a>: 'a => t('a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Monad.flat_map" id="value-Monad.flat_map">flat_map</a>: (<a href="#type-t">t</a>('a, 'a), 'a => <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-MonadThrow" id="module-MonadThrow">MonadThrow</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-MonadThrow.t" id="type-MonadThrow.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadThrow.map" id="value-MonadThrow.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadThrow.apply" id="value-MonadThrow.apply">apply</a>: (t('a => 'b), t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadThrow.pure" id="value-MonadThrow.pure">pure</a>: 'a => t('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadThrow.flat_map" id="value-MonadThrow.flat_map">flat_map</a>: (t('a), 'a => t('b)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadThrow.throwError" id="value-MonadThrow.throwError">throwError</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-MonadError" id="module-MonadError">MonadError</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>include </h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-MonadError.t" id="type-MonadError.t">t</a>('a) = <a href="#type-t">t</a>('a, E.t)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.map" id="value-MonadError.map">map</a>: ('a => 'b, t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.apply" id="value-MonadError.apply">apply</a>: (t('a => 'b), t('a)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.pure" id="value-MonadError.pure">pure</a>: 'a => t('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.flat_map" id="value-MonadError.flat_map">flat_map</a>: (t('a), 'a => t('b)) => t('b)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.throwError" id="value-MonadError.throwError">throwError</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.catchError" id="value-MonadError.catchError">catchError</a>: ('a => <a href="#type-t">t</a>('a, 'a), <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Functor" id="module-Infix.Functor">Functor</a> : BsAbstract.Infix.Functor</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Apply" id="module-Infix.Apply">Apply</a> : BsAbstract.Infix.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Infix.Monad" id="module-Infix.Monad">Monad</a> : BsAbstract.Infix.Monad</h4></div>
+</div></div>
+
+    </div>
+    <div class='right-blank'></div>
+    </div>
+  
