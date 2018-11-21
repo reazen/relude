@@ -96,7 +96,7 @@ let apply: (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
     | (Complete(Error(_)) as r, Complete(Error(_))) => r
     };
 
-let flatMap: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+let bind: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   (fa, f) =>
     switch (fa) {
     | Init => Init
@@ -106,6 +106,8 @@ let flatMap: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     | Complete(Ok(a)) => f(a)
     | Complete(Error(_)) as r => r
     };
+
+let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) = (f, fa) => bind(fa, f);
 
 module type FUNCTOR_F = (E: BsAbstract.Interface.TYPE) => BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t);
 
@@ -134,7 +136,7 @@ module type MONAD_F = (E: BsAbstract.Interface.TYPE) => BsAbstract.Interface.MON
 
 module Monad: MONAD_F = (E: BsAbstract.Interface.TYPE) => {
   include Applicative(E);
-  let flat_map = flatMap;
+  let flat_map = bind;
 }
 
 module Infix = (E: BsAbstract.Interface.TYPE) => {

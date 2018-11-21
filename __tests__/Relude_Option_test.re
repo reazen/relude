@@ -65,8 +65,8 @@ describe("Option", () => {
     expect(Option.pure(5)) |> toEqual(Some(5))
   );
 
-  test("flatMap", () =>
-    expect(Option.flatMap(Some(1), a => Some(a + 2))) |> toEqual(Some(3))
+  test("bind", () =>
+    expect(Option.bind(Some(1), a => Some(a + 2))) |> toEqual(Some(3))
   );
 
   test("map2", () =>

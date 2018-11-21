@@ -451,8 +451,8 @@ describe("List", () => {
     |> toEqual([3, 4, 5, 3, 6, 9])
   );
 
-  test("flatMap", () =>
-    expect(List.flatMap([1, 2, 3], a => [a, a]))
+  test("bind", () =>
+    expect(List.bind([1, 2, 3], a => [a, a]))
     |> toEqual([1, 1, 2, 2, 3, 3])
   );
 

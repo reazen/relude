@@ -468,8 +468,8 @@ describe("Array", () => {
     |> toEqual([|3, 4, 5, 3, 6, 9|])
   );
 
-  test("flatMap", () =>
-    expect(Array.flatMap([|1, 2, 3|], a => [|a, a|]))
+  test("bind", () =>
+    expect(Array.bind([|1, 2, 3|], a => [|a, a|]))
     |> toEqual([|1, 1, 2, 2, 3, 3|])
   );
 

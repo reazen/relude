@@ -279,10 +279,9 @@ let forEachWithIndex: (('a, int) => unit, array('a)) => unit =
 
 let apply: (array('a => 'b), array('a)) => array('b) = BsAbstract.Array.Apply.apply;
 
-let flatMap: (array('a), 'a => array('b)) => array('b) = BsAbstract.Array.Monad.flat_map;
+let bind: (array('a), 'a => array('b)) => array('b) = BsAbstract.Array.Monad.flat_map;
 
-let flipFlatMap: ('a => array('b), array('a)) => array('b) =
-  (f, xs) => flatMap(xs, f);
+let flatMap: ('a => array('b), array('a)) => array('b) = (f, fa) => bind(fa, f);
 
 let flatten: array(array('a)) => array('a) = Belt.Array.concatMany;
 

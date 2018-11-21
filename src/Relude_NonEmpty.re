@@ -71,7 +71,9 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
   let apply: (t('a => 'b), t('a)) => t('b) =
     (ff, fa) => map(f => map(f, fa), ff) |> flatten;
 
-  let flatMap = (nonEmpty, f) => map(f, nonEmpty) |> flatten;
+  let bind: (t('a), 'a => t('b)) => t('b) = (nonEmpty, f) => map(f, nonEmpty) |> flatten;
+
+  let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
   let mkString: (string, t(string)) => string =
     (delim, xs) =>
@@ -144,7 +146,7 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;
-    let flat_map = flatMap;
+    let flat_map = bind;
   };
 
   module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {

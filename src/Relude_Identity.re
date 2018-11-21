@@ -40,7 +40,9 @@ let map: ('a => 'b, t('a)) => t('b) = (f, fa) => f(fa);
 
 let apply: (t('a => 'b), t('a)) => t('b) = (ff, fa) => ff(fa);
 
-let flatMap: (t('a), 'a => t('b)) => t('b) = (fa, f) => f(fa);
+let bind: (t('a), 'a => t('b)) => t('b) = (fa, f) => f(fa);
+
+let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
 let eq =
     (
@@ -89,7 +91,7 @@ module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
 
 module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
   include Applicative;
-  let flat_map = flatMap;
+  let flat_map = bind;
 };
 
 module type EQ_F =

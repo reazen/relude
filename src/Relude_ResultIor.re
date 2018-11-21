@@ -41,13 +41,15 @@ let apply: (t('a => 'b, 'e), t('a, 'e), ('e, 'e) => 'e) => t('b, 'e) =
     | (IBoth(f, e1), IBoth(a, e2)) => IBoth(f(a), appendErrors(e1, e2))
     };
 
-let flatMap: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+let bind: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   (fa, f) =>
     switch (fa) {
     | IOk(a) => f(a)
     | IError(_) as err => err
     | IBoth(a, _) => f(a)
     };
+
+let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) = (f, fa) => bind(fa, f);
 
 let map2:
   (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
@@ -123,5 +125,5 @@ module type MONAD_F =
 module Monad: MONAD_F =
   (E: BsAbstract.Interface.SEMIGROUP) => {
     include Applicative(E);
-    let flat_map = flatMap;
+    let flat_map = bind;
   };

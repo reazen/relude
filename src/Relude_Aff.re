@@ -79,7 +79,7 @@ let apply: (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
       }
     );
 
-let flatMap: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+let bind: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   (onDoneA, aToAffB, onDoneB) =>
     onDoneA(resultA =>
       switch (resultA) {
@@ -87,6 +87,8 @@ let flatMap: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
       | Error(_) as err => onDoneB(err)
       }
     );
+
+let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) = (f, fa) => bind(fa, f);
 
 module type FUNCTOR_F =
   (Error: BsAbstract.Interface.TYPE) =>
@@ -125,7 +127,7 @@ module type MONAD_F =
 module Monad: MONAD_F =
   (Error: BsAbstract.Interface.TYPE) => {
     include Applicative(Error);
-    let flat_map = flatMap;
+    let flat_map = bind;
   };
 
 module Infix = (Error: BsAbstract.Interface.TYPE) => {

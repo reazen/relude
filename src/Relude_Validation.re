@@ -64,8 +64,6 @@ let toResult: t('a, 'b) => Belt.Result.t('a, 'b) =
     | VError(a) => Error(a)
     };
 
-/* Modules */
-
 module type FUNCTOR_F =
   (
     Errors: BsAbstract.Interface.SEMIGROUP_ANY,

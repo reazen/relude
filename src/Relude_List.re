@@ -246,13 +246,12 @@ let forEachWithIndex: (('a, int) => unit, list('a)) => unit =
 
 let apply: (list('a => 'b), list('a)) => list('b) = BsAbstract.List.Applicative.apply;
 
-let flatMap: (list('a), 'a => list('b)) => list('b) = BsAbstract.List.Monad.flat_map;
+let bind: (list('a), 'a => list('b)) => list('b) = BsAbstract.List.Monad.flat_map;
 
-let flipFlatMap: ('a => list('b), list('a)) => list('b) =
-  (f, xs) => flatMap(xs, f);
+let flatMap: ('a => list('b), list('a)) => list('b) = (f, fa) => bind(fa, f);
 
 let flatten: list(list('a)) => list('a) =
-  xss => flatMap(xss, Relude_Function.identity);
+  xss => bind(xss, Relude_Function.identity);
 
 let fromArray: array('a) => list('a) = Belt.List.fromArray;
 

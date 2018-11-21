@@ -78,7 +78,7 @@ let map5:
   Belt.Result.t('f, 'x) =
   (f, fa, fb, fc, fd, fe) => apply(map4(f, fa, fb, fc, fd), fe);
 
-let flatMap:
+let bind:
   (Belt.Result.t('a, 'e), 'a => Belt.Result.t('b, 'e)) =>
   Belt.Result.t('b, 'e) =
   (ra, aToRB) =>
@@ -86,6 +86,11 @@ let flatMap:
     | Ok(a) => aToRB(a)
     | Error(_) as err => err
     };
+
+let flatMap:
+  ('a => Belt.Result.t('b, 'e), Belt.Result.t('a, 'e)) =>
+  Belt.Result.t('b, 'e) =
+  (f, fa) => bind(fa, f);
 
 let fold: ('a => 'c, 'e => 'c, Belt.Result.t('a, 'e)) => 'c = BsAbstract.Result.result;
 

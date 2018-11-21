@@ -24,8 +24,8 @@ describe("Identity", () => {
     expect(Identity.apply(a => a + 2, 5)) |> toEqual(7);
   });
 
-  test("flatMap", () => {
-    expect(Identity.flatMap(5, a => a + 2)) |> toEqual(7);
+  test("bind", () => {
+    expect(Identity.bind(5, a => a + 2)) |> toEqual(7);
   });
 
   test("show", () => {

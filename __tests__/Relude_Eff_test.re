@@ -22,8 +22,8 @@ describe("Eff", () => {
     expect(Eff.apply(Eff.pure(a => a + 2), Eff.pure(1)) |> Eff.run) |> toEqual(3)
   });
 
-  test("flatMap", () => {
-    expect(Eff.flatMap(Eff.pure(1), i => Eff.pure(i + 2)) |> Eff.run) |> toEqual(3)
+  test("bind", () => {
+    expect(Eff.bind(Eff.pure(1), i => Eff.pure(i + 2)) |> Eff.run) |> toEqual(3)
   });
 });
 

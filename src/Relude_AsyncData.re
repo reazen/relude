@@ -83,7 +83,7 @@ let apply: (t('a => 'b), t('a)) => t('b) =
     | (Complete(f), Complete(a)) => Complete(f(a))
     };
 
-let flatMap: (t('a), 'a => t('b)) => t('b) =
+let bind: (t('a), 'a => t('b)) => t('b) =
   (fa, f) =>
     switch (fa) {
     | Init => Init
@@ -91,6 +91,8 @@ let flatMap: (t('a), 'a => t('b)) => t('b) =
     | Reloading(a) => f(a)
     | Complete(a) => f(a)
     };
+
+let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
 module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
@@ -127,7 +129,7 @@ module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
 
 module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
   include Applicative;
-  let flat_map = flatMap;
+  let flat_map = bind;
 };
 
 module Infix {

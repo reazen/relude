@@ -44,8 +44,10 @@ let map: ('a => 'b, t('a)) => t('b) = (f, effA, ()) => f(effA());
 let apply: (t('a => 'b), t('a)) => t('b) =
   (effAToB, effA, ()) => effAToB((), effA());
 
-let flatMap: (t('a), 'a => t('b)) => t('b) =
+let bind: (t('a), 'a => t('b)) => t('b) =
   (effA, aToEffB, ()) => aToEffB(effA(), ());
+
+let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
 module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
@@ -64,7 +66,7 @@ module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
 
 module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
   include Applicative;
-  let flat_map = flatMap;
+  let flat_map = bind;
 };
 
 module Infix = {

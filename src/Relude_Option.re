@@ -34,11 +34,11 @@ let apply: (option('a => 'b), option('a)) => option('b) =
 
 let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
 
-let flatMap: (option('a), 'a => option('b)) => option('b) =
+let bind: (option('a), 'a => option('b)) => option('b) =
   (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
 
-let flipFlatMap: ('a => option('b), option('a)) => option('b) =
-  (fn, opt) => flatMap(opt, fn);
+let flatMap: ('a => option('b), option('a)) => option('b) =
+  (f, fa) => bind(fa, f);
 
 let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   (fn, default) => BsAbstract.Option.Foldable.fold_left(fn, default);
@@ -55,7 +55,7 @@ let filter: ('a => bool, option('a)) => option('a) =
   fn => foldLeft((default, v) => fn(v) ? pure(v) : default, empty);
 
 let flatten: option(option('a)) => option('a) =
-  opt => flatMap(opt, a => a);
+  opt => bind(opt, a => a);
 
 let eqF: (('a, 'a) => bool, option('a), option('a)) => bool =
   (innerEq, a, b) =>

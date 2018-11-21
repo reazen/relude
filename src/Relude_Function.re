@@ -19,8 +19,10 @@ let map: ('a => 'b, 'r => 'a, 'r) => 'b = (aToB, rToA, r) => aToB(rToA(r)); /* S
 let apply: (('r, 'a) => 'b, 'r => 'a, 'r) => 'b =
   (rToAToB, rToA, r) => rToAToB(r, rToA(r));
 
-let flatMap: ('r => 'a) => ('a => ('r => 'b)) => ('r => 'b) =
-  (rToA, aToRToB) => r => aToRToB(rToA(r))(r);
+let bind: ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
+  (rToA, arToB, r) => arToB(rToA(r), r);
+
+let flatMap: (('a, 'r) => 'b, 'r => 'a, 'r) => 'b = (f, fa) => bind(fa, f);
 
 module Functor = BsAbstract.Function.Functor;
 
