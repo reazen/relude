@@ -3,9 +3,69 @@ open Expect;
 
 module IO = Relude_IO;
 
+/* Test helpers */
 let throwJSError: unit => int = [%bs.raw
   {| function() { throw new Error("Error from JS"); } |}
 ];
+
+type getError =
+  | GetError(string);
+
+type parseError =
+  | ParseError(string);
+
+type printError =
+  | PrintError(string);
+
+type appError =
+  | EGet(getError)
+  | EParse(parseError)
+  | EPrint(printError);
+
+let eGet = e => EGet(e);
+let eParse = e => EParse(e);
+let ePrint = e => EPrint(e);
+
+module AppErrorType: BsAbstract.Interface.TYPE with type t = appError = {
+  type t = appError;
+};
+module IOMonad = IO.Monad(AppErrorType);
+module IOInfix = IO.Infix.Monad(AppErrorType);
+let (>>=) = IOInfix.(>>=);
+let (>=>) = IOInfix.(>=>);
+let (>>) = Relude_Function.Infix.(>>);
+let (<<) = Relude_Function.Infix.(<<);
+
+let getData: IO.t(string, getError) =
+  IO.suspendIO(() =>
+    /*
+     Js.Console.log("Getting data");
+     */
+    IO.delay(2)
+    |> IO.map(_ => "data")
+  );
+
+let parseData: string => IO.t(int, parseError) =
+  data => {
+    /*
+     Js.Console.log("Parsing data");
+     */
+    let l = Relude.String.length(data);
+    if (l > 0) {
+      IO.pure(l);
+    } else {
+      IO.throw(ParseError("Bad data: " ++ data));
+    };
+  };
+
+let printNumber: int => IO.t(unit, printError) =
+  _num => /*
+           Js.Console.log("Printing number");
+           */
+          /*
+           Relude.Js.Console.IO.log(string_of_int(num));
+           */
+          IO.unit;
 
 describe("IO", () => {
   testAsync("pure", onDone =>
@@ -134,6 +194,16 @@ describe("IO", () => {
        )
   );
 
+  testAsync("throw - mapError", onDone =>
+    IO.throw("this is a test")
+    |> IO.mapError(msg => Relude_JsExn.make(msg))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_a) => onDone(fail("Failed"))
+         | Error(_err) => onDone(pass),
+       )
+  );
+
   testAsync("tries", onDone =>
     IO.tries(throwJSError)
     |> IO.unsafeRunAsync(
@@ -169,86 +239,55 @@ describe("IO", () => {
   );
 });
 
-type getError =
-  | GetError(string);
-type parseError =
-  | ParseError(string);
-type printError =
-  | PrintError(string);
+describe("IO examples", () => {
+  testAsync("example >>=", onDone =>
+    getData
+    |> IO.mapError(eGet)
+    >>= (parseData >> IO.mapError(eParse))
+    >>= (printNumber >> IO.mapError(ePrint))
+    >>= (_ => IO.pure(pass))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
 
-type appError =
-  | EGet(getError)
-  | EParse(parseError)
-  | EPrint(printError);
+  testAsync("example >=>", onDone => {
+    let runIO = (
+      (_ => getData |> IO.mapError(eGet))
+      >=> (parseData >> IO.mapError(eParse))
+      >=> (printNumber >> IO.mapError(ePrint))
+      >=> (_ => IO.pure(pass))
+    )
 
-module AppErrorType: BsAbstract.Interface.TYPE = {
-  type t = appError;
-};
-module IOMonad = IO.Monad(AppErrorType);
-module IOInfix = IO.Infix.Monad(AppErrorType);
+    runIO() |> IO.unsafeRunAsync(fun
+      | Ok(assertion) => onDone(assertion)
+      | Error(_) => onDone(fail("Failed"))
+    )
+  });
 
-let (>>=) = IOInfix.(>>=);
-let (>=>) = IOInfix.(>=>);
-
-let getData: unit => IO.t(string, getError) =
-  () => {
-    Js.Console.log("getData");
-    /*
-     IO.delay(10)
-     |> IO.map(_ => "data")
-     */
-    IO.suspend(_ => "data");
-  };
-
-let parseData: string => IO.t(int, parseError) =
-  data => {
-    Js.Console.log("parseData");
-    let l = Relude.String.length(data);
-    if (l > 0) {
-      IO.pure(l);
-    } else {
-      IO.throw(ParseError("Bad data: " ++ data));
-    };
-  };
-
-let printNumber: int => IO.t(unit, printError) =
-  num => {
-    Js.Console.log("printNumber");
-    Relude.Js.Console.IO.log(string_of_int(num));
-  };
-
-describe("examples", () => {
-  testAsync("example >>=", onDone => onDone(pass));
-
-  /*
   testAsync("example flatMap", onDone => {
-    Js.Console.log("example flatMap");
-    let io = getData() |> IO.mapError(e => EGet(e));
-    /*
-     |> IO.flatMap(str => parseData(str) |> IO.mapError(e => EParse(e)))
-     |> IO.flatMap(num => printNumber(num) |> IO.mapError(e => EPrint(e)))
-     */
-
-    Js.Console.log("example flatMap: created io, running it now");
-
-    io
+    getData
+    |> IO.mapError(e => EGet(e))
+    |> IO.flatMap(str => parseData(str) |> IO.mapError(e => EParse(e)))
+    |> IO.flatMap(num => printNumber(num) |> IO.mapError(e => EPrint(e)))
     |> IO.unsafeRunAsync(
          fun
          | Ok(_) =>
            onDone(
-             {
-               Js.Console.log("pass");
-               pass;
-             },
+             /*
+              Js.Console.log("pass");
+              */
+             pass,
            )
          | Error(_) =>
            onDone(
-             {
-               Js.Console.log("failed");
-               fail("Failed");
-             },
+             /*
+              Js.Console.log("failed");
+              */
+             fail("Failed"),
            ),
        );
   });
-  */
 });

@@ -1,36 +1,58 @@
-let (<<) = Relude_Function.compose;
-let (>>) = Relude_Function.andThen;
+module Function = Relude_Function;
+module JsExn = Relude_JsExn;
+module Option = Relude_Option;
+module Result = Relude_Result;
+module Void = Relude_Void;
+
+let (<<) = Function.Infix.(<<);
+let (>>) = Function.Infix.(>>);
 
 type t('a, 'e) =
-  | Pure('a) : t('a, 'e)
-  | Throw('e) : t('a, 'e)
-  | Suspend(unit => 'a) : t('a, 'e)
-  | SuspendIO(unit => t('a, 'e)) : t('a, 'e)
-  | Async((Belt.Result.t('a, 'e) => unit) => unit) : t('a, 'e)
+  | Pure('a): t('a, 'e)
+  | Throw('e): t('a, 'e)
+  | Suspend(unit => 'a): t('a, 'e)
+  | SuspendIO(unit => t('a, 'e)): t('a, 'e)
+  | Async((Result.t('a, 'e) => unit) => unit): t('a, 'e)
   | Map('r => 'a, t('r, 'e)): t('a, 'e)
   | FlatMap('r => t('a, 'e), t('r, 'e)): t('a, 'e);
 
-let pure: 'a => t('a, 'e) = a => Pure(a);
+let pure: 'a 'e. 'a => t('a, 'e) = a => Pure(a);
 
-let pureWithVoid: 'a => t('a, Relude_Void.t) = a => Pure(a);
+let pureWithVoid: 'a. 'a => t('a, Void.t) = a => Pure(a);
 
-let throw: 'e => t('a, 'e) = e => Throw(e);
+let unit: 'e. t(unit, 'e) = Pure();
 
-let throwWithVoid: 'e => t(Relude_Void.t, 'e) = e => Throw(e);
+let unitWithVoid: t(unit, Void.t) = Pure();
 
-let suspend: (unit => 'a) => t('a, 'e) = getA => Suspend(getA);
+let throw: 'a 'e. 'e => t('a, 'e) = e => Throw(e);
 
-let suspendWithVoid: (unit => 'a) => t('a, Relude_Void.t) =
+let throwWithVoid: 'e. 'e => t(Void.t, 'e) = e => Throw(e);
+
+let suspend: 'a 'e. (unit => 'a) => t('a, 'e) = getA => Suspend(getA);
+
+let suspendWithVoid: 'a. (unit => 'a) => t('a, Void.t) =
   getA => Suspend(getA);
 
-let suspendIO: (unit => t('a, 'e)) => t('a, 'e) = getIO => SuspendIO(getIO);
+let suspendThrow: 'a 'e. (unit => 'e) => t('a, 'e) =
+  getError => SuspendIO(() => Throw(getError()));
 
-let async: ((Belt.Result.t('a, 'e) => unit) => unit) => t('a, 'e) =
+let suspendIO: 'a 'e. (unit => t('a, 'e)) => t('a, 'e) =
+  getIO => SuspendIO(getIO);
+
+let async: 'a 'e. ((Result.t('a, 'e) => unit) => unit) => t('a, 'e) =
   onDone => Async(onDone);
 
-let map: ('a => 'b, t('a, 'e)) => t('b, 'e) = (f, io) => Map(f, io);
+let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
+  (getError, option) =>
+    option |> Option.fold(() => throw(getError()), pure);
 
-let tap: ('a => unit, t('a, 'e)) => t('a, 'e) =
+let fromResult: 'a 'e. Result.t('a, 'e) => t('a, 'e) =
+  res => res |> Result.fold(pure, throw);
+
+let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
+  (f, io) => Map(f, io);
+
+let tap: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
   (f, io) =>
     io
     |> map(a => {
@@ -38,38 +60,33 @@ let tap: ('a => unit, t('a, 'e)) => t('a, 'e) =
          a;
        });
 
-let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
+let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (rToIOA, ioR) => FlatMap(rToIOA, ioR);
 
-let bind: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   (ioA, aToIOB) => flatMap(aToIOB, ioA);
 
-let apply: (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
+let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
   (ioF, ioA) => ioF |> flatMap(f => ioA |> map(f));
 
-let rec mapError: ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
+let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
   (e1ToE2, ioA) =>
     switch (ioA) {
-    | Pure(_) as io => io /*|> mapError(e1ToE2)*/
+    | Pure(a) => Pure(a)
     | Throw(e1) => Throw(e1ToE2(e1))
-    | Suspend(_) as io => io |> mapError(e1ToE2)
-    | SuspendIO(_) as io => io |> mapError(e1ToE2)
+    | Suspend(getA) => Suspend(getA)
+    | SuspendIO(getIOA) => SuspendIO((() => getIOA() |> mapError(e1ToE2)))
     | Async(onDone) =>
-      Async(
-        (
-          onDone' =>
-            onDone(
-              fun
-              | Ok(a) => onDone'(Belt.Result.Ok(a))
-              | Error(e) => onDone'(Belt.Result.Error(e1ToE2(e))),
-            )
-        ),
+      Async((onDone' => onDone(Result.mapError(e1ToE2) >> onDone')))
+    | Map(rToA, ioR) => Map(rToA, ioR |> mapError(e1ToE2))
+    | FlatMap(rToIOA, ioR) =>
+      FlatMap(
+        (r => rToIOA(r) |> mapError(e1ToE2)),
+        ioR |> mapError(e1ToE2),
       )
-    | Map(_, _) as io => io |> mapError(e1ToE2)
-    | FlatMap(_, _) as io => io |> mapError(e1ToE2)
     };
 
-let tapError: ('e => unit, t('a, 'e)) => t('a, 'e) =
+let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
   (f, io) =>
     io
     |> mapError(e => {
@@ -77,29 +94,28 @@ let tapError: ('e => unit, t('a, 'e)) => t('a, 'e) =
          e;
        });
 
-let rec bimap: ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2) =
+let rec bimap:
+  'a 'b 'e1 'e2.
+  ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2)
+ =
   (aToB, e1ToE2, io) =>
     switch (io) {
-    | Pure(a) => Pure(aToB(a)) |> mapError(e1ToE2)
-    | Throw(e1) => Throw(e1ToE2(e1)) |> mapError(e1ToE2)
-    | Suspend(getA) => Suspend((() => aToB(getA()))) |> mapError(e1ToE2)
+    | Pure(a) => Pure(aToB(a))
+    | Throw(e1) => Throw(e1ToE2(e1))
+    | Suspend(getA) => Suspend((() => aToB(getA())))
     | SuspendIO(getIOA) =>
       SuspendIO((() => getIOA() |> bimap(aToB, e1ToE2)))
     | Async(onDone) =>
-      Async(
-        (
-          onDoneB =>
-            onDone(resultA =>
-              onDoneB(Relude_Result.bimap(aToB, e1ToE2, resultA))
-            )
-        ),
-      )
-    | Map(rToA, ioR) => Map(rToA >> aToB, ioR) |> mapError(e1ToE2)
+      Async((onDone' => onDone(Result.bimap(aToB, e1ToE2) >> onDone')))
+    | Map(rToA, ioR) => Map(rToA >> aToB, ioR |> mapError(e1ToE2))
     | FlatMap(rToIOA, ioR) =>
-      FlatMap((r => rToIOA(r) |> bimap(aToB, e1ToE2)), ioR)
+      FlatMap(
+        (r => rToIOA(r) |> bimap(aToB, e1ToE2)),
+        ioR |> mapError(e1ToE2),
+      )
     };
 
-let bitap: ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
+let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
   (f, g, io) =>
     io
     |> bimap(
@@ -113,14 +129,14 @@ let bitap: ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
          },
        );
 
-let catchError: ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
+let catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
   (eToIOA, ioA) =>
     switch (ioA) {
     | Throw(e) => eToIOA(e)
     | _ => ioA
     };
 
-let tries: (unit => 'a) => t('a, exn) =
+let tries: 'a. (unit => 'a) => t('a, exn) =
   getA =>
     SuspendIO(
       () =>
@@ -129,183 +145,182 @@ let tries: (unit => 'a) => t('a, exn) =
         },
     );
 
-let triesJS: (unit => 'a) => t('a, Js.Exn.t) =
+let triesJS: 'a. (unit => 'a) => t('a, Js.Exn.t) =
   getA =>
     SuspendIO(
       () =>
         try (Pure(getA())) {
         | Js.Exn.Error(jsExn) => Throw(jsExn)
         | exn =>
-          let jsExn = Relude_JsExn.exnToJsExn(exn);
+          let jsExn = JsExn.fromExn(exn);
           Throw(jsExn);
         },
     );
 
-let rec materializeError:
-  t('a, 'e) => t(Belt.Result.t('a, 'e), Relude_Void.t) =
+let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
   ioA =>
     switch (ioA) {
-    | Pure(a) => Pure(Belt.Result.Ok(a))
-
-    | Throw(e) => Pure(Belt.Result.Error(e))
-
-    | Suspend(getA) => Suspend((() => Belt.Result.Ok(getA())))
-
-    | SuspendIO(getIOA) => SuspendIO((() => getIOA() |> materializeError))
-
+    | Pure(a) => Pure(Result.ok(a))
+    | Throw(e) => Pure(Result.error(e))
+    | Suspend(getA) => Suspend((() => Result.ok(getA())))
+    | SuspendIO(getIOA) => SuspendIO((() => getIOA() |> summonError))
     | Async(onDone) =>
-      Async(
-        (onDoneMat => onDone(result => onDoneMat(Belt.Result.Ok(result)))),
-      )
-
+      Async((onDoneMat => onDone(result => onDoneMat(Result.ok(result)))))
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
-      | Pure(r0) => Pure(Belt.Result.Ok(r0ToA(r0)))
-
-      | Throw(e) => Pure(Belt.Result.Error(e))
-
-      | Suspend(getR0) => Suspend((() => Belt.Result.Ok(r0ToA(getR0()))))
-
+      | Pure(r0) => Pure(Result.ok(r0ToA(r0)))
+      | Throw(e) => Pure(Result.error(e))
+      | Suspend(getR0) => Suspend((() => Result.ok(r0ToA(getR0()))))
       | SuspendIO(getIOR0) =>
-        SuspendIO((() => getIOR0() |> map(r0ToA) |> materializeError))
-
+        SuspendIO((() => getIOR0() |> map(r0ToA) |> summonError))
       | Async(onDoneR0) =>
         Async(
           (
-            onDoneResA =>
-              onDoneR0(resultR0 =>
-                resultR0
-                |> Relude_Result.map(r0ToA)
-                |> (resultA => onDoneResA(Belt.Result.Ok(resultA)))
+            onDoneMat =>
+              onDoneR0(resR0 =>
+                onDoneMat(Result.ok(Result.map(r0ToA, resR0)))
               )
           ),
         )
-
-      | Map(r1ToR0, ioR1) => Map(r1ToR0 >> r0ToA, ioR1) |> materializeError
-
+      | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> summonError
       | FlatMap(r1ToIOR0, ioR1) =>
-        FlatMap((r1 => r1ToIOR0(r1) |> map(r0ToA)), ioR1)
-        |> materializeError
+        ioR1 |> flatMap(r1ToIOR0) |> map(r0ToA) |> summonError
       }
 
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
-      | Pure(r0) => r0ToIOA(r0) |> materializeError
-
-      | Throw(e) => Pure(Belt.Result.Error(e))
-
-      | Suspend(getR0) =>
-        SuspendIO((() => r0ToIOA(getR0()) |> materializeError))
-
+      | Pure(r0) => r0ToIOA(r0) |> summonError
+      | Throw(e) => Pure(Result.error(e))
+      | Suspend(getR0) => SuspendIO((() => r0ToIOA(getR0()) |> summonError))
       | SuspendIO(getIOR0) =>
-        SuspendIO((() => getIOR0() |> flatMap(r0ToIOA) |> materializeError))
-
+        SuspendIO((() => getIOR0() |> flatMap(r0ToIOA) |> summonError))
       | Async(onDoneR0) =>
         Async(
           (
-            onDoneResA =>
-              onDoneR0(resultR0 =>
-                switch (resultR0) {
+            onDoneMat =>
+              onDoneR0(
+                fun
+                | Error(e) => onDoneMat(Result.ok(Result.error(e)))
                 | Ok(r0) =>
                   r0ToIOA(r0)
-                  |> materializeError
-                  |> map(resA => onDoneResA(Belt.Result.Ok(resA)))
-                  |> ignore
-                | Error(e) =>
-                  onDoneResA(Belt.Result.Ok(Belt.Result.Error(e)))
-                }
+                  |> summonError
+                  |> map(resA => onDoneMat(Result.ok(resA)))
+                  |> ignore,
               )
           ),
         )
-
       | Map(r1ToR0, ioR1) =>
-        FlatMap((r1 => r1ToR0(r1) |> r0ToIOA |> materializeError), ioR1)
-
+        ioR1 |> map(r1ToR0) |> flatMap(r0ToIOA) |> summonError
       | FlatMap(r1ToIOR0, ioR1) =>
-        FlatMap(
-          (r1 => r1 |> r1ToIOR0 |> flatMap(r0ToIOA) |> materializeError),
-          ioR1,
-        )
+        ioR1 |> flatMap(r1ToIOR0) |> flatMap(r0ToIOA) |> summonError
       }
     };
 
-let rec unsafeRunAsync: (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => unit =
+let unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
+  _ioRes => Js.Exn.raiseError("unsummonError not implemented");
+
+/* TODO: look into a more performant, trampolining implementation */
+let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
   (onDone, ioA) =>
     switch (ioA) {
-    | Pure(a) => onDone(Belt.Result.Ok(a))
-
-    | Throw(e) => onDone(Belt.Result.Error(e))
-
-    | Suspend(getA) => onDone(Belt.Result.Ok(getA()))
-
+    | Pure(a) => onDone(Result.ok(a))
+    | Throw(e) => onDone(Result.error(e))
+    | Suspend(getA) => onDone(Result.ok(getA()))
     | SuspendIO(getIOA) => getIOA() |> unsafeRunAsync(onDone)
-
     | Async(onDone') => onDone'(onDone)
-
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
-      | Pure(r0) => onDone(Belt.Result.Ok(r0ToA(r0)))
-
-      | Throw(e) => onDone(Belt.Result.Error(e))
-
-      | Suspend(getR0) => onDone(Belt.Result.Ok(r0ToA(getR0())))
-
+      | Pure(r0) => onDone(Result.ok(r0ToA(r0)))
+      | Throw(e) => onDone(Result.error(e))
+      | Suspend(getR0) => onDone(Result.ok(r0ToA(getR0())))
       | SuspendIO(getIOR0) =>
-        Map(r0ToA, getIOR0()) |> unsafeRunAsync(onDone)
-
+        getIOR0()
+        |> unsafeRunAsync(
+             fun
+             | Error(_) as resE => onDone(resE)
+             | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
+           )
       | Async(onDoneR0) =>
-        onDoneR0(resultR0 => onDone(Relude_Result.map(r0ToA, resultR0)))
-
+        onDoneR0(
+          fun
+          | Error(_) as resE => onDone(resE)
+          | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
+        )
       | Map(r1ToR0, ioR1) =>
-        Map(r1ToR0 >> r0ToA, ioR1) |> unsafeRunAsync(onDone)
-
+        ioR1
+        |> unsafeRunAsync(
+             fun
+             | Error(_) as resE => onDone(resE)
+             | Ok(r1) => onDone(Result.ok(r0ToA(r1ToR0(r1)))),
+           )
       | FlatMap(r1ToIOR0, ioR1) =>
-        FlatMap((r1 => r1ToIOR0(r1) |> map(r0ToA)), ioR1)
-        |> unsafeRunAsync(onDone)
+        ioR1
+        |> unsafeRunAsync(
+             fun
+             | Error(_) as resE => onDone(resE)
+             | Ok(r1) =>
+               r1ToIOR0(r1)
+               |> unsafeRunAsync(
+                    fun
+                    | Error(_) as resE => onDone(resE)
+                    | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
+                  ),
+           )
       }
-
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
       | Pure(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone)
-
-      | Throw(e) => onDone(Belt.Result.Error(e))
-
+      | Throw(e) => onDone(Result.error(e))
       | Suspend(getR0) => r0ToIOA(getR0()) |> unsafeRunAsync(onDone)
-
       | SuspendIO(getIOR0) =>
-        getIOR0() |> flatMap(r0ToIOA) |> unsafeRunAsync(onDone)
-
+        getIOR0()
+        |> unsafeRunAsync(
+             fun
+             | Error(_) as resE => onDone(resE)
+             | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
+           )
       | Async(onDoneR0) =>
-        onDoneR0(resultR0 =>
-          switch (resultR0) {
-          | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone)
-          | Error(e) => onDone(Belt.Result.Error(e))
-          }
+        onDoneR0(
+          fun
+          | Error(_) as resE => onDone(resE)
+          | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
         )
-
       | Map(r1ToR0, ioR1) =>
-        flatMap(r1 => (r1ToR0 >> r0ToIOA)(r1), ioR1)
-        |> unsafeRunAsync(onDone)
-
+        ioR1
+        |> unsafeRunAsync(
+             fun
+             | Error(_) as resE => onDone(resE)
+             | Ok(r1) => r1 |> r1ToR0 |> r0ToIOA |> unsafeRunAsync(onDone),
+           )
       | FlatMap(r1ToIOR0, ioR1) =>
-        FlatMap((r1 => r1ToIOR0(r1) |> flatMap(r0ToIOA)), ioR1)
-        |> unsafeRunAsync(onDone)
+        ioR1
+        |> unsafeRunAsync(
+             fun
+             | Error(_) as resE => onDone(resE)
+             | Ok(r1) =>
+               r1ToIOR0(r1)
+               |> unsafeRunAsync(
+                    fun
+                    | Error(_) as resE => onDone(resE)
+                    | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
+                  ),
+           )
       }
     };
 
-let delay: int => t(unit, 'e) =
+let delay: 'e. int => t(unit, 'e) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Belt.Result.Ok()), millis) |> ignore
+      Js.Global.setTimeout(_ => onDone(Result.ok()), millis) |> ignore
     );
 
-let delayWithVoid: int => t(unit, Relude_Void.t) =
+let delayWithVoid: int => t(unit, Void.t) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Belt.Result.Ok()), millis) |> ignore
+      Js.Global.setTimeout(_ => onDone(Result.ok()), millis) |> ignore
     );
 
-let withDelay: (int, t('a, 'e)) => t('a, 'e) =
+let withDelay: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
   (millis, io) => delay(millis) |> flatMap(_ => io);
 
 module type FUNCTOR_F =
@@ -317,6 +332,11 @@ module Functor: FUNCTOR_F =
     type nonrec t('a) = t('a, E.t);
     let map = map;
   };
+
+module Bifunctor: BsAbstract.Interface.BIFUNCTOR = {
+  type nonrec t('a, 'e) = t('a, 'e);
+  let bimap = bimap;
+};
 
 module type APPLY_F =
   (E: BsAbstract.Interface.TYPE) =>
@@ -346,6 +366,19 @@ module Monad: MONAD_F =
   (E: BsAbstract.Interface.TYPE) => {
     include Applicative(E);
     let flat_map = bind;
+  };
+
+module MonadThrow: Relude_MonadError.MONAD_THROW =
+  (E: BsAbstract.Interface.TYPE) => {
+    include Monad(E);
+    let throwError = throw;
+  };
+
+module MonadError: Relude_MonadError.MONAD_ERROR =
+  (E: BsAbstract.Interface.TYPE) => {
+    include Monad(E);
+    let throwError = throw;
+    let catchError = catchError;
   };
 
 module Infix = {
