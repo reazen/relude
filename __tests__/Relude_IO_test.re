@@ -2,6 +2,7 @@ open Jest;
 open Expect;
 
 module IO = Relude_IO;
+module Result = Relude_Result;
 
 /* Test helpers */
 let throwJSError: unit => int = [%bs.raw
@@ -31,25 +32,17 @@ module AppErrorType: BsAbstract.Interface.TYPE with type t = appError = {
 };
 module IOMonad = IO.Monad(AppErrorType);
 module IOInfix = IO.Infix.Monad(AppErrorType);
+
 let (>>=) = IOInfix.(>>=);
 let (>=>) = IOInfix.(>=>);
 let (>>) = Relude_Function.Infix.(>>);
 let (<<) = Relude_Function.Infix.(<<);
 
 let getData: IO.t(string, getError) =
-  IO.suspendIO(() =>
-    /*
-     Js.Console.log("Getting data");
-     */
-    IO.delay(2)
-    |> IO.map(_ => "data")
-  );
+  IO.suspendIO(() => IO.delay(2) |> IO.map(_ => "data"));
 
 let parseData: string => IO.t(int, parseError) =
   data => {
-    /*
-     Js.Console.log("Parsing data");
-     */
     let l = Relude.String.length(data);
     if (l > 0) {
       IO.pure(l);
@@ -58,17 +51,10 @@ let parseData: string => IO.t(int, parseError) =
     };
   };
 
-let printNumber: int => IO.t(unit, printError) =
-  _num => /*
-           Js.Console.log("Printing number");
-           */
-          /*
-           Relude.Js.Console.IO.log(string_of_int(num));
-           */
-          IO.unit;
+let printNumber: int => IO.t(unit, printError) = _num => IO.unit;
 
 describe("IO", () => {
-  testAsync("pure", onDone =>
+  testAsync("unsafeRunAsync pure", onDone =>
     IO.pure(42)
     |> IO.unsafeRunAsync(
          fun
@@ -77,7 +63,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("suspend", onDone =>
+  testAsync("unsafeRunAsync suspend", onDone =>
     IO.suspend(() => 42)
     |> IO.unsafeRunAsync(
          fun
@@ -86,7 +72,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("suspendIO - pure", onDone =>
+  testAsync("unsafeRunAsync suspendIO - pure", onDone =>
     IO.suspendIO(() => IO.pure(42))
     |> IO.unsafeRunAsync(
          fun
@@ -95,7 +81,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("suspendIO - suspend", onDone =>
+  testAsync("unsafeRunAsync suspendIO - suspend", onDone =>
     IO.suspendIO(() => IO.suspend(() => 42))
     |> IO.unsafeRunAsync(
          fun
@@ -104,7 +90,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("suspendIO - suspendIO - pure", onDone =>
+  testAsync("unsafeRunAsync suspendIO - suspendIO - pure", onDone =>
     IO.suspendIO(() => IO.suspendIO(() => IO.pure(42)))
     |> IO.unsafeRunAsync(
          fun
@@ -113,7 +99,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("suspendIO - async", onDone =>
+  testAsync("unsafeRunAsync suspendIO - async", onDone =>
     IO.suspendIO(() => IO.async(onDone => onDone(Belt.Result.Ok(42))))
     |> IO.unsafeRunAsync(
          fun
@@ -122,7 +108,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("async - synchronous Ok", onDone =>
+  testAsync("unsafeRunAsync async - synchronous Ok", onDone =>
     IO.async(onDone => onDone(Belt.Result.Ok(42)))
     |> IO.unsafeRunAsync(
          fun
@@ -131,7 +117,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("async - synchronous Error", onDone =>
+  testAsync("unsafeRunAsync async - synchronous Error", onDone =>
     IO.async(onDone => onDone(Belt.Result.Error("it failed")))
     |> IO.unsafeRunAsync(
          fun
@@ -140,7 +126,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("pure - map", onDone =>
+  testAsync("unsafeRunAsync pure - map", onDone =>
     IO.pure(42)
     |> IO.map(a => a + 10)
     |> IO.unsafeRunAsync(
@@ -150,7 +136,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("pure - flatMap pure", onDone =>
+  testAsync("unsafeRunAsync pure - flatMap pure", onDone =>
     IO.pure(42)
     |> IO.flatMap(a => IO.pure(a + 10))
     |> IO.unsafeRunAsync(
@@ -160,7 +146,8 @@ describe("IO", () => {
        )
   );
 
-  testAsync("pure - flatMap pure - flatMap pure - flatMap pure", onDone =>
+  testAsync(
+    "unsafeRunAsync pure - flatMap pure - flatMap pure - flatMap pure", onDone =>
     IO.pure(42)
     |> IO.flatMap(a => IO.pure(a + 10))
     |> IO.flatMap(a => IO.pure(a + 10))
@@ -172,7 +159,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("pure - flatMap supend - flatMap pure", onDone =>
+  testAsync("unsafeRunAsync pure - flatMap supend - flatMap pure", onDone =>
     IO.pure(42)
     |> IO.flatMap(a =>
          IO.suspend(_ => a + 10) |> IO.flatMap(b => IO.pure(b * 2))
@@ -184,7 +171,7 @@ describe("IO", () => {
        )
   );
 
-  testAsync("pure - mapError", onDone =>
+  testAsync("unsafeRunAsync pure - mapError", onDone =>
     IO.pure(42)
     |> IO.mapError(_ => "error")
     |> IO.unsafeRunAsync(
@@ -194,13 +181,193 @@ describe("IO", () => {
        )
   );
 
-  testAsync("throw - mapError", onDone =>
+  testAsync("unsafeRunAsync throw - mapError", onDone =>
     IO.throw("this is a test")
     |> IO.mapError(msg => Relude_JsExn.make(msg))
     |> IO.unsafeRunAsync(
          fun
          | Ok(_a) => onDone(fail("Failed"))
          | Error(_err) => onDone(pass),
+       )
+  );
+
+  testAsync("fromOption Some", onDone =>
+    IO.fromOption(() => "Failed", Some(32))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(a) => onDone(expect(a) |> toEqual(32))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("fromOption None", onDone =>
+    IO.fromOption(() => "Messed up", None)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(error) => onDone(expect(error) |> toEqual("Messed up")),
+       )
+  );
+
+  testAsync("fromResult Ok", onDone =>
+    IO.fromResult(Ok(32))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(a) => onDone(expect(a) |> toEqual(32))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("fromResult Error", onDone =>
+    IO.fromResult(Error("Messed up"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(error) => onDone(expect(error) |> toEqual("Messed up")),
+       )
+  );
+
+  testAsync("summonError pure", onDone =>
+    IO.pure(42)
+    |> IO.summonError
+    |> IO.bimap(
+         resA => expect(resA) |> toEqual(Belt.Result.Ok(42)),
+         _e => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("summonError suspend", onDone =>
+    IO.suspend(() => 42)
+    |> IO.summonError
+    |> IO.bimap(
+         resA => expect(resA) |> toEqual(Belt.Result.Ok(42)),
+         _e => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("summonError suspendIO pure", onDone =>
+    IO.suspendIO(() => IO.pure(42))
+    |> IO.summonError
+    |> IO.bimap(
+         resA => expect(resA) |> toEqual(Belt.Result.Ok(42)),
+         _e => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("summonError suspendIO throw", onDone =>
+    IO.suspendIO(() => IO.throw("error!"))
+    |> IO.summonError
+    |> IO.bimap(
+         resA => expect(resA) |> toEqual(Belt.Result.Error("error!")),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("summonError suspendIO pure - map - flatMap pure", onDone =>
+    IO.suspendIO(() =>
+      IO.pure(42) |> IO.map(a => a + 10) |> IO.flatMap(a => IO.pure(a + 11))
+    )
+    |> IO.summonError
+    |> IO.bimap(
+         resA => expect(resA) |> toEqual(Belt.Result.Ok(63)),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("unsummonError pure Ok", onDone =>
+    IO.unsummonError(IO.pure(Belt.Result.Ok(42)))
+    |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("Failed"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("unsummonError pure Error", onDone =>
+    IO.unsummonError(IO.pure(Belt.Result.Error("e!")))
+    |> IO.bimap(_ => fail("Failed"), error => expect(error) |> toEqual("e!"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("unsummonError suspend Ok", onDone =>
+    IO.unsummonError(IO.suspend(() => Belt.Result.Ok(42)))
+    |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("Failed"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("unsummonError suspend Error", onDone =>
+    IO.unsummonError(IO.suspend(() => Belt.Result.Error("e!")))
+    |> IO.bimap(_ => fail("Failed"), error => expect(error) |> toEqual("e!"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("unsummonError suspendIO pure Ok", onDone =>
+    IO.unsummonError(IO.suspendIO(() => IO.pure(Belt.Result.Ok(42))))
+    |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("Failed"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("unsummonError suspendIO pure Error", onDone =>
+    IO.unsummonError(IO.suspendIO(() => IO.pure(Belt.Result.Error("e!"))))
+    |> IO.bimap(_ => fail("Failed"), error => expect(error) |> toEqual("e!"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("unsummonError suspendIO pure Ok - map - flatMap", onDone =>
+    IO.pure(42) |> IO.map(a => a + 10) |> IO.flatMap(a => IO.pure(a + 11))
+    |> IO.summonError
+    |> IO.unsummonError
+    |> IO.bimap(a => expect(a) |> toEqual(63), _ => fail("Failed"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
        )
   );
 
@@ -254,40 +421,29 @@ describe("IO examples", () => {
   );
 
   testAsync("example >=>", onDone => {
-    let runIO = (
+    let runIO =
       (_ => getData |> IO.mapError(eGet))
       >=> (parseData >> IO.mapError(eParse))
       >=> (printNumber >> IO.mapError(ePrint))
-      >=> (_ => IO.pure(pass))
-    )
+      >=> (_ => IO.pure(pass));
 
-    runIO() |> IO.unsafeRunAsync(fun
-      | Ok(assertion) => onDone(assertion)
-      | Error(_) => onDone(fail("Failed"))
-    )
+    runIO()
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(_) => onDone(fail("Failed")),
+       );
   });
 
-  testAsync("example flatMap", onDone => {
+  testAsync("example flatMap", onDone =>
     getData
     |> IO.mapError(e => EGet(e))
     |> IO.flatMap(str => parseData(str) |> IO.mapError(e => EParse(e)))
     |> IO.flatMap(num => printNumber(num) |> IO.mapError(e => EPrint(e)))
     |> IO.unsafeRunAsync(
          fun
-         | Ok(_) =>
-           onDone(
-             /*
-              Js.Console.log("pass");
-              */
-             pass,
-           )
-         | Error(_) =>
-           onDone(
-             /*
-              Js.Console.log("failed");
-              */
-             fail("Failed"),
-           ),
-       );
-  });
+         | Ok(_) => onDone(pass)
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
 });

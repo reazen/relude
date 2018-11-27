@@ -184,7 +184,7 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
         )
       | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> summonError
       | FlatMap(r1ToIOR0, ioR1) =>
-        ioR1 |> flatMap(r1ToIOR0) |> map(r0ToA) |> summonError
+        ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> map(r0ToA)) |> summonError
       }
 
     | FlatMap(r0ToIOA, ioR0) =>
@@ -210,16 +210,79 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
           ),
         )
       | Map(r1ToR0, ioR1) =>
-        ioR1 |> map(r1ToR0) |> flatMap(r0ToIOA) |> summonError
+        ioR1 |> flatMap(r1ToR0 >> r0ToIOA) |> summonError
       | FlatMap(r1ToIOR0, ioR1) =>
-        ioR1 |> flatMap(r1ToIOR0) |> flatMap(r0ToIOA) |> summonError
+        ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> flatMap(r0 => r0ToIOA(r0))) |> summonError
       }
     };
 
-let unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
-  _ioRes => Js.Exn.raiseError("unsummonError not implemented");
+let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
+  fun
+  | Pure(resA) => resA |> Result.fold(pure, throw)
+  | Throw(absurd) => Void.absurd(absurd)
+  | Suspend(getResA) =>
+    SuspendIO((() => getResA() |> Result.fold(pure, throw)))
+  | SuspendIO(getIOResA) => SuspendIO((() => getIOResA() |> unsummonError))
+  | Async(onDoneResResA) =>
+    Async(
+      (
+        onDoneResA =>
+          onDoneResResA(resResA =>
+            switch (resResA) {
+            | Ok(resA) => onDoneResA(resA)
+            | Error(absurd) => Void.absurd(absurd)
+            }
+          )
+      ),
+    )
+  | Map(r0ToResA, ioR0) =>
+    switch (ioR0) {
+    | Pure(r0) => r0ToResA(r0) |> Result.fold(pure, throw)
+    | Throw(absurd) => Void.absurd(absurd)
+    | Suspend(getR0) =>
+      SuspendIO((() => getR0() |> r0ToResA |> Result.fold(pure, throw)))
+    | SuspendIO(getIOR0) =>
+      SuspendIO((() => getIOR0() |> map(r0ToResA) |> unsummonError))
+    | Async(onDoneR0) =>
+      Async(
+        (
+          onDoneResA =>
+            onDoneR0(
+              fun
+              | Ok(r0) => onDoneResA(r0ToResA(r0))
+              | Error(absurd) => Void.absurd(absurd),
+            )
+        ),
+      )
+    | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToResA) |> unsummonError
+    | FlatMap(r1ToIOR0, ioR1) =>
+      ioR1 |> flatMap(r1ToIOR0) |> map(r0ToResA) |> unsummonError
+    }
+  | FlatMap(r0ToIOResA, ioR0) =>
+    switch (ioR0) {
+    | Pure(r0) => r0ToIOResA(r0) |> unsummonError
+    | Throw(absurd) => Void.absurd(absurd)
+    | Suspend(getR0) =>
+      SuspendIO((() => getR0() |> r0ToIOResA |> unsummonError))
+    | SuspendIO(getIOR0) =>
+      SuspendIO((() => getIOR0() |> flatMap(r0ToIOResA) |> unsummonError))
+    | Async(onDoneR0) =>
+      Async(
+        (
+          onDoneResA =>
+            onDoneR0(
+              fun
+              | Ok(r0) => r0 |> r0ToIOResA |> map(onDoneResA) |> ignore
+              | Error(absurd) => Void.absurd(absurd),
+            )
+        ),
+      )
+    | Map(r1ToR0, ioR1) =>
+      ioR1 |> flatMap(r1ToR0 >> r0ToIOResA) |> unsummonError
+    | FlatMap(r1ToIOR0, ioR1) =>
+      ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> flatMap(r0 => r0ToIOResA(r0))) |> unsummonError
+    };
 
-/* TODO: look into a more performant, trampolining implementation */
 let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
   (onDone, ioA) =>
     switch (ioA) {
