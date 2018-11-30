@@ -7,6 +7,16 @@ module Void = Relude_Void;
 let (<<) = Function.Infix.(<<);
 let (>>) = Function.Infix.(>>);
 
+/**
+IO is a bi-functor effect type that supports both synchronous and asynchronous effects, with explicit error handling.
+
+This is inspired by the following libraries/articles:
+
+* John De Goes - http://degoes.net/articles/only-one-io and http://degoes.net/articles/bifunctor-io
+* ZIO/Scalaz 8 IO (Scala) - https://github.com/scalaz/scalaz-zio
+* cats-bio (Scala) - https://github.com/LukaJCB/cats-bio
+* purescript-aff discussion (Purescript) - https://github.com/slamdata/purescript-aff/issues/137
+ */
 type t('a, 'e) =
   | Pure('a): t('a, 'e)
   | Throw('e): t('a, 'e)
@@ -212,7 +222,9 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
       | Map(r1ToR0, ioR1) =>
         ioR1 |> flatMap(r1ToR0 >> r0ToIOA) |> summonError
       | FlatMap(r1ToIOR0, ioR1) =>
-        ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> flatMap(r0 => r0ToIOA(r0))) |> summonError
+        ioR1
+        |> flatMap(r1 => r1ToIOR0(r1) |> flatMap(r0 => r0ToIOA(r0)))
+        |> summonError
       }
     };
 
@@ -280,7 +292,9 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
     | Map(r1ToR0, ioR1) =>
       ioR1 |> flatMap(r1ToR0 >> r0ToIOResA) |> unsummonError
     | FlatMap(r1ToIOR0, ioR1) =>
-      ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> flatMap(r0 => r0ToIOResA(r0))) |> unsummonError
+      ioR1
+      |> flatMap(r1 => r1ToIOR0(r1) |> flatMap(r0 => r0ToIOResA(r0)))
+      |> unsummonError
     };
 
 let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =

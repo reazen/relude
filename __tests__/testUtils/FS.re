@@ -43,74 +43,53 @@ module Native = {
 Fs.Eff wraps the synchronous Native functions in the Eff monad.
 Note: these fs functions can actually fail with exceptions with are not handled by Eff.
 */
-module Eff = {
+module IO = {
   /* Read a file with no accomodation for errors */
-  let readFileSync: string => Relude_Eff.t(string) =
-    (path, ()) => {
-      /*
-      Js.Console.log("Fs.Eff.readFileSync: reading file: " ++ path ++ "...");
-      */
-      Native.readFileSync(path, `utf8);
-    }
+  let readFileSync: string => Relude_IO.t(string, Js.Exn.t) =
+    path => Relude_IO.triesJS(() => Native.readFileSync(path, `utf8));
 
-  /* Write a file with no accomodation for errors */
-  let writeFileSync: (string, string) => Relude_Eff.t(unit) =
-    (path, content, ()) => {
-      /*
-      Js.Console.log("Fs.Eff.writeFileSync: writing file: " ++ path ++ "...");
-      */
-      Native.writeFileSync(path, content, `utf8);
-    }
+  let writeFileSync: (string, string) => Relude_IO.t(unit, Js.Exn.t) =
+    (path, content) =>
+      Relude_IO.triesJS(() => Native.writeFileSync(path, content, `utf8));
+
+  let readFile: string => Relude_IO.t(string, Js.Exn.t) =
+    path =>
+      Relude_IO.async(onDone =>
+        Native.readFile(path, `utf8, (err, content) =>
+          switch (Js.Null.toOption(err), content) {
+          | (Some(err'), _) =>
+            Js.Console.error(
+              "Read failed: "
+              ++ (
+                Js.Exn.message(err')
+                |> Relude_Option.getOrElse(_ => "No error")
+              ),
+            );
+            onDone(Error(err'));
+          | (_, content) => onDone(Ok(content))
+          }
+        )
+      );
+
+  let writeFile: (string, string) => Relude_IO.t(unit, Js.Exn.t) =
+    (path, content) =>
+      Relude_IO.async(onDone =>
+        Native.writeFile(path, content, `utf8, err =>
+          switch (Js.Null.toOption(err)) {
+          | Some(err') =>
+            Js.Console.error(
+              "Write failed: "
+              ++ (
+                Js.Exn.message(err')
+                |> Relude_Option.getOrElse(_ => "No error")
+              ),
+            );
+            onDone(Error(err'));
+          | None => onDone(Ok())
+          }
+        )
+      );
 };
 
-/**
-Fs.Aff wraps the asynchronous Native functions in the Aff monad.
-These functions can fail with async callback errors, which are captured by the Aff error type (the raw Js.Exn.t in this case).
-*/
-module Aff = {
-  let readFile: string => Relude_Aff.t(string, Js.Exn.t) =
-    (path, onDone, ()) => {
-      /*
-      Js.Console.log("Fs.Aff.readFile: reading " ++ path ++ "...");
-      */
-      Native.readFile(path, `utf8, (err, content) =>
-        switch (Js.Null.toOption(err), content) {
-        | (Some(err'), _) =>
-          Js.Console.error(
-            "Read failed: "
-            ++ (Js.Exn.message(err') |> Relude_Option.getOrElse(_ => "No error")),
-          );
-          onDone(Error(err'), ());
-        | (_, content) =>
-          /*
-          Js.Console.log("Read success!");
-          */
-          onDone(Ok(content), ());
-        }
-      );
-    };
-
-  let writeFile: (string, string) => Relude_Aff.t(unit, Js.Exn.t) =
-    (path, content, onDone, ()) => {
-      /*
-      Js.Console.log("Fs.Aff.writeFile: writing file: " ++ path ++ "...");
-      */
-      Native.writeFile(path, content, `utf8, err =>
-        switch (Js.Null.toOption(err)) {
-        | Some(err') =>
-          Js.Console.error(
-            "Write failed: "
-            ++ (Js.Exn.message(err') |> Relude_Option.getOrElse(_ => "No error")),
-          );
-          onDone(Error(err'), ());
-        | None =>
-          /*
-          Js.Console.log("Write success!");
-          */
-          onDone(Ok(), ());
-        }
-      );
-    };
-};
-
-let testFilePath: string => string = (fileName) => Native.dirnameOrDot ++ "/" ++ fileName;
+let testFilePath: string => string =
+  fileName => Native.dirnameOrDot ++ "/" ++ fileName;

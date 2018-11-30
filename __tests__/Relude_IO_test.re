@@ -311,7 +311,10 @@ describe("IO", () => {
 
   testAsync("unsummonError pure Error", onDone =>
     IO.unsummonError(IO.pure(Belt.Result.Error("e!")))
-    |> IO.bimap(_ => fail("Failed"), error => expect(error) |> toEqual("e!"))
+    |> IO.bimap(
+         _ => fail("Failed"),
+         error => expect(error) |> toEqual("e!"),
+       )
     |> IO.unsafeRunAsync(
          fun
          | Ok(assertion) => onDone(assertion)
@@ -331,7 +334,10 @@ describe("IO", () => {
 
   testAsync("unsummonError suspend Error", onDone =>
     IO.unsummonError(IO.suspend(() => Belt.Result.Error("e!")))
-    |> IO.bimap(_ => fail("Failed"), error => expect(error) |> toEqual("e!"))
+    |> IO.bimap(
+         _ => fail("Failed"),
+         error => expect(error) |> toEqual("e!"),
+       )
     |> IO.unsafeRunAsync(
          fun
          | Ok(assertion) => onDone(assertion)
@@ -351,7 +357,10 @@ describe("IO", () => {
 
   testAsync("unsummonError suspendIO pure Error", onDone =>
     IO.unsummonError(IO.suspendIO(() => IO.pure(Belt.Result.Error("e!"))))
-    |> IO.bimap(_ => fail("Failed"), error => expect(error) |> toEqual("e!"))
+    |> IO.bimap(
+         _ => fail("Failed"),
+         error => expect(error) |> toEqual("e!"),
+       )
     |> IO.unsafeRunAsync(
          fun
          | Ok(assertion) => onDone(assertion)
@@ -360,7 +369,9 @@ describe("IO", () => {
   );
 
   testAsync("unsummonError suspendIO pure Ok - map - flatMap", onDone =>
-    IO.pure(42) |> IO.map(a => a + 10) |> IO.flatMap(a => IO.pure(a + 11))
+    IO.pure(42)
+    |> IO.map(a => a + 10)
+    |> IO.flatMap(a => IO.pure(a + 11))
     |> IO.summonError
     |> IO.unsummonError
     |> IO.bimap(a => expect(a) |> toEqual(63), _ => fail("Failed"))
@@ -443,6 +454,84 @@ describe("IO examples", () => {
     |> IO.unsafeRunAsync(
          fun
          | Ok(_) => onDone(pass)
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+});
+
+let testFilePath = FS.testFilePath("Eff_test.txt");
+
+module JsExnType: BsAbstract.Interface.TYPE with type t = Js.Exn.t = {
+  type t = Js.Exn.t;
+};
+module IOJsExnMonad = IO.Monad(JsExnType);
+module IOJsExnInfix = IO.Infix.Monad(JsExnType);
+
+let (>>=) = IOJsExnInfix.(>>=);
+let (>=>) = IOJsExnInfix.(>=>);
+
+describe("IO FS examples", () => {
+  beforeAll(() =>
+    FS.IO.writeFileSync(testFilePath, "") |> IO.unsafeRunAsync(ignore)
+  );
+
+  testAsync("read and writeFileSync", onDone =>
+    FS.IO.writeFileSync(testFilePath, "IO Eff test")
+    >>= (_ => FS.IO.readFileSync(testFilePath))
+    >>= (content => IO.pure(expect(content) |> toEqual("IO Eff test")))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(_jsExn) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("triesJS with Reason Js.Exn.raiseError", onDone =>
+    IO.triesJS(() => Js.Exn.raiseError("Crap the pants"))
+    |> IO.unsafeRunAsync(result =>
+         switch (result) {
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) =>
+           onDone(
+             expect(Js.Exn.message(e)) |> toEqual(Some("Crap the pants")),
+           )
+         }
+       )
+  );
+
+  testAsync("triesJS with raw JS function that throws", onDone => {
+    let jsThrow = [%raw
+      {|
+      function() {
+        throw new Error("This sucks");
+      }
+    |}
+    ];
+    IO.triesJS(() => jsThrow(.))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) =>
+           onDone(
+             expect(Js.Exn.message(e)) |> toEqual(Some("This sucks")),
+           ),
+       );
+  });
+
+  testAsync("readFile", onDone =>
+    FS.IO.writeFile(testFilePath, "IO Aff test")
+    >>= (_ => FS.IO.readFile(testFilePath))
+    >>= (
+      content =>
+        Relude_String.toNonWhitespace(content)
+        |> IO.fromOption(_ =>
+             Relude_JsExn.make("Failed to get non-empty file content")
+           )
+    )
+    >>= (content => IO.pure(expect(content) |> toEqual("IO Aff test")))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
          | Error(_) => onDone(fail("Failed")),
        )
   );
