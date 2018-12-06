@@ -189,6 +189,10 @@ describe("List", () => {
     expect(List.last([1, 2, 3, 4])) |> toEqual(Some(4))
   );
 
+  test("take negative from list", () =>
+    expect(List.take(-2, [])) |> toEqual(Some([]))
+  );
+
   test("take zero from empty list", () =>
     expect(List.take(0, [])) |> toEqual(Some([]))
   );
@@ -440,6 +444,11 @@ describe("List", () => {
   test("distinct", () =>
     expect(List.distinct(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
     |> toEqual([6, 1, 2, 3, 4, 5])
+  );
+
+  test("distinctString", () =>
+    expect(List.distinctString(["foo", "bar", "baz", "bar"]))
+    |> toEqual(["foo", "bar", "baz"])
   );
 
   test("map", () =>

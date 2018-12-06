@@ -1,3 +1,6 @@
+let fromArray: array('a) => list('a) = Belt.List.fromArray;
+let toArray: list('a) => array('a) = Belt.List.toArray;
+
 let length: list('a) => int = Belt.List.length;
 
 let isEmpty: list('a) => bool =
@@ -81,24 +84,42 @@ let rec last: list('a) => option('a) =
   | [x] => Some(x)
   | [_, ...xs] => last(xs);
 
+let shuffle: list('a) => list('a) = Belt.List.shuffle;
+
+let reverse: list('a) => list('a) = Belt.List.reverse;
+
 let take: (int, list('a)) => option(list('a)) =
-  (i, xs) => Belt.List.take(xs, i);
+  (i, xs) => {
+    let rec go = (acc, count, rest) =>
+      switch (rest) {
+      | _ when count <= 0 => Some(acc)
+      | [] => None
+      | [y, ...ys] => go([y, ...acc], count - 1, ys)
+      };
+    go([], i, xs) |> Relude_Option.map(reverse);
+  };
 
-let rec takeUpTo: (int, list('a)) => list('a) =
-  (i, xs) =>
-    switch (xs) {
-    | [] => []
-    | _ when i == 0 => []
-    | [y, ...ys] => [y, ...takeUpTo(i - 1, ys)]
-    };
+let takeUpTo: (int, list('a)) => list('a) =
+  (i, xs) => {
+    let rec go = (acc, count, rest) =>
+      switch (rest) {
+      | _ when count <= 0 => acc
+      | [] => acc
+      | [y, ...ys] => go([y, ...acc], count - 1, ys)
+      };
+    go([], i, xs) |> reverse;
+  };
 
-let rec takeWhile: ('a => bool, list('a)) => list('a) =
-  (f, xs) =>
-    switch (xs) {
-    | [] => []
-    | [x, ...xs] when f(x) => [x, ...takeWhile(f, xs)]
-    | _ => []
-    };
+let takeWhile: ('a => bool, list('a)) => list('a) =
+  (f, xs) => {
+    let rec go = (acc, rest) =>
+      switch (rest) {
+      | [] => acc
+      | [y, ..._] when !f(y) => acc
+      | [y, ...ys] => go([y, ...acc], ys)
+      };
+    go([], xs) |> reverse;
+  };
 
 let drop: (int, list('a)) => option(list('a)) =
   (i, xs) => Belt.List.drop(xs, i);
@@ -107,7 +128,7 @@ let rec dropUpTo: (int, list('a)) => list('a) =
   (i, xs) =>
     switch (xs) {
     | [] => []
-    | [_, ..._] when i == 0 => xs
+    | [_, ..._] when i <= 0 => xs
     | [_, ...ys] => dropUpTo(i - 1, ys)
     };
 
@@ -165,7 +186,11 @@ let intersperse: ('a, list('a)) => list('a) =
 
 let replicate: (int, list('a)) => list('a) =
   (i, xs) =>
-    foldLeft((acc, _i) => concat(acc, xs), [], Relude_Int.rangeAsList(0, i));
+    foldLeft(
+      (acc, _i) => concat(acc, xs),
+      [],
+      Relude_Int.rangeAsList(0, i),
+    );
 
 let zip: (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 
@@ -182,10 +207,6 @@ let sortWithInt: (('a, 'a) => int, list('a)) => list('a) =
 
 let sort: (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a) =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
-
-let shuffle: list('a) => list('a) = Belt.List.shuffle;
-
-let reverse: list('a) => list('a) = Belt.List.reverse;
 
 let rec any: ('a => bool, list('a)) => bool =
   (f, xs) =>
@@ -217,22 +238,6 @@ let rec all: ('a => bool, list('a)) => bool =
     | _ => false
     };
 
-/* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
-
-let distinct: (('a, 'a) => bool, list('a)) => list('a) =
-  (eq, xs) =>
-    foldLeft(
-      /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
-      (acc, curr) =>
-        if (contains(eq, curr, acc)) {
-          acc;
-        } else {
-          append(curr, acc);
-        },
-      [],
-      xs,
-    );
-
 let map: ('a => 'b, list('a)) => list('b) = BsAbstract.List.Functor.map;
 
 let mapWithIndex: (('a, int) => 'b, list('a)) => list('b) =
@@ -248,14 +253,11 @@ let apply: (list('a => 'b), list('a)) => list('b) = BsAbstract.List.Applicative.
 
 let bind: (list('a), 'a => list('b)) => list('b) = BsAbstract.List.Monad.flat_map;
 
-let flatMap: ('a => list('b), list('a)) => list('b) = (f, fa) => bind(fa, f);
+let flatMap: ('a => list('b), list('a)) => list('b) =
+  (f, fa) => bind(fa, f);
 
 let flatten: list(list('a)) => list('a) =
   xss => bind(xss, Relude_Function.identity);
-
-let fromArray: array('a) => list('a) = Belt.List.fromArray;
-
-let toArray: list('a) => array('a) = Belt.List.toArray;
 
 let mkString: (string, list(string)) => string =
   (delim, xs) => {
@@ -284,6 +286,31 @@ let eq =
   module EqA = (val eqA);
   eqF(EqA.eq, xs, ys);
 };
+/* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
+
+let distinct: (('a, 'a) => bool, list('a)) => list('a) =
+  (eq, xs) =>
+    foldLeft(
+      /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
+      (acc, curr) => contains(eq, curr, acc) ? acc : [curr, ...acc],
+      [],
+      xs,
+    )
+    |> reverse;
+
+/* faster version of distinct, backed by Js.Dict */
+let distinctString: list(string) => list(string) =
+  xs =>
+    foldLeft(
+      (acc, curr) => {
+        Js.Dict.set(acc, curr, 0);
+        acc;
+      },
+      Js.Dict.empty(),
+      xs,
+    )
+    |> Js.Dict.keys
+    |> fromArray;
 
 module Show = BsAbstract.List.Show;
 
