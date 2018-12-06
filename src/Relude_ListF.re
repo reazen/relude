@@ -25,10 +25,11 @@ module Result {
   */
   let traverse = (
     type a,
+    type b,
     type e,
-    f: a => Belt.Result.t(a, e), /* Each a produces a Result with a success value or a single error value */
+    f: a => Belt.Result.t(b, e), /* Each a produces a Result with a success value or a single error value */
     list: list(a)
-  ): Belt.Result.t(list(a), e) => {
+  ): Belt.Result.t(list(b), e) => {
     module Error = { type t = e };
     module Traversable = Traversable(Error);
     Traversable.traverse(f, list);
