@@ -265,6 +265,18 @@ let mkString: (string, list(string)) => string =
     foldLeft((acc, curr) => acc ++ curr, "", delimited);
   };
 
+/**
+ * Map all list values from 'a to option('b), filtering out the `None`s
+ */
+let mapOption: ('a => option('b), list('a)) => list('b) =
+  (f, xs) =>
+    foldLeft(
+      (acc, curr) =>
+        Relude_Option.fold(() => acc, v => [v, ...acc], f(curr)),
+      [],
+      xs,
+    ) |> reverse;
+
 module Eq = BsAbstract.List.Eq;
 
 let rec eqF: (('a, 'a) => bool, list('a), list('a)) => bool =

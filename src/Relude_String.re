@@ -131,3 +131,13 @@ let splitArray: (string, string) => array(string) = Js.String.split;
 
 let splitList: (string, string) => list(string) =
   (delim, str) => splitArray(delim, str) |> Relude_List.fromArray;
+
+let toInt: string => option(int) = v =>
+  try (Some(int_of_string(v))) {
+  | _ => None
+  };
+
+let toFloat: string => option(float) = v =>
+  try (Some(float_of_string(v))) {
+  | _ => None
+  };

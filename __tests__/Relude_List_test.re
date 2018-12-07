@@ -501,6 +501,21 @@ describe("List", () => {
     expect(List.mkString(", ", ["a", "b", "c"])) |> toEqual("a, b, c")
   );
 
+  test("mapOption keep all", () =>
+    expect(List.mapOption(v => Some(string_of_int(v)), [1, 2, 3]))
+    |> toEqual(["1", "2", "3"])
+  );
+
+  test("mapOption keep none", () =>
+    expect(List.mapOption(_ => None, [1, 2, 3]))
+    |> toEqual([])
+  );
+
+  test("mapOption keep int", () =>
+    expect(List.mapOption(Relude_String.toInt, ["1", "a", "2", "", "3"]))
+    |> toEqual([1, 2, 3])
+  );
+
   test("showF", () =>
     expect(List.showF(string_of_int, [1, 2, 3])) |> toEqual("[1, 2, 3]")
   );

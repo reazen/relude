@@ -200,4 +200,44 @@ describe("String", () => {
   test("splitList", () =>
     expect(String.splitList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
   );
+
+  test("toInt success", () =>
+    expect(String.toInt("3")) |> toEqual(Some(3))
+  );
+
+  test("toInt failure on empty", () =>
+    expect(String.toInt("")) |> toEqual(None)
+  );
+
+  test("toInt failure on mixed", () =>
+    expect(String.toInt("3a")) |> toEqual(None)
+  );
+
+  test("toInt failure on float", () =>
+    expect(String.toInt("3.14")) |> toEqual(None)
+  );
+
+  test("toInt failure on alpha", () =>
+    expect(String.toInt("abc")) |> toEqual(None)
+  );
+
+  test("toFloat success" ,() =>
+    expect(String.toFloat("3.14")) |> toEqual(Some(3.14))
+  );
+
+  test("toFloat success on int", () =>
+    expect(String.toFloat("3")) |> toEqual(Some(3.))
+  );
+
+  test("toFloat failure on empty" ,() =>
+    expect(String.toFloat("")) |> toEqual(None)
+  );
+
+  test("toFloat failure on mixed" ,() =>
+    expect(String.toFloat("3.14a")) |> toEqual(None)
+  );
+
+  test("toFloat failure on alpha", () =>
+    expect(String.toFloat("abc")) |> toEqual(None)
+  )
 });
