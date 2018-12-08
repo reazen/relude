@@ -5,6 +5,8 @@ let ok: 'a 'e. 'a => t('a, 'e) = pure;
 let error: 'a 'e. 'e => t('a, 'e) = e => Error(e);
 let unit: 'e. t(unit, 'e) = pure();
 
+let fold: 'a 'e 'c. ('a => 'c, 'e => 'c, t('a, 'e)) => 'c = BsAbstract.Result.result;
+
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, ra) => Belt.Result.map(ra, f);
 
@@ -93,8 +95,6 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
-let fold: 'a 'e 'c. ('a => 'c, 'e => 'c, t('a, 'e)) => 'c = BsAbstract.Result.result;
-
 let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
   (fa1, fa2) => fold(pure, _ => fa2, fa1);
 
@@ -131,6 +131,10 @@ let getError: 'a 'e. t('a, 'e) => option('e) =
     | Ok(_) => None
     | Error(e) => Some(e)
     };
+
+let isOk: 'a 'e. t('a, 'e) => bool = r => fold(_ => true, _ => false, r);
+
+let isError: 'a 'e. t('a, 'e) => bool = r => fold(_ => false, _ => true, r);
 
 let tries: 'a. (unit => 'a) => t('a, exn) =
   fn =>

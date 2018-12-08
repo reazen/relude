@@ -259,12 +259,6 @@ let flatMap: ('a => list('b), list('a)) => list('b) =
 let flatten: list(list('a)) => list('a) =
   xss => bind(xss, Relude_Function.identity);
 
-let mkString: (string, list(string)) => string =
-  (delim, xs) => {
-    let delimited = intersperse(delim, xs);
-    foldLeft((acc, curr) => acc ++ curr, "", delimited);
-  };
-
 /**
  * Map all list values from 'a to option('b), filtering out the `None`s
  */
@@ -275,7 +269,10 @@ let mapOption: ('a => option('b), list('a)) => list('b) =
         Relude_Option.fold(() => acc, v => [v, ...acc], f(curr)),
       [],
       xs,
-    ) |> reverse;
+    )
+    |> reverse;
+
+let catOptions: list(option('a)) => list('a) = xs => mapOption(a => a, xs);
 
 module Eq = BsAbstract.List.Eq;
 
@@ -323,25 +320,6 @@ let distinctString: list(string) => list(string) =
     )
     |> Js.Dict.keys
     |> fromArray;
-
-module Show = BsAbstract.List.Show;
-
-let showF: ('a => string, list('a)) => string =
-  (showA, xs) => {
-    let strings = map(showA, xs);
-    "[" ++ mkString(", ", strings) ++ "]";
-  };
-
-let show =
-    (
-      type a,
-      showA: (module BsAbstract.Interface.SHOW with type t = a),
-      xs: list(a),
-    )
-    : string => {
-  module ShowA = (val showA);
-  showF(ShowA.show, xs);
-};
 
 module SemigroupAny:
   BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = list('a) = {
@@ -397,13 +375,47 @@ module Applicative = BsAbstract.List.Applicative;
 module Monad = BsAbstract.List.Monad;
 
 module Foldable = BsAbstract.List.Foldable;
+module FoldableFunctions = Relude_Foldables.Functions(Foldable);
 
-module Traversable = BsAbstract.List.Traversable;
+let sumInt: list(int) => int =
+  xs => FoldableFunctions.fold((module Relude_Int.Additive.Monoid), xs);
+
+let sumFloat: list(float) => float =
+  xs => FoldableFunctions.fold((module Relude_Float.Additive.Monoid), xs);
+
+let appendStrings: list(string) => string =
+  xs => FoldableFunctions.fold((module BsAbstract.String.Monoid), xs);
+
+let mkString: (string, list(string)) => string =
+  (sep, xs) => FoldableFunctions.intercalate((module BsAbstract.String.Monoid), sep, xs);
+
+let countBy: 'a. ('a => bool, list('a)) => int = FoldableFunctions.countBy;
 
 module Infix = {
   include BsAbstract.List.Infix;
   include ApplyFunctions.Infix;
 };
+
+module Show = BsAbstract.List.Show;
+
+let showF: ('a => string, list('a)) => string =
+  (showA, xs) => {
+    let strings = map(showA, xs);
+    "[" ++ mkString(", ", strings) ++ "]";
+  };
+
+let show =
+    (
+      type a,
+      showA: (module BsAbstract.Interface.SHOW with type t = a),
+      xs: list(a),
+    )
+    : string => {
+  module ShowA = (val showA);
+  showF(ShowA.show, xs);
+};
+
+module Traversable = BsAbstract.List.Traversable;
 
 module Sequence: Relude_Sequence.SEQUENCE with type t('a) = list('a) = {
   type t('a) = list('a);

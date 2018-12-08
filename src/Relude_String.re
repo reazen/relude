@@ -141,3 +141,11 @@ let toFloat: string => option(float) = v =>
   try (Some(float_of_string(v))) {
   | _ => None
   };
+
+module Monoid = BsAbstract.String.Monoid;
+
+module Semigroup = BsAbstract.String.Semigroup;
+
+module Eq = BsAbstract.String.Eq;
+
+module Ord = BsAbstract.String.Ord

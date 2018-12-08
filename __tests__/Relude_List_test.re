@@ -410,7 +410,8 @@ describe("List", () => {
   );
 
   test("indexOf success", () =>
-    expect(List.indexOf(Int.eq, 30, [0, 10, 20, 30, 40])) |> toEqual(Some(3))
+    expect(List.indexOf(Int.eq, 30, [0, 10, 20, 30, 40]))
+    |> toEqual(Some(3))
   );
 
   test("indexOf failure", () =>
@@ -507,8 +508,7 @@ describe("List", () => {
   );
 
   test("mapOption keep none", () =>
-    expect(List.mapOption(_ => None, [1, 2, 3]))
-    |> toEqual([])
+    expect(List.mapOption(_ => None, [1, 2, 3])) |> toEqual([])
   );
 
   test("mapOption keep int", () =>
@@ -567,5 +567,49 @@ describe("List", () => {
          126,
          226,
        ])
+  );
+
+  test("sumInt empty", () =>
+    expect(List.sumInt([])) |> toEqual(0)
+  );
+
+  test("sumInt one", () =>
+    expect(List.sumInt([1])) |> toEqual(1)
+  );
+
+  test("sumInt many", () =>
+    expect(List.sumInt([1, 3, 5])) |> toEqual(9)
+  );
+
+  test("sumFloat empty", () =>
+    expect(List.sumFloat([])) |> toEqual(0.)
+  );
+
+  test("sumFloat one", () =>
+    expect(List.sumFloat([1.])) |> toEqual(1.)
+  );
+
+  test("sumFloat many", () =>
+    expect(List.sumFloat([1., 3., 5.])) |> toEqual(9.)
+  );
+
+  test("appendStrings empty", () =>
+    expect(List.appendStrings([])) |> toEqual("")
+  );
+
+  test("appendStrings one", () =>
+    expect(List.appendStrings(["foo"])) |> toEqual("foo")
+  );
+
+  test("appendStrings many", () =>
+    expect(List.appendStrings(["foo", "bar"])) |> toEqual("foobar")
+  );
+
+  test("countBy empty", () =>
+    expect(List.countBy(_ => true, [])) |> toEqual(0)
+  );
+
+  test("countBy", () =>
+    expect(List.countBy(v => v < 10, [1, 12, 3, 20, 4])) |> toEqual(3)
   );
 });
