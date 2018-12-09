@@ -4,6 +4,28 @@
  */
 module Functions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
+   * Compare each value with a predicate, returning true if any value is true,
+   * or false otherwise.
+   */
+  let any: 'a. ('a => bool, F.t('a)) => bool =
+    (f, xs) => F.fold_left((v, x) => v || f(x), false, xs);
+
+  let containsF: 'a. (('a, 'a) => bool, 'a, F.t('a)) => bool =
+    (f, x, xs) => any(f(x), xs);
+
+  let all: 'a. ('a => bool, F.t('a)) => bool =
+    (f, xs) => F.fold_left((v, x) => v && f(x), true, xs);
+
+  /**
+   * Find an inner value given a predicate function
+   */
+  let find: 'a. ('a => bool, F.t('a)) => option('a) =
+    f =>
+      F.fold_left(
+        (v, x) => Relude_Option.alt(v, f(x) ? Some(x) : None),
+        None,
+      );
+  /**
    * When the inner type is a Monoid, the collection can be folded into a
    * single value (e.g. sum ints or floats, join strings)
    */
@@ -33,15 +55,18 @@ module Functions = (F: BsAbstract.Interface.FOLDABLE) => {
     F.fold_left(go, (true, M.empty), xs) |> snd;
   };
 
+  let contains =
+      (
+        type a,
+        eqA: (module BsAbstract.Interface.EQ with type t = a),
+        x: a,
+        xs: F.t(a),
+      )
+      : bool => {
+    module EqA = (val eqA);
+    containsF(EqA.eq, x, xs);
+  };
+
   let countBy: 'a. ('a => bool, F.t('a)) => int =
     (f, xs) => F.fold_left((acc, curr) => f(curr) ? acc + 1 : acc, 0, xs);
-  /* let mapOption: 'a 'b. ('a => option('b), list('a)) => list('b) =
-     (f, xs) =>
-       F.fold_left(
-         (acc, curr) =>
-           Relude_Option.fold(() => acc, v => [v, ...acc], f(curr)),
-           [],
-           xs
-       )
-       |> */
 };

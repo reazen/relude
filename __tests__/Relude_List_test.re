@@ -402,11 +402,11 @@ describe("List", () => {
   );
 
   test("contains false", () =>
-    expect(List.contains(Int.eq, 10, [0, 1, 2, 3, 4])) |> toEqual(false)
+    expect(List.containsF(Int.eq, 10, [0, 1, 2, 3, 4])) |> toEqual(false)
   );
 
   test("contains true", () =>
-    expect(List.contains(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
+    expect(List.containsF(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
   );
 
   test("indexOf success", () =>
@@ -440,6 +440,46 @@ describe("List", () => {
 
   test("all false", () =>
     expect(List.all(a => a < 3, [0, 1, 2, 3])) |> toEqual(false)
+  );
+
+  test("removeF empty", () =>
+    expect(List.removeF(Int.eq, 0, [])) |> toEqual([])
+  );
+
+  test("removeF single match", () =>
+    expect(List.removeF(Int.eq, 0, [0])) |> toEqual([])
+  );
+
+  test("removeF single not a match", () =>
+    expect(List.removeF(Int.eq, 0, [1])) |> toEqual([1])
+  );
+
+  test("removeF one match at beginning", () =>
+    expect(List.removeF(Int.eq, 0, [0, 1, 2])) |> toEqual([1, 2])
+  );
+
+  test("removeF one match at end", () =>
+    expect(List.removeF(Int.eq, 2, [0, 1, 2])) |> toEqual([0, 1])
+  );
+
+  test("removeF many matches", () =>
+    expect(List.removeF(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
+  );
+
+  test("removeEachF empty", () =>
+    expect(List.removeEachF(Int.eq, 0, [])) |> toEqual([])
+  );
+
+  test("removeEachF single match", () =>
+    expect(List.removeEachF(Int.eq, 0, [0])) |> toEqual([])
+  );
+
+  test("removeEachF single not a match", () =>
+    expect(List.removeEachF(Int.eq, 0, [1])) |> toEqual([1])
+  );
+
+  test("removeEachF many matches removed", () =>
+    expect(List.removeEachF(Int.eq, 0, [0, 2, 0, 4, 0])) |> toEqual([2, 4])
   );
 
   test("distinct", () =>

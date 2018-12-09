@@ -11,9 +11,7 @@ let isEmpty: list('a) => bool =
 let isNotEmpty: list('a) => bool = xs => !isEmpty(xs);
 
 let empty: list('a) = [];
-
 let pure: 'a => list('a) = a => [a];
-
 let one: 'a => list('a) = pure;
 
 let repeat: (int, 'a) => list('a) = (i, x) => Belt.List.make(i, x);
@@ -21,20 +19,17 @@ let repeat: (int, 'a) => list('a) = (i, x) => Belt.List.make(i, x);
 let makeWithIndex: (int, int => 'a) => list('a) = Belt.List.makeBy;
 
 let concat: (list('a), list('a)) => list('a) = Belt.List.concat;
+let append: ('a, list('a)) => list('a) = (x, xs) => concat(xs, [x]);
 
 let cons: ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
+let prepend: ('a, list('a)) => list('a) = cons;
 
 let uncons: list('a) => option(('a, list('a))) =
   fun
   | [] => None
   | [x, ...xs] => Some((x, xs));
 
-let prepend: ('a, list('a)) => list('a) = cons;
-
-let append: ('a, list('a)) => list('a) = (x, xs) => concat(xs, [x]);
-
 let foldLeft: (('b, 'a) => 'b, 'b, list('a)) => 'b = BsAbstract.List.Foldable.fold_left;
-
 let foldRight: (('a, 'b) => 'b, 'b, list('a)) => 'b = BsAbstract.List.Foldable.fold_right;
 
 let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b) =
@@ -65,12 +60,18 @@ let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
 
 let get: (int, list('a)) => option('a) = (i, xs) => Belt.List.get(xs, i);
 
-let head: list('a) => option('a) = Belt.List.head;
+let head: list('a) => option('a) =
+  fun
+  | [] => None
+  | [x, ..._] => Some(x);
 
-let tail: list('a) => option(list('a)) = Belt.List.tail;
+let tail: list('a) => option(list('a)) =
+  fun
+  | [] => None
+  | [_, ...xs] => Some(xs);
 
 let tailOrEmpty: list('a) => list('a) =
-  xs => tail(xs)->Belt.Option.getWithDefault(empty);
+  xs => tail(xs) |> Relude_Option.getOrElseStrict([]);
 
 let rec init: list('a) => option(list('a)) =
   fun
@@ -145,14 +146,6 @@ let filter: ('a => bool, list('a)) => list('a) =
 let filterWithIndex: (('a, int) => bool, list('a)) => list('a) =
   (f, xs) => Belt.List.keepWithIndex(xs, f);
 
-let rec find: ('a => bool, list('a)) => option('a) =
-  (f, xs) =>
-    switch (xs) {
-    | [] => None
-    | [y, ..._] when f(y) => Some(y)
-    | [_, ...ys] => find(f, ys)
-    };
-
 let findWithIndex: (('a, int) => bool, list('a)) => option('a) =
   (f, xs) => {
     let rec go = (f, ys, i) =>
@@ -208,17 +201,6 @@ let sortWithInt: (('a, 'a) => int, list('a)) => list('a) =
 let sort: (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a) =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
-let rec any: ('a => bool, list('a)) => bool =
-  (f, xs) =>
-    switch (xs) {
-    | [] => false
-    | [y, ..._] when f(y) => true
-    | [_, ...ys] => any(f, ys)
-    };
-
-let contains: (('a, 'a) => bool, 'a, list('a)) => bool =
-  (f, x, xs) => any(f(x), xs);
-
 let indexOf: (('a, 'a) => bool, 'a, list('a)) => option(int) =
   (f, x, xs) => {
     let rec go = (f, ys, i) =>
@@ -229,14 +211,6 @@ let indexOf: (('a, 'a) => bool, 'a, list('a)) => option(int) =
       };
     go(f, xs, 0);
   };
-
-let rec all: ('a => bool, list('a)) => bool =
-  (f, xs) =>
-    switch (xs) {
-    | [] => true
-    | [y, ...ys] when f(y) => all(f, ys)
-    | _ => false
-    };
 
 let map: ('a => 'b, list('a)) => list('b) = BsAbstract.List.Functor.map;
 
@@ -297,30 +271,6 @@ let eq =
 };
 /* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
 
-let distinct: (('a, 'a) => bool, list('a)) => list('a) =
-  (eq, xs) =>
-    foldLeft(
-      /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
-      (acc, curr) => contains(eq, curr, acc) ? acc : [curr, ...acc],
-      [],
-      xs,
-    )
-    |> reverse;
-
-/* faster version of distinct, backed by Js.Dict */
-let distinctString: list(string) => list(string) =
-  xs =>
-    foldLeft(
-      (acc, curr) => {
-        Js.Dict.set(acc, curr, 0);
-        acc;
-      },
-      Js.Dict.empty(),
-      xs,
-    )
-    |> Js.Dict.keys
-    |> fromArray;
-
 module SemigroupAny:
   BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = list('a) = {
   type t('a) = list('a);
@@ -377,6 +327,73 @@ module Monad = BsAbstract.List.Monad;
 module Foldable = BsAbstract.List.Foldable;
 module FoldableFunctions = Relude_Foldables.Functions(Foldable);
 
+let any: 'a. ('a => bool, list('a)) => bool = FoldableFunctions.any;
+let all: 'a. ('a => bool, list('a)) => bool = FoldableFunctions.all;
+
+let removeF: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
+  (innerEq, v, xs) => {
+    let go = ((found, ys), x) =>
+      found ?
+        (true, [x, ...ys]) : innerEq(v, x) ? (true, ys) : (false, [x, ...ys]);
+    foldLeft(go, (false, []), xs) |> snd |> reverse;
+  };
+
+let remove =
+    (
+      type a,
+      eqA: (module BsAbstract.Interface.EQ with type t = a),
+      x: a,
+      xs: list(a),
+    )
+    : list(a) => {
+  module EqA = (val eqA);
+  removeF(EqA.eq, x, xs);
+};
+
+let removeEachF: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
+  (innerEq, x, xs) =>
+    foldLeft((ys, v) => innerEq(x, v) ? ys : [v, ...ys], [], xs) |> reverse;
+
+let removeEach =
+    (
+      type a,
+      eqA: (module BsAbstract.Interface.EQ with type t = a),
+      x: a,
+      xs: list(a),
+    )
+    : list(a) => {
+  module EqA = (val eqA);
+  removeEachF(EqA.eq, x, xs);
+};
+
+let find: 'a. ('a => bool, list('a)) => option('a) = FoldableFunctions.find;
+
+let containsF: 'a. (('a, 'a) => bool, 'a, list('a)) => bool = FoldableFunctions.containsF;
+
+let distinct: 'a. (('a, 'a) => bool, list('a)) => list('a) =
+  (eq, xs) =>
+    foldLeft(
+      /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
+      (acc, curr) => containsF(eq, curr, acc) ? acc : [curr, ...acc],
+      [],
+      xs,
+    )
+    |> reverse;
+
+/* faster version of distinct, backed by Js.Dict */
+let distinctString: list(string) => list(string) =
+  xs =>
+    foldLeft(
+      (acc, curr) => {
+        Js.Dict.set(acc, curr, 0);
+        acc;
+      },
+      Js.Dict.empty(),
+      xs,
+    )
+    |> Js.Dict.keys
+    |> fromArray;
+
 let sumInt: list(int) => int =
   xs => FoldableFunctions.fold((module Relude_Int.Additive.Monoid), xs);
 
@@ -387,7 +404,8 @@ let appendStrings: list(string) => string =
   xs => FoldableFunctions.fold((module BsAbstract.String.Monoid), xs);
 
 let mkString: (string, list(string)) => string =
-  (sep, xs) => FoldableFunctions.intercalate((module BsAbstract.String.Monoid), sep, xs);
+  (sep, xs) =>
+    FoldableFunctions.intercalate((module BsAbstract.String.Monoid), sep, xs);
 
 let countBy: 'a. ('a => bool, list('a)) => int = FoldableFunctions.countBy;
 
