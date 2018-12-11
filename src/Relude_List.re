@@ -149,8 +149,8 @@ let mapOption: ('a => option('b), list('a)) => list('b) =
 
 let catOptions: list(option('a)) => list('a) = xs => mapOption(a => a, xs);
 
-let mapWithIndex: (('a, int) => 'b, list('a)) => list('b) =
-  (f, xs) => Belt.List.mapWithIndex(xs, f);
+let mapWithIndex: 'a 'b. (('a, int) => 'b, list('a)) => list('b) =
+  (f, xs) => Belt.List.mapWithIndex(xs, (i, x) => f(x, i));
 
 let partition: ('a => bool, list('a)) => (list('a), list('a)) =
   (f, xs) => Belt.List.partition(xs, f);
