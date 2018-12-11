@@ -362,6 +362,18 @@ describe("List", () => {
     |> toEqual(["a", "b", "c", "a", "b", "c", "a", "b", "c"])
   );
 
+  test("replicate once", () =>
+    expect(List.replicate(1, ["foo"])) |> toEqual(["foo"])
+  );
+
+  test("replicate negative", () =>
+    expect(List.replicate(-1, [0])) |> toEqual([0])
+  );
+
+  test("replicate empty list", () =>
+    expect(List.replicate(10, [])) |> toEqual([])
+  );
+
   test("zip same length lists", () =>
     expect(List.zip([1, 2, 3], ["4", "5", "6"]))
     |> toEqual([(1, "4"), (2, "5"), (3, "6")])
@@ -383,8 +395,8 @@ describe("List", () => {
   );
 
   test("unzip", () =>
-    expect(List.unzip([(1, 2), (3, 4), (5, 6)]))
-    |> toEqual(([1, 3, 5], [2, 4, 6]))
+    expect(List.unzip([(1, "a"), (2, "b"), (3, "c")]))
+    |> toEqual(([1, 2, 3], ["a", "b", "c"]))
   );
 
   test("sortWithInt", () =>
@@ -392,8 +404,13 @@ describe("List", () => {
     |> toEqual([(-1), 0, 1, 2, 3, 5])
   );
 
+  test("sortF", () =>
+    expect(List.sortF(Int.compare, [2, 0, 1, 3, 5, (-1)]))
+    |> toEqual([(-1), 0, 1, 2, 3, 5])
+  );
+
   test("sort", () =>
-    expect(List.sort(Int.compare, [2, 0, 1, 3, 5, (-1)]))
+    expect(List.sort((module Int.Ord), [2, 0, 1, 3, 5, (-1)]))
     |> toEqual([(-1), 0, 1, 2, 3, 5])
   );
 
@@ -409,13 +426,24 @@ describe("List", () => {
     expect(List.containsF(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
   );
 
+  test("indexOfF failure", () =>
+    expect(List.indexOfF(Int.eq, 500, [0, 10, 20, 30, 40]))
+    |> toEqual(None)
+  );
+
+  test("indexOfF success", () =>
+    expect(List.indexOfF(Int.eq, 30, [0, 10, 20, 30, 40]))
+    |> toEqual(Some(3))
+  );
+
   test("indexOf success", () =>
-    expect(List.indexOf(Int.eq, 30, [0, 10, 20, 30, 40]))
+    expect(List.indexOf((module Int.Eq), 30, [0, 10, 20, 30, 40]))
     |> toEqual(Some(3))
   );
 
   test("indexOf failure", () =>
-    expect(List.indexOf(Int.eq, 500, [0, 10, 20, 30, 40])) |> toEqual(None)
+    expect(List.indexOf((module Int.Eq), 500, [0, 10, 20, 30, 40]))
+    |> toEqual(None)
   );
 
   test("any empty", () =>
@@ -483,13 +511,8 @@ describe("List", () => {
   );
 
   test("distinct", () =>
-    expect(List.distinct(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
+    expect(List.distinctF(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
     |> toEqual([6, 1, 2, 3, 4, 5])
-  );
-
-  test("distinctString", () =>
-    expect(List.distinctString(["foo", "bar", "baz", "bar"]))
-    |> toEqual(["foo", "bar", "baz"])
   );
 
   test("map", () =>
@@ -536,10 +559,6 @@ describe("List", () => {
 
   test("eq returns false if list items are not equal", () =>
     expect(List.eq((module Int.Eq), [1, 2, 3], [1, 2, 4])) |> toBe(false)
-  );
-
-  test("mkString", () =>
-    expect(List.mkString(", ", ["a", "b", "c"])) |> toEqual("a, b, c")
   );
 
   test("mapOption keep all", () =>
@@ -631,18 +650,6 @@ describe("List", () => {
 
   test("sumFloat many", () =>
     expect(List.sumFloat([1., 3., 5.])) |> toEqual(9.)
-  );
-
-  test("appendStrings empty", () =>
-    expect(List.appendStrings([])) |> toEqual("")
-  );
-
-  test("appendStrings one", () =>
-    expect(List.appendStrings(["foo"])) |> toEqual("foo")
-  );
-
-  test("appendStrings many", () =>
-    expect(List.appendStrings(["foo", "bar"])) |> toEqual("foobar")
   );
 
   test("countBy empty", () =>

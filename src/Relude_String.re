@@ -1,3 +1,8 @@
+let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js.String.concat has unexpected argument order */
+
+let concatArray: array(string) => string =
+  strs => Relude_Array.foldLeft((acc, str) => acc ++ str, "", strs);
+
 let length: string => int = Js.String.length;
 
 let trim: string => string = Js.String.trim;
@@ -29,16 +34,16 @@ let make: 'a => string = Js.String.make;
 let fromCharCode: int => string = Js.String.fromCharCode;
 
 let makeWithIndex: (int, int => string) => string =
-  (i, f) =>
-    Relude_Int.rangeAsList(0, i)
-    |> Relude_List.foldRight((i, acc) => [f(i), ...acc], [])
-    |> Relude_List.mkString("");
+  (i, f) => {
+    let rec go = (acc, idx) => idx >= i ? acc : go(concat(acc, f(idx)), idx + 1);
+    go("", 0);
+  };
 
 let repeat: (int, string) => string =
-  (i, str) =>
-    Relude_Int.rangeAsList(0, i)
-    |> Relude_List.foldRight((_, acc) => [str, ...acc], [])
-    |> Relude_List.mkString("");
+  (i, str) => {
+    let rec go = (acc, i) => i <= 0 ? acc : go(concat(acc, str), i - 1);
+    go("", i);
+  };
 
 let toUpperCase: string => string = Js.String.toUpperCase;
 
@@ -70,23 +75,11 @@ let toList: string => list(string) =
 let toArray: string => array(string) =
   str => Relude_Array.makeWithIndex(length(str), i => getOrThrow(i, str));
 
-let map: (string => string, string) => string =
-  (f, str) =>
-    toList(str) |> Relude_List.map(f) |> Relude_List.mkString("");
-
 let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List.foldLeft(f, init, toList(str));
 
 let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List.foldRight(f, init, toList(str));
-
-let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js.String.concat has unexpected argument order */
-
-let concatArray: array(string) => string =
-  strs => Relude_Array.foldLeft((acc, str) => acc ++ str, "", strs);
-
-let concatList: list(string) => string =
-  strs => Relude_List.foldLeft((acc, str) => acc ++ str, "", strs);
 
 let endsWith: (string, string) => bool =
   (test, str) => Js.String.endsWith(test, str);

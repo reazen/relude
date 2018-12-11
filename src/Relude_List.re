@@ -1,7 +1,47 @@
+/*******************************************************************************
+ * Organization of List functions:
+ *
+ * - Functions needed by typeclasses
+ * - Functions unrelated to typeclasses and indifferent of inner 'a
+ * - Typeclass implementations that don't care about inner 'a
+ * - Freebies from those typeclasses
+ * - Functions and typeclasses that _do_ care about inner 'a
+ * - Submodules for working with Lists of specific `'a` types
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Needed by typeclasses
+ ******************************************************************************/
+
+let concat: (list('a), list('a)) => list('a) = Belt.List.concat;
+let empty: list('a) = [];
+let map: ('a => 'b, list('a)) => list('b) = BsAbstract.List.Functor.map;
+let apply: (list('a => 'b), list('a)) => list('b) = BsAbstract.List.Applicative.apply;
+let pure: 'a => list('a) = a => [a];
+let bind: (list('a), 'a => list('b)) => list('b) = BsAbstract.List.Monad.flat_map;
+let foldLeft: (('b, 'a) => 'b, 'b, list('a)) => 'b = BsAbstract.List.Foldable.fold_left;
+let foldRight: (('a, 'b) => 'b, 'b, list('a)) => 'b = BsAbstract.List.Foldable.fold_right;
+
+/*******************************************************************************
+ * List-specific utilities (construct, destructure, transform)
+ ******************************************************************************/
+
 let fromArray: array('a) => list('a) = Belt.List.fromArray;
 let toArray: list('a) => array('a) = Belt.List.toArray;
 
-let length: list('a) => int = Belt.List.length;
+let append: ('a, list('a)) => list('a) = (x, xs) => concat(xs, [x]);
+let cons: ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
+let prepend: ('a, list('a)) => list('a) = cons;
+let uncons: list('a) => option(('a, list('a))) =
+  fun
+  | [] => None
+  | [x, ...xs] => Some((x, xs));
+
+let repeat: (int, 'a) => list('a) = (i, x) => Belt.List.make(i, x);
+let makeWithIndex: (int, int => 'a) => list('a) = Belt.List.makeBy;
+
+let reverse: list('a) => list('a) = Belt.List.reverse;
+let shuffle: list('a) => list('a) = Belt.List.shuffle;
 
 let isEmpty: list('a) => bool =
   fun
@@ -9,54 +49,6 @@ let isEmpty: list('a) => bool =
   | _ => false;
 
 let isNotEmpty: list('a) => bool = xs => !isEmpty(xs);
-
-let empty: list('a) = [];
-let pure: 'a => list('a) = a => [a];
-let one: 'a => list('a) = pure;
-
-let repeat: (int, 'a) => list('a) = (i, x) => Belt.List.make(i, x);
-
-let makeWithIndex: (int, int => 'a) => list('a) = Belt.List.makeBy;
-
-let concat: (list('a), list('a)) => list('a) = Belt.List.concat;
-let append: ('a, list('a)) => list('a) = (x, xs) => concat(xs, [x]);
-
-let cons: ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
-let prepend: ('a, list('a)) => list('a) = cons;
-
-let uncons: list('a) => option(('a, list('a))) =
-  fun
-  | [] => None
-  | [x, ...xs] => Some((x, xs));
-
-let foldLeft: (('b, 'a) => 'b, 'b, list('a)) => 'b = BsAbstract.List.Foldable.fold_left;
-let foldRight: (('a, 'b) => 'b, 'b, list('a)) => 'b = BsAbstract.List.Foldable.fold_right;
-
-let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b) =
-  (f, init, xs) =>
-    snd(
-      foldLeft(
-        ((acc, result), curr) => {
-          let nextAcc = f(acc, curr);
-          (nextAcc, append(nextAcc, result));
-        },
-        (init, []),
-        xs,
-      ),
-    );
-
-let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
-  (f, init, xs) =>
-    snd(
-      foldRight(
-        (curr, (acc, result)) => {
-          let nextAcc = f(curr, acc);
-          (nextAcc, prepend(nextAcc, result));
-        },
-        (init, []),
-        xs,
-      ),
-    );
 
 let get: (int, list('a)) => option('a) = (i, xs) => Belt.List.get(xs, i);
 
@@ -84,10 +76,6 @@ let rec last: list('a) => option('a) =
   | [] => None
   | [x] => Some(x)
   | [_, ...xs] => last(xs);
-
-let shuffle: list('a) => list('a) = Belt.List.shuffle;
-
-let reverse: list('a) => list('a) = Belt.List.reverse;
 
 let take: (int, list('a)) => option(list('a)) =
   (i, xs) => {
@@ -146,16 +134,23 @@ let filter: ('a => bool, list('a)) => list('a) =
 let filterWithIndex: (('a, int) => bool, list('a)) => list('a) =
   (f, xs) => Belt.List.keepWithIndex(xs, f);
 
-let findWithIndex: (('a, int) => bool, list('a)) => option('a) =
-  (f, xs) => {
-    let rec go = (f, ys, i) =>
-      switch (ys) {
-      | [] => None
-      | [z, ..._] when f(z, i) => Some(z)
-      | [_, ...zs] => go(f, zs, i + 1)
-      };
-    go(f, xs, 0);
-  };
+/**
+ * Map all list values from 'a to option('b), filtering out the `None`s
+ */
+let mapOption: ('a => option('b), list('a)) => list('b) =
+  (f, xs) =>
+    foldLeft(
+      (acc, curr) =>
+        Relude_Option.fold(() => acc, v => [v, ...acc], f(curr)),
+      [],
+      xs,
+    )
+    |> reverse;
+
+let catOptions: list(option('a)) => list('a) = xs => mapOption(a => a, xs);
+
+let mapWithIndex: (('a, int) => 'b, list('a)) => list('b) =
+  (f, xs) => Belt.List.mapWithIndex(xs, f);
 
 let partition: ('a => bool, list('a)) => (list('a), list('a)) =
   (f, xs) => Belt.List.partition(xs, f);
@@ -178,12 +173,11 @@ let intersperse: ('a, list('a)) => list('a) =
     };
 
 let replicate: (int, list('a)) => list('a) =
-  (i, xs) =>
-    foldLeft(
-      (acc, _i) => concat(acc, xs),
-      [],
-      Relude_Int.rangeAsList(0, i),
-    );
+  (i, xs) => {
+    let rec go = (count, acc) =>
+      count <= 1 ? acc : go(count - 1, concat(xs, acc));
+    go(i, xs);
+  };
 
 let zip: (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 
@@ -191,62 +185,167 @@ let zipWith: (('a, 'b) => 'c, list('a), list('b)) => list('c) =
   (f, xs, ys) => Belt.List.zipBy(xs, ys, f);
 
 let zipWithIndex: list('a) => list(('a, int)) =
-  xs => zip(xs, Relude_Int.rangeAsList(0, length(xs)));
+  xs => {
+    let rec go = (acc, count, rest) =>
+      switch (rest) {
+      | [] => acc
+      | [y, ...ys] => go([(y, count), ...acc], count + 1, ys)
+      };
+    go([], 0, xs) |> reverse;
+  };
 
 let unzip: list(('a, 'b)) => (list('a), list('b)) = Belt.List.unzip;
 
 let sortWithInt: (('a, 'a) => int, list('a)) => list('a) =
   (f, xs) => Belt.List.sort(xs, f);
 
-let sort: (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a) =
+let sortF: (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a) =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
-let indexOf: (('a, 'a) => bool, 'a, list('a)) => option(int) =
-  (f, x, xs) => {
-    let rec go = (f, ys, i) =>
-      switch (ys) {
-      | [] => None
-      | [z, ..._] when f(x, z) => Some(i)
-      | [_, ...zs] => go(f, zs, i + 1)
-      };
-    go(f, xs, 0);
-  };
+let sort =
+    (
+      type a,
+      ordA: (module BsAbstract.Interface.ORD with type t = a),
+      xs: list(a),
+    )
+    : list(a) => {
+  module OrdA = (val ordA);
+  sortF(OrdA.compare, xs);
+};
 
-let map: ('a => 'b, list('a)) => list('b) = BsAbstract.List.Functor.map;
+/*******************************************************************************
+ * Typeclass Implementations
+ ******************************************************************************/
 
-let mapWithIndex: (('a, int) => 'b, list('a)) => list('b) =
-  (f, xs) => Belt.List.mapWithIndex(xs, f);
+module SemigroupAny:
+  BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = list('a) = {
+  type t('a) = list('a);
+  let append = concat;
+};
 
-let forEach: ('a => unit, list('a)) => unit =
-  (f, xs) => Belt.List.forEach(xs, f);
+module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = list('a) = {
+  include SemigroupAny;
+  let empty = empty;
+};
 
-let forEachWithIndex: (('a, int) => unit, list('a)) => unit =
-  (f, xs) => Belt.List.forEachWithIndex(xs, f);
+module Alt = BsAbstract.List.Alt;
+module Plus = BsAbstract.List.Plus;
+module Alternative = BsAbstract.List.Alternative;
 
-let apply: (list('a => 'b), list('a)) => list('b) = BsAbstract.List.Applicative.apply;
+module Functor = BsAbstract.List.Functor;
+module Apply = BsAbstract.List.Apply;
+module Applicative = BsAbstract.List.Applicative;
+module Monad = BsAbstract.List.Monad;
 
-let bind: (list('a), 'a => list('b)) => list('b) = BsAbstract.List.Monad.flat_map;
+module Foldable = BsAbstract.List.Foldable;
+module Traversable = BsAbstract.List.Traversable;
 
-let flatMap: ('a => list('b), list('a)) => list('b) =
-  (f, fa) => bind(fa, f);
-
-let flatten: list(list('a)) => list('a) =
-  xss => bind(xss, Relude_Function.identity);
+/*******************************************************************************
+ * Free utilities from typeclasses
+ ******************************************************************************/
 
 /**
- * Map all list values from 'a to option('b), filtering out the `None`s
+ * Freebies from Monad/Apply/Functor
  */
-let mapOption: ('a => option('b), list('a)) => list('b) =
-  (f, xs) =>
-    foldLeft(
-      (acc, curr) =>
-        Relude_Option.fold(() => acc, v => [v, ...acc], f(curr)),
-      [],
-      xs,
-    )
-    |> reverse;
+module MonadFunctions = Relude_Monads.Functions(Monad);
 
-let catOptions: list(option('a)) => list('a) = xs => mapOption(a => a, xs);
+let void: list('a) => list(unit) = MonadFunctions.void;
+let flap: (list('a => 'b), 'a) => list('b) = MonadFunctions.flap;
+
+let map2: (('a, 'b) => 'c, list('a), list('b)) => list('c) = MonadFunctions.lift2;
+let map3: (('a, 'b, 'c) => 'd, list('a), list('b), list('c)) => list('d) = MonadFunctions.lift3;
+let map4:
+  (('a, 'b, 'c, 'd) => 'e, list('a), list('b), list('c), list('d)) =>
+  list('e) = MonadFunctions.lift4;
+let map5:
+  (
+    ('a, 'b, 'c, 'd, 'e) => 'f,
+    list('a),
+    list('b),
+    list('c),
+    list('d),
+    list('e)
+  ) =>
+  list('f) = MonadFunctions.lift5;
+
+let flatMap: 'a 'b. ('a => list('b), list('a)) => list('b) = MonadFunctions.flatMap;
+let flatten: list(list('a)) => list('a) = MonadFunctions.flatten;
+
+/**
+ * Freebies from Foldable/Traversable
+ */
+module FoldableFunctions = Relude_Foldables.Functions(Foldable);
+
+let any: 'a. ('a => bool, list('a)) => bool = FoldableFunctions.any;
+let all: 'a. ('a => bool, list('a)) => bool = FoldableFunctions.all;
+
+let forEach: 'a. ('a => unit, list('a)) => unit = FoldableFunctions.forEach;
+let forEachWithIndex: 'a. (('a, int) => unit, list('a)) => unit = FoldableFunctions.forEachWithIndex;
+
+let find: 'a. ('a => bool, list('a)) => option('a) = FoldableFunctions.find;
+let findWithIndex: (('a, int) => bool, list('a)) => option('a) = FoldableFunctions.findWithIndex;
+
+let fold = FoldableFunctions.fold;
+let intercalate = FoldableFunctions.intercalate;
+
+let countBy: 'a. ('a => bool, list('a)) => int = FoldableFunctions.countBy;
+let length: list('a) => int = FoldableFunctions.length;
+
+let containsF: 'a. (('a, 'a) => bool, 'a, list('a)) => bool = FoldableFunctions.containsF;
+let contains = FoldableFunctions.contains;
+
+let indexOfF: 'a. (('a, 'a) => bool, 'a, list('a)) => option(int) = FoldableFunctions.indexOfF;
+let indexOf = FoldableFunctions.indexOf;
+
+/* TODO: scanLeft and scanRight come for free with traversable? */
+let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b) =
+  (f, init, xs) =>
+    snd(
+      foldLeft(
+        ((acc, result), curr) => {
+          let nextAcc = f(acc, curr);
+          (nextAcc, append(nextAcc, result));
+        },
+        (init, []),
+        xs,
+      ),
+    );
+
+let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
+  (f, init, xs) =>
+    snd(
+      foldRight(
+        (curr, (acc, result)) => {
+          let nextAcc = f(curr, acc);
+          (nextAcc, prepend(nextAcc, result));
+        },
+        (init, []),
+        xs,
+      ),
+    );
+
+/*******************************************************************************
+ * Helper functions and typeclasses that do care about inner 'a
+ ******************************************************************************/
+
+module Show = BsAbstract.List.Show;
+
+let showF: ('a => string, list('a)) => string =
+  (innerShow, xs) => {
+    let joinStrings = intercalate((module BsAbstract.String.Monoid));
+    "[" ++ joinStrings(", ", map(innerShow, xs)) ++ "]";
+  };
+
+let show =
+    (
+      type a,
+      showA: (module BsAbstract.Interface.SHOW with type t = a),
+      xs: list(a),
+    )
+    : string => {
+  module ShowA = (val showA);
+  showF(ShowA.show, xs);
+};
 
 module Eq = BsAbstract.List.Eq;
 
@@ -269,72 +368,35 @@ let eq =
   module EqA = (val eqA);
   eqF(EqA.eq, xs, ys);
 };
+
 /* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
+let distinctF: 'a. (('a, 'a) => bool, list('a)) => list('a) =
+  (eq, xs) =>
+    foldLeft(
+      /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
+      (acc, curr) => containsF(eq, curr, acc) ? acc : [curr, ...acc],
+      [],
+      xs,
+    )
+    |> reverse;
 
-module SemigroupAny:
-  BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = list('a) = {
-  type t('a) = list('a);
-  let append = concat;
+let distinct =
+    (
+      type a,
+      eqA: (module BsAbstract.Interface.EQ with type t = a),
+      xs: list(a),
+    )
+    : list(a) => {
+  module EqA = (val eqA);
+  distinctF(EqA.eq, xs);
 };
-
-module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = list('a) = {
-  include SemigroupAny;
-  let empty = empty;
-};
-
-module Alt = BsAbstract.List.Alt;
-
-module Plus = BsAbstract.List.Plus;
-
-module Alternative = BsAbstract.List.Alternative;
-
-module Functor = BsAbstract.List.Functor;
-
-module FunctorFunctions = BsAbstract.Functions.Functor(Functor);
-
-let void: list('a) => list(unit) = FunctorFunctions.void;
-
-let flap: (list('a => 'b), 'a) => list('b) = FunctorFunctions.flap;
-
-module Apply = BsAbstract.List.Apply;
-
-module ApplyFunctions = BsAbstract.Functions.Apply(Apply);
-
-/* TODO: not sure if we want to include these... these apply the function to all combinations of values (apply lift semantics), not index-by-index */
-let map2: (('a, 'b) => 'c, list('a), list('b)) => list('c) = ApplyFunctions.lift2;
-
-let map3: (('a, 'b, 'c) => 'd, list('a), list('b), list('c)) => list('d) = ApplyFunctions.lift3;
-
-let map4:
-  (('a, 'b, 'c, 'd) => 'e, list('a), list('b), list('c), list('d)) =>
-  list('e) = ApplyFunctions.lift4;
-
-let map5:
-  (
-    ('a, 'b, 'c, 'd, 'e) => 'f,
-    list('a),
-    list('b),
-    list('c),
-    list('d),
-    list('e)
-  ) =>
-  list('f) = ApplyFunctions.lift5;
-
-module Applicative = BsAbstract.List.Applicative;
-
-module Monad = BsAbstract.List.Monad;
-
-module Foldable = BsAbstract.List.Foldable;
-module FoldableFunctions = Relude_Foldables.Functions(Foldable);
-
-let any: 'a. ('a => bool, list('a)) => bool = FoldableFunctions.any;
-let all: 'a. ('a => bool, list('a)) => bool = FoldableFunctions.all;
 
 let removeF: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
   (innerEq, v, xs) => {
     let go = ((found, ys), x) =>
       found ?
-        (true, [x, ...ys]) : innerEq(v, x) ? (true, ys) : (false, [x, ...ys]);
+        (true, [x, ...ys]) :
+        innerEq(v, x) ? (true, ys) : (false, [x, ...ys]);
     foldLeft(go, (false, []), xs) |> snd |> reverse;
   };
 
@@ -366,74 +428,16 @@ let removeEach =
   removeEachF(EqA.eq, x, xs);
 };
 
-let find: 'a. ('a => bool, list('a)) => option('a) = FoldableFunctions.find;
-
-let containsF: 'a. (('a, 'a) => bool, 'a, list('a)) => bool = FoldableFunctions.containsF;
-
-let distinct: 'a. (('a, 'a) => bool, list('a)) => list('a) =
-  (eq, xs) =>
-    foldLeft(
-      /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
-      (acc, curr) => containsF(eq, curr, acc) ? acc : [curr, ...acc],
-      [],
-      xs,
-    )
-    |> reverse;
-
-/* faster version of distinct, backed by Js.Dict */
-let distinctString: list(string) => list(string) =
-  xs =>
-    foldLeft(
-      (acc, curr) => {
-        Js.Dict.set(acc, curr, 0);
-        acc;
-      },
-      Js.Dict.empty(),
-      xs,
-    )
-    |> Js.Dict.keys
-    |> fromArray;
-
 let sumInt: list(int) => int =
   xs => FoldableFunctions.fold((module Relude_Int.Additive.Monoid), xs);
 
 let sumFloat: list(float) => float =
   xs => FoldableFunctions.fold((module Relude_Float.Additive.Monoid), xs);
 
-let appendStrings: list(string) => string =
-  xs => FoldableFunctions.fold((module BsAbstract.String.Monoid), xs);
-
-let mkString: (string, list(string)) => string =
-  (sep, xs) =>
-    FoldableFunctions.intercalate((module BsAbstract.String.Monoid), sep, xs);
-
-let countBy: 'a. ('a => bool, list('a)) => int = FoldableFunctions.countBy;
-
 module Infix = {
   include BsAbstract.List.Infix;
-  include ApplyFunctions.Infix;
+  include MonadFunctions.ApplyFunctions.Infix;
 };
-
-module Show = BsAbstract.List.Show;
-
-let showF: ('a => string, list('a)) => string =
-  (showA, xs) => {
-    let strings = map(showA, xs);
-    "[" ++ mkString(", ", strings) ++ "]";
-  };
-
-let show =
-    (
-      type a,
-      showA: (module BsAbstract.Interface.SHOW with type t = a),
-      xs: list(a),
-    )
-    : string => {
-  module ShowA = (val showA);
-  showF(ShowA.show, xs);
-};
-
-module Traversable = BsAbstract.List.Traversable;
 
 module Sequence: Relude_Sequence.SEQUENCE with type t('a) = list('a) = {
   type t('a) = list('a);
@@ -444,7 +448,7 @@ module Sequence: Relude_Sequence.SEQUENCE with type t('a) = list('a) = {
   let head = head;
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
-  let mkString = mkString;
+  let mkString = intercalate((module BsAbstract.String.Monoid));
   let eqF = eqF;
   let showF = showF;
 

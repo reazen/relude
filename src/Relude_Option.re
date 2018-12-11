@@ -47,15 +47,18 @@ let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
   (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
 
 let alt: (option('a), option('a)) => option('a) =
-  (a, b) => BsAbstract.Option.Alt.alt(a, b);
+  (a, b) =>
+    switch (a) {
+    | Some(_) as v => v
+    | None => b
+    };
 
 let empty: option('a) = None;
 
 let filter: ('a => bool, option('a)) => option('a) =
   fn => foldLeft((default, v) => fn(v) ? pure(v) : default, empty);
 
-let flatten: option(option('a)) => option('a) =
-  opt => bind(opt, a => a);
+let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
 
 let eqF: (('a, 'a) => bool, option('a), option('a)) => bool =
   (innerEq, a, b) =>
@@ -81,7 +84,8 @@ module Semigroup = BsAbstract.Option.Semigroup; /* Option Semigroup requires sem
 
 module Monoid = BsAbstract.Option.Monoid;
 
-module Semigroup_Any: BsAbstract.Interface.SEMIGROUP_ANY = { /* Option Semigroup_Any behaves like Alt (no Semigroup required for inner type */
+module Semigroup_Any: BsAbstract.Interface.SEMIGROUP_ANY = {
+  /* Option Semigroup_Any behaves like Alt (no Semigroup required for inner type */
   type t('a) = option('a);
   let append = alt;
 };

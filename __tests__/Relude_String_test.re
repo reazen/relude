@@ -110,10 +110,6 @@ describe("String", () => {
     expect(String.toArray("abcde")) |> toEqual([|"a", "b", "c", "d", "e"|])
   );
 
-  test("map", () =>
-    expect(String.map(s => s ++ s, "abc")) |> toEqual("aabbcc")
-  );
-
   test("foldLeft", () =>
     expect(
       String.foldLeft(
@@ -142,10 +138,6 @@ describe("String", () => {
 
   test("concatArray", () =>
     expect(String.concatArray([|"a", "b"|])) |> toEqual("ab")
-  );
-
-  test("concatList", () =>
-    expect(String.concatList(["a", "b"])) |> toEqual("ab")
   );
 
   test("endsWith", () =>
