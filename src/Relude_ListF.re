@@ -62,6 +62,35 @@ module String = {
     (f, str) => Relude_String.toList(str) |> Relude_List.map(f) |> join;
 };
 
+module Int = {
+  let eq: (list(int), list(int)) => bool =
+    Relude_List.eq((module Relude_Int.Eq));
+
+  let contains: (int, list(int)) => bool =
+    Relude_List.contains((module Relude_Int.Eq));
+
+  let indexOf: (int, list(int)) => option(int) =
+    Relude_List.indexOf((module Relude_Int.Eq));
+
+  let distinct: list(int) => list(int) =
+    Relude_List.distinct((module Relude_Int.Eq));
+
+  let remove: (int, list(int)) => list(int) =
+    Relude_List.remove((module Relude_Int.Eq));
+
+  let removeEach: (int, list(int)) => list(int) =
+    Relude_List.removeEach((module Relude_Int.Eq));
+
+  let sort: list(int) => list(int) =
+    Relude_List.sort((module Relude_Int.Ord));
+
+  let sum: list(int) => int =
+    Relude_List.fold((module Relude_Int.Additive.Monoid));
+
+  let product: list(int) => int =
+    Relude_List.fold((module Relude_Int.Multiplicative.Monoid));
+};
+
 module Option = {
   module Traversable = BsAbstract.Functors.ListF.Option.Traversable;
 

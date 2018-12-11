@@ -628,18 +628,6 @@ describe("List", () => {
        ])
   );
 
-  test("sumInt empty", () =>
-    expect(List.sumInt([])) |> toEqual(0)
-  );
-
-  test("sumInt one", () =>
-    expect(List.sumInt([1])) |> toEqual(1)
-  );
-
-  test("sumInt many", () =>
-    expect(List.sumInt([1, 3, 5])) |> toEqual(9)
-  );
-
   test("sumFloat empty", () =>
     expect(List.sumFloat([])) |> toEqual(0.)
   );

@@ -6,7 +6,6 @@
  * - Typeclass implementations that don't care about inner 'a
  * - Freebies from those typeclasses
  * - Functions and typeclasses that _do_ care about inner 'a
- * - Submodules for working with Lists of specific `'a` types
  ******************************************************************************/
 
 /*******************************************************************************
@@ -69,7 +68,8 @@ let rec init: list('a) => option(list('a)) =
   fun
   | [] => None
   | [_] => Some([])
-  | [x, ...xs] => Some(cons(x, init(xs)->Belt.Option.getWithDefault([])));
+  | [x, ...xs] =>
+    Some(cons(x, Relude_Option.getOrElseStrict([], init(xs))));
 
 let rec last: list('a) => option('a) =
   fun
@@ -427,9 +427,6 @@ let removeEach =
   module EqA = (val eqA);
   removeEachF(EqA.eq, x, xs);
 };
-
-let sumInt: list(int) => int =
-  xs => FoldableFunctions.fold((module Relude_Int.Additive.Monoid), xs);
 
 let sumFloat: list(float) => float =
   xs => FoldableFunctions.fold((module Relude_Float.Additive.Monoid), xs);
