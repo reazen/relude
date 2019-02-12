@@ -110,8 +110,16 @@ let lastIndexOf: (string, string) => option(int) =
     };
   };
 
-let replace: (string, string, string) => string =
+let replaceFirst: (string, string, string) => string =
   (target, newValue, source) => Js.String.replace(target, newValue, source);
+
+let replaceAll: (string, string, string) => string =
+  (target, newValue, source) =>
+    Js.String.replaceByRe(
+      Js.Re.fromStringWithFlags(target, ~flags="g"),
+      newValue,
+      source,
+    );
 
 let replaceRegex: (Js.Re.t, string, string) => string =
   (target, newValue, source) => Js.String.replaceByRe(target, newValue, source);
