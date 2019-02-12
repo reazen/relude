@@ -4,10 +4,12 @@
  This type also implements map/apply/flatMap/etc. to operate on the innermost a value (inside the Result.Ok)
  */
 
+/*******************************************************************************
+ * Type definition and constructors
+ ******************************************************************************/
 type t('a, 'e) = Relude_AsyncData.t(Belt.Result.t('a, 'e));
 
 let init: t('a, 'e) = Relude_AsyncData.init;
-
 let loading: t('a, 'e) = Relude_AsyncData.loading;
 
 let reloadingOk: 'a => t('a, 'e) =
@@ -23,13 +25,14 @@ let completeError: 'e => t('a, 'e) =
   e => Relude_AsyncData.complete(Belt.Result.Error(e));
 
 /* Shortcuts */
-
 let ok = completeOk;
-
 let error = completeError;
 
-let pure = ok;
+/*******************************************************************************
+ * Needed by typeclasses
+ ******************************************************************************/
 
+let pure: 'a => t('a, 'e) = completeOk;
 let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, fa) =>
     switch (fa) {
@@ -107,40 +110,112 @@ let bind: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     | Complete(Error(_)) as r => r
     };
 
-let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) = (f, fa) => bind(fa, f);
+let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
+  (f, fa) => bind(fa, f);
 
-module type FUNCTOR_F = (E: BsAbstract.Interface.TYPE) => BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t);
+/*******************************************************************************
+ * Utilities specific to this type
+ ******************************************************************************/
 
-module Functor: FUNCTOR_F = (E: BsAbstract.Interface.TYPE) => {
-  type nonrec t('a) = t('a, E.t);
-  let map = map;
-}
+let isInit = Relude_AsyncData.isInit;
+let isBusy = Relude_AsyncData.isBusy;
+let isLoading = Relude_AsyncData.isLoading;
+let isReloading = Relude_AsyncData.isReloading;
+let isComplete = Relude_AsyncData.isComplete;
 
-module type APPLY_F = (E: BsAbstract.Interface.TYPE) => BsAbstract.Interface.APPLY with type t('a) = t('a, E.t);
+let isOk: 'a 'e. t('a, 'e) => bool =
+  fun
+  | Complete(Ok(_))
+  | Reloading(Ok(_)) => true
+  | _ => false;
 
-module Apply: APPLY_F = (E: BsAbstract.Interface.TYPE) => {
-  include Functor(E);
-  let apply = apply;
-}
+let isError: 'a 'e. t('a, 'e) => bool =
+  fun
+  | Complete(Error(_))
+  | Reloading(Error(_)) => true
+  | _ => false;
 
-module ApplyFunctions = (E: BsAbstract.Interface.TYPE) => BsAbstract.Functions.Apply(Apply(E));
+let isCompleteOk: 'a 'e. t('a, 'e) => bool =
+  fun
+  | Complete(Ok(_)) => true
+  | _ => false;
 
-module type APPLICATIVE_F = (E: BsAbstract.Interface.TYPE) => BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t);
+let isCompleteError: 'a 'e. t('a, 'e) => bool =
+  fun
+  | Complete(Error(_)) => true
+  | _ => false;
 
-module Applicative: APPLICATIVE_F = (E: BsAbstract.Interface.TYPE) => {
-  include Apply(E);
-  let pure = pure;
-}
+let getOk: 'a 'e. t('a, 'e) => option('a) =
+  fun
+  | Complete(Ok(v))
+  | Reloading(Ok(v)) => Some(v)
+  | _ => None;
 
-module type MONAD_F = (E: BsAbstract.Interface.TYPE) => BsAbstract.Interface.MONAD with type t('a) = t('a, E.t);
+let getError: 'a 'e. t('a, 'e) => option('e) =
+  fun
+  | Complete(Error(x))
+  | Reloading(Error(x)) => Some(x)
+  | _ => None;
 
-module Monad: MONAD_F = (E: BsAbstract.Interface.TYPE) => {
-  include Applicative(E);
-  let flat_map = bind;
-}
+let getCompleteOk: 'a 'e. t('a, 'e) => option('a) =
+  fun
+  | Complete(Ok(v)) => Some(v)
+  | _ => None;
+
+let getCompleteError: 'a 'e. t('a, 'e) => option('e) =
+  fun
+  | Complete(Error(x)) => Some(x)
+  | _ => None;
+
+/*******************************************************************************
+ * Typeclass implementations
+ ******************************************************************************/
+
+module type FUNCTOR_F =
+  (E: BsAbstract.Interface.TYPE) =>
+   BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t);
+
+module Functor: FUNCTOR_F =
+  (E: BsAbstract.Interface.TYPE) => {
+    type nonrec t('a) = t('a, E.t);
+    let map = map;
+  };
+
+module type APPLY_F =
+  (E: BsAbstract.Interface.TYPE) =>
+   BsAbstract.Interface.APPLY with type t('a) = t('a, E.t);
+
+module Apply: APPLY_F =
+  (E: BsAbstract.Interface.TYPE) => {
+    include Functor(E);
+    let apply = apply;
+  };
+
+module ApplyFunctions = (E: BsAbstract.Interface.TYPE) =>
+  BsAbstract.Functions.Apply((Apply(E)));
+
+module type APPLICATIVE_F =
+  (E: BsAbstract.Interface.TYPE) =>
+   BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t);
+
+module Applicative: APPLICATIVE_F =
+  (E: BsAbstract.Interface.TYPE) => {
+    include Apply(E);
+    let pure = pure;
+  };
+
+module type MONAD_F =
+  (E: BsAbstract.Interface.TYPE) =>
+   BsAbstract.Interface.MONAD with type t('a) = t('a, E.t);
+
+module Monad: MONAD_F =
+  (E: BsAbstract.Interface.TYPE) => {
+    include Applicative(E);
+    let flat_map = bind;
+  };
 
 module Infix = (E: BsAbstract.Interface.TYPE) => {
-  module Functor = BsAbstract.Infix.Functor(Functor(E));
-  module Apply = BsAbstract.Infix.Apply(Apply(E));
-  module Monad = BsAbstract.Infix.Monad(Monad(E));
-}
+  module Functor = BsAbstract.Infix.Functor((Functor(E)));
+  module Apply = BsAbstract.Infix.Apply((Apply(E)));
+  module Monad = BsAbstract.Infix.Monad((Monad(E)));
+};
