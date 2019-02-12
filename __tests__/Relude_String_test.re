@@ -168,8 +168,12 @@ describe("String", () => {
     expect(String.lastIndexOf("x", "abcde")) |> toEqual(None)
   );
 
-  test("replace", () =>
-    expect(String.replace("b", "xyz", "abcde")) |> toEqual("axyzcde")
+  test("replaceFirst", () =>
+    expect(String.replaceFirst("b", "xyz", "abcde")) |> toEqual("axyzcde")
+  );
+
+  test("replaceAll", () =>
+    expect(String.replaceAll("b", "xyz", "abcdeb")) |> toEqual("axyzcdexyz")
   );
 
   test("replaceRegex", () =>
