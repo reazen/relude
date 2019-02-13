@@ -5,7 +5,12 @@ let ok: 'a 'e. 'a => t('a, 'e) = pure;
 let error: 'a 'e. 'e => t('a, 'e) = e => Error(e);
 let unit: 'e. t(unit, 'e) = pure();
 
-let fold: 'a 'e 'c. ('a => 'c, 'e => 'c, t('a, 'e)) => 'c = BsAbstract.Result.result;
+let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
+  (ec, ac, r) =>
+    switch (r) {
+    | Ok(a) => ac(a)
+    | Error(e) => ec(e)
+    };
 
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, ra) => Belt.Result.map(ra, f);
@@ -96,7 +101,7 @@ let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
 let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
-  (fa1, fa2) => fold(pure, _ => fa2, fa1);
+  (fa1, fa2) => fold(_ => fa2, pure, fa1);
 
 let catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
   (f, fa) =>
@@ -109,7 +114,7 @@ let recover: 'a 'e. ('a, t('a, 'e)) => t('a, 'e) =
   (a, fa) => fa |> catchError(_ => Ok(a));
 
 let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
-  (a, fa) => fold(v => v, _ => a, fa);
+  (a, fa) => fold(_ => a, v => v, fa);
 
 let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
   (getError, opt) =>

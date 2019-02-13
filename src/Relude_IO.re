@@ -57,7 +57,7 @@ let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
     option |> Option.fold(() => throw(getError()), pure);
 
 let fromResult: 'a 'e. Result.t('a, 'e) => t('a, 'e) =
-  res => res |> Result.fold(pure, throw);
+  res => res |> Result.fold(throw, pure);
 
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, io) => Map(f, io);
@@ -230,10 +230,10 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
 
 let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
   fun
-  | Pure(resA) => resA |> Result.fold(pure, throw)
+  | Pure(resA) => resA |> Result.fold(throw, pure)
   | Throw(absurd) => Void.absurd(absurd)
   | Suspend(getResA) =>
-    SuspendIO((() => getResA() |> Result.fold(pure, throw)))
+    SuspendIO((() => getResA() |> Result.fold(throw, pure)))
   | SuspendIO(getIOResA) => SuspendIO((() => getIOResA() |> unsummonError))
   | Async(onDoneResResA) =>
     Async(
@@ -249,10 +249,10 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
     )
   | Map(r0ToResA, ioR0) =>
     switch (ioR0) {
-    | Pure(r0) => r0ToResA(r0) |> Result.fold(pure, throw)
+    | Pure(r0) => r0ToResA(r0) |> Result.fold(throw, pure)
     | Throw(absurd) => Void.absurd(absurd)
     | Suspend(getR0) =>
-      SuspendIO((() => getR0() |> r0ToResA |> Result.fold(pure, throw)))
+      SuspendIO((() => getR0() |> r0ToResA |> Result.fold(throw, pure)))
     | SuspendIO(getIOR0) =>
       SuspendIO((() => getIOR0() |> map(r0ToResA) |> unsummonError))
     | Async(onDoneR0) =>

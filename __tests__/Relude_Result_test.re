@@ -12,4 +12,14 @@ describe("Result", () => {
     expect(Result.map(a => a + 2, Belt.Result.Ok(1)))
     |> toEqual(Belt.Result.Ok(3))
   );
+
+  test("fold Ok", () =>
+    expect(Result.fold(_ => "error", _ => "ok", Belt.Result.Ok(1)))
+    |> toEqual("ok")
+  );
+
+  test("fold Error", () =>
+    expect(Result.fold(_ => "error", _ => "ok", Belt.Result.Error(1)))
+    |> toEqual("error")
+  );
 });
