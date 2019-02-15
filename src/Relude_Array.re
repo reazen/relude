@@ -297,12 +297,12 @@ let mkString: (string, array(string)) => string =
 
 module Eq = BsAbstract.Array.Eq;
 
-let rec eqF: (('a, 'a) => bool, array('a), array('a)) => bool =
+let rec eqBy: (('a, 'a) => bool, array('a), array('a)) => bool =
   (innerEq, xs, ys) =>
     switch (head(xs), head(ys)) {
     | (None, None) => true
     | (Some(x), Some(y)) when innerEq(x, y) =>
-      eqF(innerEq, tailOrEmpty(xs), tailOrEmpty(ys))
+      eqBy(innerEq, tailOrEmpty(xs), tailOrEmpty(ys))
     | _ => false
     };
 
@@ -315,12 +315,12 @@ let eq =
     )
     : bool => {
   module EqA = (val eqA);
-  eqF(EqA.eq, xs, ys);
+  eqBy(EqA.eq, xs, ys);
 };
 
 module Show = BsAbstract.Array.Show;
 
-let showF: ('a => string, array('a)) => string =
+let showBy: ('a => string, array('a)) => string =
   (showX, xs) => {
     let strings = map(showX, xs);
     "[" ++ mkString(", ", strings) ++ "]";
@@ -334,7 +334,7 @@ let show =
     )
     : string => {
   module ShowA = (val showA);
-  showF(ShowA.show, xs);
+  showBy(ShowA.show, xs);
 };
 
 module SemigroupAny:
@@ -387,8 +387,8 @@ module Sequence: Relude_Sequence.SEQUENCE with type t('a) = array('a) = {
   let head = head;
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
-  let eqF = eqF;
-  let showF = showF;
+  let eqBy = eqBy;
+  let showBy = showBy;
   let mkString = mkString;
 
   module SemigroupAny = SemigroupAny;

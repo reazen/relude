@@ -470,48 +470,48 @@ describe("List", () => {
     expect(List.all(a => a < 3, [0, 1, 2, 3])) |> toEqual(false)
   );
 
-  test("removeF empty", () =>
-    expect(List.removeF(Int.eq, 0, [])) |> toEqual([])
+  test("removeBy empty", () =>
+    expect(List.removeBy(Int.eq, 0, [])) |> toEqual([])
   );
 
-  test("removeF single match", () =>
-    expect(List.removeF(Int.eq, 0, [0])) |> toEqual([])
+  test("removeBy single match", () =>
+    expect(List.removeBy(Int.eq, 0, [0])) |> toEqual([])
   );
 
-  test("removeF single not a match", () =>
-    expect(List.removeF(Int.eq, 0, [1])) |> toEqual([1])
+  test("removeBy single not a match", () =>
+    expect(List.removeBy(Int.eq, 0, [1])) |> toEqual([1])
   );
 
-  test("removeF one match at beginning", () =>
-    expect(List.removeF(Int.eq, 0, [0, 1, 2])) |> toEqual([1, 2])
+  test("removeBy one match at beginning", () =>
+    expect(List.removeBy(Int.eq, 0, [0, 1, 2])) |> toEqual([1, 2])
   );
 
-  test("removeF one match at end", () =>
-    expect(List.removeF(Int.eq, 2, [0, 1, 2])) |> toEqual([0, 1])
+  test("removeBy one match at end", () =>
+    expect(List.removeBy(Int.eq, 2, [0, 1, 2])) |> toEqual([0, 1])
   );
 
-  test("removeF many matches", () =>
-    expect(List.removeF(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
+  test("removeBy many matches", () =>
+    expect(List.removeBy(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
   );
 
-  test("removeEachF empty", () =>
-    expect(List.removeEachF(Int.eq, 0, [])) |> toEqual([])
+  test("removeEachBy empty", () =>
+    expect(List.removeEachBy(Int.eq, 0, [])) |> toEqual([])
   );
 
-  test("removeEachF single match", () =>
-    expect(List.removeEachF(Int.eq, 0, [0])) |> toEqual([])
+  test("removeEachBy single match", () =>
+    expect(List.removeEachBy(Int.eq, 0, [0])) |> toEqual([])
   );
 
-  test("removeEachF single not a match", () =>
-    expect(List.removeEachF(Int.eq, 0, [1])) |> toEqual([1])
+  test("removeEachBy single not a match", () =>
+    expect(List.removeEachBy(Int.eq, 0, [1])) |> toEqual([1])
   );
 
-  test("removeEachF many matches removed", () =>
-    expect(List.removeEachF(Int.eq, 0, [0, 2, 0, 4, 0])) |> toEqual([2, 4])
+  test("removeEachBy many matches removed", () =>
+    expect(List.removeEachBy(Int.eq, 0, [0, 2, 0, 4, 0])) |> toEqual([2, 4])
   );
 
-  test("distinct", () =>
-    expect(List.distinctF(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
+  test("distinctBy", () =>
+    expect(List.distinctBy(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
     |> toEqual([6, 1, 2, 3, 4, 5])
   );
 
@@ -541,16 +541,16 @@ describe("List", () => {
     expect(List.toArray([1, 2, 3])) |> toEqual([|1, 2, 3|])
   );
 
-  test("eqF returns true if list items are equal", () =>
-    expect(List.eqF(Int.eq, [1, 2, 3], [1, 2, 3])) |> toBe(true)
+  test("eqBy returns true if list items are equal", () =>
+    expect(List.eqBy(Int.eq, [1, 2, 3], [1, 2, 3])) |> toBe(true)
   );
 
-  test("eqF returns false if list items are not equal", () =>
-    expect(List.eqF(Int.eq, [1, 2, 3], [1, 2, 4])) |> toBe(false)
+  test("eqBy returns false if list items are not equal", () =>
+    expect(List.eqBy(Int.eq, [1, 2, 3], [1, 2, 4])) |> toBe(false)
   );
 
-  test("eqF returns false if lists are of different sizes", () =>
-    expect(List.eqF(Int.eq, [1], [1, 2])) |> toBe(false)
+  test("eqBy returns false if lists are of different sizes", () =>
+    expect(List.eqBy(Int.eq, [1], [1, 2])) |> toBe(false)
   );
 
   test("eq returns true if list items are equal", () =>
@@ -575,8 +575,8 @@ describe("List", () => {
     |> toEqual([1, 2, 3])
   );
 
-  test("showF", () =>
-    expect(List.showF(string_of_int, [1, 2, 3])) |> toEqual("[1, 2, 3]")
+  test("showBy", () =>
+    expect(List.showBy(string_of_int, [1, 2, 3])) |> toEqual("[1, 2, 3]")
   );
 
   test("void", () =>

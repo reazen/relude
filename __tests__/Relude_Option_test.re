@@ -162,20 +162,20 @@ describe("Option", () => {
     expect(Option.flatten(Some(Some(1)))) |> toEqual(Some(1))
   );
 
-  test("eqF is true when inner values match", () =>
-    expect(Option.eqF(Int.eq, Some(1), Some(1))) |> toEqual(true)
+  test("eqBy is true when inner values match", () =>
+    expect(Option.eqBy(Int.eq, Some(1), Some(1))) |> toEqual(true)
   );
 
-  test("eqF is false when inner values do not match", () =>
-    expect(Option.eqF(Int.eq, Some(1), Some(2))) |> toEqual(false)
+  test("eqBy is false when inner values do not match", () =>
+    expect(Option.eqBy(Int.eq, Some(1), Some(2))) |> toEqual(false)
   );
 
-  test("eqF is false when one option is Some and one is None", () =>
-    expect(Option.eqF(Int.eq, Some(1), None)) |> toEqual(false)
+  test("eqBy is false when one option is Some and one is None", () =>
+    expect(Option.eqBy(Int.eq, Some(1), None)) |> toEqual(false)
   );
 
-  test("eqF is true when both options are None", () =>
-    expect(Option.eqF(Int.eq, None, None)) |> toEqual(true)
+  test("eqBy is true when both options are None", () =>
+    expect(Option.eqBy(Int.eq, None, None)) |> toEqual(true)
   );
 
   test("eq is true when inner values match", () =>

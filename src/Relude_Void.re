@@ -6,7 +6,7 @@ type t =
 
 /**
 A function that can be used when you need to provide a function from Void.t => 'a.
-The function will never actually be called, because it's impossible to construct a valud of type Void.t.
+The function will never actually be called, because it's impossible to construct a value of type Void.t.
  */
 let absurd: t => 'a =
   void => {

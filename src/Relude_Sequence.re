@@ -8,8 +8,8 @@ module type SEQUENCE = {
   let tail: t('a) => option(t('a));
   let tailOrEmpty: t('a) => t('a);
   let mkString: (string, t(string)) => string;
-  let eqF: (('a, 'a) => bool, t('a), t('a)) => bool;
-  let showF: ('a => string, t('a)) => string;
+  let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool;
+  let showBy: ('a => string, t('a)) => string;
 
   module SemigroupAny: BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a);
   module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = t('a);

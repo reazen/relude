@@ -81,11 +81,11 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
       | NonEmpty(y, ys) => y ++ delim ++ TailSequence.mkString(delim, ys)
       };
 
-  let eqF: (('a, 'a) => bool, t('a), t('a)) => bool =
+  let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool =
     (eqA, xs, ys) =>
       switch (xs, ys) {
       | (NonEmpty(x, xs), NonEmpty(y, ys)) =>
-        eqA(x, y) && TailSequence.eqF(eqA, xs, ys)
+        eqA(x, y) && TailSequence.eqBy(eqA, xs, ys)
       };
 
   let eq =
@@ -97,10 +97,10 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
       )
       : bool => {
     module EqA = (val eqA);
-    eqF(EqA.eq, xs, ys);
+    eqBy(EqA.eq, xs, ys);
   };
 
-  let showF: ('a => string, t('a)) => string =
+  let showBy: ('a => string, t('a)) => string =
     (showX, xs) => {
       let strings = map(showX, xs);
       "[!" ++ mkString(", ", strings) ++ "!]";
@@ -114,7 +114,7 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
       )
       : string => {
     module ShowA = (val showA);
-    showF(ShowA.show, xs);
+    showBy(ShowA.show, xs);
   };
 
   module SemigroupAny:
@@ -219,7 +219,7 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
   module Eq: EQ_F =
     (EqA: BsAbstract.Interface.EQ) => {
       type nonrec t = t(EqA.t);
-      let eq = (xs, ys) => eqF(EqA.eq, xs, ys);
+      let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
     };
 };
 
