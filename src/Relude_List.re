@@ -330,7 +330,7 @@ let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
 
 module Show = BsAbstract.List.Show;
 
-let showF: ('a => string, list('a)) => string =
+let showBy: ('a => string, list('a)) => string =
   (innerShow, xs) => {
     let joinStrings = intercalate((module BsAbstract.String.Monoid));
     "[" ++ joinStrings(", ", map(innerShow, xs)) ++ "]";
@@ -344,16 +344,16 @@ let show =
     )
     : string => {
   module ShowA = (val showA);
-  showF(ShowA.show, xs);
+  showBy(ShowA.show, xs);
 };
 
 module Eq = BsAbstract.List.Eq;
 
-let rec eqF: (('a, 'a) => bool, list('a), list('a)) => bool =
+let rec eqBy: (('a, 'a) => bool, list('a), list('a)) => bool =
   (innerEq, a, b) =>
     switch (a, b) {
     | ([], []) => true
-    | ([x, ...xs], [y, ...ys]) when innerEq(x, y) => eqF(innerEq, xs, ys)
+    | ([x, ...xs], [y, ...ys]) when innerEq(x, y) => eqBy(innerEq, xs, ys)
     | _ => false
     };
 
@@ -366,11 +366,11 @@ let eq =
     )
     : bool => {
   module EqA = (val eqA);
-  eqF(EqA.eq, xs, ys);
+  eqBy(EqA.eq, xs, ys);
 };
 
 /* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
-let distinctF: 'a. (('a, 'a) => bool, list('a)) => list('a) =
+let distinctBy: 'a. (('a, 'a) => bool, list('a)) => list('a) =
   (eq, xs) =>
     foldLeft(
       /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
@@ -388,10 +388,10 @@ let distinct =
     )
     : list(a) => {
   module EqA = (val eqA);
-  distinctF(EqA.eq, xs);
+  distinctBy(EqA.eq, xs);
 };
 
-let removeF: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
+let removeBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
   (innerEq, v, xs) => {
     let go = ((found, ys), x) =>
       found ?
@@ -409,10 +409,10 @@ let remove =
     )
     : list(a) => {
   module EqA = (val eqA);
-  removeF(EqA.eq, x, xs);
+  removeBy(EqA.eq, x, xs);
 };
 
-let removeEachF: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
+let removeEachBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
   (innerEq, x, xs) =>
     foldLeft((ys, v) => innerEq(x, v) ? ys : [v, ...ys], [], xs) |> reverse;
 
@@ -425,7 +425,7 @@ let removeEach =
     )
     : list(a) => {
   module EqA = (val eqA);
-  removeEachF(EqA.eq, x, xs);
+  removeEachBy(EqA.eq, x, xs);
 };
 
 let sumFloat: list(float) => float =
@@ -446,8 +446,8 @@ module Sequence: Relude_Sequence.SEQUENCE with type t('a) = list('a) = {
   let tail = tail;
   let tailOrEmpty = tailOrEmpty;
   let mkString = intercalate((module BsAbstract.String.Monoid));
-  let eqF = eqF;
-  let showF = showF;
+  let eqBy = eqBy;
+  let showBy = showBy;
 
   module SemigroupAny = SemigroupAny;
   module MonoidAny = MonoidAny;

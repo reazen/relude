@@ -60,7 +60,7 @@ let filter: ('a => bool, option('a)) => option('a) =
 
 let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
 
-let eqF: (('a, 'a) => bool, option('a), option('a)) => bool =
+let eqBy: (('a, 'a) => bool, option('a), option('a)) => bool =
   (innerEq, a, b) =>
     switch (a, b) {
     | (Some(va), Some(vb)) => innerEq(va, vb)

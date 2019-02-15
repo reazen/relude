@@ -56,7 +56,7 @@ let eq =
   AEq.eq(unwrap(fa), unwrap(fb));
 };
 
-let eqF: (('a, 'a) => bool, t('a), t('a)) => bool =
+let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool =
   (f, fa, fb) => f(unwrap(fa), unwrap(fb));
 
 let show =
@@ -70,7 +70,7 @@ let show =
   AShow.show(unwrap(fa));
 };
 
-let showF: ('a => string, t('a)) => string = (f, fa) => f(unwrap(fa));
+let showBy: ('a => string, t('a)) => string = (f, fa) => f(unwrap(fa));
 
 /* TODO: semigroup/monoid/plus/alt/etc. */
 
@@ -101,7 +101,7 @@ module type EQ_F =
 module Eq: EQ_F =
   (E: BsAbstract.Interface.EQ) => {
     type nonrec t = t(E.t);
-    let eq: (t, t) => bool = (fa, fb) => eqF(E.eq, fa, fb);
+    let eq: (t, t) => bool = (fa, fb) => eqBy(E.eq, fa, fb);
   };
 
 module type SHOW_F =
@@ -111,5 +111,5 @@ module type SHOW_F =
 module Show: SHOW_F =
   (E: BsAbstract.Interface.SHOW) => {
     type nonrec t = t(E.t);
-    let show: t => string = fa => showF(E.show, fa);
+    let show: t => string = fa => showBy(E.show, fa);
   };
