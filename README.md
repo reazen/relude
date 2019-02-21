@@ -1,5 +1,7 @@
 # Relude
 
+[![CircleCI](https://circleci.com/gh/reazen/relude.svg?style=svg)](https://circleci.com/gh/reazen/relude)
+
 A prelude for `Bucklescript` and `ReasonML` projects
 
 # Warning: WIP
