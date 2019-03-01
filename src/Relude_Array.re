@@ -266,16 +266,16 @@ let distinct: (('a, 'a) => bool, array('a)) => array('a) =
       xs,
     );
 
-let map: ('a => 'b, array('a)) => array('b) = BsAbstract.Array.Functor.map;
+let map: 'a 'b. ('a => 'b, array('a)) => array('b) = BsAbstract.Array.Functor.map;
 
-let mapWithIndex: (('a, int) => 'b, array('a)) => array('b) =
-  (f, xs) => Belt.Array.mapWithIndex(xs, f);
+let mapWithIndex: 'a 'b. (('a, int) => 'b, array('a)) => array('b) =
+  (f, xs) => Belt.Array.mapWithIndex(xs, (i, x) => f(x, i));
 
-let forEach: ('a => unit, array('a)) => unit =
+let forEach: 'a. ('a => unit, array('a)) => unit =
   (f, xs) => Belt.Array.forEach(xs, f);
 
-let forEachWithIndex: (('a, int) => unit, array('a)) => unit =
-  (f, xs) => Belt.Array.forEachWithIndex(xs, f);
+let forEachWithIndex: 'a. (('a, int) => unit, array('a)) => unit =
+  (f, xs) => Belt.Array.forEachWithIndex(xs, (i, x) => f(x, i));
 
 let apply: (array('a => 'b), array('a)) => array('b) = BsAbstract.Array.Apply.apply;
 

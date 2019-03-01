@@ -419,11 +419,13 @@ describe("Array", () => {
   );
 
   test("indexOf success", () =>
-    expect(Array.indexOf(Int.eq, 30, [|0, 10, 20, 30, 40|])) |> toEqual(Some(3))
+    expect(Array.indexOf(Int.eq, 30, [|0, 10, 20, 30, 40|]))
+    |> toEqual(Some(3))
   );
 
   test("indexOf failure", () =>
-    expect(Array.indexOf(Int.eq, 500, [|0, 10, 20, 30, 40|])) |> toEqual(None)
+    expect(Array.indexOf(Int.eq, 500, [|0, 10, 20, 30, 40|]))
+    |> toEqual(None)
   );
 
   test("contains true", () =>
@@ -461,6 +463,16 @@ describe("Array", () => {
 
   test("map", () =>
     expect(Array.map(a => a + 2, [|1, 2, 3|])) |> toEqual([|3, 4, 5|])
+  );
+
+  test("mapWithIndex", () =>
+    expect(
+      Array.mapWithIndex(
+        (v, i) => v ++ string_of_int(i),
+        [|"a", "b", "c"|],
+      ),
+    )
+    |> toEqual([|"a0", "b1", "c2"|])
   );
 
   test("apply", () =>
@@ -513,7 +525,8 @@ describe("Array", () => {
   );
 
   test("showBy", () =>
-    expect(Array.showBy(string_of_int, [|1, 2, 3|])) |> toEqual("[1, 2, 3]")
+    expect(Array.showBy(string_of_int, [|1, 2, 3|]))
+    |> toEqual("[1, 2, 3]")
   );
   /*
    test("void", () =>
