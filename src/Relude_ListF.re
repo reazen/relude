@@ -53,8 +53,11 @@ module String = {
   let join: list(string) => string =
     Relude_List.fold((module Relude_String.Monoid));
 
-  let intercalate = Relude_List.intercalate((module Relude_String.Monoid));
-  let joinWith = Relude_List.intercalate((module Relude_String.Monoid));
+  let intercalate: (string, list(string)) => string =
+    Relude_List.intercalate((module Relude_String.Monoid));
+
+  let joinWith: (string, list(string)) => string =
+    Relude_List.intercalate((module Relude_String.Monoid));
 
   let sort = Relude_List.sort((module Relude_String.Ord));
 
