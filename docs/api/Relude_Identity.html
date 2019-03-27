@@ -33,9 +33,9 @@
 <a href="#value-bind" class='level-2 value'>bind</a>
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
 <a href="#value-eq" class='level-2 value'>eq</a>
-<a href="#value-eqF" class='level-2 value'>eqF</a>
+<a href="#value-eqBy" class='level-2 value'>eqBy</a>
 <a href="#value-show" class='level-2 value'>show</a>
-<a href="#value-showF" class='level-2 value'>showF</a>
+<a href="#value-showBy" class='level-2 value'>showBy</a>
 <a href="#module-Functor" class='level-2 module'>Functor</a>
 <a href="#type-Functor.t" class='level-3 type'>t</a>
 <a href="#value-Functor.map" class='level-3 value'>map</a>
@@ -89,7 +89,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -118,7 +119,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -156,14 +160,14 @@
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (
-  (module BsAbstract.Interface.EQ with type t = 'l),
+  (module BsAbstract.Interface.EQ with type t = 'x),
   <a href="#type-t">t</a>('a),
   <a href="#type-t">t</a>('a)
 ) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-eqF" id="value-eqF">eqF</a>: (
+<div class='doc-item'><h4 class='item'>let <a href="#value-eqBy" id="value-eqBy">eqBy</a>: (
   (<a href="#type-t">t</a>(<a href="#type-t">t</a>('a)), <a href="#type-t">t</a>(<a href="#type-t">t</a>('a))) => bool,
   <a href="#type-t">t</a>(<a href="#type-t">t</a>(<a href="#type-t">t</a>('a))),
   <a href="#type-t">t</a>(<a href="#type-t">t</a>(<a href="#type-t">t</a>('a)))
@@ -172,13 +176,13 @@
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-show" id="value-show">show</a>: (
-  (module BsAbstract.Interface.SHOW with type t = 'm),
+  (module BsAbstract.Interface.SHOW with type t = 'y),
   <a href="#type-t">t</a>('a)
 ) => string</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-showF" id="value-showF">showF</a>: (<a href="#type-t">t</a>('a) => string, <a href="#type-t">t</a>(<a href="#type-t">t</a>('a))) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-showBy" id="value-showBy">showBy</a>: (<a href="#type-t">t</a>('a) => string, <a href="#type-t">t</a>(<a href="#type-t">t</a>('a))) => string</h4>
 
 <div class='body body-empty'></div></div>
 

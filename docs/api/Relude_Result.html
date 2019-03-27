@@ -30,10 +30,14 @@
 <a href="#value-ok" class='level-2 value'>ok</a>
 <a href="#value-error" class='level-2 value'>error</a>
 <a href="#value-unit" class='level-2 value'>unit</a>
+<a href="#value-fold" class='level-2 value'>fold</a>
 <a href="#value-map" class='level-2 value'>map</a>
+<a href="#value-mapOk" class='level-2 value'>mapOk</a>
 <a href="#value-mapError" class='level-2 value'>mapError</a>
 <a href="#value-bimap" class='level-2 value'>bimap</a>
 <a href="#value-tap" class='level-2 value'>tap</a>
+<a href="#value-tapOk" class='level-2 value'>tapOk</a>
+<a href="#value-tapError" class='level-2 value'>tapError</a>
 <a href="#value-apply" class='level-2 value'>apply</a>
 <a href="#value-map2" class='level-2 value'>map2</a>
 <a href="#value-map3" class='level-2 value'>map3</a>
@@ -41,12 +45,17 @@
 <a href="#value-map5" class='level-2 value'>map5</a>
 <a href="#value-bind" class='level-2 value'>bind</a>
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
-<a href="#value-fold" class='level-2 value'>fold</a>
 <a href="#value-alt" class='level-2 value'>alt</a>
 <a href="#value-catchError" class='level-2 value'>catchError</a>
 <a href="#value-recover" class='level-2 value'>recover</a>
+<a href="#value-getOrElse" class='level-2 value'>getOrElse</a>
 <a href="#value-fromOption" class='level-2 value'>fromOption</a>
-<a href="#value-toOption" class='level-2 value'>toOption</a>
+<a href="#value-getOk" class='level-2 value'>getOk</a>
+<a href="#value-getError" class='level-2 value'>getError</a>
+<a href="#value-isOk" class='level-2 value'>isOk</a>
+<a href="#value-isError" class='level-2 value'>isError</a>
+<a href="#value-tries" class='level-2 value'>tries</a>
+<a href="#value-triesAsString" class='level-2 value'>triesAsString</a>
 <a href="#value-toValidation" class='level-2 value'>toValidation</a>
 <a href="#value-fromValidation" class='level-2 value'>fromValidation</a>
 <a href="#value-toValidationNel" class='level-2 value'>toValidationNel</a>
@@ -105,7 +114,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -134,7 +144,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -147,119 +160,134 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-ok" id="value-ok">ok</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-ok" id="value-ok">ok</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-error" id="value-error">error</a>: 'a0 'e0. 'e0 -&gt; ('a0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-error" id="value-error">error</a>: 'a0 'e0. 'e0 -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-unit" id="value-unit">unit</a>: 'e0. (unit, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-unit" id="value-unit">unit</a>: 'e0. (unit, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: 'a0 'b0 'e0.
-  ('a0 -&gt; 'b0) -&gt; ('a0, 'e0) Belt.Result.t -&gt; ('b0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fold" id="value-fold">fold</a>: 'a0 'e0 'c0. ('e0 -&gt; 'c0) -&gt; ('a0 -&gt; 'c0) -&gt; ('a0, 'e0) t -&gt; 'c0</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-mapError" id="value-mapError">mapError</a>: 'a0 'e1 'e2.
-  ('e1 -&gt; 'e2) -&gt; ('a0, 'e1) Belt.Result.t -&gt; ('a0, 'e2) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: 'a0 'b0 'e0. ('a0 -&gt; 'b0) -&gt; ('a0, 'e0) t -&gt; ('b0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-bimap" id="value-bimap">bimap</a>: 'a0 'b0 'e1 'e2.
-  ('a0 -&gt; 'b0) -&gt;
-  ('e1 -&gt; 'e2) -&gt; ('a0, 'e1) Belt.Result.t -&gt; ('b0, 'e2) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-mapOk" id="value-mapOk">mapOk</a>: ('a => 'a, <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-tap" id="value-tap">tap</a>: 'a0 'e0. ('a0 -&gt; unit) -&gt; ('a0, 'e0) Belt.Result.t -&gt; unit</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-mapError" id="value-mapError">mapError</a>: 'a0 'e10 'e2. ('e10 -&gt; 'e2) -&gt; ('a0, 'e10) t -&gt; ('a0, 'e2) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: 'a0 'b0 'e0.
-  ('a0 -&gt; 'b0, 'e0) Belt.Result.t -&gt;
-  ('a0, 'e0) Belt.Result.t -&gt; ('b0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-bimap" id="value-bimap">bimap</a>: 'a0 'b0 'e10 'e2.
+  ('a0 -&gt; 'b0) -&gt; ('e10 -&gt; 'e2) -&gt; ('a0, 'e10) t -&gt; ('b0, 'e2) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: 'a0 'b0 'c0 'x.
-  ('a0 -&gt; 'b0 -&gt; 'c0) -&gt;
-  ('a0, 'x) Belt.Result.t -&gt;
-  ('b0, 'x) Belt.Result.t -&gt; ('c0, 'x) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-tap" id="value-tap">tap</a>: 'a0 'e0. ('a0 -&gt; unit) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: 'a0 'b0 'c0 'd0 'x.
+<div class='doc-item'><h4 class='item'>let <a href="#value-tapOk" id="value-tapOk">tapOk</a>: 'a0 'e0. ('a0 -&gt; unit) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-tapError" id="value-tapError">tapError</a>: 'a0 'e0. ('e0 -&gt; unit) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: 'a0 'b0 'e0. ('a0 -&gt; 'b0, 'e0) t -&gt; ('a0, 'e0) t -&gt; ('b0, 'e0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: 'a0 'b0 'c0 'x0.
+  ('a0 -&gt; 'b0 -&gt; 'c0) -&gt; ('a0, 'x0) t -&gt; ('b0, 'x0) t -&gt; ('c0, 'x0) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: 'a0 'b0 'c0 'd0 'x0.
   ('a0 -&gt; 'b0 -&gt; 'c0 -&gt; 'd0) -&gt;
-  ('a0, 'x) Belt.Result.t -&gt;
-  ('b0, 'x) Belt.Result.t -&gt;
-  ('c0, 'x) Belt.Result.t -&gt; ('d0, 'x) Belt.Result.t</h4>
+  ('a0, 'x0) t -&gt; ('b0, 'x0) t -&gt; ('c0, 'x0) t -&gt; ('d0, 'x0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map4" id="value-map4">map4</a>: 'a0 'b0 'c0 'd0 'e0 'x.
+<div class='doc-item'><h4 class='item'>let <a href="#value-map4" id="value-map4">map4</a>: 'a0 'b0 'c0 'd0 'e0 'x0.
   ('a0 -&gt; 'b0 -&gt; 'c0 -&gt; 'd0 -&gt; 'e0) -&gt;
-  ('a0, 'x) Belt.Result.t -&gt;
-  ('b0, 'x) Belt.Result.t -&gt;
-  ('c0, 'x) Belt.Result.t -&gt;
-  ('d0, 'x) Belt.Result.t -&gt; ('e0, 'x) Belt.Result.t</h4>
+  ('a0, 'x0) t -&gt;
+  ('b0, 'x0) t -&gt; ('c0, 'x0) t -&gt; ('d0, 'x0) t -&gt; ('e0, 'x0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map5" id="value-map5">map5</a>: 'a0 'b0 'c0 'd0 'e0 'f0 'x.
+<div class='doc-item'><h4 class='item'>let <a href="#value-map5" id="value-map5">map5</a>: 'a0 'b0 'c0 'd0 'e0 'f0 'x0.
   ('a0 -&gt; 'b0 -&gt; 'c0 -&gt; 'd0 -&gt; 'e0 -&gt; 'f0) -&gt;
-  ('a0, 'x) Belt.Result.t -&gt;
-  ('b0, 'x) Belt.Result.t -&gt;
-  ('c0, 'x) Belt.Result.t -&gt;
-  ('d0, 'x) Belt.Result.t -&gt;
-  ('e0, 'x) Belt.Result.t -&gt; ('f0, 'x) Belt.Result.t</h4>
+  ('a0, 'x0) t -&gt;
+  ('b0, 'x0) t -&gt;
+  ('c0, 'x0) t -&gt; ('d0, 'x0) t -&gt; ('e0, 'x0) t -&gt; ('f0, 'x0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-bind" id="value-bind">bind</a>: 'a0 'b0 'e0.
-  ('a0, 'e0) Belt.Result.t -&gt;
-  ('a0 -&gt; ('b0, 'e0) Belt.Result.t) -&gt; ('b0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-bind" id="value-bind">bind</a>: 'a0 'b0 'e0. ('a0, 'e0) t -&gt; ('a0 -&gt; ('b0, 'e0) t) -&gt; ('b0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: 'a0 'b0 'e0.
-  ('a0 -&gt; ('b0, 'e0) Belt.Result.t) -&gt;
-  ('a0, 'e0) Belt.Result.t -&gt; ('b0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: 'a0 'b0 'e0. ('a0 -&gt; ('b0, 'e0) t) -&gt; ('a0, 'e0) t -&gt; ('b0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-fold" id="value-fold">fold</a>: 'a0 'e0 'c0. ('a0 -&gt; 'c0) -&gt; ('e0 -&gt; 'c0) -&gt; ('a0, 'e0) Belt.Result.t -&gt; 'c0</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-alt" id="value-alt">alt</a>: 'a0 'e0. ('a0, 'e0) t -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-alt" id="value-alt">alt</a>: 'a0 'e0.
-  ('a0, 'e0) Belt.Result.t -&gt;
-  ('a0, 'e0) Belt.Result.t -&gt; ('a0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-catchError" id="value-catchError">catchError</a>: 'a0 'e0. ('e0 -&gt; ('a0, 'e0) t) -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-catchError" id="value-catchError">catchError</a>: 'a0 'e0.
-  ('e0 -&gt; ('a0, 'e0) Belt.Result.t) -&gt;
-  ('a0, 'e0) Belt.Result.t -&gt; ('a0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-recover" id="value-recover">recover</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) t -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-recover" id="value-recover">recover</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) Belt.Result.t -&gt; ('a0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-getOrElse" id="value-getOrElse">getOrElse</a>: 'a0 'e0. 'a0 -&gt; ('a0, 'e0) t -&gt; 'a0</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-fromOption" id="value-fromOption">fromOption</a>: 'a0 'e0. (unit -&gt; 'e0) -&gt; 'a0 option -&gt; ('a0, 'e0) Belt.Result.t</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromOption" id="value-fromOption">fromOption</a>: 'a0 'e0. (unit -&gt; 'e0) -&gt; 'a0 option -&gt; ('a0, 'e0) t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-toOption" id="value-toOption">toOption</a>: 'a0 'e0. ('a0, 'e0) Belt.Result.t -&gt; 'a0 option</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-getOk" id="value-getOk">getOk</a>: 'a0 'e0. ('a0, 'e0) t -&gt; 'a0 option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getError" id="value-getError">getError</a>: 'a0 'e0. ('a0, 'e0) t -&gt; 'e0 option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isOk" id="value-isOk">isOk</a>: 'a0 'e0. ('a0, 'e0) t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isError" id="value-isError">isError</a>: 'a0 'e0. ('a0, 'e0) t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-tries" id="value-tries">tries</a>: 'a0. (unit -&gt; 'a0) -&gt; ('a0, exn) t</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-triesAsString" id="value-triesAsString">triesAsString</a>: 'a0. (unit -&gt; 'a0) -&gt; ('a0, Js.String.t) t</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -277,10 +305,10 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-toValidationNel" id="value-toValidationNel">toValidationNel</a>: Belt.Result.t(
+<div class='doc-item'><h4 class='item'>let <a href="#value-toValidationNel" id="value-toValidationNel">toValidationNel</a>: <a href="#type-t">t</a>('a, 'e) => <a href="Relude_Validation.html">Relude_Validation</a>.<a href="Relude_Validation.html#type-t">t</a>(
   'a,
-  'e
-) => <a href="Relude_Validation.html">Relude_Validation</a>.<a href="Relude_Validation.html#type-t">t</a>('a, <a href="Relude_NonEmpty.html#module-List" title="Relude_NonEmpty.List">List</a>.<a href="Relude_NonEmpty.html#type-List.t">t</a>('e))</h4>
+  <a href="Relude_NonEmpty.html#module-List" title="Relude_NonEmpty.List">List</a>.<a href="Relude_NonEmpty.html#type-List.t">t</a>('e)
+)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -316,7 +344,7 @@
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-MonadThrow.throwError" id="value-MonadThrow.throwError">throwError</a>: 'a => Belt.Result.t('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadThrow.throwError" id="value-MonadThrow.throwError">throwError</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
@@ -343,14 +371,11 @@
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.throwError" id="value-MonadError.throwError">throwError</a>: 'a => Belt.Result.t('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.throwError" id="value-MonadError.throwError">throwError</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.catchError" id="value-MonadError.catchError">catchError</a>: (
-  'a => Belt.Result.t('a, 'a),
-  Belt.Result.t('a, 'a)
-) => Belt.Result.t('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-MonadError.catchError" id="value-MonadError.catchError">catchError</a>: ('a => <a href="#type-t">t</a>('a, 'a), <a href="#type-t">t</a>('a, 'a)) => <a href="#type-t">t</a>('a, 'a)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>

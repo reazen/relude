@@ -46,9 +46,9 @@
 <a href="#value-NonEmptyF.bind" class='level-3 value'>bind</a>
 <a href="#value-NonEmptyF.flatMap" class='level-3 value'>flatMap</a>
 <a href="#value-NonEmptyF.mkString" class='level-3 value'>mkString</a>
-<a href="#value-NonEmptyF.eqF" class='level-3 value'>eqF</a>
+<a href="#value-NonEmptyF.eqBy" class='level-3 value'>eqBy</a>
 <a href="#value-NonEmptyF.eq" class='level-3 value'>eq</a>
-<a href="#value-NonEmptyF.showF" class='level-3 value'>showF</a>
+<a href="#value-NonEmptyF.showBy" class='level-3 value'>showBy</a>
 <a href="#value-NonEmptyF.show" class='level-3 value'>show</a>
 <a href="#module-NonEmptyF.SemigroupAny" class='level-3 module'>SemigroupAny</a>
 <a href="#type-NonEmptyF.SemigroupAny.t" class='level-4 type'>t</a>
@@ -130,7 +130,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -159,7 +160,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -249,24 +253,24 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.eqF" id="value-NonEmptyF.eqF">eqF</a>: (('a, 'a) => bool, t('a), t('a)) => bool</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.eqBy" id="value-NonEmptyF.eqBy">eqBy</a>: (('a, 'a) => bool, t('a), t('a)) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.eq" id="value-NonEmptyF.eq">eq</a>: (
-  (module BsAbstract.Interface.EQ with type t = 'p),
+  (module BsAbstract.Interface.EQ with type t = 'j1),
   t('a),
   t('a)
 ) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.showF" id="value-NonEmptyF.showF">showF</a>: ('a => string, t('a)) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.showBy" id="value-NonEmptyF.showBy">showBy</a>: ('a => string, t('a)) => string</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-NonEmptyF.show" id="value-NonEmptyF.show">show</a>: (
-  (module BsAbstract.Interface.SHOW with type t = 'q),
+  (module BsAbstract.Interface.SHOW with type t = 'k1),
   t('a)
 ) => string</h4>
 

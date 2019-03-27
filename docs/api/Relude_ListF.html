@@ -25,6 +25,29 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_ListF" class='level-1 header'>Relude_ListF</a>
+<a href="#module-String" class='level-2 module'>String</a>
+<a href="#value-String.eq" class='level-3 value'>eq</a>
+<a href="#value-String.contains" class='level-3 value'>contains</a>
+<a href="#value-String.indexOf" class='level-3 value'>indexOf</a>
+<a href="#value-String.distinct" class='level-3 value'>distinct</a>
+<a href="#value-String.remove" class='level-3 value'>remove</a>
+<a href="#value-String.removeEach" class='level-3 value'>removeEach</a>
+<a href="#value-String.fold" class='level-3 value'>fold</a>
+<a href="#value-String.join" class='level-3 value'>join</a>
+<a href="#value-String.intercalate" class='level-3 value'>intercalate</a>
+<a href="#value-String.joinWith" class='level-3 value'>joinWith</a>
+<a href="#value-String.sort" class='level-3 value'>sort</a>
+<a href="#value-String.map" class='level-3 value'>map</a>
+<a href="#module-Int" class='level-2 module'>Int</a>
+<a href="#value-Int.eq" class='level-3 value'>eq</a>
+<a href="#value-Int.contains" class='level-3 value'>contains</a>
+<a href="#value-Int.indexOf" class='level-3 value'>indexOf</a>
+<a href="#value-Int.distinct" class='level-3 value'>distinct</a>
+<a href="#value-Int.remove" class='level-3 value'>remove</a>
+<a href="#value-Int.removeEach" class='level-3 value'>removeEach</a>
+<a href="#value-Int.sort" class='level-3 value'>sort</a>
+<a href="#value-Int.sum" class='level-3 value'>sum</a>
+<a href="#value-Int.product" class='level-3 value'>product</a>
 <a href="#module-Option" class='level-2 module'>Option</a>
 <a href="#module-Option.Traversable" class='level-3 module'>Traversable</a>
 <a href="#value-Option.traverse" class='level-3 value'>traverse</a>
@@ -67,7 +90,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -96,7 +120,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -105,6 +132,98 @@
     <a href="#Relude_ListF" id="Relude_ListF"><h1>Relude_ListF</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-String" id="module-String">String</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.eq" id="value-String.eq">eq</a>: (list(string), list(string)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.contains" id="value-String.contains">contains</a>: (string, list(string)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.indexOf" id="value-String.indexOf">indexOf</a>: (string, list(string)) => option(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.distinct" id="value-String.distinct">distinct</a>: list(string) => list(string)</h4>
+
+<div class='body '><p>Remove all duplicate entries from a list of strings.</p>
+<p>Instead of passing String.Eq to the underlying List.distinct function, we
+have a special-case implementation here that uses Js.Dict for faster
+comparison. This is O(n) instead of O(n^2).</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.remove" id="value-String.remove">remove</a>: (string, list(string)) => list(string)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.removeEach" id="value-String.removeEach">removeEach</a>: (string, list(string)) => list(string)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.fold" id="value-String.fold">fold</a>: list(string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.join" id="value-String.join">join</a>: list(string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.intercalate" id="value-String.intercalate">intercalate</a>: (string, list(string)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.joinWith" id="value-String.joinWith">joinWith</a>: (string, list(string)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.sort" id="value-String.sort">sort</a>: list(string) => list(string)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-String.map" id="value-String.map">map</a>: (string => string, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Int" id="module-Int">Int</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.eq" id="value-Int.eq">eq</a>: (list(int), list(int)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.contains" id="value-Int.contains">contains</a>: (int, list(int)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.indexOf" id="value-Int.indexOf">indexOf</a>: (int, list(int)) => option(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.distinct" id="value-Int.distinct">distinct</a>: list(int) => list(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.remove" id="value-Int.remove">remove</a>: (int, list(int)) => list(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.removeEach" id="value-Int.removeEach">removeEach</a>: (int, list(int)) => list(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.sort" id="value-Int.sort">sort</a>: list(int) => list(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.sum" id="value-Int.sum">sum</a>: list(int) => int</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Int.product" id="value-Int.product">product</a>: list(int) => int</h4>
+
+<div class='body body-empty'></div></div>
+</div></div>
+
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Option" id="module-Option">Option</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Option.Traversable" id="module-Option.Traversable">Traversable</a> : BsAbstract.Functors.ListF.Option.Traversable</h4></div>
 

@@ -1,0 +1,195 @@
+
+    
+<!doctype html>
+<meta charset=utf8>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel=stylesheet href='../styles.css'>
+<script defer src='../script.js'></script>
+<title>Relude_Foldables</title>
+<body>
+<script>window.relativeToRoot=".."</script>
+<script defer src="../block-script.js"></script>
+<div id='error-message'>
+  ⚠️ Oops! This page doesn't appear to define a <span>type</span> called <code>_</code>.
+</div>
+
+    <script>window.shouldCheckHashes=true</script>
+    <div class='container'>
+    
+    <div class='sidebar-wrapper'>
+    <div class='sidebar-expander'>Show navigation</div>
+    <div class='sidebar'>
+      <a href="../search.html" style="display: block; padding: 0 8px;">Search</a>
+      
+      <div class='docs-listing'><a href="../index.html">Home</a></div>
+      <div class='toc-header'>Page Contents</div>
+      <div class='table-of-contents'>
+      <a href="#Relude_Foldables" class='level-1 header'>Relude_Foldables</a>
+<a href="#module-Functions" class='level-2 module'>Functions</a>
+<a href="#value-Functions.any" class='level-3 value'>any</a>
+<a href="#value-Functions.all" class='level-3 value'>all</a>
+<a href="#value-Functions.forEach" class='level-3 value'>forEach</a>
+<a href="#value-Functions.forEachWithIndex" class='level-3 value'>forEachWithIndex</a>
+<a href="#value-Functions.find" class='level-3 value'>find</a>
+<a href="#value-Functions.findWithIndex" class='level-3 value'>findWithIndex</a>
+<a href="#value-Functions.fold" class='level-3 value'>fold</a>
+<a href="#value-Functions.intercalate" class='level-3 value'>intercalate</a>
+<a href="#value-Functions.countBy" class='level-3 value'>countBy</a>
+<a href="#value-Functions.length" class='level-3 value'>length</a>
+<a href="#value-Functions.containsF" class='level-3 value'>containsF</a>
+<a href="#value-Functions.contains" class='level-3 value'>contains</a>
+<a href="#value-Functions.indexOfF" class='level-3 value'>indexOfF</a>
+<a href="#value-Functions.indexOf" class='level-3 value'>indexOf</a>
+      </div>
+      <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
+<a href="Relude_Array.html">Relude_Array</a>
+<a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
+<a href="Relude_Bool.html">Relude_Bool</a>
+<a href="Relude_Float.html">Relude_Float</a>
+<a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_IO.html">Relude_IO</a>
+<a href="Relude_Identity.html">Relude_Identity</a>
+<a href="Relude_Int.html">Relude_Int</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_Js.html">Relude_Js</a>
+<a href="Relude_JsConsole.html">Relude_JsConsole</a>
+<a href="Relude_JsExn.html">Relude_JsExn</a>
+<a href="Relude_JsPromise.html">Relude_JsPromise</a>
+<a href="Relude_List.html">Relude_List</a>
+<a href="Relude_ListF.html">Relude_ListF</a>
+<a href="Relude_MonadError.html">Relude_MonadError</a>
+<a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
+<a href="Relude_Option.html">Relude_Option</a>
+<a href="Relude_Ordering.html">Relude_Ordering</a>
+<a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
+<a href="Relude_String.html">Relude_String</a>
+<a href="Relude_Validation.html">Relude_Validation</a>
+<a href="Relude_Void.html">Relude_Void</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude.html">Relude</a>
+<a href="Relude_Array.html">Relude_Array</a>
+<a href="Relude_AsyncData.html">Relude_AsyncData</a>
+<a href="Relude_AsyncResult.html">Relude_AsyncResult</a>
+<a href="Relude_Bool.html">Relude_Bool</a>
+<a href="Relude_Float.html">Relude_Float</a>
+<a href="Relude_Function.html">Relude_Function</a>
+<a href="Relude_IO.html">Relude_IO</a>
+<a href="Relude_Identity.html">Relude_Identity</a>
+<a href="Relude_Int.html">Relude_Int</a>
+<a href="Relude_IsoArray.html">Relude_IsoArray</a>
+<a href="Relude_IsoList.html">Relude_IsoList</a>
+<a href="Relude_Js.html">Relude_Js</a>
+<a href="Relude_JsConsole.html">Relude_JsConsole</a>
+<a href="Relude_JsExn.html">Relude_JsExn</a>
+<a href="Relude_JsPromise.html">Relude_JsPromise</a>
+<a href="Relude_List.html">Relude_List</a>
+<a href="Relude_ListF.html">Relude_ListF</a>
+<a href="Relude_MonadError.html">Relude_MonadError</a>
+<a href="Relude_NonEmpty.html">Relude_NonEmpty</a>
+<a href="Relude_Option.html">Relude_Option</a>
+<a href="Relude_Ordering.html">Relude_Ordering</a>
+<a href="Relude_Result.html">Relude_Result</a>
+<a href="Relude_ResultIor.html">Relude_ResultIor</a>
+<a href="Relude_Sequence.html">Relude_Sequence</a>
+<a href="Relude_String.html">Relude_String</a>
+<a href="Relude_Validation.html">Relude_Validation</a>
+<a href="Relude_Void.html">Relude_Void</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
+    </div>
+    </div>
+  
+    <div class='main'>
+    
+    <a href="#Relude_Foldables" id="Relude_Foldables"><h1>Relude_Foldables</h1></a>
+
+<p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Functions" id="module-Functions">Functions</a></h4><div class='body module-body'><p>This is a collection of functions (and more modules that produce functions)
+that you get for free if your outer type is foldable.</p>
+<p style='font-style:italic'>other items defined</p><div class='doc-item'><h4 class='item'>let <a href="#value-Functions.any" id="value-Functions.any">any</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 F.t -&gt; bool</h4>
+
+<div class='body '><p>Compare each value with a predicate, returning true if any value is true,
+or false otherwise.</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.all" id="value-Functions.all">all</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 F.t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.forEach" id="value-Functions.forEach">forEach</a>: 'a0. ('a0 -&gt; unit) -&gt; 'a0 F.t -&gt; unit</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.forEachWithIndex" id="value-Functions.forEachWithIndex">forEachWithIndex</a>: 'a0. ('a0 -&gt; int -&gt; unit) -&gt; 'a0 F.t -&gt; unit</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.find" id="value-Functions.find">find</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 F.t -&gt; 'a0 option</h4>
+
+<div class='body '><p>Find an inner value given a predicate function</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.findWithIndex" id="value-Functions.findWithIndex">findWithIndex</a>: 'a0. ('a0 -&gt; int -&gt; bool) -&gt; 'a0 F.t -&gt; 'a0 option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.fold" id="value-Functions.fold">fold</a>: (
+  (module BsAbstract.Interface.MONOID with type t = 'q1),
+  F.t('a)
+) => 'a</h4>
+
+<div class='body '><p>When the inner type is a Monoid, the collection can be folded into a
+single value (e.g. sum ints or floats, join strings)</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.intercalate" id="value-Functions.intercalate">intercalate</a>: (
+  (module BsAbstract.Interface.MONOID with type t = 'r1),
+  'a,
+  F.t('a)
+) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.countBy" id="value-Functions.countBy">countBy</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 F.t -&gt; int</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.length" id="value-Functions.length">length</a>: 'a0. 'a0 F.t -&gt; int</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.containsF" id="value-Functions.containsF">containsF</a>: 'a0. ('a0 -&gt; 'a0 -&gt; bool) -&gt; 'a0 -&gt; 'a0 F.t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.contains" id="value-Functions.contains">contains</a>: (
+  (module BsAbstract.Interface.EQ with type t = 's1),
+  'a,
+  F.t('a)
+) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.indexOfF" id="value-Functions.indexOfF">indexOfF</a>: 'a0. ('a0 -&gt; 'a0 -&gt; bool) -&gt; 'a0 -&gt; 'a0 F.t -&gt; int option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-Functions.indexOf" id="value-Functions.indexOf">indexOf</a>: (
+  (module BsAbstract.Interface.EQ with type t = 't1),
+  'a,
+  F.t('a)
+) => option(int)</h4>
+
+<div class='body body-empty'></div></div></div></div>
+
+    </div>
+    <div class='right-blank'></div>
+    </div>
+  

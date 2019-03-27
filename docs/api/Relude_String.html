@@ -25,6 +25,8 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_String" class='level-1 header'>Relude_String</a>
+<a href="#value-concat" class='level-2 value'>concat</a>
+<a href="#value-concatArray" class='level-2 value'>concatArray</a>
 <a href="#value-length" class='level-2 value'>length</a>
 <a href="#value-trim" class='level-2 value'>trim</a>
 <a href="#value-isEmpty" class='level-2 value'>isEmpty</a>
@@ -43,23 +45,26 @@
 <a href="#value-getOrThrow" class='level-2 value'>getOrThrow</a>
 <a href="#value-toList" class='level-2 value'>toList</a>
 <a href="#value-toArray" class='level-2 value'>toArray</a>
-<a href="#value-map" class='level-2 value'>map</a>
 <a href="#value-foldLeft" class='level-2 value'>foldLeft</a>
 <a href="#value-foldRight" class='level-2 value'>foldRight</a>
-<a href="#value-concat" class='level-2 value'>concat</a>
-<a href="#value-concatArray" class='level-2 value'>concatArray</a>
-<a href="#value-concatList" class='level-2 value'>concatList</a>
 <a href="#value-endsWith" class='level-2 value'>endsWith</a>
 <a href="#value-startsWith" class='level-2 value'>startsWith</a>
 <a href="#value-contains" class='level-2 value'>contains</a>
 <a href="#value-indexOf" class='level-2 value'>indexOf</a>
 <a href="#value-lastIndexOf" class='level-2 value'>lastIndexOf</a>
-<a href="#value-replace" class='level-2 value'>replace</a>
+<a href="#value-replaceFirst" class='level-2 value'>replaceFirst</a>
+<a href="#value-replaceAll" class='level-2 value'>replaceAll</a>
 <a href="#value-replaceRegex" class='level-2 value'>replaceRegex</a>
 <a href="#value-slice" class='level-2 value'>slice</a>
 <a href="#value-sliceToEnd" class='level-2 value'>sliceToEnd</a>
 <a href="#value-splitArray" class='level-2 value'>splitArray</a>
 <a href="#value-splitList" class='level-2 value'>splitList</a>
+<a href="#value-toInt" class='level-2 value'>toInt</a>
+<a href="#value-toFloat" class='level-2 value'>toFloat</a>
+<a href="#module-Monoid" class='level-2 module'>Monoid</a>
+<a href="#module-Semigroup" class='level-2 module'>Semigroup</a>
+<a href="#module-Eq" class='level-2 module'>Eq</a>
+<a href="#module-Ord" class='level-2 module'>Ord</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
@@ -89,7 +94,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -118,7 +124,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -127,6 +136,14 @@
     <a href="#Relude_String" id="Relude_String"><h1>Relude_String</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
+<div class='doc-item'><h4 class='item'>let <a href="#value-concat" id="value-concat">concat</a>: (string, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-concatArray" id="value-concatArray">concatArray</a>: array(string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
 <div class='doc-item'><h4 class='item'>let <a href="#value-length" id="value-length">length</a>: string => int</h4>
 
 <div class='body body-empty'></div></div>
@@ -199,27 +216,11 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: (string => string, string) => string</h4>
-
-<div class='body body-empty'></div></div>
-
 <div class='doc-item'><h4 class='item'>let <a href="#value-foldLeft" id="value-foldLeft">foldLeft</a>: (('b, string) => 'b, 'b, string) => 'b</h4>
 
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-foldRight" id="value-foldRight">foldRight</a>: ((string, 'b) => 'b, 'b, string) => 'b</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-concat" id="value-concat">concat</a>: (string, string) => string</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-concatArray" id="value-concatArray">concatArray</a>: array(string) => string</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-concatList" id="value-concatList">concatList</a>: list(string) => string</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -243,7 +244,11 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-replace" id="value-replace">replace</a>: (string, string, string) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-replaceFirst" id="value-replaceFirst">replaceFirst</a>: (string, string, string) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-replaceAll" id="value-replaceAll">replaceAll</a>: (string, string, string) => string</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -266,6 +271,22 @@
 <div class='doc-item'><h4 class='item'>let <a href="#value-splitList" id="value-splitList">splitList</a>: (string, string) => list(string)</h4>
 
 <div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-toInt" id="value-toInt">toInt</a>: string => option(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-toFloat" id="value-toFloat">toFloat</a>: string => option(float)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monoid" id="module-Monoid">Monoid</a> : BsAbstract.String.Monoid</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Semigroup" id="module-Semigroup">Semigroup</a> : BsAbstract.String.Semigroup</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Eq" id="module-Eq">Eq</a> : BsAbstract.String.Eq</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Ord" id="module-Ord">Ord</a> : BsAbstract.String.Ord</h4></div>
 
     </div>
     <div class='right-blank'></div>

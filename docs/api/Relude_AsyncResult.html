@@ -40,6 +40,19 @@
 <a href="#value-apply" class='level-2 value'>apply</a>
 <a href="#value-bind" class='level-2 value'>bind</a>
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
+<a href="#value-isInit" class='level-2 value'>isInit</a>
+<a href="#value-isBusy" class='level-2 value'>isBusy</a>
+<a href="#value-isLoading" class='level-2 value'>isLoading</a>
+<a href="#value-isReloading" class='level-2 value'>isReloading</a>
+<a href="#value-isComplete" class='level-2 value'>isComplete</a>
+<a href="#value-isOk" class='level-2 value'>isOk</a>
+<a href="#value-isError" class='level-2 value'>isError</a>
+<a href="#value-isCompleteOk" class='level-2 value'>isCompleteOk</a>
+<a href="#value-isCompleteError" class='level-2 value'>isCompleteError</a>
+<a href="#value-getOk" class='level-2 value'>getOk</a>
+<a href="#value-getError" class='level-2 value'>getError</a>
+<a href="#value-getCompleteOk" class='level-2 value'>getCompleteOk</a>
+<a href="#value-getCompleteError" class='level-2 value'>getCompleteError</a>
 <a href="#module-Functor" class='level-2 module'>Functor</a>
 <a href="#type-Functor.t" class='level-3 type'>t</a>
 <a href="#value-Functor.map" class='level-3 value'>map</a>
@@ -92,7 +105,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -121,7 +135,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -166,7 +183,7 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a, 'a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a, 'e)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -187,6 +204,58 @@
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: ('a => <a href="#type-t">t</a>('b, 'e), <a href="#type-t">t</a>('a, 'e)) => <a href="#type-t">t</a>('b, 'e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isInit" id="value-isInit">isInit</a>: <a href="Relude_AsyncData.html">Relude_AsyncData</a>.<a href="Relude_AsyncData.html#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isBusy" id="value-isBusy">isBusy</a>: <a href="Relude_AsyncData.html">Relude_AsyncData</a>.<a href="Relude_AsyncData.html#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isLoading" id="value-isLoading">isLoading</a>: <a href="Relude_AsyncData.html">Relude_AsyncData</a>.<a href="Relude_AsyncData.html#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isReloading" id="value-isReloading">isReloading</a>: <a href="Relude_AsyncData.html">Relude_AsyncData</a>.<a href="Relude_AsyncData.html#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isComplete" id="value-isComplete">isComplete</a>: <a href="Relude_AsyncData.html">Relude_AsyncData</a>.<a href="Relude_AsyncData.html#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isOk" id="value-isOk">isOk</a>: 'a0 'e0. ('a0, 'e0) t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isError" id="value-isError">isError</a>: 'a0 'e0. ('a0, 'e0) t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isCompleteOk" id="value-isCompleteOk">isCompleteOk</a>: 'a0 'e0. ('a0, 'e0) t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isCompleteError" id="value-isCompleteError">isCompleteError</a>: 'a0 'e0. ('a0, 'e0) t -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getOk" id="value-getOk">getOk</a>: 'a0 'e0. ('a0, 'e0) t -&gt; 'a0 option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getError" id="value-getError">getError</a>: 'a0 'e0. ('a0, 'e0) t -&gt; 'e0 option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getCompleteOk" id="value-getCompleteOk">getCompleteOk</a>: 'a0 'e0. ('a0, 'e0) t -&gt; 'a0 option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getCompleteError" id="value-getCompleteError">getCompleteError</a>: 'a0 'e0. ('a0, 'e0) t -&gt; 'e0 option</h4>
 
 <div class='body body-empty'></div></div>
 

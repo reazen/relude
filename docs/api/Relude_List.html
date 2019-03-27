@@ -25,23 +25,26 @@
       <div class='toc-header'>Page Contents</div>
       <div class='table-of-contents'>
       <a href="#Relude_List" class='level-1 header'>Relude_List</a>
-<a href="#value-length" class='level-2 value'>length</a>
-<a href="#value-isEmpty" class='level-2 value'>isEmpty</a>
-<a href="#value-isNotEmpty" class='level-2 value'>isNotEmpty</a>
-<a href="#value-empty" class='level-2 value'>empty</a>
-<a href="#value-pure" class='level-2 value'>pure</a>
-<a href="#value-one" class='level-2 value'>one</a>
-<a href="#value-repeat" class='level-2 value'>repeat</a>
-<a href="#value-makeWithIndex" class='level-2 value'>makeWithIndex</a>
 <a href="#value-concat" class='level-2 value'>concat</a>
-<a href="#value-cons" class='level-2 value'>cons</a>
-<a href="#value-uncons" class='level-2 value'>uncons</a>
-<a href="#value-prepend" class='level-2 value'>prepend</a>
-<a href="#value-append" class='level-2 value'>append</a>
+<a href="#value-empty" class='level-2 value'>empty</a>
+<a href="#value-map" class='level-2 value'>map</a>
+<a href="#value-apply" class='level-2 value'>apply</a>
+<a href="#value-pure" class='level-2 value'>pure</a>
+<a href="#value-bind" class='level-2 value'>bind</a>
 <a href="#value-foldLeft" class='level-2 value'>foldLeft</a>
 <a href="#value-foldRight" class='level-2 value'>foldRight</a>
-<a href="#value-scanLeft" class='level-2 value'>scanLeft</a>
-<a href="#value-scanRight" class='level-2 value'>scanRight</a>
+<a href="#value-fromArray" class='level-2 value'>fromArray</a>
+<a href="#value-toArray" class='level-2 value'>toArray</a>
+<a href="#value-append" class='level-2 value'>append</a>
+<a href="#value-cons" class='level-2 value'>cons</a>
+<a href="#value-prepend" class='level-2 value'>prepend</a>
+<a href="#value-uncons" class='level-2 value'>uncons</a>
+<a href="#value-repeat" class='level-2 value'>repeat</a>
+<a href="#value-makeWithIndex" class='level-2 value'>makeWithIndex</a>
+<a href="#value-reverse" class='level-2 value'>reverse</a>
+<a href="#value-shuffle" class='level-2 value'>shuffle</a>
+<a href="#value-isEmpty" class='level-2 value'>isEmpty</a>
+<a href="#value-isNotEmpty" class='level-2 value'>isNotEmpty</a>
 <a href="#value-get" class='level-2 value'>get</a>
 <a href="#value-head" class='level-2 value'>head</a>
 <a href="#value-tail" class='level-2 value'>tail</a>
@@ -56,8 +59,9 @@
 <a href="#value-dropWhile" class='level-2 value'>dropWhile</a>
 <a href="#value-filter" class='level-2 value'>filter</a>
 <a href="#value-filterWithIndex" class='level-2 value'>filterWithIndex</a>
-<a href="#value-find" class='level-2 value'>find</a>
-<a href="#value-findWithIndex" class='level-2 value'>findWithIndex</a>
+<a href="#value-mapOption" class='level-2 value'>mapOption</a>
+<a href="#value-catOptions" class='level-2 value'>catOptions</a>
+<a href="#value-mapWithIndex" class='level-2 value'>mapWithIndex</a>
 <a href="#value-partition" class='level-2 value'>partition</a>
 <a href="#value-splitAt" class='level-2 value'>splitAt</a>
 <a href="#value-prependToAll" class='level-2 value'>prependToAll</a>
@@ -68,31 +72,8 @@
 <a href="#value-zipWithIndex" class='level-2 value'>zipWithIndex</a>
 <a href="#value-unzip" class='level-2 value'>unzip</a>
 <a href="#value-sortWithInt" class='level-2 value'>sortWithInt</a>
+<a href="#value-sortF" class='level-2 value'>sortF</a>
 <a href="#value-sort" class='level-2 value'>sort</a>
-<a href="#value-shuffle" class='level-2 value'>shuffle</a>
-<a href="#value-reverse" class='level-2 value'>reverse</a>
-<a href="#value-any" class='level-2 value'>any</a>
-<a href="#value-contains" class='level-2 value'>contains</a>
-<a href="#value-indexOf" class='level-2 value'>indexOf</a>
-<a href="#value-all" class='level-2 value'>all</a>
-<a href="#value-distinct" class='level-2 value'>distinct</a>
-<a href="#value-map" class='level-2 value'>map</a>
-<a href="#value-mapWithIndex" class='level-2 value'>mapWithIndex</a>
-<a href="#value-forEach" class='level-2 value'>forEach</a>
-<a href="#value-forEachWithIndex" class='level-2 value'>forEachWithIndex</a>
-<a href="#value-apply" class='level-2 value'>apply</a>
-<a href="#value-bind" class='level-2 value'>bind</a>
-<a href="#value-flatMap" class='level-2 value'>flatMap</a>
-<a href="#value-flatten" class='level-2 value'>flatten</a>
-<a href="#value-fromArray" class='level-2 value'>fromArray</a>
-<a href="#value-toArray" class='level-2 value'>toArray</a>
-<a href="#value-mkString" class='level-2 value'>mkString</a>
-<a href="#module-Eq" class='level-2 module'>Eq</a>
-<a href="#value-eqF" class='level-2 value'>eqF</a>
-<a href="#value-eq" class='level-2 value'>eq</a>
-<a href="#module-Show" class='level-2 module'>Show</a>
-<a href="#value-showF" class='level-2 value'>showF</a>
-<a href="#value-show" class='level-2 value'>show</a>
 <a href="#module-SemigroupAny" class='level-2 module'>SemigroupAny</a>
 <a href="#type-SemigroupAny.t" class='level-3 type'>t</a>
 <a href="#value-SemigroupAny.append" class='level-3 value'>append</a>
@@ -104,19 +85,50 @@
 <a href="#module-Plus" class='level-2 module'>Plus</a>
 <a href="#module-Alternative" class='level-2 module'>Alternative</a>
 <a href="#module-Functor" class='level-2 module'>Functor</a>
-<a href="#module-FunctorFunctions" class='level-2 module'>FunctorFunctions</a>
-<a href="#value-void" class='level-2 value'>void</a>
-<a href="#value-flap" class='level-2 value'>flap</a>
 <a href="#module-Apply" class='level-2 module'>Apply</a>
-<a href="#module-ApplyFunctions" class='level-2 module'>ApplyFunctions</a>
-<a href="#value-map2" class='level-2 value'>map2</a>
-<a href="#value-map3" class='level-2 value'>map3</a>
-<a href="#value-map4" class='level-2 value'>map4</a>
-<a href="#value-map5" class='level-2 value'>map5</a>
 <a href="#module-Applicative" class='level-2 module'>Applicative</a>
 <a href="#module-Monad" class='level-2 module'>Monad</a>
 <a href="#module-Foldable" class='level-2 module'>Foldable</a>
 <a href="#module-Traversable" class='level-2 module'>Traversable</a>
+<a href="#module-MonadFunctions" class='level-2 module'>MonadFunctions</a>
+<a href="#value-void" class='level-2 value'>void</a>
+<a href="#value-flap" class='level-2 value'>flap</a>
+<a href="#value-map2" class='level-2 value'>map2</a>
+<a href="#value-map3" class='level-2 value'>map3</a>
+<a href="#value-map4" class='level-2 value'>map4</a>
+<a href="#value-map5" class='level-2 value'>map5</a>
+<a href="#value-flatMap" class='level-2 value'>flatMap</a>
+<a href="#value-flatten" class='level-2 value'>flatten</a>
+<a href="#module-FoldableFunctions" class='level-2 module'>FoldableFunctions</a>
+<a href="#value-any" class='level-2 value'>any</a>
+<a href="#value-all" class='level-2 value'>all</a>
+<a href="#value-forEach" class='level-2 value'>forEach</a>
+<a href="#value-forEachWithIndex" class='level-2 value'>forEachWithIndex</a>
+<a href="#value-find" class='level-2 value'>find</a>
+<a href="#value-findWithIndex" class='level-2 value'>findWithIndex</a>
+<a href="#value-fold" class='level-2 value'>fold</a>
+<a href="#value-intercalate" class='level-2 value'>intercalate</a>
+<a href="#value-countBy" class='level-2 value'>countBy</a>
+<a href="#value-length" class='level-2 value'>length</a>
+<a href="#value-containsF" class='level-2 value'>containsF</a>
+<a href="#value-contains" class='level-2 value'>contains</a>
+<a href="#value-indexOfF" class='level-2 value'>indexOfF</a>
+<a href="#value-indexOf" class='level-2 value'>indexOf</a>
+<a href="#value-scanLeft" class='level-2 value'>scanLeft</a>
+<a href="#value-scanRight" class='level-2 value'>scanRight</a>
+<a href="#module-Show" class='level-2 module'>Show</a>
+<a href="#value-showBy" class='level-2 value'>showBy</a>
+<a href="#value-show" class='level-2 value'>show</a>
+<a href="#module-Eq" class='level-2 module'>Eq</a>
+<a href="#value-eqBy" class='level-2 value'>eqBy</a>
+<a href="#value-eq" class='level-2 value'>eq</a>
+<a href="#value-distinctBy" class='level-2 value'>distinctBy</a>
+<a href="#value-distinct" class='level-2 value'>distinct</a>
+<a href="#value-removeBy" class='level-2 value'>removeBy</a>
+<a href="#value-remove" class='level-2 value'>remove</a>
+<a href="#value-removeEachBy" class='level-2 value'>removeEachBy</a>
+<a href="#value-removeEach" class='level-2 value'>removeEach</a>
+<a href="#value-sumFloat" class='level-2 value'>sumFloat</a>
 <a href="#module-Infix" class='level-2 module'>Infix</a>
 <a href="#value-Infix.>>=" class='level-3 value'>>>=</a>
 <a href="#value-Infix.=<<" class='level-3 value'>=<<</a>
@@ -137,8 +149,8 @@
 <a href="#value-Sequence.tail" class='level-3 value'>tail</a>
 <a href="#value-Sequence.tailOrEmpty" class='level-3 value'>tailOrEmpty</a>
 <a href="#value-Sequence.mkString" class='level-3 value'>mkString</a>
-<a href="#value-Sequence.eqF" class='level-3 value'>eqF</a>
-<a href="#value-Sequence.showF" class='level-3 value'>showF</a>
+<a href="#value-Sequence.eqBy" class='level-3 value'>eqBy</a>
+<a href="#value-Sequence.showBy" class='level-3 value'>showBy</a>
 <a href="#module-Sequence.SemigroupAny" class='level-3 module'>SemigroupAny</a>
 <a href="#module-Sequence.MonoidAny" class='level-3 module'>MonoidAny</a>
 <a href="#module-Sequence.Functor" class='level-3 module'>Functor</a>
@@ -182,7 +194,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -211,7 +224,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -220,15 +236,7 @@
     <a href="#Relude_List" id="Relude_List"><h1>Relude_List</h1></a>
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
-<div class='doc-item'><h4 class='item'>let <a href="#value-length" id="value-length">length</a>: list('a) => int</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-isEmpty" id="value-isEmpty">isEmpty</a>: list('a) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-isNotEmpty" id="value-isNotEmpty">isNotEmpty</a>: list('a) => bool</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-concat" id="value-concat">concat</a>: (list('a), list('a)) => list('a)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -236,39 +244,19 @@
 
 <div class='body body-empty'></div></div>
 
+<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: ('a => 'b, list('a)) => list('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (list('a => 'b), list('a)) => list('b)</h4>
+
+<div class='body body-empty'></div></div>
+
 <div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => list('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-one" id="value-one">one</a>: 'a => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-repeat" id="value-repeat">repeat</a>: (int, 'a) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-makeWithIndex" id="value-makeWithIndex">makeWithIndex</a>: (int, int => 'a) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-concat" id="value-concat">concat</a>: (list('a), list('a)) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-cons" id="value-cons">cons</a>: ('a, list('a)) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-uncons" id="value-uncons">uncons</a>: list('a) => option(('a, list('a)))</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-prepend" id="value-prepend">prepend</a>: ('a, list('a)) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-append" id="value-append">append</a>: ('a, list('a)) => list('a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-bind" id="value-bind">bind</a>: (list('a), 'a => list('b)) => list('b)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -280,11 +268,51 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-scanLeft" id="value-scanLeft">scanLeft</a>: (('b, 'a) => 'b, 'b, list('a)) => list('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-fromArray" id="value-fromArray">fromArray</a>: array('a) => list('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-scanRight" id="value-scanRight">scanRight</a>: (('a, 'b) => 'b, 'b, list('a)) => list('b)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-toArray" id="value-toArray">toArray</a>: list('a) => array('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-append" id="value-append">append</a>: ('a, list('a)) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-cons" id="value-cons">cons</a>: ('a, list('a)) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-prepend" id="value-prepend">prepend</a>: ('a, list('a)) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-uncons" id="value-uncons">uncons</a>: list('a) => option(('a, list('a)))</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-repeat" id="value-repeat">repeat</a>: (int, 'a) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-makeWithIndex" id="value-makeWithIndex">makeWithIndex</a>: (int, int => 'a) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-reverse" id="value-reverse">reverse</a>: list('a) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-shuffle" id="value-shuffle">shuffle</a>: list('a) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isEmpty" id="value-isEmpty">isEmpty</a>: list('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isNotEmpty" id="value-isNotEmpty">isNotEmpty</a>: list('a) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -346,13 +374,16 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-find" id="value-find">find</a>: ('a => bool, list('a)) => option('a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-mapOption" id="value-mapOption">mapOption</a>: ('a => option('b), list('a)) => list('b)</h4>
+
+<div class='body '><p>Map all list values from &#39;a to option(&#39;b), filtering out the <code>None</code>s</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-catOptions" id="value-catOptions">catOptions</a>: list(option('a)) => list('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-findWithIndex" id="value-findWithIndex">findWithIndex</a>: (('a, int) => bool, list('a)) => option(
-  'a
-)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-mapWithIndex" id="value-mapWithIndex">mapWithIndex</a>: 'a0 'b0. ('a0 -&gt; int -&gt; 'b0) -&gt; 'a0 list -&gt; 'b0 list</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -401,112 +432,17 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-sort" id="value-sort">sort</a>: (
+<div class='doc-item'><h4 class='item'>let <a href="#value-sortF" id="value-sortF">sortF</a>: (
   ('a, 'a) => BsAbstract.Interface.ordering,
   list('a)
 ) => list('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-shuffle" id="value-shuffle">shuffle</a>: list('a) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-reverse" id="value-reverse">reverse</a>: list('a) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-any" id="value-any">any</a>: ('a => bool, list('a)) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-contains" id="value-contains">contains</a>: (('a, 'a) => bool, 'a, list('a)) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-indexOf" id="value-indexOf">indexOf</a>: (('a, 'a) => bool, 'a, list('a)) => option(int)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-all" id="value-all">all</a>: ('a => bool, list('a)) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-distinct" id="value-distinct">distinct</a>: (('a, 'a) => bool, list('a)) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map" id="value-map">map</a>: ('a => 'b, list('a)) => list('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-mapWithIndex" id="value-mapWithIndex">mapWithIndex</a>: ((int, int) => 'b, list(int)) => list('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-forEach" id="value-forEach">forEach</a>: ('a => unit, list('a)) => unit</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-forEachWithIndex" id="value-forEachWithIndex">forEachWithIndex</a>: (
-  (int, int) => unit,
-  list(int)
-) => unit</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-apply" id="value-apply">apply</a>: (list('a => 'b), list('a)) => list('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-bind" id="value-bind">bind</a>: (list('a), 'a => list('b)) => list('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: ('a => list('b), list('a)) => list('b)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-flatten" id="value-flatten">flatten</a>: list(list('a)) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-fromArray" id="value-fromArray">fromArray</a>: array('a) => list('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-toArray" id="value-toArray">toArray</a>: list('a) => array('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-mkString" id="value-mkString">mkString</a>: (string, list(string)) => string</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Eq" id="module-Eq">Eq</a> : BsAbstract.List.Eq</h4></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-eqF" id="value-eqF">eqF</a>: (('a, 'a) => bool, list('a), list('a)) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (
-  (module BsAbstract.Interface.EQ with type t = 'n),
-  list('a),
+<div class='doc-item'><h4 class='item'>let <a href="#value-sort" id="value-sort">sort</a>: (
+  (module BsAbstract.Interface.ORD with type t = 'z),
   list('a)
-) => bool</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Show" id="module-Show">Show</a> : BsAbstract.List.Show</h4></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-showF" id="value-showF">showF</a>: ('a => string, list('a)) => string</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-show" id="value-show">show</a>: (
-  (module BsAbstract.Interface.SHOW with type t = 'o),
-  list('a)
-) => string</h4>
+) => list('a)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -543,7 +479,18 @@
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Functor" id="module-Functor">Functor</a> : BsAbstract.List.Functor</h4></div>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-FunctorFunctions" id="module-FunctorFunctions">FunctorFunctions</a> : BsAbstract.Functions.Functor</h4></div>
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Apply" id="module-Apply">Apply</a> : BsAbstract.List.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a> : BsAbstract.List.Applicative</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Monad" id="module-Monad">Monad</a> : BsAbstract.List.Monad</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Foldable" id="module-Foldable">Foldable</a> : BsAbstract.List.Foldable</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Traversable" id="module-Traversable">Traversable</a> : BsAbstract.List.Traversable</h4></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-MonadFunctions" id="module-MonadFunctions">MonadFunctions</a> : <a href="Relude_Monads.html#module-Functions" title="Relude_Monads.Functions">Functions</a></h4><div class='body module-body'><p>Freebies from Monad/Apply/Functor</p>
+</div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-void" id="value-void">void</a>: list('a) => list(unit)</h4>
 
@@ -552,10 +499,6 @@
 <div class='doc-item'><h4 class='item'>let <a href="#value-flap" id="value-flap">flap</a>: (list('a => 'b), 'a) => list('b)</h4>
 
 <div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Apply" id="module-Apply">Apply</a> : BsAbstract.List.Apply</h4></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-ApplyFunctions" id="module-ApplyFunctions">ApplyFunctions</a> : BsAbstract.Functions.Apply</h4></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (('a, 'b) => 'c, list('a), list('b)) => list('c)</h4>
 
@@ -591,13 +534,163 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a> : BsAbstract.List.Applicative</h4></div>
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: 'a0 'b0. ('a0 -&gt; 'b0 list) -&gt; 'a0 list -&gt; 'b0 list</h4>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Monad" id="module-Monad">Monad</a> : BsAbstract.List.Monad</h4></div>
+<div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Foldable" id="module-Foldable">Foldable</a> : BsAbstract.List.Foldable</h4></div>
+<div class='doc-item'><h4 class='item'>let <a href="#value-flatten" id="value-flatten">flatten</a>: list(list('a)) => list('a)</h4>
 
-<div class='doc-item'><h4 class='item module'>module <a href="#module-Traversable" id="module-Traversable">Traversable</a> : BsAbstract.List.Traversable</h4></div>
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-FoldableFunctions" id="module-FoldableFunctions">FoldableFunctions</a> : <a href="Relude_Foldables.html#module-Functions" title="Relude_Foldables.Functions">Functions</a></h4><div class='body module-body'><p>Freebies from Foldable/Traversable</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-any" id="value-any">any</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 list -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-all" id="value-all">all</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 list -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-forEach" id="value-forEach">forEach</a>: 'a0. ('a0 -&gt; unit) -&gt; 'a0 list -&gt; unit</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-forEachWithIndex" id="value-forEachWithIndex">forEachWithIndex</a>: 'a0. ('a0 -&gt; int -&gt; unit) -&gt; 'a0 list -&gt; unit</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-find" id="value-find">find</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 list -&gt; 'a0 option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-findWithIndex" id="value-findWithIndex">findWithIndex</a>: (('a, int) => bool, list('a)) => option(
+  'a
+)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-fold" id="value-fold">fold</a>: (
+  (module BsAbstract.Interface.MONOID with type t = 'a1),
+  <a href="#module-Foldable">Foldable</a>.<a href="#type-Foldable.t">t</a>('a)
+) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-intercalate" id="value-intercalate">intercalate</a>: (
+  (module BsAbstract.Interface.MONOID with type t = 'b1),
+  'a,
+  <a href="#module-Foldable">Foldable</a>.<a href="#type-Foldable.t">t</a>('a)
+) => 'a</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-countBy" id="value-countBy">countBy</a>: 'a0. ('a0 -&gt; bool) -&gt; 'a0 list -&gt; int</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-length" id="value-length">length</a>: list('a) => int</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-containsF" id="value-containsF">containsF</a>: 'a0. ('a0 -&gt; 'a0 -&gt; bool) -&gt; 'a0 -&gt; 'a0 list -&gt; bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-contains" id="value-contains">contains</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'c1),
+  'a,
+  <a href="#module-Foldable">Foldable</a>.<a href="#type-Foldable.t">t</a>('a)
+) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-indexOfF" id="value-indexOfF">indexOfF</a>: 'a0. ('a0 -&gt; 'a0 -&gt; bool) -&gt; 'a0 -&gt; 'a0 list -&gt; int option</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-indexOf" id="value-indexOf">indexOf</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'd1),
+  'a,
+  <a href="#module-Foldable">Foldable</a>.<a href="#type-Foldable.t">t</a>('a)
+) => option(int)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-scanLeft" id="value-scanLeft">scanLeft</a>: (('b, 'a) => 'b, 'b, list('a)) => list('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-scanRight" id="value-scanRight">scanRight</a>: (('a, 'b) => 'b, 'b, list('a)) => list('b)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Show" id="module-Show">Show</a> : BsAbstract.List.Show</h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-showBy" id="value-showBy">showBy</a>: ('a => string, list('a)) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-show" id="value-show">show</a>: (
+  (module BsAbstract.Interface.SHOW with type t = 'e1),
+  list('a)
+) => string</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-Eq" id="module-Eq">Eq</a> : BsAbstract.List.Eq</h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-eqBy" id="value-eqBy">eqBy</a>: (('a, 'a) => bool, list('a), list('a)) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-eq" id="value-eq">eq</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'f1),
+  list('a),
+  list('a)
+) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-distinctBy" id="value-distinctBy">distinctBy</a>: 'a0. ('a0 -&gt; 'a0 -&gt; bool) -&gt; 'a0 list -&gt; 'a0 list</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-distinct" id="value-distinct">distinct</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'g1),
+  list('a)
+) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-removeBy" id="value-removeBy">removeBy</a>: 'a0. ('a0 -&gt; 'a0 -&gt; bool) -&gt; 'a0 -&gt; 'a0 list -&gt; 'a0 list</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-remove" id="value-remove">remove</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'h1),
+  'a,
+  list('a)
+) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-removeEachBy" id="value-removeEachBy">removeEachBy</a>: 'a0. ('a0 -&gt; 'a0 -&gt; bool) -&gt; 'a0 -&gt; 'a0 list -&gt; 'a0 list</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-removeEach" id="value-removeEach">removeEach</a>: (
+  (module BsAbstract.Interface.EQ with type t = 'i1),
+  'a,
+  list('a)
+) => list('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-sumFloat" id="value-sumFloat">sumFloat</a>: list(float) => float</h4>
+
+<div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Infix" id="module-Infix">Infix</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item module'>include BsAbstract.List.Infix</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.>>=" id="value-Infix.>>=">>>=</a>: (
@@ -667,11 +760,11 @@
 <div class='body body-empty'></div></div>
 </div></div>
 
-<div class='doc-item'><h4 class='item module'>include ApplyFunctions.Infix</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<*" id="value-Infix.<*"><*</a>: (<a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a), <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)) => <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)</h4>
+<div class='doc-item'><h4 class='item module'>include MonadFunctions.ApplyFunctions.Infix</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>let <a href="#value-Infix.<*" id="value-Infix.<*"><*</a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.*>" id="value-Infix.*>">*></a>: (<a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a), <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)) => <a href="#module-Apply">Apply</a>.<a href="#type-Apply.t">t</a>('a)</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Infix.*>" id="value-Infix.*>">*></a>: (<a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a), <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)) => <a href="#module-Monad">Monad</a>.<a href="#type-Monad.t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 </div></div>
@@ -706,15 +799,20 @@
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.mkString" id="value-Sequence.mkString">mkString</a>: (string, list(string)) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.mkString" id="value-Sequence.mkString">mkString</a>: (
+  BsAbstract.String.Monoid.t,
+  <a href="#module-Foldable">Foldable</a>.<a href="#type-Foldable.t">t</a>(
+    BsAbstract.String.Monoid.t
+  )
+) => BsAbstract.String.Monoid.t</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.eqF" id="value-Sequence.eqF">eqF</a>: (('a, 'a) => bool, list('a), list('a)) => bool</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.eqBy" id="value-Sequence.eqBy">eqBy</a>: (('a, 'a) => bool, list('a), list('a)) => bool</h4>
 
 <div class='body body-empty'></div></div>
 
-<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.showF" id="value-Sequence.showF">showF</a>: ('a => string, list('a)) => string</h4>
+<div class='doc-item'><h4 class='item'>let <a href="#value-Sequence.showBy" id="value-Sequence.showBy">showBy</a>: ('a => string, list('a)) => string</h4>
 
 <div class='body body-empty'></div></div>
 

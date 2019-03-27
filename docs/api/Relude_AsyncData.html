@@ -26,16 +26,23 @@
       <div class='table-of-contents'>
       <a href="#Relude_AsyncData" class='level-1 header'>Relude_AsyncData</a>
 <a href="#type-t" class='level-2 type'>t</a>
-<a href="#value-pure" class='level-2 value'>pure</a>
 <a href="#value-init" class='level-2 value'>init</a>
 <a href="#value-loading" class='level-2 value'>loading</a>
 <a href="#value-reloading" class='level-2 value'>reloading</a>
 <a href="#value-complete" class='level-2 value'>complete</a>
+<a href="#value-pure" class='level-2 value'>pure</a>
 <a href="#value-map" class='level-2 value'>map</a>
 <a href="#value-alt" class='level-2 value'>alt</a>
 <a href="#value-apply" class='level-2 value'>apply</a>
 <a href="#value-bind" class='level-2 value'>bind</a>
 <a href="#value-flatMap" class='level-2 value'>flatMap</a>
+<a href="#value-isInit" class='level-2 value'>isInit</a>
+<a href="#value-isBusy" class='level-2 value'>isBusy</a>
+<a href="#value-isLoading" class='level-2 value'>isLoading</a>
+<a href="#value-isReloading" class='level-2 value'>isReloading</a>
+<a href="#value-isComplete" class='level-2 value'>isComplete</a>
+<a href="#value-getValue" class='level-2 value'>getValue</a>
+<a href="#value-getComplete" class='level-2 value'>getComplete</a>
 <a href="#module-Functor" class='level-2 module'>Functor</a>
 <a href="#type-Functor.t" class='level-3 type'>t</a>
 <a href="#value-Functor.map" class='level-3 value'>map</a>
@@ -47,11 +54,6 @@
 <a href="#type-Apply.t" class='level-3 type'>t</a>
 <a href="#value-Apply.map" class='level-3 value'>map</a>
 <a href="#value-Apply.apply" class='level-3 value'>apply</a>
-<a href="#module-ApplyFunctions" class='level-2 module'>ApplyFunctions</a>
-<a href="#value-map2" class='level-2 value'>map2</a>
-<a href="#value-map3" class='level-2 value'>map3</a>
-<a href="#value-map4" class='level-2 value'>map4</a>
-<a href="#value-map5" class='level-2 value'>map5</a>
 <a href="#module-Applicative" class='level-2 module'>Applicative</a>
 <a href="#type-Applicative.t" class='level-3 type'>t</a>
 <a href="#value-Applicative.map" class='level-3 value'>map</a>
@@ -76,6 +78,11 @@
 <a href="#value-Infix.=<<" class='level-3 value'>=<<</a>
 <a href="#value-Infix.>=>" class='level-3 value'>>=></a>
 <a href="#value-Infix.<=<" class='level-3 value'><=<</a>
+<a href="#module-ApplyFunctions" class='level-2 module'>ApplyFunctions</a>
+<a href="#value-map2" class='level-2 value'>map2</a>
+<a href="#value-map3" class='level-2 value'>map3</a>
+<a href="#value-map4" class='level-2 value'>map4</a>
+<a href="#value-map5" class='level-2 value'>map5</a>
       </div>
       <div class='project-title'>Package modules</div><div class='project-listing'><a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
@@ -105,7 +112,8 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
 <a href="Relude.html">Relude</a>
 <a href="Relude_Array.html">Relude_Array</a>
 <a href="Relude_AsyncData.html">Relude_AsyncData</a>
@@ -134,7 +142,10 @@
 <a href="Relude_String.html">Relude_String</a>
 <a href="Relude_Validation.html">Relude_Validation</a>
 <a href="Relude_Void.html">Relude_Void</a>
-<a href="Test.html">Test</a></div>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a>
+<a href="Relude_Foldables.html">Relude_Foldables</a>
+<a href="Relude_Monads.html">Relude_Monads</a></div>
     </div>
     </div>
   
@@ -144,10 +155,6 @@
 
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item'>type <a href="#type-t" id="type-t">t</a>('a) = | Init | Loading | Reloading('a) | Complete('a)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -164,6 +171,10 @@
 <div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-complete" id="value-complete">complete</a>: 'a => <a href="#type-t">t</a>('a)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => <a href="#type-t">t</a>('a)</h4>
 
 <div class='body body-empty'></div></div>
 
@@ -186,6 +197,38 @@
 <div class='doc-item'><h4 class='item'>let <a href="#value-flatMap" id="value-flatMap">flatMap</a>: ('a => <a href="#type-t">t</a>('b), <a href="#type-t">t</a>('a)) => <a href="#type-t">t</a>('b)</h4>
 
 <div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isInit" id="value-isInit">isInit</a>: <a href="#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isBusy" id="value-isBusy">isBusy</a>: <a href="#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isLoading" id="value-isLoading">isLoading</a>: <a href="#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isReloading" id="value-isReloading">isReloading</a>: <a href="#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-isComplete" id="value-isComplete">isComplete</a>: <a href="#type-t">t</a>('a) => bool</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getValue" id="value-getValue">getValue</a>: <a href="#type-t">t</a>('a) => option('a)</h4>
+
+<div class='body '><p>Get a value of type <code>&#39;a</code>, using the <code>Complete</code> value if the AsyncData is
+complete, or the last known complete value in <code>Reloading</code>.</p>
+</div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-getComplete" id="value-getComplete">getComplete</a>: <a href="#type-t">t</a>('a) => option('a)</h4>
+
+<div class='body '><p>Get <code>Some</code> value of type <code>&#39;a</code> only from the <code>Complete</code> state, and <code>None</code> in
+all other cases, including <code>Reloading</code>.</p>
+</div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Functor" id="module-Functor">Functor</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item'>type <a href="#type-Functor.t" id="type-Functor.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
@@ -226,37 +269,6 @@
 
 <div class='body body-empty'></div></div>
 </div></div>
-
-<div class='doc-item'><h4 class='item module'>module <a href="#module-ApplyFunctions" id="module-ApplyFunctions">ApplyFunctions</a> : BsAbstract.Functions.Apply</h4></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (('a, 'b) => 'c, <a href="#type-t">t</a>('a), <a href="#type-t">t</a>('b)) => <a href="#type-t">t</a>('c)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: (('a, 'b, 'c) => 'd, <a href="#type-t">t</a>('a), <a href="#type-t">t</a>('b), <a href="#type-t">t</a>('c)) => <a href="#type-t">t</a>('d)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map4" id="value-map4">map4</a>: (
-  ('a, 'b, 'c, 'd) => 'e,
-  <a href="#type-t">t</a>('a),
-  <a href="#type-t">t</a>('b),
-  <a href="#type-t">t</a>('c),
-  <a href="#type-t">t</a>('d)
-) => <a href="#type-t">t</a>('e)</h4>
-
-<div class='body body-empty'></div></div>
-
-<div class='doc-item'><h4 class='item'>let <a href="#value-map5" id="value-map5">map5</a>: (
-  ('a, 'b, 'c, 'd, 'e) => 'f,
-  <a href="#type-t">t</a>('a),
-  <a href="#type-t">t</a>('b),
-  <a href="#type-t">t</a>('c),
-  <a href="#type-t">t</a>('d),
-  <a href="#type-t">t</a>('e)
-) => <a href="#type-t">t</a>('f)</h4>
-
-<div class='body body-empty'></div></div>
 
 <div class='doc-item'><h4 class='item module'>module <a href="#module-Applicative" id="module-Applicative">Applicative</a></h4><div class='body module-body'><p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item module'>include Apply</h4><div class='body module-body include-body'><div class='doc-item'><h4 class='item'>type <a href="#type-Applicative.t" id="type-Applicative.t">t</a>('a) = <a href="#type-t">t</a>('a)</h4>
@@ -360,6 +372,37 @@
 <div class='body body-empty'></div></div>
 </div></div>
 </div></div>
+
+<div class='doc-item'><h4 class='item module'>module <a href="#module-ApplyFunctions" id="module-ApplyFunctions">ApplyFunctions</a> : BsAbstract.Functions.Apply</h4></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map2" id="value-map2">map2</a>: (('a, 'b) => 'c, <a href="#type-t">t</a>('a), <a href="#type-t">t</a>('b)) => <a href="#type-t">t</a>('c)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map3" id="value-map3">map3</a>: (('a, 'b, 'c) => 'd, <a href="#type-t">t</a>('a), <a href="#type-t">t</a>('b), <a href="#type-t">t</a>('c)) => <a href="#type-t">t</a>('d)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map4" id="value-map4">map4</a>: (
+  ('a, 'b, 'c, 'd) => 'e,
+  <a href="#type-t">t</a>('a),
+  <a href="#type-t">t</a>('b),
+  <a href="#type-t">t</a>('c),
+  <a href="#type-t">t</a>('d)
+) => <a href="#type-t">t</a>('e)</h4>
+
+<div class='body body-empty'></div></div>
+
+<div class='doc-item'><h4 class='item'>let <a href="#value-map5" id="value-map5">map5</a>: (
+  ('a, 'b, 'c, 'd, 'e) => 'f,
+  <a href="#type-t">t</a>('a),
+  <a href="#type-t">t</a>('b),
+  <a href="#type-t">t</a>('c),
+  <a href="#type-t">t</a>('d),
+  <a href="#type-t">t</a>('e)
+) => <a href="#type-t">t</a>('f)</h4>
+
+<div class='body body-empty'></div></div>
 
     </div>
     <div class='right-blank'></div>
