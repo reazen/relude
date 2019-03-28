@@ -110,16 +110,17 @@ let lastIndexOf: (string, string) => option(int) =
     };
   };
 
+let splitArray: (string, string) => array(string) = Js.String.split;
+
+let splitList: (string, string) => list(string) =
+  (delim, str) => splitArray(delim, str) |> Relude_List.fromArray;
+
 let replaceFirst: (string, string, string) => string =
   (target, newValue, source) => Js.String.replace(target, newValue, source);
 
 let replaceAll: (string, string, string) => string =
   (target, newValue, source) =>
-    Js.String.replaceByRe(
-      Js.Re.fromStringWithFlags(target, ~flags="g"),
-      newValue,
-      source,
-    );
+  splitList(target, source) |> String.concat(newValue);
 
 let replaceRegex: (Js.Re.t, string, string) => string =
   (target, newValue, source) => Js.String.replaceByRe(target, newValue, source);
@@ -127,11 +128,6 @@ let replaceRegex: (Js.Re.t, string, string) => string =
 let slice: (int, int, string) => string = (fromIndex, toIndex, str) => Js.String.slice(~from=fromIndex, ~to_=toIndex, str);
 
 let sliceToEnd: (int, string) => string = (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
-
-let splitArray: (string, string) => array(string) = Js.String.split;
-
-let splitList: (string, string) => list(string) =
-  (delim, str) => splitArray(delim, str) |> Relude_List.fromArray;
 
 let toInt: string => option(int) = v =>
   try (Some(int_of_string(v))) {
