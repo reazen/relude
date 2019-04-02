@@ -1,23 +1,105 @@
+/**
+  `length(xs)` returns the number of items in `xs`.
+
+  ## Example
+  ```re
+  length([|"a", "b", "c"|]) == 3;
+  length([| |]) == 0;
+  ```
+*/
 let length: array('a) => int = Belt.Array.length;
 
+/**
+  `isEmpty(xs) returns `true` if `xs` is the empty array `[| |]`; returns `false` otherwise.
+*/
 let isEmpty: array('a) => bool = arr => length(arr) == 0;
 
+/**
+  `isNotEmpty(xs) returns `true` if `xs` is not the empty array `[| |]`; returns `false` otherwise.
+*/
 let isNotEmpty: array('a) => bool = arr => length(arr) > 0;
 
+/**
+  `empty xs` returns a new, empty array.
+*/
 let empty: array('a) = [||];
 
+/**
+  `pure(item)` returns an array containing the given item.
+  
+  ## Example
+  ```re
+  pure("single") == [|"single"|];
+  ```
+*/
 let pure: 'a => array('a) = x => [|x|];
 
+/**
+  `one(item)` returns an array containing the given item. (Same as `pure`.)
+*/
 let one: 'a => array('a) = pure;
 
+/**
+  `repeat(n, x)` returns an array containing `n` copies of `x`.
+  
+  ## Example
+  ```re
+  repeat(3, "ha") == [|"ha", "ha", "ha"|];
+  repeat(0, "nothing") == [| |];
+  repeat(-2, "nothing") == [| |];
+  ```
+*/
 let repeat: (int, 'a) => array('a) = (i, x) => Belt.Array.make(i, x);
 
+/**
+  `makeWithIndex(n, f)` returns the array `[|f(0), f(1), ... f(n - 1)|]`.
+  
+  
+  ## Example
+  ```re
+  makeWithIndex(3, (x) => {(x + 4) * (x + 4)}) == [|16, 25, 36|];
+  makeWithIndex(0, (x) => {x + 1}) == [| |];
+  makeWithIndex(-1, (x) => {x + 1}) == [| |];
+  ```
+*/
 let makeWithIndex: (int, int => 'a) => array('a) = Belt.Array.makeBy;
 
+/**
+  `concat(xs, ys)` returns an array with the elements of `xs` followed
+  by the elements of `ys`.
+  
+  ## Example
+  ```re
+  concat([|"a", "b"|], [|"c", "d"|]) == [|"a", "b", "c", "d"|];
+  concat([| |], [|"a", "b"|]) == [|"a", "b"|];
+  concat([|"a", "b"|], [| |]) == [|"a", "b"|];
+  ```
+*/
 let concat: (array('a), array('a)) => array('a) = Belt.Array.concat;
 
+/**
+  `cons(x, xs)` returns a new array with value `x` at the beginning.
+  
+  ## Example
+  ```re
+  cons(99, [|100, 101|]) == [|99, 100, 101|];
+  cons(99, [| |]) == [|99|];
+  ```
+*/
 let cons: ('a, array('a)) => array('a) = (x, xs) => concat([|x|], xs);
 
+/**
+  When given a non-emtpy array, `uncons(xs)` returns `Some(y, ys)`
+  where `y` is the first element in the array and `ys` are the remaining
+  elements. If given an empty array, `uncons()` returns `None`.
+
+  ## Example
+  ```re
+  uncons([|100, 101, 102|]) == Some((100, [|101, 102|]));
+  uncons([|100|]) == Some((100, [| |]));
+  uncons([| |]) == None;
+  ```
+*/
 let uncons: array('a) => option(('a, array('a))) =
   xs =>
     switch (xs) {
@@ -25,13 +107,53 @@ let uncons: array('a) => option(('a, array('a))) =
     | _ => Some((Belt.Array.getExn(xs, 0), Belt.Array.sliceToEnd(xs, 1)))
     };
 
+/**
+  Same as `cons`
+*/
 let prepend: ('a, array('a)) => array('a) = cons;
 
+/**
+  `append(x, xs)` adds the value `x` at the end of array `xs`.
+  
+  ## Example
+  ```re
+  append(999, [|100, 101, 102|]) == [|100, 102, 103, 999|];
+  append(999, [| |]) == [|999|];
+  ```
+*/
 let append: ('a, array('a)) => array('a) =
   (item, array) => concat(array, [|item|]);
 
+/**
+  `foldLeft(f, init, xs)` accumulates a value. Starting with `init`,
+  as the initial value of the accumulator, `foldLeft` applies function
+  `f` to the accumulator and the first element in the list. The result
+  becomes the new value of the accumulator, and `f` is applied to that value
+  and the next element in `xs`. This process continues until all elements in
+  `xs` are processed. The final value of the accumulator is returned.
+  
+  ## Example
+  ```re
+  foldLeft((acc, item) => append(item, acc), [| |], [|1, 2, 3|]) == [|1, 2, 3|];
+  foldLeft((acc, item) => acc + item, 2, [| |]) == 2;
+  ```
+*/
 let foldLeft: (('b, 'a) => 'b, 'b, array('a)) => 'b = BsAbstract.Array.Foldable.fold_left;
 
+/**
+  `foldRight(f, init, xs)` accumulates a value. Starting with `init`,
+  as the initial value of the accumulator, `foldRight` applies function
+  `f` to the last element in the list and the accumulator. The result
+  becomes the new value of the accumulator, and `f` is applied to that value
+  and the preceding element in `xs`. This process continues until all elements in
+  `xs` are processed. The final value of the accumulator is returned.
+  
+  ## Example
+  ```re
+  foldRight((item, acc) => append(item, acc), [| |], [|1, 2, 3|]) == [|3, 2, 1|];
+  foldRight((item, acc) => acc + item, 2, [| |]) == 2;
+  ```
+*/
 let foldRight: (('a, 'b) => 'b, 'b, array('a)) => 'b = BsAbstract.Array.Foldable.fold_right;
 
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =

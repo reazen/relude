@@ -44,6 +44,10 @@ describe("Array", () => {
   test("makeWithIndex creates a array of n items using f", () =>
     expect(Array.makeWithIndex(3, i => i + 2)) |> toEqual([|2, 3, 4|])
   );
+  
+  test("makeWithIndex creates an empty array if given a negative count", () =>
+    expect(Array.makeWithIndex(-1, i => i + 2)) |> toEqual([| |])
+  );
 
   test("concat", () =>
     expect(Array.concat([|1, 2|], [|3, 4|])) |> toEqual([|1, 2, 3, 4|])
@@ -83,6 +87,12 @@ describe("Array", () => {
     )
     |> toEqual([|1, 2, 3, 4, 5|])
   );
+  
+  test("foldLeft2", () =>
+    expect(Array.foldLeft((acc, item) => acc - item, 0, [|1, 2, 3|]))
+    |> toEqual(-6)
+  );
+  
 
   test("foldRight", () =>
     expect(
@@ -95,6 +105,8 @@ describe("Array", () => {
     |> toEqual([|5, 4, 3, 2, 1|])
   );
 
+
+  
   test("scanLeft", () =>
     expect(
       Array.scanLeft(
