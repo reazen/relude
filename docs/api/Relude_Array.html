@@ -214,63 +214,300 @@
 <p><span class='missing'>This module does not have a toplevel documentation block.</span></p>
 <div class='doc-item'><h4 class='item'>let <a href="#value-length" id="value-length">length</a>: array('a) => int</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>length(xs)</code> returns the number of items in <code>xs</code>.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='10' id='block-10'><code>  <span class='ident' data-type="array(string) => int">length</span>([|<span class='string' data-type="string">&quot;a&quot;</span>, <span class='string' data-type="string">&quot;b&quot;</span>, <span class='string' data-type="string">&quot;c&quot;</span>|]) <span class='operator' data-type="(int, int) => bool">==</span> <span class='int' data-type="int">3</span>;
+  <span class='ident' data-type="array('a) => int">length</span>([| |]) <span class='operator' data-type="(int, int) => bool">==</span> <span class='int' data-type="int">0</span>;
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='10-alt' id='block-10-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ = (<span class='ident' data-type="array(string) => int">length</span> [|<span class='string' data-type="string">&quot;a&quot;</span>;<span class='string' data-type="string">&quot;b&quot;</span>;<span class='string' data-type="string">&quot;c&quot;</span>|]) <span class='operator' data-type="(int, int) => bool">=</span> <span class='int' data-type="int">3</span>
+let _ = (<span class='ident' data-type="array('a) => int">length</span> [||]) <span class='operator' data-type="(int, int) => bool">=</span> <span class='int' data-type="int">0</span></code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-isEmpty" id="value-isEmpty">isEmpty</a>: array('a) => bool</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>isEmpty(xs) returns </code>true<code>if</code>xs<code>is the empty array</code>[| |]<code>; returns </code>false` otherwise.</p>
+</div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-isNotEmpty" id="value-isNotEmpty">isNotEmpty</a>: array('a) => bool</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>isNotEmpty(xs) returns </code>true<code>if</code>xs<code>is not the empty array</code>[| |]<code>; returns </code>false` otherwise.</p>
+</div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-empty" id="value-empty">empty</a>: array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>empty xs</code> returns a new, empty array.</p>
+</div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-pure" id="value-pure">pure</a>: 'a => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>pure(item)</code> returns an array containing the given item.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='11' id='block-11'><code>  <span class='ident' data-type="string => array(string)">pure</span>(<span class='string' data-type="string">&quot;single&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">==</span> [|<span class='string' data-type="string">&quot;single&quot;</span>|];
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='11-alt' id='block-11-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ = (<span class='ident' data-type="string => array(string)">pure</span> <span class='string' data-type="string">&quot;single&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">=</span> [|<span class='string' data-type="string">&quot;single&quot;</span>|]</code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-one" id="value-one">one</a>: 'a => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>one(item)</code> returns an array containing the given item. (Same as <code>pure</code>.)</p>
+</div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-repeat" id="value-repeat">repeat</a>: (int, 'a) => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>repeat(n, x)</code> returns an array containing <code>n</code> copies of <code>x</code>.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='12' id='block-12'><code>  <span class='ident' data-type="(int, string) => array(string)">repeat</span>(<span class='int' data-type="int">3</span>, <span class='string' data-type="string">&quot;ha&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">==</span> [|<span class='string' data-type="string">&quot;ha&quot;</span>, <span class='string' data-type="string">&quot;ha&quot;</span>, <span class='string' data-type="string">&quot;ha&quot;</span>|];
+  <span class='ident' data-type="(int, string) => array(string)">repeat</span>(<span class='int' data-type="int">0</span>, <span class='string' data-type="string">&quot;nothing&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">==</span> [| |];
+  <span class='ident' data-type="(int, string) => array(string)">repeat</span>(<span class='int' data-type="int">-2</span>, <span class='string' data-type="string">&quot;nothing&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">==</span> [| |];
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='12-alt' id='block-12-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ = (<span class='ident' data-type="(int, string) => array(string)">repeat</span> <span class='int' data-type="int">3</span> <span class='string' data-type="string">&quot;ha&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">=</span> [|<span class='string' data-type="string">&quot;ha&quot;</span>;<span class='string' data-type="string">&quot;ha&quot;</span>;<span class='string' data-type="string">&quot;ha&quot;</span>|]
+let _ = (<span class='ident' data-type="(int, string) => array(string)">repeat</span> <span class='int' data-type="int">0</span> <span class='string' data-type="string">&quot;nothing&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">=</span> [||]
+let _ = (<span class='ident' data-type="(int, string) => array(string)">repeat</span> <span class='int' data-type="int">(-2)</span> <span class='string' data-type="string">&quot;nothing&quot;</span>) <span class='operator' data-type="(array(string), array(string)) => bool">=</span> [||]</code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-makeWithIndex" id="value-makeWithIndex">makeWithIndex</a>: (int, int => 'a) => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>makeWithIndex(n, f)</code> returns the array <code>[|f(0), f(1), ... f(n - 1)|]</code>.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='13' id='block-13'><code>  <span class='ident' data-type="(int, int => int) => array(int)">makeWithIndex</span>(<span class='int' data-type="int">3</span>, (<span class='pattern-ident' data-type="int">x</span>) =&gt; {(<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">4</span>) <span class='operator' data-type="(int, int) => int">*</span> (<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">4</span>)}) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [|<span class='int' data-type="int">16</span>, <span class='int' data-type="int">25</span>, <span class='int' data-type="int">36</span>|];
+  <span class='ident' data-type="(int, int => int) => array(int)">makeWithIndex</span>(<span class='int' data-type="int">0</span>, (<span class='pattern-ident' data-type="int">x</span>) =&gt; {<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>}) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [| |];
+  <span class='ident' data-type="(int, int => int) => array(int)">makeWithIndex</span>(<span class='int' data-type="int">-1</span>, (<span class='pattern-ident' data-type="int">x</span>) =&gt; {<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>}) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [| |];
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='13-alt' id='block-13-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ = (<span class='ident' data-type="(int, int => int) => array(int)">makeWithIndex</span> <span class='int' data-type="int">3</span> (fun <span class='pattern-ident' data-type="int">x</span>  -&gt; (<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">4</span>) <span class='operator' data-type="(int, int) => int">*</span> (<span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">4</span>))) <span class='operator' data-type="(array(int), array(int)) => bool">=</span> [|<span class='int' data-type="int">16</span>;<span class='int' data-type="int">25</span>;<span class='int' data-type="int">36</span>|]
+let _ = (<span class='ident' data-type="(int, int => int) => array(int)">makeWithIndex</span> <span class='int' data-type="int">0</span> (fun <span class='pattern-ident' data-type="int">x</span>  -&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>)) <span class='operator' data-type="(array(int), array(int)) => bool">=</span> [||]
+let _ = (<span class='ident' data-type="(int, int => int) => array(int)">makeWithIndex</span> <span class='int' data-type="int">(-1)</span> (fun <span class='pattern-ident' data-type="int">x</span>  -&gt; <span class='ident' data-type="int">x</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='int' data-type="int">1</span>)) <span class='operator' data-type="(array(int), array(int)) => bool">=</span> [||]</code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-concat" id="value-concat">concat</a>: (array('a), array('a)) => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>concat(xs, ys)</code> returns an array with the elements of <code>xs</code> followed
+ by the elements of <code>ys</code>.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='14' id='block-14'><code>  <span class='ident' data-type="(array(string), array(string)) => array(string)">concat</span>([|<span class='string' data-type="string">&quot;a&quot;</span>, <span class='string' data-type="string">&quot;b&quot;</span>|], [|<span class='string' data-type="string">&quot;c&quot;</span>, <span class='string' data-type="string">&quot;d&quot;</span>|]) <span class='operator' data-type="(array(string), array(string)) => bool">==</span> [|<span class='string' data-type="string">&quot;a&quot;</span>, <span class='string' data-type="string">&quot;b&quot;</span>, <span class='string' data-type="string">&quot;c&quot;</span>, <span class='string' data-type="string">&quot;d&quot;</span>|];
+  <span class='ident' data-type="(array(string), array(string)) => array(string)">concat</span>([| |], [|<span class='string' data-type="string">&quot;a&quot;</span>, <span class='string' data-type="string">&quot;b&quot;</span>|]) <span class='operator' data-type="(array(string), array(string)) => bool">==</span> [|<span class='string' data-type="string">&quot;a&quot;</span>, <span class='string' data-type="string">&quot;b&quot;</span>|];
+  <span class='ident' data-type="(array(string), array(string)) => array(string)">concat</span>([|<span class='string' data-type="string">&quot;a&quot;</span>, <span class='string' data-type="string">&quot;b&quot;</span>|], [| |]) <span class='operator' data-type="(array(string), array(string)) => bool">==</span> [|<span class='string' data-type="string">&quot;a&quot;</span>, <span class='string' data-type="string">&quot;b&quot;</span>|];
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='14-alt' id='block-14-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ = (<span class='ident' data-type="(array(string), array(string)) => array(string)">concat</span> [|<span class='string' data-type="string">&quot;a&quot;</span>;<span class='string' data-type="string">&quot;b&quot;</span>|] [|<span class='string' data-type="string">&quot;c&quot;</span>;<span class='string' data-type="string">&quot;d&quot;</span>|]) <span class='operator' data-type="(array(string), array(string)) => bool">=</span> [|<span class='string' data-type="string">&quot;a&quot;</span>;<span class='string' data-type="string">&quot;b&quot;</span>;<span class='string' data-type="string">&quot;c&quot;</span>;<span class='string' data-type="string">&quot;d&quot;</span>|]
+let _ = (<span class='ident' data-type="(array(string), array(string)) => array(string)">concat</span> [||] [|<span class='string' data-type="string">&quot;a&quot;</span>;<span class='string' data-type="string">&quot;b&quot;</span>|]) <span class='operator' data-type="(array(string), array(string)) => bool">=</span> [|<span class='string' data-type="string">&quot;a&quot;</span>;<span class='string' data-type="string">&quot;b&quot;</span>|]
+let _ = (<span class='ident' data-type="(array(string), array(string)) => array(string)">concat</span> [|<span class='string' data-type="string">&quot;a&quot;</span>;<span class='string' data-type="string">&quot;b&quot;</span>|] [||]) <span class='operator' data-type="(array(string), array(string)) => bool">=</span> [|<span class='string' data-type="string">&quot;a&quot;</span>;<span class='string' data-type="string">&quot;b&quot;</span>|]</code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-cons" id="value-cons">cons</a>: ('a, array('a)) => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>cons(x, xs)</code> returns a new array with value <code>x</code> at the beginning.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='15' id='block-15'><code>  <span class='ident' data-type="(int, array(int)) => array(int)">cons</span>(<span class='int' data-type="int">99</span>, [|<span class='int' data-type="int">100</span>, <span class='int' data-type="int">101</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [|<span class='int' data-type="int">99</span>, <span class='int' data-type="int">100</span>, <span class='int' data-type="int">101</span>|];
+  <span class='ident' data-type="(int, array(int)) => array(int)">cons</span>(<span class='int' data-type="int">99</span>, [| |]) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [|<span class='int' data-type="int">99</span>|];
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='15-alt' id='block-15-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ = (<span class='ident' data-type="(int, array(int)) => array(int)">cons</span> <span class='int' data-type="int">99</span> [|<span class='int' data-type="int">100</span>;<span class='int' data-type="int">101</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">=</span> [|<span class='int' data-type="int">99</span>;<span class='int' data-type="int">100</span>;<span class='int' data-type="int">101</span>|]
+let _ = (<span class='ident' data-type="(int, array(int)) => array(int)">cons</span> <span class='int' data-type="int">99</span> [||]) <span class='operator' data-type="(array(int), array(int)) => bool">=</span> [|<span class='int' data-type="int">99</span>|]</code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-uncons" id="value-uncons">uncons</a>: array('a) => option(('a, array('a)))</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> When given a non-emtpy array, <code>uncons(xs)</code> returns <code>Some(y, ys)</code>
+ where <code>y</code> is the first element in the array and <code>ys</code> are the remaining
+ elements. If given an empty array, <code>uncons()</code> returns <code>None</code>.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='16' id='block-16'><code>  <span class='ident' data-type="array(int) => option((int, array(int)))">uncons</span>([|<span class='int' data-type="int">100</span>, <span class='int' data-type="int">101</span>, <span class='int' data-type="int">102</span>|]) <span class='operator' data-type="(
+  option((int, array(int))),
+  option((int, array(int)))
+) => bool">==</span> <span class='constructor' data-type="option((int, array(int)))">Some</span>((<span class='int' data-type="int">100</span>, [|<span class='int' data-type="int">101</span>, <span class='int' data-type="int">102</span>|]));
+  <span class='ident' data-type="array(int) => option((int, array(int)))">uncons</span>([|<span class='int' data-type="int">100</span>|]) <span class='operator' data-type="(
+  option((int, array(int))),
+  option((int, array(int)))
+) => bool">==</span> <span class='constructor' data-type="option((int, array(int)))">Some</span>((<span class='int' data-type="int">100</span>, [| |]));
+  <span class='ident' data-type="array('a) => option(('a, array('a)))">uncons</span>([| |]) <span class='operator' data-type="(option(('a, array('a))), option(('a, array('a)))) => bool">==</span> <span class='constructor' data-type="option(('a, array('a)))">None</span>;
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='16-alt' id='block-16-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ =
+  (<span class='ident' data-type="array(int) => option((int, array(int)))">uncons</span> [|<span class='int' data-type="int">100</span>;<span class='int' data-type="int">101</span>;<span class='int' data-type="int">102</span>|]) <span class='operator' data-type="(
+  option((int, array(int))),
+  option((int, array(int)))
+) => bool">=</span> ((Some ((100, [|101;102|])))[@explicit_arity ])
+let _ = (uncons [|100|]) = ((Some ((100, [||])))[@explicit_arity ])
+let _ = (uncons [||]) = None</code></pre>
+  
+  
+  <div class='type-error'>Type Error:
+File &quot;&quot;, line 4, characters 29-76:
+Error: The constructor Some expects 1 argument(s),
+       but is applied here to 2 argument(s)</div>
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-prepend" id="value-prepend">prepend</a>: ('a, array('a)) => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> Same as <code>cons</code></p>
+</div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-append" id="value-append">append</a>: ('a, array('a)) => array('a)</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>append(x, xs)</code> adds the value <code>x</code> at the end of array <code>xs</code>.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='17' id='block-17'><code>  <span class='ident' data-type="(int, array(int)) => array(int)">append</span>(<span class='int' data-type="int">999</span>, [|<span class='int' data-type="int">100</span>, <span class='int' data-type="int">101</span>, <span class='int' data-type="int">102</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [|<span class='int' data-type="int">100</span>, <span class='int' data-type="int">102</span>, <span class='int' data-type="int">103</span>, <span class='int' data-type="int">999</span>|];
+  <span class='ident' data-type="(int, array(int)) => array(int)">append</span>(<span class='int' data-type="int">999</span>, [| |]) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [|<span class='int' data-type="int">999</span>|];
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='17-alt' id='block-17-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ = (<span class='ident' data-type="(int, array(int)) => array(int)">append</span> <span class='int' data-type="int">999</span> [|<span class='int' data-type="int">100</span>;<span class='int' data-type="int">101</span>;<span class='int' data-type="int">102</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">=</span> [|<span class='int' data-type="int">100</span>;<span class='int' data-type="int">102</span>;<span class='int' data-type="int">103</span>;<span class='int' data-type="int">999</span>|]
+let _ = (<span class='ident' data-type="(int, array(int)) => array(int)">append</span> <span class='int' data-type="int">999</span> [||]) <span class='operator' data-type="(array(int), array(int)) => bool">=</span> [|<span class='int' data-type="int">999</span>|]</code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-foldLeft" id="value-foldLeft">foldLeft</a>: (('b, 'a) => 'b, 'b, array('a)) => 'b</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>foldLeft(f, init, xs)</code> accumulates a value. Starting with <code>init</code>,
+ as the initial value of the accumulator, <code>foldLeft</code> applies function
+ <code>f</code> to the accumulator and the first element in the list. The result
+ becomes the new value of the accumulator, and <code>f</code> is applied to that value
+ and the next element in <code>xs</code>. This process continues until all elements in
+ <code>xs</code> are processed. The final value of the accumulator is returned.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='18' id='block-18'><code>  <span class='ident' data-type="(
+  (array(int), int) => array(int),
+  array(int),
+  array(int)
+) => array(int)">foldLeft</span>((<span class='pattern-ident' data-type="array(int)">acc</span>, <span class='pattern-ident' data-type="int">item</span>) =&gt; <span class='ident' data-type="(int, array(int)) => array(int)">append</span>(<span class='ident' data-type="int">item</span>, <span class='ident' data-type="array(int)">acc</span>), [| |], [|<span class='int' data-type="int">1</span>, <span class='int' data-type="int">2</span>, <span class='int' data-type="int">3</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [|<span class='int' data-type="int">1</span>, <span class='int' data-type="int">2</span>, <span class='int' data-type="int">3</span>|];
+  <span class='ident' data-type="((int, int) => int, int, array(int)) => int">foldLeft</span>((<span class='pattern-ident' data-type="int">acc</span>, <span class='pattern-ident' data-type="int">item</span>) =&gt; <span class='ident' data-type="int">acc</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='ident' data-type="int">item</span>, <span class='int' data-type="int">2</span>, [| |]) <span class='operator' data-type="(int, int) => bool">==</span> <span class='int' data-type="int">2</span>;
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='18-alt' id='block-18-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ =
+  (<span class='ident' data-type="(
+  (array(int), int) => array(int),
+  array(int),
+  array(int)
+) => array(int)">foldLeft</span> (fun <span class='pattern-ident' data-type="array(int)">acc</span>  -&gt; fun <span class='pattern-ident' data-type="int">item</span>  -&gt; <span class='ident' data-type="(int, array(int)) => array(int)">append</span> <span class='ident' data-type="int">item</span> <span class='ident' data-type="array(int)">acc</span>) [||] [|<span class='int' data-type="int">1</span>;<span class='int' data-type="int">2</span>;<span class='int' data-type="int">3</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">=</span>
+    [|<span class='int' data-type="int">1</span>;<span class='int' data-type="int">2</span>;<span class='int' data-type="int">3</span>|]
+let _ = (<span class='ident' data-type="((int, int) => int, int, array(int)) => int">foldLeft</span> (fun <span class='pattern-ident' data-type="int">acc</span>  -&gt; fun <span class='pattern-ident' data-type="int">item</span>  -&gt; <span class='ident' data-type="int">acc</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='ident' data-type="int">item</span>) <span class='int' data-type="int">2</span> [||]) <span class='operator' data-type="(int, int) => bool">=</span> <span class='int' data-type="int">2</span></code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-foldRight" id="value-foldRight">foldRight</a>: (('a, 'b) => 'b, 'b, array('a)) => 'b</h4>
 
-<div class='body body-empty'></div></div>
+<div class='body '><p> <code>foldRight(f, init, xs)</code> accumulates a value. Starting with <code>init</code>,
+ as the initial value of the accumulator, <code>foldRight</code> applies function
+ <code>f</code> to the last element in the list and the accumulator. The result
+ becomes the new value of the accumulator, and <code>f</code> is applied to that value
+ and the preceding element in <code>xs</code>. This process continues until all elements in
+ <code>xs</code> are processed. The final value of the accumulator is returned.</p>
+<h2 id="Example">Example</h2><div class='code-block' data-block-syntax="re">
+  
+  <pre class='code' data-block-id='19' id='block-19'><code>  <span class='ident' data-type="(
+  (int, array(int)) => array(int),
+  array(int),
+  array(int)
+) => array(int)">foldRight</span>((<span class='pattern-ident' data-type="int">item</span>, <span class='pattern-ident' data-type="array(int)">acc</span>) =&gt; <span class='ident' data-type="(int, array(int)) => array(int)">append</span>(<span class='ident' data-type="int">item</span>, <span class='ident' data-type="array(int)">acc</span>), [| |], [|<span class='int' data-type="int">1</span>, <span class='int' data-type="int">2</span>, <span class='int' data-type="int">3</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">==</span> [|<span class='int' data-type="int">3</span>, <span class='int' data-type="int">2</span>, <span class='int' data-type="int">1</span>|];
+  <span class='ident' data-type="((int, int) => int, int, array(int)) => int">foldRight</span>((<span class='pattern-ident' data-type="int">item</span>, <span class='pattern-ident' data-type="int">acc</span>) =&gt; <span class='ident' data-type="int">acc</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='ident' data-type="int">item</span>, <span class='int' data-type="int">2</span>, [| |]) <span class='operator' data-type="(int, int) => bool">==</span> <span class='int' data-type="int">2</span>;
+  </code></pre>
+  
+  
+  
+</div><div class='code-block' data-block-syntax="ml">
+  
+  <pre class='code' data-block-id='19-alt' id='block-19-alt'><code>[@@@ocaml.ppx.context { cookies = [] }]
+open Relude_Array
+let _ =
+  (<span class='ident' data-type="(
+  (int, array(int)) => array(int),
+  array(int),
+  array(int)
+) => array(int)">foldRight</span> (fun <span class='pattern-ident' data-type="int">item</span>  -&gt; fun <span class='pattern-ident' data-type="array(int)">acc</span>  -&gt; <span class='ident' data-type="(int, array(int)) => array(int)">append</span> <span class='ident' data-type="int">item</span> <span class='ident' data-type="array(int)">acc</span>) [||] [|<span class='int' data-type="int">1</span>;<span class='int' data-type="int">2</span>;<span class='int' data-type="int">3</span>|]) <span class='operator' data-type="(array(int), array(int)) => bool">=</span>
+    [|<span class='int' data-type="int">3</span>;<span class='int' data-type="int">2</span>;<span class='int' data-type="int">1</span>|]
+let _ = (<span class='ident' data-type="((int, int) => int, int, array(int)) => int">foldRight</span> (fun <span class='pattern-ident' data-type="int">item</span>  -&gt; fun <span class='pattern-ident' data-type="int">acc</span>  -&gt; <span class='ident' data-type="int">acc</span> <span class='operator' data-type="(int, int) => int">+</span> <span class='ident' data-type="int">item</span>) <span class='int' data-type="int">2</span> [||]) <span class='operator' data-type="(int, int) => bool">=</span> <span class='int' data-type="int">2</span></code></pre>
+  
+  
+  
+</div></div></div>
 
 <div class='doc-item'><h4 class='item'>let <a href="#value-scanLeft" id="value-scanLeft">scanLeft</a>: (('b, 'a) => 'b, 'b, array('a)) => array('b)</h4>
 
