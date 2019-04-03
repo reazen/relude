@@ -361,7 +361,7 @@ let last: array('a) => option('a) =
   ```reason
   take(2, [|100, 101, 102, 103|]) == Some([|100, 101|]);
   take(0, [|100, 101, 102|]) == Some([| |]);
-  take(-1, [|100, 101, 102|]) == Some([| |]);
+  take(-1, [|100, 101, 102|]) == None);
   take(4, [|100, 101, 102|]) == None;
   take(1, [| |]) == None;
   ```
@@ -422,18 +422,15 @@ let rec takeWhile: ('a => bool, array('a)) => array('a) =
 /**
   `drop(n, xs)` returns an array of all *except* the first `n` items in `xs` as
   `Some(ys)`. 
-  If `n` is greater than or equal to the length  of `xs`, `drop()` returns `None`.
-  If `n` is less than zero, `drop()` returns the *last* `abs(n)` values of `xs`;
-  if `n` is less than or equal to the length of `xs`, `drop()` returns all of `xs`.
+  If `n` is less than zero or greater than or equal to the length  of `xs`,
+  `drop()` returns `None`.
   
   ## Example
   ```reason
   drop(2, [|100, 101, 102, 103|]) == Some([|102, 103|]);
   drop(0, [|100, 101, 102|]) == Some([| |]);
   drop(4, [|100, 101, 102|]) == None;
-  drop(-1, [|100, 101, 102|]) == Some([|102|]);
-  drop(-2, [|100, 101, 102|]) == Some([|101, 102|]);
-  drop(-4, [|100, 101, 102|]) == Some([|100, 101, 102|]);
+  drop(-1, [|100, 101, 102|]) == None;
   drop(1, [| |]) == None;
   ```
 */
@@ -447,18 +444,15 @@ let drop: (int, array('a)) => option(array('a)) =
 
 /**
   `dropUpTo(n, xs)` returns an array of all *except* the first `n` items in `xs`.
-  If `n` is greater than or equal to the length  of `xs`, `dropUpTo()` returns the empty array.
-  If `n` is less than zero, `dropUpTo()` returns the *last* `abs(n)` values of `xs`;
-  if `n` is less than or equal to the length of `xs`, `dropUpTo()` returns all of `xs`.
+  If `n` is negative or greater than or equal to the length  of `xs`,
+  `dropUpTo()` returns the empty array.
   
   ## Example
   ```reason
   dropUpTo(2, [|100, 101, 102, 103|]) == [|102, 103|];
   dropUpTo(0, [|100, 101, 102|]) == [|100, 101, 102|];
   dropUpTo(4, [|100, 101, 102|]) == [| |];
-  dropUpTo(-1, [|100, 101, 102|]) == [|102|];
-  dropUpTo(-2, [|100, 101, 102|]) == [|101, 102|];
-  dropUpTo(-4, [|100, 101, 102|]) == [|100, 101, 102|];
+  dropUpTo(-1, [|100, 101, 102|]) == [| |];
   dropUpTo(1, [| |]) == [| |];
   ```
 */let dropUpTo: (int, array('a)) => array('a) =
@@ -607,12 +601,17 @@ let partition: ('a => bool, array('a)) => (array('a), array('a)) =
 /**
   `splitAt(n, xs)` returns `Some(ys, zs)` where `ys` contains the
   first `n` elements of `xs` and `zs` contains the remaining elements,
-  when `n` is greater than or equal to zero and less than the length
-  of `xs`.  Otherwise, `splitAt()` returns `None`.
+  when `n` is greater than or equal to zero and less than or equal
+  to the length of `xs`.  Otherwise, `splitAt()` returns `None`.
   
+  ## Example
   ```reason
-  splitAt(2, [|100, 101, 102, 103|]) == Some(([|100, 101|], [|102, 103|]))
-  splitAt(0, [|100, 101, 102, 103|]) == Some(([| |], [|100, 101, 102, 103|]))
+  splitAt(2, [|100, 101, 102, 103|]) == Some(([|100, 101|], [|102, 103|]));
+  splitAt(0, [|100, 101, 102, 103|]) == Some(([| |], [|100, 101, 102, 103|]));
+  splitAt(4, [|100, 101, 102, 103|]) == Some(([|100, 101, 102, 103|], [| |]));
+  splitAt(-1, [|100, 101, 102, 103|]) == None;
+  splitAt(5, [|100, 101, 102, 103|]) == None;
+  ```
 */
 let splitAt: (int, array('a)) => option((array('a), array('a))) =
   (i, xs) =>
@@ -625,6 +624,16 @@ let splitAt: (int, array('a)) => option((array('a), array('a))) =
       ));
     };
 
+/**
+  `prependToAll(delim, xs)` returns a new array with `delim` inserted
+  before every current element of `xs`.
+  
+  ## Example
+  ```reason
+  prependToAll(999, [|100, 101, 102|]) == [|999, 100, 999, 101, 999, 102|];
+  prependToAll(999, [| |]) == [| |];
+  ```
+*/
 let rec prependToAll: ('a, array('a)) => array('a) =
   (delim, xs) =>
     switch (head(xs)) {
@@ -632,6 +641,16 @@ let rec prependToAll: ('a, array('a)) => array('a) =
     | Some(x) => concat([|delim, x|], prependToAll(delim, tailOrEmpty(xs)))
     };
 
+/**
+  `intersperse(delim, xs)` returns a new array with `delim` inserted
+  between all the current elements of `xs`.
+  
+  ## Example
+  ```reason
+  intersperse(999, [|100, 101, 102|]) == [|100, 999, 101, 999, 102|];
+  intersperse(999, [| |]) == [| |];
+  ```
+*/
 let intersperse: ('a, array('a)) => array('a) =
   (delim, xs) =>
     switch (head(xs)) {
@@ -639,10 +658,34 @@ let intersperse: ('a, array('a)) => array('a) =
     | Some(x) => prepend(x, prependToAll(delim, tailOrEmpty(xs)))
     };
 
+/**
+  `replicate(n, xs)` returns an array with `n` repetitions of `xs`,
+  one after another. If `n` is less than or equal to zero, returns the
+  empty array.
+  
+  ## Example
+  ```reason
+  replicate(3, [|1, 2|]) == [|1, 2, 1, 2, 1, 2|];
+  replicate(0, [|1, 2|]) == [| |];
+  replicate(-1, [|1, 2|]) == [| |];
+  ```
+*/
 let replicate: (int, array('a)) => array('a) =
   (i, xs) =>
     foldLeft((acc, _i) => concat(acc, xs), [||], Relude_Int.rangeAsArray(0, i));
 
+/**
+  `zip(xs, ys)` returns an array of arrays whose elements are the tuples
+  `[| (x[0], y[0]), (x[1], y[1])... |]`. The process of combining
+  elements stops when the shorter of the two arrays is finished.
+  
+  ### Example
+  ```reason
+  zip([|1, 2, 3|], [|4.4, 5.5, 6.6|]) == [|(1, 4.4), (2, 5.5), (3, 6.6)|];
+  zip([|1, 2, 3|], [|4.4, 5.5|]) == [|(1, 4.4), (2, 5.5)|];
+  zip([|1, 2|], [|3.3, 4.4, 5.5|]) == [| (1, 3.3), (2, 4.4) |];
+  ```
+*/
 let zip: (array('a), array('b)) => array(('a, 'b)) = Belt.Array.zip;
 
 let zipWith: (('a, 'b) => 'c, array('a), array('b)) => array('c) =
