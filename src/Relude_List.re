@@ -104,7 +104,7 @@ let takeUpTo: (int, list('a)) => list('a) =
     if (i >= 0) {
       go([], i, xs) |> reverse;
     } else {
-      [| |]
+      [ ]
     }
   };
 
