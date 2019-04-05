@@ -227,14 +227,20 @@ let last: array('a) => option('a) =
 
 let take: (int, array('a)) => option(array('a)) =
   (i, xs) =>
-    if (i > length(xs)) {
+    if (i < 0 || i > length(xs)) {
       None;
     } else {
       Some(Belt.Array.slice(xs, ~offset=0, ~len=i));
     };
 
 let takeUpTo: (int, array('a)) => array('a) =
-  (i, xs) => Belt.Array.slice(xs, ~offset=0, ~len=i);
+  (i, xs) => {
+    if (i >= 0) {
+      Belt.Array.slice(xs, ~offset=0, ~len=i);
+    } else {
+      [| |]
+    }
+  };
 
 let rec takeWhile: ('a => bool, array('a)) => array('a) =
   (f, xs) =>
@@ -245,7 +251,7 @@ let rec takeWhile: ('a => bool, array('a)) => array('a) =
 
 let drop: (int, array('a)) => option(array('a)) =
   (i, xs) =>
-    if (i > length(xs)) {
+    if (i < 0 || i > length(xs)) {
       None;
     } else {
       Some(Belt.Array.sliceToEnd(xs, i));
@@ -254,14 +260,18 @@ let drop: (int, array('a)) => option(array('a)) =
 let dropUpTo: (int, array('a)) => array('a) =
   (i, xs) => {
     let l = length(xs);
-    Belt.Array.sliceToEnd(
-      xs,
-      if (i > l) {
-        l;
-      } else {
-        i;
-      },
-    );
+    if (i >= 0) {
+      Belt.Array.sliceToEnd(
+        xs,
+        if (i > l) {
+          l;
+        } else {
+          i;
+        },
+      );
+    } else {
+      [| |]
+    }
   };
 
 let rec dropWhile: ('a => bool, array('a)) => array('a) =
@@ -301,7 +311,7 @@ let partition: ('a => bool, array('a)) => (array('a), array('a)) =
 
 let splitAt: (int, array('a)) => option((array('a), array('a))) =
   (i, xs) =>
-    if (i > length(xs)) {
+    if (i < 0 || i > length(xs)) {
       None;
     } else {
       Some((

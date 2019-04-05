@@ -77,6 +77,7 @@ let rec last: list('a) => option('a) =
   | [x] => Some(x)
   | [_, ...xs] => last(xs);
 
+  /* TODO: why not use Belt.List.take(), as drop uses Belt.List.drop()? */
 let take: (int, list('a)) => option(list('a)) =
   (i, xs) => {
     let rec go = (acc, count, rest) =>
@@ -85,7 +86,11 @@ let take: (int, list('a)) => option(list('a)) =
       | [] => None
       | [y, ...ys] => go([y, ...acc], count - 1, ys)
       };
-    go([], i, xs) |> Relude_Option.map(reverse);
+    if (i >= 0) {
+      go([], i, xs) |> Relude_Option.map(reverse);
+    } else {
+      None;
+    }
   };
 
 let takeUpTo: (int, list('a)) => list('a) =
@@ -96,7 +101,11 @@ let takeUpTo: (int, list('a)) => list('a) =
       | [] => acc
       | [y, ...ys] => go([y, ...acc], count - 1, ys)
       };
-    go([], i, xs) |> reverse;
+    if (i >= 0) {
+      go([], i, xs) |> reverse;
+    } else {
+      [ ]
+    }
   };
 
 let takeWhile: ('a => bool, list('a)) => list('a) =
@@ -115,10 +124,14 @@ let drop: (int, list('a)) => option(list('a)) =
 
 let rec dropUpTo: (int, list('a)) => list('a) =
   (i, xs) =>
-    switch (xs) {
-    | [] => []
-    | [_, ..._] when i <= 0 => xs
-    | [_, ...ys] => dropUpTo(i - 1, ys)
+    if (i >= 0) {
+      switch (xs) {
+      | [] => []
+      | [_, ..._] when i <= 0 => xs
+      | [_, ...ys] => dropUpTo(i - 1, ys)
+      };
+    } else {
+      [ ]
     };
 
 let rec dropWhile: ('a => bool, list('a)) => list('a) =

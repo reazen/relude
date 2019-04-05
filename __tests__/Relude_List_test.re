@@ -190,7 +190,7 @@ describe("List", () => {
   );
 
   test("take negative from list", () =>
-    expect(List.take(-2, [])) |> toEqual(Some([]))
+    expect(List.take(-2, [])) |> toEqual(None)
   );
 
   test("take zero from empty list", () =>
