@@ -12,6 +12,9 @@ let foldStrict: ('b, 'a => 'b, option('a)) => 'b =
     | None => default
     };
 
+let forEach: 'a. ('a => unit, option('a)) => unit =
+  (f, opt) => foldStrict((), f, opt);
+
 let getOrElse: (unit => 'a, option('a)) => 'a =
   default => fold(default, a => a);
 
