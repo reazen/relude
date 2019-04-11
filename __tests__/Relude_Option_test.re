@@ -5,20 +5,36 @@ module Int = Relude_Int;
 module Option = Relude_Option;
 
 describe("Option", () => {
+  test("foldLazy maps value when option is Some", () =>
+    expect(Option.foldLazy(_ => "", string_of_int, Some(1))) |> toEqual("1")
+  );
+
+  test("foldLazy uses default when option is None", () =>
+    expect(Option.foldLazy(_ => "", string_of_int, None)) |> toEqual("")
+  );
+
   test("fold maps value when option is Some", () =>
-    expect(Option.fold(_ => "", string_of_int, Some(1))) |> toEqual("1")
+    expect(Option.fold("", string_of_int, Some(1))) |> toEqual("1")
   );
 
   test("fold uses default when option is None", () =>
-    expect(Option.fold(_ => "", string_of_int, None)) |> toEqual("")
+    expect(Option.fold("", string_of_int, None)) |> toEqual("")
+  );
+
+  test("getOrElseLazy extracts value when option is Some", () =>
+    expect(Option.getOrElseLazy(_ => 0, Some(1))) |> toEqual(1)
+  );
+
+  test("getOrElseLazy uses default when option is None", () =>
+    expect(Option.getOrElseLazy(_ => 0, None)) |> toEqual(0)
   );
 
   test("getOrElse extracts value when option is Some", () =>
-    expect(Option.getOrElse(_ => 0, Some(1))) |> toEqual(1)
+    expect(Option.getOrElse(0, Some(1))) |> toEqual(1)
   );
 
   test("getOrElse uses default when option is None", () =>
-    expect(Option.getOrElse(_ => 0, None)) |> toEqual(0)
+    expect(Option.getOrElse(0, None)) |> toEqual(0)
   );
 
   test("toList has one item when option is Some", () =>

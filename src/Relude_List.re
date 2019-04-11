@@ -62,14 +62,14 @@ let tail: list('a) => option(list('a)) =
   | [_, ...xs] => Some(xs);
 
 let tailOrEmpty: list('a) => list('a) =
-  xs => tail(xs) |> Relude_Option.getOrElseStrict([]);
+  xs => tail(xs) |> Relude_Option.getOrElse([]);
 
 let rec init: list('a) => option(list('a)) =
   fun
   | [] => None
   | [_] => Some([])
   | [x, ...xs] =>
-    Some(cons(x, Relude_Option.getOrElseStrict([], init(xs))));
+    Some(cons(x, Relude_Option.getOrElse([], init(xs))));
 
 let rec last: list('a) => option('a) =
   fun
@@ -154,7 +154,7 @@ let mapOption: ('a => option('b), list('a)) => list('b) =
   (f, xs) =>
     foldLeft(
       (acc, curr) =>
-        Relude_Option.fold(() => acc, v => [v, ...acc], f(curr)),
+        Relude_Option.fold(acc, v => [v, ...acc], f(curr)),
       [],
       xs,
     )

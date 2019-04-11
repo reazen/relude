@@ -1,11 +1,11 @@
-let fold: (unit => 'b, 'a => 'b, option('a)) => 'b =
+let foldLazy: (unit => 'b, 'a => 'b, option('a)) => 'b =
   (default, f, opt) =>
     switch (opt) {
     | Some(v) => f(v)
     | None => default()
     };
 
-let foldStrict: ('b, 'a => 'b, option('a)) => 'b =
+let fold: ('b, 'a => 'b, option('a)) => 'b =
   (default, f, opt) =>
     switch (opt) {
     | Some(v) => f(v)
@@ -13,21 +13,21 @@ let foldStrict: ('b, 'a => 'b, option('a)) => 'b =
     };
 
 let forEach: 'a. ('a => unit, option('a)) => unit =
-  (f, opt) => foldStrict((), f, opt);
+  (f, opt) => fold((), f, opt);
 
-let getOrElse: (unit => 'a, option('a)) => 'a =
+let getOrElseLazy: (unit => 'a, option('a)) => 'a =
+  default => foldLazy(default, a => a);
+
+let getOrElse: ('a, option('a)) => 'a =
   default => fold(default, a => a);
 
-let getOrElseStrict: ('a, option('a)) => 'a =
-  default => foldStrict(default, a => a);
+let toList: option('a) => list('a) = t => fold([], v => [v], t);
 
-let toList: option('a) => list('a) = t => fold(_ => [], v => [v], t);
+let toArray: option('a) => array('a) = t => fold([||], v => [|v|], t);
 
-let toArray: option('a) => array('a) = t => fold(_ => [||], v => [|v|], t);
+let isSome: option('a) => bool = t => fold(false, _ => true, t);
 
-let isSome: option('a) => bool = t => fold(_ => false, _ => true, t);
-
-let isNone: option('a) => bool = t => fold(_ => true, _ => false, t);
+let isNone: option('a) => bool = t => fold(true, _ => false, t);
 
 let map: ('a => 'b, option('a)) => option('b) =
   (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);

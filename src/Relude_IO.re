@@ -54,7 +54,7 @@ let async: 'a 'e. ((Result.t('a, 'e) => unit) => unit) => t('a, 'e) =
 
 let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
   (getError, option) =>
-    option |> Option.fold(() => throw(getError()), pure);
+    option |> Option.foldLazy(() => throw(getError()), pure);
 
 let fromResult: 'a 'e. Result.t('a, 'e) => t('a, 'e) =
   res => res |> Result.fold(throw, pure);
