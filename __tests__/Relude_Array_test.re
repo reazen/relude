@@ -44,9 +44,9 @@ describe("Array", () => {
   test("makeWithIndex creates a array of n items using f", () =>
     expect(Array.makeWithIndex(3, i => i + 2)) |> toEqual([|2, 3, 4|])
   );
-  
+
   test("makeWithIndex creates an empty array if given a negative count", () =>
-    expect(Array.makeWithIndex(-1, i => i + 2)) |> toEqual([| |])
+    expect(Array.makeWithIndex(-1, i => i + 2)) |> toEqual([||])
   );
 
   test("concat", () =>
@@ -87,12 +87,11 @@ describe("Array", () => {
     )
     |> toEqual([|1, 2, 3, 4, 5|])
   );
-  
+
   test("foldLeft2", () =>
     expect(Array.foldLeft((acc, item) => acc - item, 0, [|1, 2, 3|]))
     |> toEqual(-6)
   );
-  
 
   test("foldRight", () =>
     expect(
@@ -105,8 +104,6 @@ describe("Array", () => {
     |> toEqual([|5, 4, 3, 2, 1|])
   );
 
-
-  
   test("scanLeft", () =>
     expect(
       Array.scanLeft(
@@ -141,16 +138,29 @@ describe("Array", () => {
        |])
   );
 
-  test("get empty array", () =>
-    expect(0[[||]]) |> toEqual(None)
+  test("at empty array", () =>
+    expect(Array.at(0, [||])) |> toEqual(None)
   );
 
-  test("get success", () =>
-    expect(2[[|0, 10, 20, 30|]]) |> toEqual(Some(20))
+  test("at Some", () =>
+    expect(Array.at(2, [|0, 10, 20, 30|])) |> toEqual(Some(20))
   );
 
-  test("get failure", () =>
-    expect(10[[|0, 10, 20, 30|]]) |> toEqual(None)
+  test("at None", () =>
+    expect(Array.at(10, [|0, 10, 20, 30|])) |> toEqual(None)
+  );
+
+  test("setAt empty array", () =>
+    /* Apparently setAt 0 doesn't work on an empty array... */
+    expect(Array.setAt(0, "a", [||])) |> toEqual(None)
+  );
+
+  test("setAt valid index in non-empty array", () =>
+    expect(Array.setAt(1, "a", [|"0", "1", "2"|])) |> toEqual(Some([|"0", "a", "2"|]))
+  );
+
+  test("setAt invalid index in non-empty array", () =>
+    expect(Array.setAt(5, "a", [|"0", "1", "2"|])) |> toEqual(None)
   );
 
   test("head empty array", () =>

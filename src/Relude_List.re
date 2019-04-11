@@ -49,7 +49,7 @@ let isEmpty: list('a) => bool =
 
 let isNotEmpty: list('a) => bool = xs => !isEmpty(xs);
 
-let get: (int, list('a)) => option('a) = (i, xs) => Belt.List.get(xs, i);
+let at: (int, list('a)) => option('a) = (i, xs) => Belt.List.get(xs, i);
 
 let head: list('a) => option('a) =
   fun

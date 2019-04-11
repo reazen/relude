@@ -117,16 +117,16 @@ describe("List", () => {
     |> toEqual([[5, 4, 3, 2, 1], [5, 4, 3, 2], [5, 4, 3], [5, 4], [5]])
   );
 
-  test("get empty list", () =>
-    expect(List.get(0, [])) |> toEqual(None)
+  test("at empty list", () =>
+    expect(List.at(0, [])) |> toEqual(None)
   );
 
-  test("get success", () =>
-    expect(List.get(2, [0, 10, 20, 30])) |> toEqual(Some(20))
+  test("at success", () =>
+    expect(List.at(2, [0, 10, 20, 30])) |> toEqual(Some(20))
   );
 
-  test("get failure", () =>
-    expect(List.get(10, [0, 10, 20, 30])) |> toEqual(None)
+  test("at failure", () =>
+    expect(List.at(10, [0, 10, 20, 30])) |> toEqual(None)
   );
 
   test("head empty list", () =>
