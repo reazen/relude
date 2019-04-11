@@ -23,5 +23,6 @@ module Result = Relude_Result;
 module ResultIor = Relude_ResultIor;
 module Sequence = Relude_Sequence;
 module String = Relude_String;
+module Unsafe = Relude_Unsafe;
 module Validation = Relude_Validation;
 module Void = Relude_Void;
