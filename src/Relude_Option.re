@@ -157,5 +157,5 @@ module Infix = {
   let (<|>) = alt;
   let (<$>) = map;
   let (<*>) = apply;
-  let (>>=) = flatMap;
+  let (>>=) = bind;
 };

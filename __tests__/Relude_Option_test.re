@@ -69,6 +69,11 @@ describe("Option", () => {
     expect(Option.bind(Some(1), a => Some(a + 2))) |> toEqual(Some(3))
   );
 
+  test(">>=", () => {
+    let (>>=) = Relude_Option.Infix.(>>=);
+    expect(Some(1) >>= a => Some(a + 2)) |> toEqual(Some(3))
+  });
+
   test("map2", () =>
     expect(Option.map2((a, b) => a + b, Some(1), Some(2)))
     |> toEqual(Some(3))

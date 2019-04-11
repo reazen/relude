@@ -13,6 +13,16 @@ describe("Result", () => {
     |> toEqual(Belt.Result.Ok(3))
   );
 
+  test("flatMap", () =>
+    expect(Result.flatMap(a => Belt.Result.Ok(a + 2), Belt.Result.Ok(1)))
+    |> toEqual(Belt.Result.Ok(3))
+  );
+
+  test("bind", () =>
+    expect(Result.bind(Belt.Result.Ok(1), a => Belt.Result.Ok(a + 2)))
+    |> toEqual(Belt.Result.Ok(3))
+  );
+
   test("fold Ok", () =>
     expect(Result.fold(_ => "error", _ => "ok", Belt.Result.Ok(1)))
     |> toEqual("ok")
