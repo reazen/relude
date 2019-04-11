@@ -49,16 +49,16 @@ let toUpperCase: string => string = Js.String.toUpperCase;
 
 let toLowerCase: string => string = Js.String.toLowerCase;
 
-let get: (int, string) => option(string) =
+let charAt: (int, string) => option(string) =
   (i, str) =>
     Js.String.get(str, i) |> Js.Nullable.return |> Js.Nullable.toOption;
 
-let getNullable: (int, string) => Js.Nullable.t(string) =
+let charAtNullable: (int, string) => Js.Nullable.t(string) =
   (i, str) => Js.String.get(str, i) |> Js.Nullable.return;
 
-let getOrThrow: (int, string) => string =
+let charAtOrThrow: (int, string) => string =
   (i, str) =>
-    switch (get(i, str)) {
+    switch (charAt(i, str)) {
     | None =>
       Js.Exn.raiseRangeError(
         "Failed to get string at index "
@@ -70,10 +70,10 @@ let getOrThrow: (int, string) => string =
     };
 
 let toList: string => list(string) =
-  str => Relude_List.makeWithIndex(length(str), i => getOrThrow(i, str));
+  str => Relude_List.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let toArray: string => array(string) =
-  str => Relude_Array.makeWithIndex(length(str), i => getOrThrow(i, str));
+  str => Relude_Array.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List.foldLeft(f, init, toList(str));

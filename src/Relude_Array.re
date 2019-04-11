@@ -26,7 +26,7 @@ let empty: array('a) = [||];
 
 /**
   `pure(item)` returns an array containing the given item.
-  
+
   ## Example
   ```re
   pure("single") == [|"single"|];
@@ -41,7 +41,7 @@ let one: 'a => array('a) = pure;
 
 /**
   `repeat(n, x)` returns an array containing `n` copies of `x`.
-  
+
   ## Example
   ```re
   repeat(3, "ha") == [|"ha", "ha", "ha"|];
@@ -53,8 +53,8 @@ let repeat: (int, 'a) => array('a) = (i, x) => Belt.Array.make(i, x);
 
 /**
   `makeWithIndex(n, f)` returns the array `[|f(0), f(1), ... f(n - 1)|]`.
-  
-  
+
+
   ## Example
   ```re
   makeWithIndex(3, (x) => {(x + 4) * (x + 4)}) == [|16, 25, 36|];
@@ -67,7 +67,7 @@ let makeWithIndex: (int, int => 'a) => array('a) = Belt.Array.makeBy;
 /**
   `concat(xs, ys)` returns an array with the elements of `xs` followed
   by the elements of `ys`.
-  
+
   ## Example
   ```re
   concat([|"a", "b"|], [|"c", "d"|]) == [|"a", "b", "c", "d"|];
@@ -79,7 +79,7 @@ let concat: (array('a), array('a)) => array('a) = Belt.Array.concat;
 
 /**
   `cons(x, xs)` returns a new array with value `x` at the beginning.
-  
+
   ## Example
   ```re
   cons(99, [|100, 101|]) == [|99, 100, 101|];
@@ -114,7 +114,7 @@ let prepend: ('a, array('a)) => array('a) = cons;
 
 /**
   `append(x, xs)` adds the value `x` at the end of array `xs`.
-  
+
   ## Example
   ```re
   append(999, [|100, 101, 102|]) == [|100, 102, 103, 999|];
@@ -131,7 +131,7 @@ let append: ('a, array('a)) => array('a) =
   becomes the new value of the accumulator, and `f` is applied to that value
   and the next element in `xs`. This process continues until all elements in
   `xs` are processed. The final value of the accumulator is returned.
-  
+
   ## Example
   ```re
   foldLeft((acc, item) => append(item, acc), [| |], [|1, 2, 3|]) == [|1, 2, 3|];
@@ -147,7 +147,7 @@ let foldLeft: (('b, 'a) => 'b, 'b, array('a)) => 'b = BsAbstract.Array.Foldable.
   becomes the new value of the accumulator, and `f` is applied to that value
   and the preceding element in `xs`. This process continues until all elements in
   `xs` are processed. The final value of the accumulator is returned.
-  
+
   ## Example
   ```re
   foldRight((item, acc) => append(item, acc), [| |], [|1, 2, 3|]) == [|3, 2, 1|];
@@ -182,10 +182,15 @@ let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b) =
       ),
     );
 
-let get: (int, array('a)) => option('a) = (i, xs) => Belt.Array.get(xs, i);
+let at: (int, array('a)) => option('a) = (i, xs) => Belt.Array.get(xs, i);
 
-let set: (int, 'a, array('a)) => bool =
-  (i, x, xs) => Belt.Array.set(xs, i, x);
+let setAt: (int, 'a, array('a)) => option(array('a)) =
+  (i, x, xs) =>
+    if (Belt.Array.set(xs, i, x)) {
+      Some(xs);
+    } else {
+      None;
+    };
 
 let head: array('a) => option('a) = arr => Belt.Array.get(arr, 0);
 
@@ -221,7 +226,7 @@ let last: array('a) => option('a) =
     if (l == 0) {
       None;
     } else {
-      get(l - 1, xs);
+      at(l - 1, xs);
     };
   };
 
@@ -234,13 +239,12 @@ let take: (int, array('a)) => option(array('a)) =
     };
 
 let takeUpTo: (int, array('a)) => array('a) =
-  (i, xs) => {
+  (i, xs) =>
     if (i >= 0) {
       Belt.Array.slice(xs, ~offset=0, ~len=i);
     } else {
-      [| |]
-    }
-  };
+      [||];
+    };
 
 let rec takeWhile: ('a => bool, array('a)) => array('a) =
   (f, xs) =>
@@ -270,8 +274,8 @@ let dropUpTo: (int, array('a)) => array('a) =
         },
       );
     } else {
-      [| |]
-    }
+      [||];
+    };
   };
 
 let rec dropWhile: ('a => bool, array('a)) => array('a) =
@@ -336,7 +340,11 @@ let intersperse: ('a, array('a)) => array('a) =
 
 let replicate: (int, array('a)) => array('a) =
   (i, xs) =>
-    foldLeft((acc, _i) => concat(acc, xs), [||], Relude_Int.rangeAsArray(0, i));
+    foldLeft(
+      (acc, _i) => concat(acc, xs),
+      [||],
+      Relude_Int.rangeAsArray(0, i),
+    );
 
 let zip: (array('a), array('b)) => array(('a, 'b)) = Belt.Array.zip;
 
@@ -413,7 +421,8 @@ let apply: (array('a => 'b), array('a)) => array('b) = BsAbstract.Array.Apply.ap
 
 let bind: (array('a), 'a => array('b)) => array('b) = BsAbstract.Array.Monad.flat_map;
 
-let flatMap: ('a => array('b), array('a)) => array('b) = (f, fa) => bind(fa, f);
+let flatMap: ('a => array('b), array('a)) => array('b) =
+  (f, fa) => bind(fa, f);
 
 let flatten: array(array('a)) => array('a) = Belt.Array.concatMany;
 
