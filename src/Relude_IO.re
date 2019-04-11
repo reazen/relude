@@ -162,7 +162,7 @@ let triesJS: 'a. (unit => 'a) => t('a, Js.Exn.t) =
         try (Pure(getA())) {
         | Js.Exn.Error(jsExn) => Throw(jsExn)
         | exn =>
-          let jsExn = JsExn.fromExn(exn);
+          let jsExn = JsExn.unsafeFromExn(exn);
           Throw(jsExn);
         },
     );
