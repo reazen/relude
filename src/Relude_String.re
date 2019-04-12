@@ -71,16 +71,17 @@ let charAtOrThrow: (int, string) => string =
     };
 
 let toList: string => list(string) =
-  str => Relude_List.makeWithIndex(length(str), i => charAtOrThrow(i, str));
+  str =>
+    Relude_List_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let toArray: string => array(string) =
   str => Relude_Array.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List.foldLeft(f, init, toList(str));
+  (f, init, str) => Relude_List_Types.foldLeft(f, init, toList(str));
 
 let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List.foldRight(f, init, toList(str));
+  (f, init, str) => Relude_List_Types.foldRight(f, init, toList(str));
 
 let endsWith: (string, string) => bool =
   (test, str) => Js.String.endsWith(test, str);
@@ -114,7 +115,7 @@ let lastIndexOf: (string, string) => option(int) =
 let splitArray: (string, string) => array(string) = Js.String.split;
 
 let splitList: (string, string) => list(string) =
-  (delim, str) => splitArray(delim, str) |> Relude_List.fromArray;
+  (delim, str) => splitArray(delim, str) |> Relude_List_Types.fromArray;
 
 let replaceFirst: (string, string, string) => string =
   (target, newValue, source) => Js.String.replace(target, newValue, source);

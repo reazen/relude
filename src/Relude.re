@@ -10,10 +10,7 @@ module IO = Relude_IO;
 module IsoArray = Relude_IsoArray;
 module IsoList = Relude_IsoList;
 module Js = Relude_Js;
-module List = {
-  include Relude_List;
-  include Relude_ListF;
-};
+module List = Relude_List;
 module NonEmpty = Relude_NonEmpty;
 module NonEmptyArray = Relude_NonEmpty.Array;
 module NonEmptyList = Relude_NonEmpty.List;
