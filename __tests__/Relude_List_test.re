@@ -270,8 +270,20 @@ describe("List", () => {
     expect(List.drop(5, [1, 2, 3, 4])) |> toEqual(None)
   );
 
+  test("dropUpTo negative from empty list", () =>
+    expect(List.dropUpTo(-2, [])) |> toEqual([])
+  );
+
+  test("dropUpTo negative from nonempty list", () =>
+    expect(List.dropUpTo(-2, [1, 2])) |> toEqual([1, 2])
+  );
+
   test("dropUpTo zero from empty list", () =>
     expect(List.dropUpTo(0, [])) |> toEqual([])
+  );
+
+  test("dropUpTo zero from nonempty list", () =>
+    expect(List.dropUpTo(0, [1, 2])) |> toEqual([1, 2])
   );
 
   test("dropUpTo some from short list ", () =>
@@ -283,7 +295,7 @@ describe("List", () => {
   );
 
   test("dropUpTo some from long list ", () =>
-    expect(List.dropUpTo(2, [1, 2, 3, 4])) |> toEqual([3, 4])
+    expect(List.dropUpTo(3, [1, 2, 3, 4, 5])) |> toEqual([4, 5])
   );
 
   test("dropUpTo more from long list ", () =>
@@ -404,8 +416,8 @@ describe("List", () => {
     |> toEqual([(-1), 0, 1, 2, 3, 5])
   );
 
-  test("sortF", () =>
-    expect(List.sortF(Int.compare, [2, 0, 1, 3, 5, (-1)]))
+  test("sortBy", () =>
+    expect(List.sortBy(Int.compare, [2, 0, 1, 3, 5, (-1)]))
     |> toEqual([(-1), 0, 1, 2, 3, 5])
   );
 
@@ -419,20 +431,20 @@ describe("List", () => {
   );
 
   test("contains false", () =>
-    expect(List.containsF(Int.eq, 10, [0, 1, 2, 3, 4])) |> toEqual(false)
+    expect(List.containsBy(Int.eq, 10, [0, 1, 2, 3, 4])) |> toEqual(false)
   );
 
   test("contains true", () =>
-    expect(List.containsF(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
+    expect(List.containsBy(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
   );
 
-  test("indexOfF failure", () =>
-    expect(List.indexOfF(Int.eq, 500, [0, 10, 20, 30, 40]))
+  test("indexOfBy failure", () =>
+    expect(List.indexOfBy(Int.eq, 500, [0, 10, 20, 30, 40]))
     |> toEqual(None)
   );
 
-  test("indexOfF success", () =>
-    expect(List.indexOfF(Int.eq, 30, [0, 10, 20, 30, 40]))
+  test("indexOfBy success", () =>
+    expect(List.indexOfBy(Int.eq, 30, [0, 10, 20, 30, 40]))
     |> toEqual(Some(3))
   );
 
@@ -629,16 +641,16 @@ describe("List", () => {
        ])
   );
 
-  test("sumFloat empty", () =>
-    expect(List.sumFloat([])) |> toEqual(0.)
+  test("List.Float.sum empty", () =>
+    expect(List.Float.sum([])) |> toEqual(0.)
   );
 
-  test("sumFloat one", () =>
-    expect(List.sumFloat([1.])) |> toEqual(1.)
+  test("List.Float.sum one", () =>
+    expect(List.Float.sum([1.])) |> toEqual(1.)
   );
 
-  test("sumFloat many", () =>
-    expect(List.sumFloat([1., 3., 5.])) |> toEqual(9.)
+  test("List.Float.sum many", () =>
+    expect(List.Float.sum([1., 3., 5.])) |> toEqual(9.)
   );
 
   test("countBy empty", () =>

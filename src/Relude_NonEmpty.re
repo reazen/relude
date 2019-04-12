@@ -23,7 +23,7 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
     fun
     | NonEmpty(head, tail) =>
       TailSequence.MonoidAny.append(
-        TailSequence.Applicative.pure(head),
+        TailSequence.Monad.pure(head),
         tail,
       );
 
@@ -65,13 +65,13 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
   let join = flatten;
 
   let map: ('a => 'b, t('a)) => t('b) =
-    (f, NonEmpty(x, xs)) =>
-      NonEmpty(f(x), TailSequence.Applicative.map(f, xs));
+    (f, NonEmpty(x, xs)) => NonEmpty(f(x), TailSequence.Monad.map(f, xs));
 
   let apply: (t('a => 'b), t('a)) => t('b) =
     (ff, fa) => map(f => map(f, fa), ff) |> flatten;
 
-  let bind: (t('a), 'a => t('b)) => t('b) = (nonEmpty, f) => map(f, nonEmpty) |> flatten;
+  let bind: (t('a), 'a => t('b)) => t('b) =
+    (nonEmpty, f) => map(f, nonEmpty) |> flatten;
 
   let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
@@ -224,7 +224,30 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
 };
 
 /* NonEmpty.List */
-module List = NonEmptyF(Relude_List.Sequence);
+module List =
+  NonEmptyF({
+    type t('a) = list('a);
+    let length = Relude_List_Types.length;
+    let isEmpty = Relude_List_Base.isEmpty;
+    let isNotEmpty = Relude_List_Base.isNotEmpty;
+    let head = Relude_List_Base.head;
+    let tail = Relude_List_Base.tail;
+    let tailOrEmpty = Relude_List_Base.tailOrEmpty;
+    let mkString =
+      Relude_List_Types.intercalate((module BsAbstract.String.Monoid));
+    let eqBy = Relude_List_Types.eqBy;
+    let showBy = Relude_List_Types.showBy;
+    module SemigroupAny = Relude_List_Types.SemigroupAny;
+    module MonoidAny = Relude_List_Types.MonoidAny;
+    module Functor = Relude_List_Types.Functor;
+    module Apply = Relude_List_Types.Apply;
+    module Applicative = Relude_List_Types.Applicative;
+    module Monad = Relude_List_Types.Monad;
+    module Foldable = Relude_List_Types.Foldable;
+    module Traversable = Relude_List_Types.Traversable;
+    module Eq = Relude_List_Types.Eq;
+    module Show = Relude_List_Types.Show;
+  });
 
 /* NonEmpty.Array */
 module Array = NonEmptyF(Relude_Array.Sequence);

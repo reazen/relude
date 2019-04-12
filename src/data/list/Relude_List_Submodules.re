@@ -12,15 +12,11 @@
  ********************************************************************************/
 
 module String = {
-  let eq: (list(string), list(string)) => bool =
-    Relude_List.eq((module Relude_String.Eq));
+  include Relude_List_Base.OfOrd(Relude_String.Ord);
+  include Relude_List_Base.OfMonoid(Relude_String.Monoid);
 
-  let contains: (string, list(string)) => bool =
-    Relude_List.contains((module Relude_String.Eq));
-
-  let indexOf: (string, list(string)) => option(int) =
-    Relude_List.indexOf((module Relude_String.Eq));
-
+  let join = fold;
+  let joinWith = intercalate;
   /**
    * Remove all duplicate entries from a list of strings.
    *
@@ -30,7 +26,7 @@ module String = {
    */
   let distinct: list(string) => list(string) =
     xs =>
-      Relude_List.foldLeft(
+      Relude_List_Types.foldLeft(
         (acc, curr) => {
           Js.Dict.set(acc, curr, 0);
           acc;
@@ -39,59 +35,32 @@ module String = {
         xs,
       )
       |> Js.Dict.keys
-      |> Relude_List.fromArray;
+      |> Relude_List_Types.fromArray;
 
-  let remove: (string, list(string)) => list(string) =
-    Relude_List.remove((module Relude_String.Eq));
-
-  let removeEach: (string, list(string)) => list(string) =
-    Relude_List.removeEach((module Relude_String.Eq));
-
-  let fold: list(string) => string =
-    Relude_List.fold((module Relude_String.Monoid));
-
-  let join: list(string) => string =
-    Relude_List.fold((module Relude_String.Monoid));
-
-  let intercalate: (string, list(string)) => string =
-    Relude_List.intercalate((module Relude_String.Monoid));
-
-  let joinWith: (string, list(string)) => string =
-    Relude_List.intercalate((module Relude_String.Monoid));
-
-  let sort = Relude_List.sort((module Relude_String.Ord));
-
+  // TODO: not convinced this belongs here...
   let map: (string => string, string) => string =
-    (f, str) => Relude_String.toList(str) |> Relude_List.map(f) |> join;
+    (f, str) =>
+      Relude_String.toList(str) |> Relude_List_Types.map(f) |> join;
 };
 
 module Int = {
-  let eq: (list(int), list(int)) => bool =
-    Relude_List.eq((module Relude_Int.Eq));
-
-  let contains: (int, list(int)) => bool =
-    Relude_List.contains((module Relude_Int.Eq));
-
-  let indexOf: (int, list(int)) => option(int) =
-    Relude_List.indexOf((module Relude_Int.Eq));
-
-  let distinct: list(int) => list(int) =
-    Relude_List.distinct((module Relude_Int.Eq));
-
-  let remove: (int, list(int)) => list(int) =
-    Relude_List.remove((module Relude_Int.Eq));
-
-  let removeEach: (int, list(int)) => list(int) =
-    Relude_List.removeEach((module Relude_Int.Eq));
-
-  let sort: list(int) => list(int) =
-    Relude_List.sort((module Relude_Int.Ord));
+  include Relude_List_Base.OfOrd(Relude_Int.Ord);
 
   let sum: list(int) => int =
-    Relude_List.fold((module Relude_Int.Additive.Monoid));
+    Relude_List_Types.fold((module Relude_Int.Additive.Monoid));
 
   let product: list(int) => int =
-    Relude_List.fold((module Relude_Int.Multiplicative.Monoid));
+    Relude_List_Types.fold((module Relude_Int.Multiplicative.Monoid));
+};
+
+module Float = {
+  include Relude_List_Base.OfOrd(Relude_Float.Ord);
+
+  let sum: list(float) => float =
+    Relude_List_Types.fold((module Relude_Float.Additive.Monoid));
+
+  let product: list(float) => float =
+    Relude_List_Types.fold((module Relude_Float.Multiplicative.Monoid));
 };
 
 module Option = {
@@ -136,7 +105,7 @@ module Validation = {
       (Relude_Validation.Applicative(Errors, Error)),
     );
   module TraversableWithErrorsAsList = (Error: BsAbstract.Interface.TYPE) =>
-    Traversable(Relude_List.SemigroupAny, Error);
+    Traversable(Relude_List_Types.SemigroupAny, Error);
   module TraversableWithErrorsAsListOfStrings =
     TraversableWithErrorsAsList({
       type t = string;

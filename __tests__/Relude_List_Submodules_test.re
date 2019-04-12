@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module ListF = Relude_ListF;
+module ListF = Relude_List_Submodules;
 
 describe("ListF", () => {
   test("String.eq empties true", () =>

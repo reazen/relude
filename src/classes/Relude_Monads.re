@@ -10,6 +10,10 @@ module Functions = (M: BsAbstract.Interface.MONAD) => {
   include FunctorFunctions;
   include ApplyFunctions;
 
+  let map = M.map;
+  let apply = M.apply;
+  let pure = M.pure;
+  let bind = M.flat_map;
   let flatMap: 'a 'b. ('a => M.t('b), M.t('a)) => M.t('b) = (f, ma) => M.flat_map(ma, f);
   let flatten: 'a. M.t(M.t('a)) => M.t('a) = mma => M.flat_map(mma, v => v);
 };
