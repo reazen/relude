@@ -24,6 +24,14 @@ let compare: (int, int) => ordering = BsAbstract.Int.Ord.compare;
 let compareAsInt: (int, int) => int =
   (a, b) => compare(a, b) |> Ordering.toInt;
 
+let toString: int => string = string_of_int;
+
+let fromString: string => option(int) =
+  v =>
+    try (Some(int_of_string(v))) {
+    | _ => None
+    };
+
 module Additive = BsAbstract.Int.Additive;
 
 module Multiplicative = BsAbstract.Int.Multiplicative;
