@@ -35,7 +35,8 @@ let fromCharCode: int => string = Js.String.fromCharCode;
 
 let makeWithIndex: (int, int => string) => string =
   (i, f) => {
-    let rec go = (acc, idx) => idx >= i ? acc : go(concat(acc, f(idx)), idx + 1);
+    let rec go = (acc, idx) =>
+      idx >= i ? acc : go(concat(acc, f(idx)), idx + 1);
     go("", 0);
   };
 
@@ -120,24 +121,34 @@ let replaceFirst: (string, string, string) => string =
 
 let replaceAll: (string, string, string) => string =
   (target, newValue, source) =>
-  splitList(target, source) |> String.concat(newValue);
+    splitList(target, source) |> String.concat(newValue);
 
 let replaceRegex: (Js.Re.t, string, string) => string =
-  (target, newValue, source) => Js.String.replaceByRe(target, newValue, source);
+  (target, newValue, source) =>
+    Js.String.replaceByRe(target, newValue, source);
 
-let slice: (int, int, string) => string = (fromIndex, toIndex, str) => Js.String.slice(~from=fromIndex, ~to_=toIndex, str);
+let slice: (int, int, string) => string =
+  (fromIndex, toIndex, str) =>
+    Js.String.slice(~from=fromIndex, ~to_=toIndex, str);
 
-let sliceToEnd: (int, string) => string = (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
+let sliceToEnd: (int, string) => string =
+  (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
 
-let toInt: string => option(int) = v =>
-  try (Some(int_of_string(v))) {
-  | _ => None
-  };
+let fromInt: int => string = string_of_int;
 
-let toFloat: string => option(float) = v =>
-  try (Some(float_of_string(v))) {
-  | _ => None
-  };
+let toInt: string => option(int) =
+  v =>
+    try (Some(int_of_string(v))) {
+    | _ => None
+    };
+
+let fromFloat: float => string = Js.Float.toString;
+
+let toFloat: string => option(float) =
+  v =>
+    try (Some(float_of_string(v))) {
+    | _ => None
+    };
 
 module Monoid = BsAbstract.String.Monoid;
 
@@ -145,4 +156,4 @@ module Semigroup = BsAbstract.String.Semigroup;
 
 module Eq = BsAbstract.String.Eq;
 
-module Ord = BsAbstract.String.Ord
+module Ord = BsAbstract.String.Ord;
