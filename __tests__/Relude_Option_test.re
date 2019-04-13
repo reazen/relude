@@ -6,7 +6,8 @@ module Option = Relude_Option;
 
 describe("Option", () => {
   test("foldLazy maps value when option is Some", () =>
-    expect(Option.foldLazy(_ => "", string_of_int, Some(1))) |> toEqual("1")
+    expect(Option.foldLazy(_ => "", string_of_int, Some(1)))
+    |> toEqual("1")
   );
 
   test("foldLazy uses default when option is None", () =>
@@ -87,7 +88,7 @@ describe("Option", () => {
 
   test(">>=", () => {
     let (>>=) = Relude_Option.Infix.(>>=);
-    expect(Some(1) >>= a => Some(a + 2)) |> toEqual(Some(3))
+    expect(Some(1) >>= (a => Some(a + 2))) |> toEqual(Some(3));
   });
 
   test("map2", () =>
