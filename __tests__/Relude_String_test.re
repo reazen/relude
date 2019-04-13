@@ -87,7 +87,8 @@ describe("String", () => {
   );
 
   test("charAtNullable failure", () =>
-    expect(Str.charAtNullable(7, "abcdefg")) |> toEqual(Js.Nullable.undefined)
+    expect(Str.charAtNullable(7, "abcdefg"))
+    |> toEqual(Js.Nullable.undefined)
   );
 
   test("charAtOrThrow success", () =>

@@ -507,7 +507,8 @@ describe("List", () => {
   );
 
   test("removeEachBy many matches removed", () =>
-    expect(List.removeEachBy(Int.eq, 0, [0, 2, 0, 4, 0])) |> toEqual([2, 4])
+    expect(List.removeEachBy(Int.eq, 0, [0, 2, 0, 4, 0]))
+    |> toEqual([2, 4])
   );
 
   test("distinctBy", () =>

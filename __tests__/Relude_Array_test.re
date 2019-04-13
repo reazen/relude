@@ -150,13 +150,15 @@ describe("Array", () => {
     expect(Array.at(10, [|0, 10, 20, 30|])) |> toEqual(None)
   );
 
-  test("setAt empty array", () =>
+  test("setAt empty array", ()
     /* Apparently setAt 0 doesn't work on an empty array... */
-    expect(Array.setAt(0, "a", [||])) |> toEqual(None)
-  );
+    =>
+      expect(Array.setAt(0, "a", [||])) |> toEqual(None)
+    );
 
   test("setAt valid index in non-empty array", () =>
-    expect(Array.setAt(1, "a", [|"0", "1", "2"|])) |> toEqual(Some([|"0", "a", "2"|]))
+    expect(Array.setAt(1, "a", [|"0", "1", "2"|]))
+    |> toEqual(Some([|"0", "a", "2"|]))
   );
 
   test("setAt invalid index in non-empty array", () =>

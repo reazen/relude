@@ -87,7 +87,6 @@ describe("ListF", () => {
     expect(ListF.String.map(s => s ++ s, "abc")) |> toEqual("aabbcc")
   );
 
-
   test("Int.sum empty", () =>
     expect(ListF.Int.sum([])) |> toEqual(0)
   );
@@ -99,7 +98,6 @@ describe("ListF", () => {
   test("Int.sum many", () =>
     expect(ListF.Int.sum([1, 3, 5])) |> toEqual(9)
   );
-
 
   test("Option.traverse success", () =>
     expect([1, 2, 3, 4] |> ListF.Option.traverse(a => Some(a)))
