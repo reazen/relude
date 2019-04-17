@@ -219,7 +219,7 @@ let sort =
 };
 
 /* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
-let distinctBy: (('a, 'a) => bool, array('a)) => array('a) =
+let distinctBy: 'a. (('a, 'a) => bool, array('a)) => array('a) =
   (eq, xs) =>
     Relude_Array_Types.foldLeft(
       /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
@@ -229,6 +229,11 @@ let distinctBy: (('a, 'a) => bool, array('a)) => array('a) =
       [||],
       xs,
     );
+
+let distinct = (type a, eqA: (module EQ with type t = a), xs) => {
+  module EqA = (val eqA);
+  distinctBy(EqA.eq, xs);
+};
 
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>

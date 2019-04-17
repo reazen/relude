@@ -162,6 +162,11 @@ let filter: ('a => bool, array('a)) => array('a);
 let filterWithIndex: (('a, int) => bool, array('a)) => array('a);
 let find: ('a => bool, array('a)) => option('a);
 let findWithIndex: (('a, int) => bool, array('a)) => option('a);
+let contains:
+  ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) => bool;
+let indexOf:
+  ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
+  option(int);
 let partition: ('a => bool, array('a)) => (array('a), array('a));
 let splitAt: (int, array('a)) => option((array('a), array('a)));
 let prependToAll: ('a, array('a)) => array('a);
@@ -185,6 +190,8 @@ let containsBy: (('a, 'a) => bool, 'a, array('a)) => bool;
 let indexOfBy: (('a, 'a) => bool, 'a, array('a)) => option(int);
 let all: ('a => bool, array('a)) => bool;
 let distinctBy: (('a, 'a) => bool, array('a)) => array('a);
+let distinct:
+  ((module BsAbstract.Interface.EQ with type t = 'a), array('a)) => array('a);
 let map: ('a => 'b, array('a)) => array('b);
 let mapWithIndex: (('a, int) => 'b, array('a)) => array('b);
 let forEach: ('a => unit, array('a)) => unit;
