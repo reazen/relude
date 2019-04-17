@@ -1,7 +1,7 @@
 let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js.String.concat has unexpected argument order */
 
 let concatArray: array(string) => string =
-  strs => Relude_Array.foldLeft((acc, str) => acc ++ str, "", strs);
+  strs => Relude_Array_Types.foldLeft((acc, str) => acc ++ str, "", strs);
 
 let length: string => int = Js.String.length;
 
@@ -75,7 +75,7 @@ let toList: string => list(string) =
     Relude_List_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let toArray: string => array(string) =
-  str => Relude_Array.makeWithIndex(length(str), i => charAtOrThrow(i, str));
+  str => Relude_Array_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List_Types.foldLeft(f, init, toList(str));

@@ -259,3 +259,53 @@ module IsoList: {
   let fromList: list('a) => t('a);
   let toList: t('a) => list('a);
 };
+
+module String: {
+  let eq: (array(string), array(string)) => bool;
+  let contains: (string, array(string)) => bool;
+  let indexOf: (string, array(string)) => option(int);
+  let distinct: array(string) => array(string);
+  let remove: (string, array(string)) => array(string);
+  let removeEach: (string, array(string)) => array(string);
+  let fold: array(string) => string;
+  let join: array(string) => string;
+  let intercalate: (string, array(string)) => string;
+  let joinWith: (string, array(string)) => string;
+  let sort: array(string) => array(string);
+};
+
+module Int: {
+  let eq: (array(int), array(int)) => bool;
+  let contains: (int, array(int)) => bool;
+  let indexOf: (int, array(int)) => option(int);
+  let distinct: array(int) => array(int);
+  let remove: (int, array(int)) => array(int);
+  let removeEach: (int, array(int)) => array(int);
+  let sort: array(int) => array(int);
+  let sum: array(int) => int;
+  let product: array(int) => int;
+};
+
+module Float: {
+  let eq: (array(float), array(float)) => bool;
+  let contains: (float, array(float)) => bool;
+  let indexOf: (float, array(float)) => option(int);
+  let distinct: array(float) => array(float);
+  let remove: (float, array(float)) => array(float);
+  let removeEach: (float, array(float)) => array(float);
+  let sort: array(float) => array(float);
+  let sum: array(float) => float;
+  let product: array(float) => float;
+};
+
+module Option: {
+  let traverse: ('a => option('a), array('a)) => option(array('a));
+  let sequence: array(option('a)) => option(array('a));
+};
+
+module Result: {
+  let traverse:
+    ('a => Belt.Result.t('b, 'c), array('a)) => Belt.Result.t(array('b), 'c);
+
+  let sequence: array(Belt.Result.t('a, 'c)) => Belt.Result.t(array('a), 'c);
+};
