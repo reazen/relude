@@ -198,34 +198,14 @@ module Float: {
 };
 
 module Option: {
-  module Traversable = BsAbstract.Functors.ListF.Option.Traversable;
   let traverse: ('a => option('a), list('a)) => option(list('a));
   let sequence: list(option('a)) => option(list('a));
 };
 module Result: {
-  module Traversable:
-    (Error: BsAbstract.Interface.TYPE) =>
-     {
-      type t('a) = list('a);
-      let map: ('a => 'b, t('a)) => t('b);
-      let fold_left: (('a, 'b) => 'a, 'a, t('b)) => 'a;
-      let fold_right: (('b, 'a) => 'a, 'a, t('b)) => 'a;
-      module Fold_Map:
-        (M: BsAbstract.Interface.MONOID) =>
-         {let fold_map: ('a => M.t, t('a)) => M.t;};
-      module Fold_Map_Any:
-        (M: BsAbstract.Interface.MONOID_ANY) =>
-         {let fold_map: ('a => M.t('a), t('a)) => M.t('a);};
-      module Fold_Map_Plus:
-        (P: BsAbstract.Interface.PLUS) =>
-         {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
-      type applicative_t('a) = BsAbstract.Result.Applicative(Error).t('a);
-      let traverse:
-        ('a => applicative_t('b), t('a)) => applicative_t(t('b));
-      let sequence: t(applicative_t('a)) => applicative_t(t('a));
-    };
   let traverse:
     ('a => Belt.Result.t('b, 'c), list('a)) => Belt.Result.t(list('b), 'c);
+
+  let sequence: list(Belt.Result.t('a, 'c)) => Belt.Result.t(list('a), 'c);
 };
 module Validation: {
   module Traversable:

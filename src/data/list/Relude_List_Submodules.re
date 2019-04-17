@@ -4,7 +4,7 @@
  These are here to avoid circular dependencies between the base modules like List and Option, etc.
 
  E.g.
- List.String.show
+ List.String.eq
  List.Float.min
  List.Option.traverse
  List.Result.traverse
@@ -72,26 +72,27 @@ module Option = {
 };
 
 module Result = {
-  module Traversable = (Error: BsAbstract.Interface.TYPE) =>
-    BsAbstract.List.Traversable((BsAbstract.Result.Applicative(Error)));
-
   /*
    Traversing with Result has fail fast semantics, and errors are not collected.
    */
   let traverse =
-      (
-        type a,
-        type b,
-        type e,
-        f: a => Belt.Result.t(b, e), /* Each a produces a Result with a success value or a single error value */
-        list: list(a),
-      )
-      : Belt.Result.t(list(b), e) => {
-    module Error = {
-      type t = e;
-    };
-    module Traversable = Traversable(Error);
-    Traversable.traverse(f, list);
+      (type e, f: 'a => Belt.Result.t('b, e), list: list('a))
+      : Belt.Result.t(list('b), e) => {
+    module ResultFixedError =
+      Relude_Result.Applicative({
+        type t = e;
+      });
+    module TraverseResult = Relude_List_Types.Traversable(ResultFixedError);
+    TraverseResult.traverse(f, list);
+  };
+
+  let sequence = (type e, xs): Belt.Result.t(list('a), e) => {
+    module ResultFixedError =
+      Relude_Result.Applicative({
+        type t = e;
+      });
+    module TraverseResult = Relude_List_Types.Traversable(ResultFixedError);
+    TraverseResult.sequence(xs);
   };
 };
 

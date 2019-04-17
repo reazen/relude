@@ -222,7 +222,6 @@ let sort =
 let distinctBy: 'a. (('a, 'a) => bool, array('a)) => array('a) =
   (eq, xs) =>
     Relude_Array_Types.foldLeft(
-      /* foldRight would probably be faster with cons, but you lose the original ordering on the list */
       (acc, curr) =>
         Relude_Array_Types.containsBy(eq, curr, acc)
           ? acc : append(curr, acc),
@@ -230,9 +229,39 @@ let distinctBy: 'a. (('a, 'a) => bool, array('a)) => array('a) =
       xs,
     );
 
+let removeBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
+  (innerEq, v, xs) =>
+    Relude_Array_Types.foldLeft(
+      ((found, ys), x) =>
+        found
+          ? (true, append(x, ys))
+          : innerEq(v, x) ? (true, ys) : (false, append(x, ys)),
+      (false, [||]),
+      xs,
+    )
+    |> snd;
+
+let removeEachBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
+  (innerEq, x, xs) =>
+    Relude_Array_Types.foldLeft(
+      (ys, y) => innerEq(x, y) ? ys : append(y, ys),
+      [||],
+      xs,
+    );
+
 let distinct = (type a, eqA: (module EQ with type t = a), xs) => {
   module EqA = (val eqA);
   distinctBy(EqA.eq, xs);
+};
+
+let remove = (type a, eqA: (module EQ with type t = a), x, xs) => {
+  module EqA = (val eqA);
+  removeBy(EqA.eq, x, xs);
+};
+
+let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {
+  module EqA = (val eqA);
+  removeEachBy(EqA.eq, x, xs);
 };
 
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
