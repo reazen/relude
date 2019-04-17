@@ -139,13 +139,6 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
          },
        );
 
-let catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
-  (eToIOA, ioA) =>
-    switch (ioA) {
-    | Throw(e) => eToIOA(e)
-    | _ => ioA
-    };
-
 let tries: 'a. (unit => 'a) => t('a, exn) =
   getA =>
     SuspendIO(
@@ -383,6 +376,34 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
                   ),
            )
       }
+    };
+
+let rec catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
+  (eToIOA, ioA) =>
+    switch (ioA) {
+    | Throw(e) => eToIOA(e)
+    | Async(onDone) =>
+      Async(
+        (
+          onDone' =>
+            onDone(result =>
+              (
+                switch (result) {
+                | Ok(good) => Pure(good)
+                | Error(e) => eToIOA(e)
+                }
+              )
+              |> unsafeRunAsync(onDone')
+            )
+        ),
+      )
+    | SuspendIO(getIOA) => getIOA() |> catchError(eToIOA)
+    | Pure(a) => Pure(a)
+    | Suspend(getA) => Suspend(getA)
+    /* Not too sure about Map/FlatMap. It feels like they should also get piped through
+       the eToIOA but the compile does not like that one bit */
+    | Map(rToA, ioR) => Map(rToA, ioR)
+    | FlatMap(rToIOA, ioR) => FlatMap(rToIOA, ioR)
     };
 
 let delay: 'e. int => t(unit, 'e) =
