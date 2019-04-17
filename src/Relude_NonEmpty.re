@@ -22,10 +22,7 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
   let toSequence: t('a) => TailSequence.t('a) =
     fun
     | NonEmpty(head, tail) =>
-      TailSequence.MonoidAny.append(
-        TailSequence.Monad.pure(head),
-        tail,
-      );
+      TailSequence.MonoidAny.append(TailSequence.Monad.pure(head), tail);
 
   let cons: ('a, t('a)) => t('a) =
     (head, tailNonEmpty) => NonEmpty(head, toSequence(tailNonEmpty));
@@ -237,11 +234,7 @@ module List =
       Relude_List_Types.intercalate((module BsAbstract.String.Monoid));
     let eqBy = Relude_List_Types.eqBy;
     let showBy = Relude_List_Types.showBy;
-    module SemigroupAny = Relude_List_Types.SemigroupAny;
     module MonoidAny = Relude_List_Types.MonoidAny;
-    module Functor = Relude_List_Types.Functor;
-    module Apply = Relude_List_Types.Apply;
-    module Applicative = Relude_List_Types.Applicative;
     module Monad = Relude_List_Types.Monad;
     module Foldable = Relude_List_Types.Foldable;
     module Traversable = Relude_List_Types.Traversable;
@@ -250,4 +243,23 @@ module List =
   });
 
 /* NonEmpty.Array */
-module Array = NonEmptyF(Relude_Array.Sequence);
+module Array =
+  NonEmptyF({
+    type t('a) = array('a);
+    let length = Relude_Array.length;
+    let isEmpty = Relude_Array.isEmpty;
+    let isNotEmpty = Relude_Array.isNotEmpty;
+    let head = Relude_Array.head;
+    let tail = Relude_Array.tail;
+    let tailOrEmpty = Relude_Array.tailOrEmpty;
+    let eqBy = Relude_Array.eqBy;
+    let showBy = Relude_Array.showBy;
+    let mkString = Relude_Array.mkString;
+
+    module MonoidAny = Relude_Array.MonoidAny;
+    module Monad = Relude_Array.Monad;
+    module Foldable = Relude_Array.Foldable;
+    module Traversable = Relude_Array.Traversable;
+    module Eq = Relude_Array_Types.Eq;
+    module Show = Relude_Array_Types.Show;
+  });

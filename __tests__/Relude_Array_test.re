@@ -150,11 +150,10 @@ describe("Array", () => {
     expect(Array.at(10, [|0, 10, 20, 30|])) |> toEqual(None)
   );
 
-  test("setAt empty array", ()
-    /* Apparently setAt 0 doesn't work on an empty array... */
-    =>
-      expect(Array.setAt(0, "a", [||])) |> toEqual(None)
-    );
+  /* Apparently setAt 0 doesn't work on an empty array... */
+  test("setAt empty array", () =>
+    expect(Array.setAt(0, "a", [||])) |> toEqual(None)
+  );
 
   test("setAt valid index in non-empty array", () =>
     expect(Array.setAt(1, "a", [|"0", "1", "2"|]))
@@ -429,8 +428,13 @@ describe("Array", () => {
     |> toEqual([|(-1), 0, 1, 2, 3, 5|])
   );
 
+  test("sortBy", () =>
+    expect(Array.sortBy(Int.compare, [|2, 0, 1, 3, 5, (-1)|]))
+    |> toEqual([|(-1), 0, 1, 2, 3, 5|])
+  );
+
   test("sort", () =>
-    expect(Array.sort(Int.compare, [|2, 0, 1, 3, 5, (-1)|]))
+    expect(Array.sort((module Int.Ord), [|2, 0, 1, 3, 5, (-1)|]))
     |> toEqual([|(-1), 0, 1, 2, 3, 5|])
   );
 
@@ -438,22 +442,23 @@ describe("Array", () => {
     expect(Array.reverse([|1, 2, 3, 4, 5|])) |> toEqual([|5, 4, 3, 2, 1|])
   );
 
-  test("contains false", () =>
-    expect(Array.contains(Int.eq, 10, [|0, 1, 2, 3, 4|])) |> toEqual(false)
+  test("containsBy false", () =>
+    expect(Array.containsBy(Int.eq, 10, [|0, 1, 2, 3, 4|]))
+    |> toEqual(false)
   );
 
-  test("indexOf success", () =>
-    expect(Array.indexOf(Int.eq, 30, [|0, 10, 20, 30, 40|]))
+  test("indexOfBy success", () =>
+    expect(Array.indexOfBy(Int.eq, 30, [|0, 10, 20, 30, 40|]))
     |> toEqual(Some(3))
   );
 
-  test("indexOf failure", () =>
-    expect(Array.indexOf(Int.eq, 500, [|0, 10, 20, 30, 40|]))
+  test("indexOfBy failure", () =>
+    expect(Array.indexOfBy(Int.eq, 500, [|0, 10, 20, 30, 40|]))
     |> toEqual(None)
   );
 
-  test("contains true", () =>
-    expect(Array.contains(Int.eq, 3, [|0, 1, 2, 3, 4|])) |> toEqual(true)
+  test("containsBy true", () =>
+    expect(Array.containsBy(Int.eq, 3, [|0, 1, 2, 3, 4|])) |> toEqual(true)
   );
 
   test("any empty", () =>
@@ -480,8 +485,8 @@ describe("Array", () => {
     expect(Array.all(a => a < 3, [|0, 1, 2, 3|])) |> toEqual(false)
   );
 
-  test("distinct", () =>
-    expect(Array.distinct(Int.eq, [|6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5|]))
+  test("distinctBy", () =>
+    expect(Array.distinctBy(Int.eq, [|6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5|]))
     |> toEqual([|6, 1, 2, 3, 4, 5|])
   );
 

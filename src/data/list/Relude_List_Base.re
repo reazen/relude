@@ -2,12 +2,8 @@ open BsAbstract.Interface;
 
 /**
  * Relude.List.Base includes list-specific functions that aren't derived from
- * typeclass membership and don't know or care about the inner type.
+ * typeclass membership.
  */
-
-/*******************************************************************************
- * List-specific utilities (construct, destructure, transform)
- ******************************************************************************/
 
 // TODO: PureScript has a `FunctorWithIndex` typeclass
 let mapWithIndex: 'a 'b. (('a, int) => 'b, list('a)) => list('b) =
