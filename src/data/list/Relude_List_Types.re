@@ -79,15 +79,15 @@ module Eq = (EqA: EQ) => {
 };
 
 let eq = (type a, eqA: (module EQ with type t = a), xs, ys) => {
-  module ListEq = Eq((val eqA));
-  ListEq.eq(xs, ys);
+  module EqA = (val eqA);
+  eqBy(EqA.eq, xs, ys);
 };
 
 let showBy: ('a => string, list('a)) => string =
   (innerShow, xs) => {
     // TODO: change to Relude_String_Types when that exists
     let join = intercalate((module BsAbstract.String.Monoid));
-    "[" ++ join(", ", Functor.map(innerShow, xs)) ++ "]";
+    "[" ++ join(", ", map(innerShow, xs)) ++ "]";
   };
 
 module Show = (ShowA: SHOW) => {
@@ -96,6 +96,6 @@ module Show = (ShowA: SHOW) => {
 };
 
 let show = (type a, showA: (module SHOW with type t = a), xs) => {
-  module ListShow = Show((val showA));
-  ListShow.show(xs);
+  module ShowA = (val showA);
+  showBy(ShowA.show, xs);
 };
