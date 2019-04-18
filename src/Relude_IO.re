@@ -389,7 +389,7 @@ let rec catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
             onDone(result =>
               (
                 switch (result) {
-                | Ok(good) => Pure(good)
+                | Ok(a) => Pure(a)
                 | Error(e) => eToIOA(e)
                 }
               )
@@ -398,12 +398,61 @@ let rec catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
         ),
       )
     | SuspendIO(getIOA) => getIOA() |> catchError(eToIOA)
-    | Pure(a) => Pure(a)
     | Suspend(getA) => Suspend(getA)
-    /* Not too sure about Map/FlatMap. It feels like they should also get piped through
-       the eToIOA but the compile does not like that one bit */
-    | Map(rToA, ioR) => Map(rToA, ioR)
-    | FlatMap(rToIOA, ioR) => FlatMap(rToIOA, ioR)
+    | Pure(a) => Pure(a)
+    | Map(rToA, ioR) =>
+      switch (ioR) {
+      | Throw(e) => eToIOA(e)
+      | Async(onDone) =>
+        Async(
+          (
+            onDone' =>
+              onDone(result =>
+                (
+                  switch (result) {
+                  | Ok(r) => Pure(rToA(r)) |> catchError(eToIOA)
+                  | Error(e) => eToIOA(e)
+                  }
+                )
+                |> unsafeRunAsync(onDone')
+              )
+          ),
+        )
+      | SuspendIO(getIOR) => Map(rToA, getIOR()) |> catchError(eToIOA)
+      | Suspend(getR) => Map(rToA, Pure(getR())) |> catchError(eToIOA)
+      | Pure(r) => Pure(rToA(r)) |> catchError(eToIOA)
+      | Map(r2ToR, ioR2) => Map(r2ToR >> rToA, ioR2) |> catchError(eToIOA)
+      | FlatMap(r2ToIOR, ioR2) =>
+        FlatMap((r2 => Map(rToA, r2ToIOR(r2))), ioR2) |> catchError(eToIOA)
+      }
+    | FlatMap(rToIOA, ioR) =>
+      switch (ioR) {
+      | Throw(e) => eToIOA(e)
+      | Async(onDone) =>
+        Async(
+          (
+            onDone' =>
+              onDone(result =>
+                (
+                  switch (result) {
+                  | Ok(r) => rToIOA(r) |> catchError(eToIOA)
+                  | Error(e) => eToIOA(e)
+                  }
+                )
+                |> unsafeRunAsync(onDone')
+              )
+          ),
+        )
+      | SuspendIO(getIOR) => FlatMap(rToIOA, getIOR()) |> catchError(eToIOA)
+      | Suspend(getR) =>
+        FlatMap(rToIOA, Pure(getR())) |> catchError(eToIOA)
+      | Pure(r) => rToIOA(r) |> catchError(eToIOA)
+      | Map(r2ToR, ioR2) =>
+        FlatMap(r2ToR >> rToIOA, ioR2) |> catchError(eToIOA)
+      | FlatMap(r2ToIOR, ioR2) =>
+        FlatMap((r2 => FlatMap(rToIOA, r2ToIOR(r2))), ioR2)
+        |> catchError(eToIOA)
+      }
     };
 
 let delay: 'e. int => t(unit, 'e) =
