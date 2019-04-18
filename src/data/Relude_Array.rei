@@ -147,7 +147,6 @@ let max:
   ((module BsAbstract.Interface.ORD with type t = 'a), array('a)) =>
   option('a);
 
-
 let fromList: list('a) => array('a);
 let toList: array('a) => list('a);
 
@@ -304,6 +303,8 @@ module String: {
   let remove: (string, array(string)) => array(string);
   let removeEach: (string, array(string)) => array(string);
   let eq: (array(string), array(string)) => bool;
+  let min: array(string) => option(string);
+  let max: array(string) => option(string);
   let sort: array(string) => array(string);
   let fold: array(string) => string;
   let join: array(string) => string;
@@ -318,6 +319,8 @@ module Int: {
   let remove: (int, array(int)) => array(int);
   let removeEach: (int, array(int)) => array(int);
   let eq: (array(int), array(int)) => bool;
+  let min: array(int) => option(int);
+  let max: array(int) => option(int);
   let sort: array(int) => array(int);
   let sum: array(int) => int;
   let product: array(int) => int;
@@ -330,6 +333,8 @@ module Float: {
   let remove: (float, array(float)) => array(float);
   let removeEach: (float, array(float)) => array(float);
   let eq: (array(float), array(float)) => bool;
+  let min: array(float) => option(float);
+  let max: array(float) => option(float);
   let sort: array(float) => array(float);
   let sum: array(float) => float;
   let product: array(float) => float;

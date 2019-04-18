@@ -27,6 +27,7 @@ module OfEq = (E: EQ) => {
 
 module OfOrd = (O: ORD) => {
   include OfEq(O);
+  include Relude_List_Types.FoldableOfOrd(O);
   let sort = Relude_List_Base.sortBy(O.compare);
 };
 

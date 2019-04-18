@@ -10,6 +10,7 @@ module OfEq = (E: EQ) => {
 
 module OfOrd = (O: ORD) => {
   include OfEq(O);
+  include Relude_Array_Types.FoldableOfOrd(O);
   let sort = Relude_Array_Base.sortBy(O.compare);
 };
 

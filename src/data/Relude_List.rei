@@ -175,6 +175,8 @@ module String: {
   let remove: (string, list(string)) => list(string);
   let removeEach: (string, list(string)) => list(string);
   let eq: (list(string), list(string)) => bool;
+  let min: list(string) => option(string);
+  let max: list(string) => option(string);
   let sort: list(string) => list(string);
   let fold: list(string) => string;
   let join: list(string) => string;
@@ -189,6 +191,8 @@ module Int: {
   let remove: (int, list(int)) => list(int);
   let removeEach: (int, list(int)) => list(int);
   let eq: (list(int), list(int)) => bool;
+  let min: list(int) => option(int);
+  let max: list(int) => option(int);
   let sort: list(int) => list(int);
   let sum: list(int) => int;
   let product: list(int) => int;
@@ -201,6 +205,8 @@ module Float: {
   let remove: (float, list(float)) => list(float);
   let removeEach: (float, list(float)) => list(float);
   let eq: (list(float), list(float)) => bool;
+  let min: list(float) => option(float);
+  let max: list(float) => option(float);
   let sort: list(float) => list(float);
   let sum: list(float) => float;
   let product: list(float) => float;

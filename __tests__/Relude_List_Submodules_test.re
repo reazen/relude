@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module ListF = Relude_List_Submodules;
+module ListF = Relude.List;
 
 describe("ListF", () => {
   test("String.eq empties true", () =>
@@ -18,6 +18,18 @@ describe("ListF", () => {
 
   test("String.eq different size false", () =>
     expect(ListF.String.eq(["a", "c"], ["a"])) |> toEqual(false)
+  );
+
+  test("String.min empty", () =>
+    expect(ListF.String.min([])) |> toEqual(None)
+  );
+
+  test("String.min non-empty", () =>
+    expect(ListF.String.min(["foo", "bar"])) |> toEqual(Some("bar"))
+  );
+
+  test("String.max non-empty", () =>
+    expect(ListF.String.max(["b", "a", "c"])) |> toEqual(Some("c"))
   );
 
   test("String.contains empty", () =>
