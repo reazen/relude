@@ -59,8 +59,8 @@ describe("ListF", () => {
     |> toEqual(["foo", "bar", "baz"])
   );
 
-  test("String.remove", () =>
-    expect(ListF.String.remove("b", ["b", "a", "b", "c"]))
+  test("String.removeFirst", () =>
+    expect(ListF.String.removeFirst("b", ["b", "a", "b", "c"]))
     |> toEqual(["a", "b", "c"])
   );
 

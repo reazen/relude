@@ -285,11 +285,11 @@ let sort:
   ((module BsAbstract.Interface.ORD with type t = 'a), array('a)) =>
   array('a);
 let distinctBy: (('a, 'a) => bool, array('a)) => array('a);
-let removeBy: (('a, 'a) => bool, 'a, array('a)) => array('a);
+let removeFirstBy: (('a, 'a) => bool, 'a, array('a)) => array('a);
 let removeEachBy: (('a, 'a) => bool, 'a, array('a)) => array('a);
 let distinct:
   ((module BsAbstract.Interface.EQ with type t = 'a), array('a)) => array('a);
-let remove:
+let removeFirst:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
   array('a);
 let removeEach:
@@ -300,7 +300,7 @@ module String: {
   let contains: (string, array(string)) => bool;
   let indexOf: (string, array(string)) => option(int);
   let distinct: array(string) => array(string);
-  let remove: (string, array(string)) => array(string);
+  let removeFirst: (string, array(string)) => array(string);
   let removeEach: (string, array(string)) => array(string);
   let eq: (array(string), array(string)) => bool;
   let min: array(string) => option(string);
@@ -316,7 +316,7 @@ module Int: {
   let contains: (int, array(int)) => bool;
   let indexOf: (int, array(int)) => option(int);
   let distinct: array(int) => array(int);
-  let remove: (int, array(int)) => array(int);
+  let removeFirst: (int, array(int)) => array(int);
   let removeEach: (int, array(int)) => array(int);
   let eq: (array(int), array(int)) => bool;
   let min: array(int) => option(int);
@@ -330,7 +330,7 @@ module Float: {
   let contains: (float, array(float)) => bool;
   let indexOf: (float, array(float)) => option(int);
   let distinct: array(float) => array(float);
-  let remove: (float, array(float)) => array(float);
+  let removeFirst: (float, array(float)) => array(float);
   let removeEach: (float, array(float)) => array(float);
   let eq: (array(float), array(float)) => bool;
   let min: array(float) => option(float);

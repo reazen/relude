@@ -523,28 +523,28 @@ describe("List", () => {
     expect(List.all(a => a < 3, [0, 1, 2, 3])) |> toEqual(false)
   );
 
-  test("removeBy empty", () =>
-    expect(List.removeBy(Int.eq, 0, [])) |> toEqual([])
+  test("removeFirstBy empty", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [])) |> toEqual([])
   );
 
-  test("removeBy single match", () =>
-    expect(List.removeBy(Int.eq, 0, [0])) |> toEqual([])
+  test("removeFirstBy single match", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [0])) |> toEqual([])
   );
 
-  test("removeBy single not a match", () =>
-    expect(List.removeBy(Int.eq, 0, [1])) |> toEqual([1])
+  test("removeFirstBy single not a match", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [1])) |> toEqual([1])
   );
 
-  test("removeBy one match at beginning", () =>
-    expect(List.removeBy(Int.eq, 0, [0, 1, 2])) |> toEqual([1, 2])
+  test("removeFirstBy one match at beginning", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [0, 1, 2])) |> toEqual([1, 2])
   );
 
-  test("removeBy one match at end", () =>
-    expect(List.removeBy(Int.eq, 2, [0, 1, 2])) |> toEqual([0, 1])
+  test("removeFirstBy one match at end", () =>
+    expect(List.removeFirstBy(Int.eq, 2, [0, 1, 2])) |> toEqual([0, 1])
   );
 
-  test("removeBy many matches", () =>
-    expect(List.removeBy(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
+  test("removeFirstBy many matches", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
   );
 
   test("removeEachBy empty", () =>

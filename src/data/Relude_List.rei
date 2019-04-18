@@ -157,11 +157,11 @@ let sortBy:
 let sort:
   ((module BsAbstract.Interface.ORD with type t = 'a), list('a)) => list('a);
 let distinctBy: (('a, 'a) => bool, list('a)) => list('a);
-let removeBy: (('a, 'a) => bool, 'a, list('a)) => list('a);
+let removeFirstBy: (('a, 'a) => bool, 'a, list('a)) => list('a);
 let removeEachBy: (('a, 'a) => bool, 'a, list('a)) => list('a);
 let distinct:
   ((module BsAbstract.Interface.EQ with type t = 'a), list('a)) => list('a);
-let remove:
+let removeFirst:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, list('a)) =>
   list('a);
 let removeEach:
@@ -172,7 +172,7 @@ module String: {
   let contains: (string, list(string)) => bool;
   let indexOf: (string, list(string)) => option(int);
   let distinct: list(string) => list(string);
-  let remove: (string, list(string)) => list(string);
+  let removeFirst: (string, list(string)) => list(string);
   let removeEach: (string, list(string)) => list(string);
   let eq: (list(string), list(string)) => bool;
   let min: list(string) => option(string);
@@ -188,7 +188,7 @@ module Int: {
   let contains: (int, list(int)) => bool;
   let indexOf: (int, list(int)) => option(int);
   let distinct: list(int) => list(int);
-  let remove: (int, list(int)) => list(int);
+  let removeFirst: (int, list(int)) => list(int);
   let removeEach: (int, list(int)) => list(int);
   let eq: (list(int), list(int)) => bool;
   let min: list(int) => option(int);
@@ -202,7 +202,7 @@ module Float: {
   let contains: (float, list(float)) => bool;
   let indexOf: (float, list(float)) => option(int);
   let distinct: list(float) => list(float);
-  let remove: (float, list(float)) => list(float);
+  let removeFirst: (float, list(float)) => list(float);
   let removeEach: (float, list(float)) => list(float);
   let eq: (list(float), list(float)) => bool;
   let min: list(float) => option(float);

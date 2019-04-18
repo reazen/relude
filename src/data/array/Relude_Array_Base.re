@@ -218,7 +218,7 @@ let distinctBy: 'a. (('a, 'a) => bool, array('a)) => array('a) =
       xs,
     );
 
-let removeBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
+let removeFirstBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
   (innerEq, v, xs) =>
     Relude_Array_Types.foldLeft(
       ((found, ys), x) =>
@@ -243,9 +243,9 @@ let distinct = (type a, eqA: (module EQ with type t = a), xs) => {
   distinctBy(EqA.eq, xs);
 };
 
-let remove = (type a, eqA: (module EQ with type t = a), x, xs) => {
+let removeFirst = (type a, eqA: (module EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
-  removeBy(EqA.eq, x, xs);
+  removeFirstBy(EqA.eq, x, xs);
 };
 
 let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {

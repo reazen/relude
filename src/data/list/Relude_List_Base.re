@@ -199,8 +199,7 @@ let distinctBy: 'a. (('a, 'a) => bool, list('a)) => list('a) =
     )
     |> reverse;
 
-// TODO: rename to removeFirstBy
-let removeBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
+let removeFirstBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
   (innerEq, v, xs) => {
     let go = ((found, ys), x) =>
       found
@@ -224,9 +223,9 @@ let distinct = (type a, eqA: (module EQ with type t = a), xs) => {
   distinctBy(EqA.eq, xs);
 };
 
-let remove = (type a, eqA: (module EQ with type t = a), x, xs) => {
+let removeFirst = (type a, eqA: (module EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
-  removeBy(EqA.eq, x, xs);
+  removeFirstBy(EqA.eq, x, xs);
 };
 
 let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {

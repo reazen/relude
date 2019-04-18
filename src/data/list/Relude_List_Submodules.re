@@ -20,7 +20,7 @@ open BsAbstract.Interface;
 module OfEq = (E: EQ) => {
   include Relude_List_Types.FoldableOfEq(E);
   let distinct = Relude_List_Base.distinctBy(E.eq);
-  let remove = Relude_List_Base.removeBy(E.eq);
+  let removeFirst = Relude_List_Base.removeFirstBy(E.eq);
   let removeEach = Relude_List_Base.removeEachBy(E.eq);
   let eq = Relude_List_Types.eqBy(E.eq);
 };
