@@ -549,8 +549,8 @@ describe("Array", () => {
     |> toBe(false)
   );
 
-  test("mkString", () =>
-    expect(Array.mkString(", ", [|"a", "b", "c"|])) |> toEqual("a, b, c")
+  test("Array.String.joinWith", () =>
+    expect(Array.String.joinWith(", ", [|"a", "b", "c"|])) |> toEqual("a, b, c")
   );
 
   test("showBy", () =>

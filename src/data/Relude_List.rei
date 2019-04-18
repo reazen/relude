@@ -200,12 +200,14 @@ module Option: {
   let traverse: ('a => option('a), list('a)) => option(list('a));
   let sequence: list(option('a)) => option(list('a));
 };
+
 module Result: {
   let traverse:
     ('a => Belt.Result.t('b, 'c), list('a)) => Belt.Result.t(list('b), 'c);
 
   let sequence: list(Belt.Result.t('a, 'c)) => Belt.Result.t(list('a), 'c);
 };
+
 module Validation: {
   module Traversable:
     (
