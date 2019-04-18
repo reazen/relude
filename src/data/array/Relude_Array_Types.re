@@ -56,8 +56,6 @@ let flatMap = MonadFunctions.flatMap;
 let flatten = MonadFunctions.flatten;
 
 include Relude_Foldables.Functions(Foldable);
-// TODO: remove this
-let mkString = intercalate((module BsAbstract.String.Monoid));
 
 let fromList = IsoList.fromList;
 let toList = IsoList.toList;

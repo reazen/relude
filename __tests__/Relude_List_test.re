@@ -458,6 +458,47 @@ describe("List", () => {
     |> toEqual(None)
   );
 
+  test("minBy empty", () =>
+    expect(List.minBy(Int.Ord.compare, [])) |> toEqual(None)
+  );
+
+  test("minBy one", () =>
+    expect(List.minBy(Int.Ord.compare, [0])) |> toEqual(Some(0))
+  );
+
+  test("minBy many", () =>
+    expect(List.minBy(Int.Ord.compare, [3, 1, 2])) |> toEqual(Some(1))
+  );
+
+  test("min empty", () =>
+    expect(List.min((module Relude_String.Ord), [])) |> toEqual(None)
+  );
+
+  test("min many", () =>
+    expect(List.min((module Relude_String.Ord), ["b", "a", "c"]))
+    |> toEqual(Some("a"))
+  );
+
+  test("maxBy empty", () =>
+    expect(List.maxBy(Int.Ord.compare, [])) |> toEqual(None)
+  );
+
+  test("maxBy one", () =>
+    expect(List.maxBy(Int.Ord.compare, [0])) |> toEqual(Some(0))
+  );
+
+  test("maxBy many", () =>
+    expect(List.maxBy(Int.Ord.compare, [3, 1, 2])) |> toEqual(Some(3))
+  );
+
+  test("max empty", () =>
+    expect(List.max((module Int.Ord), [])) |> toEqual(None)
+  );
+
+  test("max many", () =>
+    expect(List.max((module Int.Ord), [3, 1, 2])) |> toEqual(Some(3))
+  );
+
   test("any empty", () =>
     expect(List.any(a => a > 2, [])) |> toEqual(false)
   );

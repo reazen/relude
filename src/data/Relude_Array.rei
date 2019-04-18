@@ -109,6 +109,10 @@ let any: ('a => bool, array('a)) => bool;
 let all: ('a => bool, array('a)) => bool;
 let containsBy: (('a, 'a) => bool, 'a, array('a)) => bool;
 let indexOfBy: (('a, 'a) => bool, 'a, array('a)) => option(int);
+let minBy:
+  (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => option('a);
+let maxBy:
+  (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => option('a);
 let countBy: ('a => bool, array('a)) => int;
 
 /**
@@ -136,6 +140,13 @@ let contains:
 let indexOf:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
   option(int);
+let min:
+  ((module BsAbstract.Interface.ORD with type t = 'a), array('a)) =>
+  option('a);
+let max:
+  ((module BsAbstract.Interface.ORD with type t = 'a), array('a)) =>
+  option('a);
+
 
 let fromList: list('a) => array('a);
 let toList: array('a) => list('a);

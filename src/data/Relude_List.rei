@@ -59,6 +59,10 @@ let any: ('a => bool, list('a)) => bool;
 let all: ('a => bool, list('a)) => bool;
 let containsBy: (('a, 'a) => bool, 'a, list('a)) => bool;
 let indexOfBy: (('a, 'a) => bool, 'a, list('a)) => option(int);
+let minBy:
+  (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => option('a);
+let maxBy:
+  (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => option('a);
 let countBy: ('a => bool, list('a)) => int;
 let length: list('a) => int;
 let forEach: ('a => unit, list('a)) => unit;
@@ -74,6 +78,12 @@ let contains:
 let indexOf:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, list('a)) =>
   option(int);
+let min:
+  ((module BsAbstract.Interface.ORD with type t = 'a), list('a)) =>
+  option('a);
+let max:
+  ((module BsAbstract.Interface.ORD with type t = 'a), list('a)) =>
+  option('a);
 
 /**
  * The following functions come from List's membership in IsoArray

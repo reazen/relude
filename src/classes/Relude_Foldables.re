@@ -34,6 +34,30 @@ module Functions = (F: FOLDABLE) => {
       )
       |> snd;
 
+  let minBy: 'a. (('a, 'a) => ordering, F.t('a)) => option('a) =
+    (f, xs) =>
+      foldLeft(
+        (min, x) =>
+          switch (min) {
+          | None => Some(x)
+          | Some(y) => f(x, y) == `less_than ? Some(x) : Some(y)
+          },
+        None,
+        xs,
+      );
+
+  let maxBy: 'a. (('a, 'a) => ordering, F.t('a)) => option('a) =
+    (f, xs) =>
+      foldLeft(
+        (min, x) =>
+          switch (min) {
+          | None => Some(x)
+          | Some(y) => f(x, y) == `greater_than ? Some(x) : Some(y)
+          },
+        None,
+        xs,
+      );
+
   let countBy: 'a. ('a => bool, F.t('a)) => int =
     (f, xs) => foldLeft((count, x) => f(x) ? count + 1 : count, 0, xs);
 
@@ -101,6 +125,15 @@ module Functions = (F: FOLDABLE) => {
   };
 
   /**
+   * When the inner type implements ORD, we can find min and max
+   */
+  module FoldableOfOrd = (O: ORD) => {
+    include FoldableOfEq(O);
+    let min: F.t(O.t) => option(O.t) = minBy(O.compare);
+    let max: F.t(O.t) => option(O.t) = maxBy(O.compare);
+  };
+
+  /**
    * Accumulate all values in the Foldable into a single value that is the same
    * type as the inner type.
    */
@@ -116,12 +149,22 @@ module Functions = (F: FOLDABLE) => {
   };
 
   let contains = (type a, eqA: (module EQ with type t = a), x, xs) => {
-    module FoldableEq = FoldableOfEq((val eqA));
-    FoldableEq.contains(x, xs);
+    module EqA = (val eqA);
+    containsBy(EqA.eq, x, xs);
   };
 
   let indexOf = (type a, eqA: (module EQ with type t = a), x, xs) => {
-    module FoldableEq = FoldableOfEq((val eqA));
-    FoldableEq.indexOf(x, xs);
+    module EqA = (val eqA);
+    indexOfBy(EqA.eq, x, xs);
+  };
+
+  let min = (type a, ordA: (module ORD with type t = a), xs) => {
+    module OrdA = (val ordA);
+    minBy(OrdA.compare, xs);
+  };
+
+  let max = (type a, ordA: (module ORD with type t = a), xs) => {
+    module OrdA = (val ordA);
+    maxBy(OrdA.compare, xs);
   };
 };
