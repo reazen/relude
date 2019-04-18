@@ -225,43 +225,43 @@ describe("Array", () => {
   );
 
   test("take zero from empty array", () =>
-    expect(Array.take(0, [||])) |> toEqual(Some([||]))
+    expect(Array.take(0, [||])) |> toEqual([||])
   );
 
   test("take non-zero from empty array", () =>
-    expect(Array.take(2, [||])) |> toEqual(None)
+    expect(Array.take(2, [||])) |> toEqual([||])
   );
 
   test("take non-zero from short array", () =>
-    expect(Array.take(2, [|1|])) |> toEqual(None)
+    expect(Array.take(2, [|1|])) |> toEqual([|1|])
   );
 
   test("take non-zero from equal array", () =>
-    expect(Array.take(2, [|1, 2|])) |> toEqual(Some([|1, 2|]))
+    expect(Array.take(2, [|1, 2|])) |> toEqual([|1, 2|])
   );
 
   test("take non-zero from long array", () =>
-    expect(Array.take(2, [|1, 2, 3|])) |> toEqual(Some([|1, 2|]))
+    expect(Array.take(2, [|1, 2, 3|])) |> toEqual([|1, 2|])
   );
 
-  test("takeUpTo zero from empty array", () =>
-    expect(Array.takeUpTo(0, [||])) |> toEqual([||])
+  test("takeExactly zero from empty array", () =>
+    expect(Array.takeExactly(0, [||])) |> toEqual(Some([||]))
   );
 
-  test("takeUpTo non-zero from empty array", () =>
-    expect(Array.takeUpTo(2, [||])) |> toEqual([||])
+  test("takeExactly non-zero from empty array", () =>
+    expect(Array.takeExactly(2, [||])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from short array", () =>
-    expect(Array.takeUpTo(2, [|1|])) |> toEqual([|1|])
+  test("takeExactly non-zero from short array", () =>
+    expect(Array.takeExactly(2, [|1|])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from equal array", () =>
-    expect(Array.takeUpTo(2, [|1, 2|])) |> toEqual([|1, 2|])
+  test("takeExactly non-zero from equal array", () =>
+    expect(Array.takeExactly(2, [|1, 2|])) |> toEqual(Some([|1, 2|]))
   );
 
-  test("takeUpTo non-zero from long array", () =>
-    expect(Array.takeUpTo(2, [|1, 2, 3|])) |> toEqual([|1, 2|])
+  test("takeExactly non-zero from long array", () =>
+    expect(Array.takeExactly(2, [|1, 2, 3|])) |> toEqual(Some([|1, 2|]))
   );
 
   test("takeWhile empty array", () =>
@@ -283,43 +283,43 @@ describe("Array", () => {
   );
 
   test("drop zero from empty array", () =>
-    expect(Array.drop(0, [||])) |> toEqual(Some([||]))
+    expect(Array.drop(0, [||])) |> toEqual([||])
   );
 
   test("drop some from short array ", () =>
-    expect(Array.drop(1, [|1, 2|])) |> toEqual(Some([|2|]))
+    expect(Array.drop(1, [|1, 2|])) |> toEqual([|2|])
   );
 
   test("drop some from equal array ", () =>
-    expect(Array.drop(2, [|1, 2|])) |> toEqual(Some([||]))
+    expect(Array.drop(2, [|1, 2|])) |> toEqual([||])
   );
 
   test("drop some from long array ", () =>
-    expect(Array.drop(2, [|1, 2, 3, 4|])) |> toEqual(Some([|3, 4|]))
+    expect(Array.drop(2, [|1, 2, 3, 4|])) |> toEqual([|3, 4|])
   );
 
   test("drop more from long array ", () =>
-    expect(Array.drop(5, [|1, 2, 3, 4|])) |> toEqual(None)
+    expect(Array.drop(5, [|1, 2, 3, 4|])) |> toEqual([||])
   );
 
-  test("dropUpTo zero from empty array", () =>
-    expect(Array.dropUpTo(0, [||])) |> toEqual([||])
+  test("dropExactly zero from empty array", () =>
+    expect(Array.dropExactly(0, [||])) |> toEqual(Some([||]))
   );
 
-  test("dropUpTo some from short array ", () =>
-    expect(Array.dropUpTo(1, [|1, 2|])) |> toEqual([|2|])
+  test("dropExactly some from short array ", () =>
+    expect(Array.dropExactly(1, [|1, 2|])) |> toEqual(Some([|2|]))
   );
 
-  test("dropUpTo some from equal array ", () =>
-    expect(Array.dropUpTo(2, [|1, 2|])) |> toEqual([||])
+  test("dropExactly some from equal array ", () =>
+    expect(Array.dropExactly(2, [|1, 2|])) |> toEqual(Some([||]))
   );
 
-  test("dropUpTo some from long array ", () =>
-    expect(Array.dropUpTo(2, [|1, 2, 3, 4|])) |> toEqual([|3, 4|])
+  test("dropExactly some from long array ", () =>
+    expect(Array.dropExactly(2, [|1, 2, 3, 4|])) |> toEqual(Some([|3, 4|]))
   );
 
-  test("dropUpTo more from long array ", () =>
-    expect(Array.dropUpTo(5, [|1, 2, 3, 4|])) |> toEqual([||])
+  test("dropExactly more from long array ", () =>
+    expect(Array.dropExactly(5, [|1, 2, 3, 4|])) |> toEqual(None)
   );
 
   test("dropWhile empty array", () =>

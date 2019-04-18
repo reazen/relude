@@ -62,7 +62,18 @@ let rec last: 'a. list('a) => option('a) =
   | [x] => Some(x)
   | [_, ...xs] => last(xs);
 
-let take: 'a. (int, list('a)) => option(list('a)) =
+let take: 'a. (int, list('a)) => list('a) =
+  (i, xs) => {
+    let rec go = (acc, count, rest) =>
+      switch (rest) {
+      | _ when count <= 0 => acc
+      | [] => acc
+      | [y, ...ys] => go([y, ...acc], count - 1, ys)
+      };
+    go([], i, xs) |> reverse;
+  };
+
+let takeExactly: 'a. (int, list('a)) => option(list('a)) =
   (i, xs) => {
     let rec go = (acc, count, rest) =>
       switch (rest) {
@@ -77,17 +88,6 @@ let take: 'a. (int, list('a)) => option(list('a)) =
     };
   };
 
-let takeUpTo: 'a. (int, list('a)) => list('a) =
-  (i, xs) => {
-    let rec go = (acc, count, rest) =>
-      switch (rest) {
-      | _ when count <= 0 => acc
-      | [] => acc
-      | [y, ...ys] => go([y, ...acc], count - 1, ys)
-      };
-    go([], i, xs) |> reverse;
-  };
-
 let takeWhile: 'a. ('a => bool, list('a)) => list('a) =
   (f, xs) => {
     let rec go = (acc, rest) =>
@@ -99,16 +99,16 @@ let takeWhile: 'a. ('a => bool, list('a)) => list('a) =
     go([], xs) |> reverse;
   };
 
-let drop: 'a. (int, list('a)) => option(list('a)) =
-  (i, xs) => Belt.List.drop(xs, i);
-
-let rec dropUpTo: 'a. (int, list('a)) => list('a) =
+let rec drop: 'a. (int, list('a)) => list('a) =
   (i, xs) =>
     switch (xs) {
     | [] => []
     | [_, ..._] when i <= 0 => xs
-    | [_, ...ys] => dropUpTo(i - 1, ys)
+    | [_, ...ys] => drop(i - 1, ys)
     };
+
+let dropExactly: 'a. (int, list('a)) => option(list('a)) =
+  (i, xs) => Belt.List.drop(xs, i);
 
 let rec dropWhile: 'a. ('a => bool, list('a)) => list('a) =
   (f, xs) =>

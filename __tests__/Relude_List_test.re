@@ -189,48 +189,48 @@ describe("List", () => {
     expect(List.last([1, 2, 3, 4])) |> toEqual(Some(4))
   );
 
-  test("take negative from list", () =>
-    expect(List.take(-2, [])) |> toEqual(None)
-  );
-
   test("take zero from empty list", () =>
-    expect(List.take(0, [])) |> toEqual(Some([]))
+    expect(List.take(0, [])) |> toEqual([])
   );
 
   test("take non-zero from empty list", () =>
-    expect(List.take(2, [])) |> toEqual(None)
+    expect(List.take(2, [])) |> toEqual([])
   );
 
   test("take non-zero from short list", () =>
-    expect(List.take(2, [1])) |> toEqual(None)
+    expect(List.take(2, [1])) |> toEqual([1])
   );
 
   test("take non-zero from equal list", () =>
-    expect(List.take(2, [1, 2])) |> toEqual(Some([1, 2]))
+    expect(List.take(2, [1, 2])) |> toEqual([1, 2])
   );
 
   test("take non-zero from long list", () =>
-    expect(List.take(2, [1, 2, 3])) |> toEqual(Some([1, 2]))
+    expect(List.take(2, [1, 2, 3])) |> toEqual([1, 2])
   );
 
-  test("takeUpTo zero from empty list", () =>
-    expect(List.takeUpTo(0, [])) |> toEqual([])
+  test("takeExactly negative from list", () =>
+    expect(List.takeExactly(-2, [])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from empty list", () =>
-    expect(List.takeUpTo(2, [])) |> toEqual([])
+  test("takeExactly zero from empty list", () =>
+    expect(List.takeExactly(0, [])) |> toEqual(Some([]))
   );
 
-  test("takeUpTo non-zero from short list", () =>
-    expect(List.takeUpTo(2, [1])) |> toEqual([1])
+  test("takeExactly non-zero from empty list", () =>
+    expect(List.takeExactly(2, [])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from equal list", () =>
-    expect(List.takeUpTo(2, [1, 2])) |> toEqual([1, 2])
+  test("takeExactly non-zero from short list", () =>
+    expect(List.takeExactly(2, [1])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from long list", () =>
-    expect(List.takeUpTo(2, [1, 2, 3])) |> toEqual([1, 2])
+  test("takeExactly non-zero from equal list", () =>
+    expect(List.takeExactly(2, [1, 2])) |> toEqual(Some([1, 2]))
+  );
+
+  test("takeExactly non-zero from long list", () =>
+    expect(List.takeExactly(2, [1, 2, 3])) |> toEqual(Some([1, 2]))
   );
 
   test("takeWhile empty list", () =>
@@ -250,60 +250,60 @@ describe("List", () => {
     |> toEqual([0, 1, 2, 3])
   );
 
+  test("drop negative from empty list", () =>
+    expect(List.drop(-2, [])) |> toEqual([])
+  );
+
+  test("drop negative from nonempty list", () =>
+    expect(List.drop(-2, [1, 2])) |> toEqual([1, 2])
+  );
+
   test("drop zero from empty list", () =>
-    expect(List.drop(0, [])) |> toEqual(Some([]))
+    expect(List.drop(0, [])) |> toEqual([])
+  );
+
+  test("drop zero from nonempty list", () =>
+    expect(List.drop(0, [1, 2])) |> toEqual([1, 2])
   );
 
   test("drop some from short list ", () =>
-    expect(List.drop(1, [1, 2])) |> toEqual(Some([2]))
+    expect(List.drop(1, [1, 2])) |> toEqual([2])
   );
 
   test("drop some from equal list ", () =>
-    expect(List.drop(2, [1, 2])) |> toEqual(Some([]))
+    expect(List.drop(2, [1, 2])) |> toEqual([])
   );
 
   test("drop some from long list ", () =>
-    expect(List.drop(2, [1, 2, 3, 4])) |> toEqual(Some([3, 4]))
+    expect(List.drop(3, [1, 2, 3, 4, 5])) |> toEqual([4, 5])
   );
 
   test("drop more from long list ", () =>
-    expect(List.drop(5, [1, 2, 3, 4])) |> toEqual(None)
-  );
-
-  test("dropUpTo negative from empty list", () =>
-    expect(List.dropUpTo(-2, [])) |> toEqual([])
-  );
-
-  test("dropUpTo negative from nonempty list", () =>
-    expect(List.dropUpTo(-2, [1, 2])) |> toEqual([1, 2])
-  );
-
-  test("dropUpTo zero from empty list", () =>
-    expect(List.dropUpTo(0, [])) |> toEqual([])
-  );
-
-  test("dropUpTo zero from nonempty list", () =>
-    expect(List.dropUpTo(0, [1, 2])) |> toEqual([1, 2])
-  );
-
-  test("dropUpTo some from short list ", () =>
-    expect(List.dropUpTo(1, [1, 2])) |> toEqual([2])
-  );
-
-  test("dropUpTo some from equal list ", () =>
-    expect(List.dropUpTo(2, [1, 2])) |> toEqual([])
-  );
-
-  test("dropUpTo some from long list ", () =>
-    expect(List.dropUpTo(3, [1, 2, 3, 4, 5])) |> toEqual([4, 5])
-  );
-
-  test("dropUpTo more from long list ", () =>
-    expect(List.dropUpTo(5, [1, 2, 3, 4])) |> toEqual([])
+    expect(List.drop(5, [1, 2, 3, 4])) |> toEqual([])
   );
 
   test("dropWhile empty list", () =>
     expect(List.dropWhile(a => a < 2, [])) |> toEqual([])
+  );
+
+  test("dropExactly zero from empty list", () =>
+    expect(List.dropExactly(0, [])) |> toEqual(Some([]))
+  );
+
+  test("dropExactly some from short list ", () =>
+    expect(List.dropExactly(1, [1, 2])) |> toEqual(Some([2]))
+  );
+
+  test("dropExactly some from equal list ", () =>
+    expect(List.dropExactly(2, [1, 2])) |> toEqual(Some([]))
+  );
+
+  test("dropExactly some from long list ", () =>
+    expect(List.dropExactly(2, [1, 2, 3, 4])) |> toEqual(Some([3, 4]))
+  );
+
+  test("dropExactly more from long list ", () =>
+    expect(List.dropExactly(5, [1, 2, 3, 4])) |> toEqual(None)
   );
 
   test("dropWhile list", () =>
