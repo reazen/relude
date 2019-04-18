@@ -200,6 +200,10 @@ describe("String", () => {
     expect(Str.splitList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
   );
 
+  test("mapChars", () =>
+    expect(Str.mapChars(s => s ++ s, "abc")) |> toEqual("aabbcc")
+  )
+
   test("toInt success", () =>
     expect(Str.toInt("3")) |> toEqual(Some(3))
   );

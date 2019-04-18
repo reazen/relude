@@ -14,6 +14,7 @@ module Alt: BsAbstract.Interface.ALT with type t('a) = list('a);
 module Plus: BsAbstract.Interface.PLUS with type t('a) = list('a);
 module Alternative:
   BsAbstract.Interface.ALTERNATIVE with type t('a) = list('a);
+module IsoArray: Relude_IsoArray.ISO_ARRAY with type t('a) = list('a);
 
 /**
  * The following functions come from List's membership in Semigroup and Monoid
@@ -74,12 +75,41 @@ let indexOf:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, list('a)) =>
   option(int);
 
+/**
+ * The following functions come from List's membership in IsoArray
+ */
 let fromArray: array('a) => list('a);
 let toArray: list('a) => array('a);
-let append: ('a, list('a)) => list('a);
+
+/**
+ * The following functions and modules care about properties of the inner type
+ */
+
+module Traversable:
+  (BsAbstract.Interface.APPLICATIVE) => BsAbstract.Interface.TRAVERSABLE;
+
+let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b);
+let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b);
+
+let eqBy: (('a, 'a) => bool, list('a), list('a)) => bool;
+module Eq: (BsAbstract.Interface.EQ) => BsAbstract.Interface.EQ;
+let eq:
+  ((module BsAbstract.Interface.EQ with type t = 'a), list('a), list('a)) =>
+  bool;
+
+let showBy: ('a => string, list('a)) => string;
+module Show: (BsAbstract.Interface.SHOW) => BsAbstract.Interface.SHOW;
+let show:
+  ((module BsAbstract.Interface.SHOW with type t = 'a), list('a)) => string;
+
+/**
+ * The following functions are list-specific. They may use
+ */
+let mapWithIndex: (('a, int) => 'b, list('a)) => list('b);
 let cons: ('a, list('a)) => list('a);
 let prepend: ('a, list('a)) => list('a);
 let uncons: list('a) => option(('a, list('a)));
+let append: ('a, list('a)) => list('a);
 let repeat: (int, 'a) => list('a);
 let makeWithIndex: (int, int => 'a) => list('a);
 let reverse: list('a) => list('a);
@@ -102,7 +132,6 @@ let filter: ('a => bool, list('a)) => list('a);
 let filterWithIndex: (('a, int) => bool, list('a)) => list('a);
 let mapOption: ('a => option('b), list('a)) => list('b);
 let catOptions: list(option('a)) => list('a);
-let mapWithIndex: (('a, int) => 'b, list('a)) => list('b);
 let partition: ('a => bool, list('a)) => (list('a), list('a));
 let splitAt: (int, list('a)) => option((list('a), list('a)));
 let prependToAll: ('a, list('a)) => list('a);
@@ -117,81 +146,51 @@ let sortBy:
   (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a);
 let sort:
   ((module BsAbstract.Interface.ORD with type t = 'a), list('a)) => list('a);
-
-module Traversable: BsAbstract.List.TRAVERSABLE_F;
-
-let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b);
-let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b);
-module Show: (BsAbstract.Interface.SHOW) => BsAbstract.Interface.SHOW;
-let showBy: ('a => string, list('a)) => string;
-let show:
-  ((module BsAbstract.Interface.SHOW with type t = 'a), list('a)) => string;
-module Eq: (BsAbstract.Interface.EQ) => BsAbstract.Interface.EQ;
-let eqBy: (('a, 'a) => bool, list('a), list('a)) => bool;
-let eq:
-  ((module BsAbstract.Interface.EQ with type t = 'a), list('a), list('a)) =>
-  bool;
 let distinctBy: (('a, 'a) => bool, list('a)) => list('a);
+let removeBy: (('a, 'a) => bool, 'a, list('a)) => list('a);
+let removeEachBy: (('a, 'a) => bool, 'a, list('a)) => list('a);
 let distinct:
   ((module BsAbstract.Interface.EQ with type t = 'a), list('a)) => list('a);
-let removeBy: (('a, 'a) => bool, 'a, list('a)) => list('a);
 let remove:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, list('a)) =>
   list('a);
-let removeEachBy: (('a, 'a) => bool, 'a, list('a)) => list('a);
 let removeEach:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, list('a)) =>
   list('a);
 
-module Infix: {
-  let (>>=): (list('a), 'a => list('b)) => list('b);
-  let (=<<): ('a => list('b), list('a)) => list('b);
-  let (>=>): ('a => list('b), 'b => list('c), 'a) => list('c);
-  let (<=<): ('a => list('b), 'c => list('a), 'c) => list('b);
-  let (<|>): (list('a), list('a)) => list('a);
-  let (<$>): ('a => 'b, list('a)) => list('b);
-  let (<#>): (list('a), 'a => 'b) => list('b);
-  let (<*>): (list('a => 'b), list('a)) => list('b);
-  let ( <* ): (list('a), list('b)) => list('a);
-  let ( *> ): (list('a), list('b)) => list('b);
-};
-
-module IsoArray: Relude_IsoArray.ISO_ARRAY with type t('a) = list('a);
-
 module String: {
-  let eq: (list(string), list(string)) => bool;
   let contains: (string, list(string)) => bool;
   let indexOf: (string, list(string)) => option(int);
   let distinct: list(string) => list(string);
   let remove: (string, list(string)) => list(string);
   let removeEach: (string, list(string)) => list(string);
+  let eq: (list(string), list(string)) => bool;
+  let sort: list(string) => list(string);
   let fold: list(string) => string;
   let join: list(string) => string;
   let intercalate: (string, list(string)) => string;
   let joinWith: (string, list(string)) => string;
-  let sort: list(string) => list(string);
-  let map: (string => string, string) => string;
 };
 
 module Int: {
-  let eq: (list(int), list(int)) => bool;
   let contains: (int, list(int)) => bool;
   let indexOf: (int, list(int)) => option(int);
   let distinct: list(int) => list(int);
   let remove: (int, list(int)) => list(int);
   let removeEach: (int, list(int)) => list(int);
+  let eq: (list(int), list(int)) => bool;
   let sort: list(int) => list(int);
   let sum: list(int) => int;
   let product: list(int) => int;
 };
 
 module Float: {
-  let eq: (list(float), list(float)) => bool;
   let contains: (float, list(float)) => bool;
   let indexOf: (float, list(float)) => option(int);
   let distinct: list(float) => list(float);
   let remove: (float, list(float)) => list(float);
   let removeEach: (float, list(float)) => list(float);
+  let eq: (list(float), list(float)) => bool;
   let sort: list(float) => list(float);
   let sum: list(float) => float;
   let product: list(float) => float;
@@ -303,4 +302,17 @@ module Validation: {
   let traverse:
     ('a => Belt.Result.t('a, 'b), list('a)) =>
     Relude_Validation.t(list('a), Relude_NonEmpty.List.t('b));
+};
+
+module Infix: {
+  let (>>=): (list('a), 'a => list('b)) => list('b);
+  let (=<<): ('a => list('b), list('a)) => list('b);
+  let (>=>): ('a => list('b), 'b => list('c), 'a) => list('c);
+  let (<=<): ('a => list('b), 'c => list('a), 'c) => list('b);
+  let (<|>): (list('a), list('a)) => list('a);
+  let (<$>): ('a => 'b, list('a)) => list('b);
+  let (<#>): (list('a), 'a => 'b) => list('b);
+  let (<*>): (list('a => 'b), list('a)) => list('b);
+  let ( <* ): (list('a), list('b)) => list('a);
+  let ( *> ): (list('a), list('b)) => list('b);
 };

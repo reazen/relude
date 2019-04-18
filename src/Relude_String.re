@@ -1,3 +1,8 @@
+module Monoid = BsAbstract.String.Monoid;
+module Semigroup = BsAbstract.String.Semigroup;
+module Eq = BsAbstract.String.Eq;
+module Ord = BsAbstract.String.Ord;
+
 let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js.String.concat has unexpected argument order */
 
 let concatArray: array(string) => string =
@@ -75,7 +80,8 @@ let toList: string => list(string) =
     Relude_List_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let toArray: string => array(string) =
-  str => Relude_Array_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
+  str =>
+    Relude_Array_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List_Types.foldLeft(f, init, toList(str));
@@ -117,6 +123,12 @@ let splitArray: (string, string) => array(string) = Js.String.split;
 let splitList: (string, string) => list(string) =
   (delim, str) => splitArray(delim, str) |> Relude_List_Types.fromArray;
 
+let mapChars: (string => string, string) => string =
+  (f, str) =>
+    toList(str)
+    |> Relude_List_Types.map(f)
+    |> Relude_List_Types.fold((module Monoid));
+
 let replaceFirst: (string, string, string) => string =
   (target, newValue, source) => Js.String.replace(target, newValue, source);
 
@@ -150,11 +162,3 @@ let toFloat: string => option(float) =
     try (Some(float_of_string(v))) {
     | _ => None
     };
-
-module Monoid = BsAbstract.String.Monoid;
-
-module Semigroup = BsAbstract.String.Semigroup;
-
-module Eq = BsAbstract.String.Eq;
-
-module Ord = BsAbstract.String.Ord;

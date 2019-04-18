@@ -83,10 +83,6 @@ describe("ListF", () => {
     |> toEqual("a, b, c")
   );
 
-  test("String.map", () =>
-    expect(ListF.String.map(s => s ++ s, "abc")) |> toEqual("aabbcc")
-  );
-
   test("Int.sum empty", () =>
     expect(ListF.Int.sum([])) |> toEqual(0)
   );

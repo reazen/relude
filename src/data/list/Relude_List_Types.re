@@ -1,8 +1,5 @@
 open BsAbstract.Interface;
 
-/**
- * Include implementations for typeclasses that List is a member of
- */
 module Foldable: FOLDABLE with type t('a) = list('a) = BsAbstract.List.Foldable;
 
 module SemigroupAny: SEMIGROUP_ANY with type t('a) = list('a) = {
@@ -64,6 +61,32 @@ let toArray = IsoArray.toArray;
  * Include typeclass membership that cares about the inner 'a
  */
 module Traversable: BsAbstract.List.TRAVERSABLE_F = BsAbstract.List.Traversable;
+
+let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b) =
+  (f, init, xs) =>
+    foldLeft(
+      ((acc, result), curr) => {
+        let nextAcc = f(acc, curr);
+        (nextAcc, [nextAcc, ...result]);
+      },
+      (init, []),
+      xs,
+    )
+    |> snd
+    |> Belt.List.reverse; // TODO use our own implementation
+
+let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
+  (f, init, xs) =>
+    foldRight(
+      (curr, (acc, result)) => {
+        let nextAcc = f(curr, acc);
+        (nextAcc, [nextAcc, ...result]);
+      },
+      (init, []),
+      xs,
+    )
+    |> snd;
+
 
 let rec eqBy: (('a, 'a) => bool, list('a), list('a)) => bool =
   (innerEq, a, b) =>

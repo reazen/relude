@@ -1,3 +1,5 @@
+open BsAbstract.Interface;
+
 /********************************************************************************
  This is intended to hold modules that are based on list-related module functors.
 
@@ -11,9 +13,30 @@
  List.Validation.traverse
  ********************************************************************************/
 
+/**
+ * Helper modules for generating collections of functions depending on
+ * properties of the inner type.
+ */
+module OfEq = (E: EQ) => {
+  include Relude_List_Types.FoldableOfEq(E);
+  let distinct = Relude_List_Base.distinctBy(E.eq);
+  let remove = Relude_List_Base.removeBy(E.eq);
+  let removeEach = Relude_List_Base.removeEachBy(E.eq);
+  let eq = Relude_List_Types.eqBy(E.eq);
+};
+
+module OfOrd = (O: ORD) => {
+  include OfEq(O);
+  let sort = Relude_List_Base.sortBy(O.compare);
+};
+
+module OfMonoid = (M: MONOID) => {
+  include Relude_List_Types.FoldableOfMonoid(M);
+};
+
 module String = {
-  include Relude_List_Base.OfOrd(Relude_String.Ord);
-  include Relude_List_Base.OfMonoid(Relude_String.Monoid);
+  include OfOrd(Relude_String.Ord);
+  include OfMonoid(Relude_String.Monoid);
 
   let join = fold;
   let joinWith = intercalate;
@@ -36,15 +59,10 @@ module String = {
       )
       |> Js.Dict.keys
       |> Relude_List_Types.fromArray;
-
-  // TODO: not convinced this belongs here...
-  let map: (string => string, string) => string =
-    (f, str) =>
-      Relude_String.toList(str) |> Relude_List_Types.map(f) |> join;
 };
 
 module Int = {
-  include Relude_List_Base.OfOrd(Relude_Int.Ord);
+  include OfOrd(Relude_Int.Ord);
 
   let sum: list(int) => int =
     Relude_List_Types.fold((module Relude_Int.Additive.Monoid));
@@ -54,7 +72,7 @@ module Int = {
 };
 
 module Float = {
-  include Relude_List_Base.OfOrd(Relude_Float.Ord);
+  include OfOrd(Relude_Float.Ord);
 
   let sum: list(float) => float =
     Relude_List_Types.fold((module Relude_Float.Additive.Monoid));

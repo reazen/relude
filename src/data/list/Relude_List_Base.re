@@ -188,31 +188,6 @@ let sort =
   sortBy(OrdA.compare, xs);
 };
 
-// TODO: technically scanLeft and scanRight can come with traversable
-let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b) =
-  (f, init, xs) =>
-    Relude_List_Types.foldLeft(
-      ((acc, result), curr) => {
-        let nextAcc = f(acc, curr);
-        (nextAcc, append(nextAcc, result));
-      },
-      (init, []),
-      xs,
-    )
-    |> snd;
-
-let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
-  (f, init, xs) =>
-    Relude_List_Types.foldRight(
-      (curr, (acc, result)) => {
-        let nextAcc = f(curr, acc);
-        (nextAcc, prepend(nextAcc, result));
-      },
-      (init, []),
-      xs,
-    )
-    |> snd;
-
 // TODO: this is currently O(n^2), but we could make it slightly faster if we
 // we could sort the list first. Or maybe we should just use a Set type
 let distinctBy: 'a. (('a, 'a) => bool, list('a)) => list('a) =
@@ -257,25 +232,4 @@ let remove = (type a, eqA: (module EQ with type t = a), x, xs) => {
 let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeEachBy(EqA.eq, x, xs);
-};
-
-/**
- * Helper modules for generating collections of functions depending on
- * properties of the inner type.
- */
-module OfEq = (E: EQ) => {
-  include Relude_List_Types.FoldableOfEq(E);
-  let distinct = distinctBy(E.eq);
-  let remove = removeBy(E.eq);
-  let removeEach = removeEachBy(E.eq);
-  let eq = Relude_List_Types.eqBy(E.eq);
-};
-
-module OfOrd = (O: ORD) => {
-  include OfEq(O);
-  let sort = sortBy(O.compare);
-};
-
-module OfMonoid = (M: MONOID) => {
-  include Relude_List_Types.FoldableOfMonoid(M);
 };
