@@ -171,17 +171,25 @@ describe("String", () => {
     expect(Str.replaceFirst("b", "xyz", "abcde")) |> toEqual("axyzcde")
   );
 
-  test("replaceAll", () =>
-    expect(Str.replaceAll("b", "xyz", "abcdeb")) |> toEqual("axyzcdexyz")
+  test("replaceEach", () =>
+    expect(Str.replaceEach("b", "xyz", "abcdeb")) |> toEqual("axyzcdexyz")
   );
 
-  test("replaceAll special characters", () =>
-    expect(Str.replaceAll("+", " ", "a+b+c")) |> toEqual("a b c")
+  test("replaceEach special characters", () =>
+    expect(Str.replaceEach("+", " ", "a+b+c")) |> toEqual("a b c")
   );
 
   test("replaceRegex", () =>
     expect(Str.replaceRegex([%re "/b/"], "xyz", "abcde"))
     |> toEqual("axyzcde")
+  );
+
+  test("removeFirst", () =>
+    expect(Str.removeFirst(" ", "foo bar baz")) |> toEqual("foobar baz")
+  );
+
+  test("removeEach", () =>
+    expect(Str.removeEach(" ", "foo bar baz")) |> toEqual("foobarbaz")
   );
 
   test("slice", () =>
@@ -202,7 +210,7 @@ describe("String", () => {
 
   test("mapChars", () =>
     expect(Str.mapChars(s => s ++ s, "abc")) |> toEqual("aabbcc")
-  )
+  );
 
   test("toInt success", () =>
     expect(Str.toInt("3")) |> toEqual(Some(3))

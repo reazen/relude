@@ -132,13 +132,19 @@ let mapChars: (string => string, string) => string =
 let replaceFirst: (string, string, string) => string =
   (target, newValue, source) => Js.String.replace(target, newValue, source);
 
-let replaceAll: (string, string, string) => string =
+let replaceEach: (string, string, string) => string =
   (target, newValue, source) =>
     splitList(target, source) |> String.concat(newValue);
 
 let replaceRegex: (Js.Re.t, string, string) => string =
   (target, newValue, source) =>
     Js.String.replaceByRe(target, newValue, source);
+
+let removeFirst: (string, string) => string =
+  (target, source) => replaceFirst(target, "", source);
+
+let removeEach: (string, string) => string =
+  (target, source) => replaceEach(target, "", source);
 
 let slice: (int, int, string) => string =
   (fromIndex, toIndex, str) =>

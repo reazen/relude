@@ -208,7 +208,6 @@ let removeFirstBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
     Relude_List_Types.foldLeft(go, (false, []), xs) |> snd |> reverse;
   };
 
-// TODO: rename to removeAllBy for consistency with String.replaceAll?
 let removeEachBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
   (innerEq, x, xs) =>
     Relude_List_Types.foldLeft(
