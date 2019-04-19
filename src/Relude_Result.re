@@ -124,22 +124,14 @@ let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
     };
 
 let getOk: 'a 'e. t('a, 'e) => option('a) =
-  fa =>
-    switch (fa) {
-    | Ok(a) => Some(a)
-    | Error(_) => None
-    };
+  r => fold(_ => None, v => Some(v), r);
 
 let getError: 'a 'e. t('a, 'e) => option('e) =
-  fa =>
-    switch (fa) {
-    | Ok(_) => None
-    | Error(e) => Some(e)
-    };
+  r => fold(v => Some(v), _ => None, r);
 
-let isOk: 'a 'e. t('a, 'e) => bool = r => fold(_ => true, _ => false, r);
+let isOk: 'a 'e. t('a, 'e) => bool = r => fold(_ => false, _ => true, r);
 
-let isError: 'a 'e. t('a, 'e) => bool = r => fold(_ => false, _ => true, r);
+let isError: 'a 'e. t('a, 'e) => bool = r => fold(_ => true, _ => false, r);
 
 let tries: 'a. (unit => 'a) => t('a, exn) =
   fn =>

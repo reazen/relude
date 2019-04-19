@@ -11,11 +11,7 @@ module type SEQUENCE = {
   let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool;
   let showBy: ('a => string, t('a)) => string;
 
-  module SemigroupAny: BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a);
   module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = t('a);
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a);
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a);
-  module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a);
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a);
   module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a);
   module Traversable: (A: BsAbstract.Interface.APPLICATIVE) => BsAbstract.Interface.TRAVERSABLE with type t('a) = t('a) and type applicative_t('a) = A.t('a);

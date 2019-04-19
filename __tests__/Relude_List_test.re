@@ -117,16 +117,16 @@ describe("List", () => {
     |> toEqual([[5, 4, 3, 2, 1], [5, 4, 3, 2], [5, 4, 3], [5, 4], [5]])
   );
 
-  test("get empty list", () =>
-    expect(List.get(0, [])) |> toEqual(None)
+  test("at empty list", () =>
+    expect(List.at(0, [])) |> toEqual(None)
   );
 
-  test("get success", () =>
-    expect(List.get(2, [0, 10, 20, 30])) |> toEqual(Some(20))
+  test("at success", () =>
+    expect(List.at(2, [0, 10, 20, 30])) |> toEqual(Some(20))
   );
 
-  test("get failure", () =>
-    expect(List.get(10, [0, 10, 20, 30])) |> toEqual(None)
+  test("at failure", () =>
+    expect(List.at(10, [0, 10, 20, 30])) |> toEqual(None)
   );
 
   test("head empty list", () =>
@@ -189,48 +189,48 @@ describe("List", () => {
     expect(List.last([1, 2, 3, 4])) |> toEqual(Some(4))
   );
 
-  test("take negative from list", () =>
-    expect(List.take(-2, [])) |> toEqual(Some([]))
-  );
-
   test("take zero from empty list", () =>
-    expect(List.take(0, [])) |> toEqual(Some([]))
+    expect(List.take(0, [])) |> toEqual([])
   );
 
   test("take non-zero from empty list", () =>
-    expect(List.take(2, [])) |> toEqual(None)
+    expect(List.take(2, [])) |> toEqual([])
   );
 
   test("take non-zero from short list", () =>
-    expect(List.take(2, [1])) |> toEqual(None)
+    expect(List.take(2, [1])) |> toEqual([1])
   );
 
   test("take non-zero from equal list", () =>
-    expect(List.take(2, [1, 2])) |> toEqual(Some([1, 2]))
+    expect(List.take(2, [1, 2])) |> toEqual([1, 2])
   );
 
   test("take non-zero from long list", () =>
-    expect(List.take(2, [1, 2, 3])) |> toEqual(Some([1, 2]))
+    expect(List.take(2, [1, 2, 3])) |> toEqual([1, 2])
   );
 
-  test("takeUpTo zero from empty list", () =>
-    expect(List.takeUpTo(0, [])) |> toEqual([])
+  test("takeExactly negative from list", () =>
+    expect(List.takeExactly(-2, [])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from empty list", () =>
-    expect(List.takeUpTo(2, [])) |> toEqual([])
+  test("takeExactly zero from empty list", () =>
+    expect(List.takeExactly(0, [])) |> toEqual(Some([]))
   );
 
-  test("takeUpTo non-zero from short list", () =>
-    expect(List.takeUpTo(2, [1])) |> toEqual([1])
+  test("takeExactly non-zero from empty list", () =>
+    expect(List.takeExactly(2, [])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from equal list", () =>
-    expect(List.takeUpTo(2, [1, 2])) |> toEqual([1, 2])
+  test("takeExactly non-zero from short list", () =>
+    expect(List.takeExactly(2, [1])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from long list", () =>
-    expect(List.takeUpTo(2, [1, 2, 3])) |> toEqual([1, 2])
+  test("takeExactly non-zero from equal list", () =>
+    expect(List.takeExactly(2, [1, 2])) |> toEqual(Some([1, 2]))
+  );
+
+  test("takeExactly non-zero from long list", () =>
+    expect(List.takeExactly(2, [1, 2, 3])) |> toEqual(Some([1, 2]))
   );
 
   test("takeWhile empty list", () =>
@@ -250,48 +250,60 @@ describe("List", () => {
     |> toEqual([0, 1, 2, 3])
   );
 
+  test("drop negative from empty list", () =>
+    expect(List.drop(-2, [])) |> toEqual([])
+  );
+
+  test("drop negative from nonempty list", () =>
+    expect(List.drop(-2, [1, 2])) |> toEqual([1, 2])
+  );
+
   test("drop zero from empty list", () =>
-    expect(List.drop(0, [])) |> toEqual(Some([]))
+    expect(List.drop(0, [])) |> toEqual([])
+  );
+
+  test("drop zero from nonempty list", () =>
+    expect(List.drop(0, [1, 2])) |> toEqual([1, 2])
   );
 
   test("drop some from short list ", () =>
-    expect(List.drop(1, [1, 2])) |> toEqual(Some([2]))
+    expect(List.drop(1, [1, 2])) |> toEqual([2])
   );
 
   test("drop some from equal list ", () =>
-    expect(List.drop(2, [1, 2])) |> toEqual(Some([]))
+    expect(List.drop(2, [1, 2])) |> toEqual([])
   );
 
   test("drop some from long list ", () =>
-    expect(List.drop(2, [1, 2, 3, 4])) |> toEqual(Some([3, 4]))
+    expect(List.drop(3, [1, 2, 3, 4, 5])) |> toEqual([4, 5])
   );
 
   test("drop more from long list ", () =>
-    expect(List.drop(5, [1, 2, 3, 4])) |> toEqual(None)
-  );
-
-  test("dropUpTo zero from empty list", () =>
-    expect(List.dropUpTo(0, [])) |> toEqual([])
-  );
-
-  test("dropUpTo some from short list ", () =>
-    expect(List.dropUpTo(1, [1, 2])) |> toEqual([2])
-  );
-
-  test("dropUpTo some from equal list ", () =>
-    expect(List.dropUpTo(2, [1, 2])) |> toEqual([])
-  );
-
-  test("dropUpTo some from long list ", () =>
-    expect(List.dropUpTo(2, [1, 2, 3, 4])) |> toEqual([3, 4])
-  );
-
-  test("dropUpTo more from long list ", () =>
-    expect(List.dropUpTo(5, [1, 2, 3, 4])) |> toEqual([])
+    expect(List.drop(5, [1, 2, 3, 4])) |> toEqual([])
   );
 
   test("dropWhile empty list", () =>
     expect(List.dropWhile(a => a < 2, [])) |> toEqual([])
+  );
+
+  test("dropExactly zero from empty list", () =>
+    expect(List.dropExactly(0, [])) |> toEqual(Some([]))
+  );
+
+  test("dropExactly some from short list ", () =>
+    expect(List.dropExactly(1, [1, 2])) |> toEqual(Some([2]))
+  );
+
+  test("dropExactly some from equal list ", () =>
+    expect(List.dropExactly(2, [1, 2])) |> toEqual(Some([]))
+  );
+
+  test("dropExactly some from long list ", () =>
+    expect(List.dropExactly(2, [1, 2, 3, 4])) |> toEqual(Some([3, 4]))
+  );
+
+  test("dropExactly more from long list ", () =>
+    expect(List.dropExactly(5, [1, 2, 3, 4])) |> toEqual(None)
   );
 
   test("dropWhile list", () =>
@@ -404,8 +416,8 @@ describe("List", () => {
     |> toEqual([(-1), 0, 1, 2, 3, 5])
   );
 
-  test("sortF", () =>
-    expect(List.sortF(Int.compare, [2, 0, 1, 3, 5, (-1)]))
+  test("sortBy", () =>
+    expect(List.sortBy(Int.compare, [2, 0, 1, 3, 5, (-1)]))
     |> toEqual([(-1), 0, 1, 2, 3, 5])
   );
 
@@ -419,20 +431,20 @@ describe("List", () => {
   );
 
   test("contains false", () =>
-    expect(List.containsF(Int.eq, 10, [0, 1, 2, 3, 4])) |> toEqual(false)
+    expect(List.containsBy(Int.eq, 10, [0, 1, 2, 3, 4])) |> toEqual(false)
   );
 
   test("contains true", () =>
-    expect(List.containsF(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
+    expect(List.containsBy(Int.eq, 3, [0, 1, 2, 3, 4])) |> toEqual(true)
   );
 
-  test("indexOfF failure", () =>
-    expect(List.indexOfF(Int.eq, 500, [0, 10, 20, 30, 40]))
+  test("indexOfBy failure", () =>
+    expect(List.indexOfBy(Int.eq, 500, [0, 10, 20, 30, 40]))
     |> toEqual(None)
   );
 
-  test("indexOfF success", () =>
-    expect(List.indexOfF(Int.eq, 30, [0, 10, 20, 30, 40]))
+  test("indexOfBy success", () =>
+    expect(List.indexOfBy(Int.eq, 30, [0, 10, 20, 30, 40]))
     |> toEqual(Some(3))
   );
 
@@ -444,6 +456,47 @@ describe("List", () => {
   test("indexOf failure", () =>
     expect(List.indexOf((module Int.Eq), 500, [0, 10, 20, 30, 40]))
     |> toEqual(None)
+  );
+
+  test("minBy empty", () =>
+    expect(List.minBy(Int.Ord.compare, [])) |> toEqual(None)
+  );
+
+  test("minBy one", () =>
+    expect(List.minBy(Int.Ord.compare, [0])) |> toEqual(Some(0))
+  );
+
+  test("minBy many", () =>
+    expect(List.minBy(Int.Ord.compare, [3, 1, 2])) |> toEqual(Some(1))
+  );
+
+  test("min empty", () =>
+    expect(List.min((module Relude_String.Ord), [])) |> toEqual(None)
+  );
+
+  test("min many", () =>
+    expect(List.min((module Relude_String.Ord), ["b", "a", "c"]))
+    |> toEqual(Some("a"))
+  );
+
+  test("maxBy empty", () =>
+    expect(List.maxBy(Int.Ord.compare, [])) |> toEqual(None)
+  );
+
+  test("maxBy one", () =>
+    expect(List.maxBy(Int.Ord.compare, [0])) |> toEqual(Some(0))
+  );
+
+  test("maxBy many", () =>
+    expect(List.maxBy(Int.Ord.compare, [3, 1, 2])) |> toEqual(Some(3))
+  );
+
+  test("max empty", () =>
+    expect(List.max((module Int.Ord), [])) |> toEqual(None)
+  );
+
+  test("max many", () =>
+    expect(List.max((module Int.Ord), [3, 1, 2])) |> toEqual(Some(3))
   );
 
   test("any empty", () =>
@@ -470,28 +523,28 @@ describe("List", () => {
     expect(List.all(a => a < 3, [0, 1, 2, 3])) |> toEqual(false)
   );
 
-  test("removeBy empty", () =>
-    expect(List.removeBy(Int.eq, 0, [])) |> toEqual([])
+  test("removeFirstBy empty", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [])) |> toEqual([])
   );
 
-  test("removeBy single match", () =>
-    expect(List.removeBy(Int.eq, 0, [0])) |> toEqual([])
+  test("removeFirstBy single match", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [0])) |> toEqual([])
   );
 
-  test("removeBy single not a match", () =>
-    expect(List.removeBy(Int.eq, 0, [1])) |> toEqual([1])
+  test("removeFirstBy single not a match", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [1])) |> toEqual([1])
   );
 
-  test("removeBy one match at beginning", () =>
-    expect(List.removeBy(Int.eq, 0, [0, 1, 2])) |> toEqual([1, 2])
+  test("removeFirstBy one match at beginning", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [0, 1, 2])) |> toEqual([1, 2])
   );
 
-  test("removeBy one match at end", () =>
-    expect(List.removeBy(Int.eq, 2, [0, 1, 2])) |> toEqual([0, 1])
+  test("removeFirstBy one match at end", () =>
+    expect(List.removeFirstBy(Int.eq, 2, [0, 1, 2])) |> toEqual([0, 1])
   );
 
-  test("removeBy many matches", () =>
-    expect(List.removeBy(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
+  test("removeFirstBy many matches", () =>
+    expect(List.removeFirstBy(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
   );
 
   test("removeEachBy empty", () =>
@@ -507,7 +560,8 @@ describe("List", () => {
   );
 
   test("removeEachBy many matches removed", () =>
-    expect(List.removeEachBy(Int.eq, 0, [0, 2, 0, 4, 0])) |> toEqual([2, 4])
+    expect(List.removeEachBy(Int.eq, 0, [0, 2, 0, 4, 0]))
+    |> toEqual([2, 4])
   );
 
   test("distinctBy", () =>
@@ -628,16 +682,16 @@ describe("List", () => {
        ])
   );
 
-  test("sumFloat empty", () =>
-    expect(List.sumFloat([])) |> toEqual(0.)
+  test("List.Float.sum empty", () =>
+    expect(List.Float.sum([])) |> toEqual(0.)
   );
 
-  test("sumFloat one", () =>
-    expect(List.sumFloat([1.])) |> toEqual(1.)
+  test("List.Float.sum one", () =>
+    expect(List.Float.sum([1.])) |> toEqual(1.)
   );
 
-  test("sumFloat many", () =>
-    expect(List.sumFloat([1., 3., 5.])) |> toEqual(9.)
+  test("List.Float.sum many", () =>
+    expect(List.Float.sum([1., 3., 5.])) |> toEqual(9.)
   );
 
   test("countBy empty", () =>

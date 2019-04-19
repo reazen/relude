@@ -73,30 +73,31 @@ describe("String", () => {
     expect(Str.toLowerCase("ReLude!")) |> toEqual("relude!")
   );
 
-  test("get success", () =>
-    expect(Str.get(2, "abcdefg")) |> toEqual(Some("c"))
+  test("charAt success", () =>
+    expect(Str.charAt(2, "abcdefg")) |> toEqual(Some("c"))
   );
 
-  test("get failure", () =>
-    expect(Str.get(7, "abcdefg")) |> toEqual(None)
+  test("charAt failure", () =>
+    expect(Str.charAt(7, "abcdefg")) |> toEqual(None)
   );
 
-  test("getNullable success", () =>
-    expect(Str.getNullable(2, "abcdefg"))
+  test("charAtNullable success", () =>
+    expect(Str.charAtNullable(2, "abcdefg"))
     |> toEqual(Js.Nullable.return("c"))
   );
 
-  test("getNullable failure", () =>
-    expect(Str.getNullable(7, "abcdefg")) |> toEqual(Js.Nullable.undefined)
+  test("charAtNullable failure", () =>
+    expect(Str.charAtNullable(7, "abcdefg"))
+    |> toEqual(Js.Nullable.undefined)
   );
 
-  test("getOrThrow success", () =>
-    expect(Str.getOrThrow(2, "abcdefg")) |> toEqual("c")
+  test("charAtOrThrow success", () =>
+    expect(Str.charAtOrThrow(2, "abcdefg")) |> toEqual("c")
   );
 
-  test("getOrThrow failure", () =>
+  test("charAtOrThrow failure", () =>
     expect(() =>
-      Str.getOrThrow(7, "abcdefg")
+      Str.charAtOrThrow(7, "abcdefg")
     ) |> toThrow
   );
 
@@ -170,17 +171,25 @@ describe("String", () => {
     expect(Str.replaceFirst("b", "xyz", "abcde")) |> toEqual("axyzcde")
   );
 
-  test("replaceAll", () =>
-    expect(Str.replaceAll("b", "xyz", "abcdeb")) |> toEqual("axyzcdexyz")
+  test("replaceEach", () =>
+    expect(Str.replaceEach("b", "xyz", "abcdeb")) |> toEqual("axyzcdexyz")
   );
 
-  test("replaceAll special characters", () =>
-    expect(Str.replaceAll("+", " ", "a+b+c")) |> toEqual("a b c")
+  test("replaceEach special characters", () =>
+    expect(Str.replaceEach("+", " ", "a+b+c")) |> toEqual("a b c")
   );
 
   test("replaceRegex", () =>
     expect(Str.replaceRegex([%re "/b/"], "xyz", "abcde"))
     |> toEqual("axyzcde")
+  );
+
+  test("removeFirst", () =>
+    expect(Str.removeFirst(" ", "foo bar baz")) |> toEqual("foobar baz")
+  );
+
+  test("removeEach", () =>
+    expect(Str.removeEach(" ", "foo bar baz")) |> toEqual("foobarbaz")
   );
 
   test("slice", () =>
@@ -197,6 +206,10 @@ describe("String", () => {
 
   test("splitList", () =>
     expect(Str.splitList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
+  );
+
+  test("mapChars", () =>
+    expect(Str.mapChars(s => s ++ s, "abc")) |> toEqual("aabbcc")
   );
 
   test("toInt success", () =>

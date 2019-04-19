@@ -62,7 +62,7 @@ module IO = {
               "Read failed: "
               ++ (
                 Js.Exn.message(err')
-                |> Relude_Option.getOrElse(_ => "No error")
+                |> Relude_Option.getOrElseLazy(_ => "No error")
               ),
             );
             onDone(Error(err'));
@@ -81,7 +81,7 @@ module IO = {
               "Write failed: "
               ++ (
                 Js.Exn.message(err')
-                |> Relude_Option.getOrElse(_ => "No error")
+                |> Relude_Option.getOrElseLazy(_ => "No error")
               ),
             );
             onDone(Error(err'));

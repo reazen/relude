@@ -54,7 +54,7 @@ let async: 'a 'e. ((Result.t('a, 'e) => unit) => unit) => t('a, 'e) =
 
 let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
   (getError, option) =>
-    option |> Option.fold(() => throw(getError()), pure);
+    option |> Option.foldLazy(() => throw(getError()), pure);
 
 let fromResult: 'a 'e. Result.t('a, 'e) => t('a, 'e) =
   res => res |> Result.fold(throw, pure);
@@ -139,13 +139,6 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
          },
        );
 
-let catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
-  (eToIOA, ioA) =>
-    switch (ioA) {
-    | Throw(e) => eToIOA(e)
-    | _ => ioA
-    };
-
 let tries: 'a. (unit => 'a) => t('a, exn) =
   getA =>
     SuspendIO(
@@ -162,7 +155,7 @@ let triesJS: 'a. (unit => 'a) => t('a, Js.Exn.t) =
         try (Pure(getA())) {
         | Js.Exn.Error(jsExn) => Throw(jsExn)
         | exn =>
-          let jsExn = JsExn.fromExn(exn);
+          let jsExn = JsExn.unsafeFromExn(exn);
           Throw(jsExn);
         },
     );
@@ -382,6 +375,83 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
                     | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
                   ),
            )
+      }
+    };
+
+let rec catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
+  (eToIOA, ioA) =>
+    switch (ioA) {
+    | Throw(e) => eToIOA(e)
+    | Async(onDone) =>
+      Async(
+        (
+          onDone' =>
+            onDone(result =>
+              (
+                switch (result) {
+                | Ok(a) => Pure(a)
+                | Error(e) => eToIOA(e)
+                }
+              )
+              |> unsafeRunAsync(onDone')
+            )
+        ),
+      )
+    | SuspendIO(getIOA) => getIOA() |> catchError(eToIOA)
+    | Suspend(getA) => Suspend(getA)
+    | Pure(a) => Pure(a)
+    | Map(rToA, ioR) =>
+      switch (ioR) {
+      | Throw(e) => eToIOA(e)
+      | Async(onDone) =>
+        Async(
+          (
+            onDone' =>
+              onDone(result =>
+                (
+                  switch (result) {
+                  | Ok(r) => Pure(rToA(r)) |> catchError(eToIOA)
+                  | Error(e) => eToIOA(e)
+                  }
+                )
+                |> unsafeRunAsync(onDone')
+              )
+          ),
+        )
+      | SuspendIO(getIOR) => Map(rToA, getIOR()) |> catchError(eToIOA)
+      | Suspend(getR) => Map(rToA, Pure(getR())) |> catchError(eToIOA)
+      | Pure(r) => Pure(rToA(r)) |> catchError(eToIOA)
+      | Map(r2ToR, ioR2) => Map(r2ToR >> rToA, ioR2) |> catchError(eToIOA)
+      | FlatMap(r2ToIOR, ioR2) =>
+        FlatMap((r2 => Map(rToA, r2ToIOR(r2))), ioR2) |> catchError(eToIOA)
+      }
+    | FlatMap(rToIOA, ioR) =>
+      switch (ioR) {
+      | Throw(e) => eToIOA(e)
+      | Async(onDone) =>
+        Async(
+          (
+            onDone' =>
+              onDone(result =>
+                (
+                  switch (result) {
+                  | Ok(r) => rToIOA(r) |> catchError(eToIOA)
+                  | Error(e) => eToIOA(e)
+                  }
+                )
+                |> unsafeRunAsync(onDone')
+              )
+          ),
+        )
+      | SuspendIO(getIOR) => FlatMap(rToIOA, getIOR()) |> catchError(eToIOA)
+      | Suspend(getR) =>
+        FlatMap(rToIOA, Pure(getR())) |> catchError(eToIOA)
+      | Pure(r) => rToIOA(r) |> catchError(eToIOA)
+      | Map(r2ToR, ioR2) =>
+        FlatMap(r2ToR >> rToIOA, ioR2) |> catchError(eToIOA)
+      | FlatMap(r2ToIOR, ioR2) =>
+        FlatMap((r2 => FlatMap(rToIOA, r2ToIOR(r2))), ioR2)
+        |> catchError(eToIOA)
       }
     };
 

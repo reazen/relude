@@ -1,7 +1,12 @@
+module Monoid = BsAbstract.String.Monoid;
+module Semigroup = BsAbstract.String.Semigroup;
+module Eq = BsAbstract.String.Eq;
+module Ord = BsAbstract.String.Ord;
+
 let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js.String.concat has unexpected argument order */
 
 let concatArray: array(string) => string =
-  strs => Relude_Array.foldLeft((acc, str) => acc ++ str, "", strs);
+  strs => Relude_Array_Types.foldLeft((acc, str) => acc ++ str, "", strs);
 
 let length: string => int = Js.String.length;
 
@@ -35,7 +40,8 @@ let fromCharCode: int => string = Js.String.fromCharCode;
 
 let makeWithIndex: (int, int => string) => string =
   (i, f) => {
-    let rec go = (acc, idx) => idx >= i ? acc : go(concat(acc, f(idx)), idx + 1);
+    let rec go = (acc, idx) =>
+      idx >= i ? acc : go(concat(acc, f(idx)), idx + 1);
     go("", 0);
   };
 
@@ -49,16 +55,16 @@ let toUpperCase: string => string = Js.String.toUpperCase;
 
 let toLowerCase: string => string = Js.String.toLowerCase;
 
-let get: (int, string) => option(string) =
+let charAt: (int, string) => option(string) =
   (i, str) =>
     Js.String.get(str, i) |> Js.Nullable.return |> Js.Nullable.toOption;
 
-let getNullable: (int, string) => Js.Nullable.t(string) =
+let charAtNullable: (int, string) => Js.Nullable.t(string) =
   (i, str) => Js.String.get(str, i) |> Js.Nullable.return;
 
-let getOrThrow: (int, string) => string =
+let charAtOrThrow: (int, string) => string =
   (i, str) =>
-    switch (get(i, str)) {
+    switch (charAt(i, str)) {
     | None =>
       Js.Exn.raiseRangeError(
         "Failed to get string at index "
@@ -70,16 +76,18 @@ let getOrThrow: (int, string) => string =
     };
 
 let toList: string => list(string) =
-  str => Relude_List.makeWithIndex(length(str), i => getOrThrow(i, str));
+  str =>
+    Relude_List_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let toArray: string => array(string) =
-  str => Relude_Array.makeWithIndex(length(str), i => getOrThrow(i, str));
+  str =>
+    Relude_Array_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List.foldLeft(f, init, toList(str));
+  (f, init, str) => Relude_List_Types.foldLeft(f, init, toList(str));
 
 let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List.foldRight(f, init, toList(str));
+  (f, init, str) => Relude_List_Types.foldRight(f, init, toList(str));
 
 let endsWith: (string, string) => bool =
   (test, str) => Js.String.endsWith(test, str);
@@ -113,36 +121,50 @@ let lastIndexOf: (string, string) => option(int) =
 let splitArray: (string, string) => array(string) = Js.String.split;
 
 let splitList: (string, string) => list(string) =
-  (delim, str) => splitArray(delim, str) |> Relude_List.fromArray;
+  (delim, str) => splitArray(delim, str) |> Relude_List_Types.fromArray;
+
+let mapChars: (string => string, string) => string =
+  (f, str) =>
+    toList(str)
+    |> Relude_List_Types.map(f)
+    |> Relude_List_Types.fold((module Monoid));
 
 let replaceFirst: (string, string, string) => string =
   (target, newValue, source) => Js.String.replace(target, newValue, source);
 
-let replaceAll: (string, string, string) => string =
+let replaceEach: (string, string, string) => string =
   (target, newValue, source) =>
-  splitList(target, source) |> String.concat(newValue);
+    splitList(target, source) |> String.concat(newValue);
 
 let replaceRegex: (Js.Re.t, string, string) => string =
-  (target, newValue, source) => Js.String.replaceByRe(target, newValue, source);
+  (target, newValue, source) =>
+    Js.String.replaceByRe(target, newValue, source);
 
-let slice: (int, int, string) => string = (fromIndex, toIndex, str) => Js.String.slice(~from=fromIndex, ~to_=toIndex, str);
+let removeFirst: (string, string) => string =
+  (target, source) => replaceFirst(target, "", source);
 
-let sliceToEnd: (int, string) => string = (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
+let removeEach: (string, string) => string =
+  (target, source) => replaceEach(target, "", source);
 
-let toInt: string => option(int) = v =>
-  try (Some(int_of_string(v))) {
-  | _ => None
-  };
+let slice: (int, int, string) => string =
+  (fromIndex, toIndex, str) =>
+    Js.String.slice(~from=fromIndex, ~to_=toIndex, str);
 
-let toFloat: string => option(float) = v =>
-  try (Some(float_of_string(v))) {
-  | _ => None
-  };
+let sliceToEnd: (int, string) => string =
+  (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
 
-module Monoid = BsAbstract.String.Monoid;
+let fromInt: int => string = string_of_int;
 
-module Semigroup = BsAbstract.String.Semigroup;
+let toInt: string => option(int) =
+  v =>
+    try (Some(int_of_string(v))) {
+    | _ => None
+    };
 
-module Eq = BsAbstract.String.Eq;
+let fromFloat: float => string = Js.Float.toString;
 
-module Ord = BsAbstract.String.Ord
+let toFloat: string => option(float) =
+  v =>
+    try (Some(float_of_string(v))) {
+    | _ => None
+    };

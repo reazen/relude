@@ -50,3 +50,17 @@ The library is not published to npm yet, but you can install it via a GitHub ref
 # Editor
 
 If you use `vscode`, Press `Windows + Shift + B` it will build automatically
+
+# NixOS
+
+If you are using NixOS, there is an extremely basic `default.nix` file that you can
+use to build the project in a `nix-shell`, to avoid the `bs-platform` binary issues
+in `node_modules`.
+
+e.g.
+
+```
+> nix-shell
+%nix% > npm install
+%nix% > npm run start
+```

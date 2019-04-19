@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module ListF = Relude_ListF;
+module ListF = Relude.List;
 
 describe("ListF", () => {
   test("String.eq empties true", () =>
@@ -18,6 +18,18 @@ describe("ListF", () => {
 
   test("String.eq different size false", () =>
     expect(ListF.String.eq(["a", "c"], ["a"])) |> toEqual(false)
+  );
+
+  test("String.min empty", () =>
+    expect(ListF.String.min([])) |> toEqual(None)
+  );
+
+  test("String.min non-empty", () =>
+    expect(ListF.String.min(["foo", "bar"])) |> toEqual(Some("bar"))
+  );
+
+  test("String.max non-empty", () =>
+    expect(ListF.String.max(["b", "a", "c"])) |> toEqual(Some("c"))
   );
 
   test("String.contains empty", () =>
@@ -47,8 +59,8 @@ describe("ListF", () => {
     |> toEqual(["foo", "bar", "baz"])
   );
 
-  test("String.remove", () =>
-    expect(ListF.String.remove("b", ["b", "a", "b", "c"]))
+  test("String.removeFirst", () =>
+    expect(ListF.String.removeFirst("b", ["b", "a", "b", "c"]))
     |> toEqual(["a", "b", "c"])
   );
 
@@ -83,11 +95,6 @@ describe("ListF", () => {
     |> toEqual("a, b, c")
   );
 
-  test("String.map", () =>
-    expect(ListF.String.map(s => s ++ s, "abc")) |> toEqual("aabbcc")
-  );
-
-
   test("Int.sum empty", () =>
     expect(ListF.Int.sum([])) |> toEqual(0)
   );
@@ -99,7 +106,6 @@ describe("ListF", () => {
   test("Int.sum many", () =>
     expect(ListF.Int.sum([1, 3, 5])) |> toEqual(9)
   );
-
 
   test("Option.traverse success", () =>
     expect([1, 2, 3, 4] |> ListF.Option.traverse(a => Some(a)))

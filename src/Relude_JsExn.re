@@ -6,7 +6,7 @@ let throw: string => unit = [%bs.raw
   {| function(message) { throw new Error(message); } |}
 ];
 
-let fromExn: exn => Js.Exn.t =
+let unsafeFromExn: exn => Js.Exn.t =
   exn => {
     let makeUnknownJsExn: exn => Js.Exn.t = [%bs.raw
       {| function(exn) { return new Error("Unexpected error: " + exn); } |}
@@ -16,3 +16,5 @@ let fromExn: exn => Js.Exn.t =
     | _ => makeUnknownJsExn(exn)
     };
   };
+
+external unsafeToExn: Js.Exn.t => exn = "%identity";

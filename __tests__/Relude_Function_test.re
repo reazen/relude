@@ -1,4 +1,3 @@
-
 open Jest;
 open Expect;
 
@@ -8,13 +7,13 @@ let (<<) = Function.Infix.(<<);
 let (>>) = Function.Infix.(>>);
 
 describe("Function", () => {
-  test("identity returns the input", () => {
-    expect(Function.identity(1)) |> toBe(1);
-  });
+  test("identity returns the input", () =>
+    expect(Function.identity(1)) |> toBe(1)
+  );
 
-  test("const returns the first arg", () => {
-    expect(Function.const(1, 2)) |> toBe(1);
-  });
+  test("const returns the first arg", () =>
+    expect(Function.const(1, 2)) |> toBe(1)
+  );
 
   test("compose combines functions from right to left", () => {
     let plus5 = a => a + 5;

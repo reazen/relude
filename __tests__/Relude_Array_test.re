@@ -44,9 +44,9 @@ describe("Array", () => {
   test("makeWithIndex creates a array of n items using f", () =>
     expect(Array.makeWithIndex(3, i => i + 2)) |> toEqual([|2, 3, 4|])
   );
-  
+
   test("makeWithIndex creates an empty array if given a negative count", () =>
-    expect(Array.makeWithIndex(-1, i => i + 2)) |> toEqual([| |])
+    expect(Array.makeWithIndex(-1, i => i + 2)) |> toEqual([||])
   );
 
   test("concat", () =>
@@ -87,12 +87,11 @@ describe("Array", () => {
     )
     |> toEqual([|1, 2, 3, 4, 5|])
   );
-  
+
   test("foldLeft2", () =>
     expect(Array.foldLeft((acc, item) => acc - item, 0, [|1, 2, 3|]))
     |> toEqual(-6)
   );
-  
 
   test("foldRight", () =>
     expect(
@@ -105,8 +104,6 @@ describe("Array", () => {
     |> toEqual([|5, 4, 3, 2, 1|])
   );
 
-
-  
   test("scanLeft", () =>
     expect(
       Array.scanLeft(
@@ -141,16 +138,30 @@ describe("Array", () => {
        |])
   );
 
-  test("get empty array", () =>
-    expect(0[[||]]) |> toEqual(None)
+  test("at empty array", () =>
+    expect(Array.at(0, [||])) |> toEqual(None)
   );
 
-  test("get success", () =>
-    expect(2[[|0, 10, 20, 30|]]) |> toEqual(Some(20))
+  test("at Some", () =>
+    expect(Array.at(2, [|0, 10, 20, 30|])) |> toEqual(Some(20))
   );
 
-  test("get failure", () =>
-    expect(10[[|0, 10, 20, 30|]]) |> toEqual(None)
+  test("at None", () =>
+    expect(Array.at(10, [|0, 10, 20, 30|])) |> toEqual(None)
+  );
+
+  /* Apparently setAt 0 doesn't work on an empty array... */
+  test("setAt empty array", () =>
+    expect(Array.setAt(0, "a", [||])) |> toEqual(None)
+  );
+
+  test("setAt valid index in non-empty array", () =>
+    expect(Array.setAt(1, "a", [|"0", "1", "2"|]))
+    |> toEqual(Some([|"0", "a", "2"|]))
+  );
+
+  test("setAt invalid index in non-empty array", () =>
+    expect(Array.setAt(5, "a", [|"0", "1", "2"|])) |> toEqual(None)
   );
 
   test("set success part 1", () => {
@@ -240,43 +251,43 @@ describe("Array", () => {
   );
 
   test("take zero from empty array", () =>
-    expect(Array.take(0, [||])) |> toEqual(Some([||]))
+    expect(Array.take(0, [||])) |> toEqual([||])
   );
 
   test("take non-zero from empty array", () =>
-    expect(Array.take(2, [||])) |> toEqual(None)
+    expect(Array.take(2, [||])) |> toEqual([||])
   );
 
   test("take non-zero from short array", () =>
-    expect(Array.take(2, [|1|])) |> toEqual(None)
+    expect(Array.take(2, [|1|])) |> toEqual([|1|])
   );
 
   test("take non-zero from equal array", () =>
-    expect(Array.take(2, [|1, 2|])) |> toEqual(Some([|1, 2|]))
+    expect(Array.take(2, [|1, 2|])) |> toEqual([|1, 2|])
   );
 
   test("take non-zero from long array", () =>
-    expect(Array.take(2, [|1, 2, 3|])) |> toEqual(Some([|1, 2|]))
+    expect(Array.take(2, [|1, 2, 3|])) |> toEqual([|1, 2|])
   );
 
-  test("takeUpTo zero from empty array", () =>
-    expect(Array.takeUpTo(0, [||])) |> toEqual([||])
+  test("takeExactly zero from empty array", () =>
+    expect(Array.takeExactly(0, [||])) |> toEqual(Some([||]))
   );
 
-  test("takeUpTo non-zero from empty array", () =>
-    expect(Array.takeUpTo(2, [||])) |> toEqual([||])
+  test("takeExactly non-zero from empty array", () =>
+    expect(Array.takeExactly(2, [||])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from short array", () =>
-    expect(Array.takeUpTo(2, [|1|])) |> toEqual([|1|])
+  test("takeExactly non-zero from short array", () =>
+    expect(Array.takeExactly(2, [|1|])) |> toEqual(None)
   );
 
-  test("takeUpTo non-zero from equal array", () =>
-    expect(Array.takeUpTo(2, [|1, 2|])) |> toEqual([|1, 2|])
+  test("takeExactly non-zero from equal array", () =>
+    expect(Array.takeExactly(2, [|1, 2|])) |> toEqual(Some([|1, 2|]))
   );
 
-  test("takeUpTo non-zero from long array", () =>
-    expect(Array.takeUpTo(2, [|1, 2, 3|])) |> toEqual([|1, 2|])
+  test("takeExactly non-zero from long array", () =>
+    expect(Array.takeExactly(2, [|1, 2, 3|])) |> toEqual(Some([|1, 2|]))
   );
 
   test("takeWhile empty array", () =>
@@ -298,43 +309,43 @@ describe("Array", () => {
   );
 
   test("drop zero from empty array", () =>
-    expect(Array.drop(0, [||])) |> toEqual(Some([||]))
+    expect(Array.drop(0, [||])) |> toEqual([||])
   );
 
   test("drop some from short array ", () =>
-    expect(Array.drop(1, [|1, 2|])) |> toEqual(Some([|2|]))
+    expect(Array.drop(1, [|1, 2|])) |> toEqual([|2|])
   );
 
   test("drop some from equal array ", () =>
-    expect(Array.drop(2, [|1, 2|])) |> toEqual(Some([||]))
+    expect(Array.drop(2, [|1, 2|])) |> toEqual([||])
   );
 
   test("drop some from long array ", () =>
-    expect(Array.drop(2, [|1, 2, 3, 4|])) |> toEqual(Some([|3, 4|]))
+    expect(Array.drop(2, [|1, 2, 3, 4|])) |> toEqual([|3, 4|])
   );
 
   test("drop more from long array ", () =>
-    expect(Array.drop(5, [|1, 2, 3, 4|])) |> toEqual(None)
+    expect(Array.drop(5, [|1, 2, 3, 4|])) |> toEqual([||])
   );
 
-  test("dropUpTo zero from empty array", () =>
-    expect(Array.dropUpTo(0, [||])) |> toEqual([||])
+  test("dropExactly zero from empty array", () =>
+    expect(Array.dropExactly(0, [||])) |> toEqual(Some([||]))
   );
 
-  test("dropUpTo some from short array ", () =>
-    expect(Array.dropUpTo(1, [|1, 2|])) |> toEqual([|2|])
+  test("dropExactly some from short array ", () =>
+    expect(Array.dropExactly(1, [|1, 2|])) |> toEqual(Some([|2|]))
   );
 
-  test("dropUpTo some from equal array ", () =>
-    expect(Array.dropUpTo(2, [|1, 2|])) |> toEqual([||])
+  test("dropExactly some from equal array ", () =>
+    expect(Array.dropExactly(2, [|1, 2|])) |> toEqual(Some([||]))
   );
 
-  test("dropUpTo some from long array ", () =>
-    expect(Array.dropUpTo(2, [|1, 2, 3, 4|])) |> toEqual([|3, 4|])
+  test("dropExactly some from long array ", () =>
+    expect(Array.dropExactly(2, [|1, 2, 3, 4|])) |> toEqual(Some([|3, 4|]))
   );
 
-  test("dropUpTo more from long array ", () =>
-    expect(Array.dropUpTo(5, [|1, 2, 3, 4|])) |> toEqual([||])
+  test("dropExactly more from long array ", () =>
+    expect(Array.dropExactly(5, [|1, 2, 3, 4|])) |> toEqual(None)
   );
 
   test("dropWhile empty array", () =>
@@ -443,8 +454,13 @@ describe("Array", () => {
     |> toEqual([|(-1), 0, 1, 2, 3, 5|])
   );
 
+  test("sortBy", () =>
+    expect(Array.sortBy(Int.compare, [|2, 0, 1, 3, 5, (-1)|]))
+    |> toEqual([|(-1), 0, 1, 2, 3, 5|])
+  );
+
   test("sort", () =>
-    expect(Array.sort(Int.compare, [|2, 0, 1, 3, 5, (-1)|]))
+    expect(Array.sort((module Int.Ord), [|2, 0, 1, 3, 5, (-1)|]))
     |> toEqual([|(-1), 0, 1, 2, 3, 5|])
   );
 
@@ -452,22 +468,23 @@ describe("Array", () => {
     expect(Array.reverse([|1, 2, 3, 4, 5|])) |> toEqual([|5, 4, 3, 2, 1|])
   );
 
-  test("contains false", () =>
-    expect(Array.contains(Int.eq, 10, [|0, 1, 2, 3, 4|])) |> toEqual(false)
+  test("containsBy false", () =>
+    expect(Array.containsBy(Int.eq, 10, [|0, 1, 2, 3, 4|]))
+    |> toEqual(false)
   );
 
-  test("indexOf success", () =>
-    expect(Array.indexOf(Int.eq, 30, [|0, 10, 20, 30, 40|]))
+  test("indexOfBy success", () =>
+    expect(Array.indexOfBy(Int.eq, 30, [|0, 10, 20, 30, 40|]))
     |> toEqual(Some(3))
   );
 
-  test("indexOf failure", () =>
-    expect(Array.indexOf(Int.eq, 500, [|0, 10, 20, 30, 40|]))
+  test("indexOfBy failure", () =>
+    expect(Array.indexOfBy(Int.eq, 500, [|0, 10, 20, 30, 40|]))
     |> toEqual(None)
   );
 
-  test("contains true", () =>
-    expect(Array.contains(Int.eq, 3, [|0, 1, 2, 3, 4|])) |> toEqual(true)
+  test("containsBy true", () =>
+    expect(Array.containsBy(Int.eq, 3, [|0, 1, 2, 3, 4|])) |> toEqual(true)
   );
 
   test("any empty", () =>
@@ -494,8 +511,8 @@ describe("Array", () => {
     expect(Array.all(a => a < 3, [|0, 1, 2, 3|])) |> toEqual(false)
   );
 
-  test("distinct", () =>
-    expect(Array.distinct(Int.eq, [|6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5|]))
+  test("distinctBy", () =>
+    expect(Array.distinctBy(Int.eq, [|6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5|]))
     |> toEqual([|6, 1, 2, 3, 4, 5|])
   );
 
@@ -558,8 +575,8 @@ describe("Array", () => {
     |> toBe(false)
   );
 
-  test("mkString", () =>
-    expect(Array.mkString(", ", [|"a", "b", "c"|])) |> toEqual("a, b, c")
+  test("Array.String.joinWith", () =>
+    expect(Array.String.joinWith(", ", [|"a", "b", "c"|])) |> toEqual("a, b, c")
   );
 
   test("showBy", () =>
