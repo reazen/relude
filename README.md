@@ -4,7 +4,7 @@
 
 Relude is a standard library replacement ("prelude") written in [ReasonML](https://reasonml.github.io/), targeting compilation to JavaScript via the [BuckleScript](https://bucklescript.github.io/) compiler.
 
-Relude aims to provide a robust collection of utility functions built on top of reusable typeclass-style abstractions. While Relude has its foundiation in category theory, our goal is to make the library as easy-to-use as [Lodash](https://lodash.com/docs) for people who don't know or care about category theory. This is possible due to OCaml's powerful module system and the amazing work that has gone into [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract), on which much of Relude is based.
+Relude aims to provide a robust collection of utility functions built on top of reusable typeclass-style abstractions. While Relude has its foundation in category theory, our goal is to make the library as easy-to-use as a library like [Lodash](https://lodash.com/docs) for people who don't know or care about category theory. This is possible due to OCaml's powerful module system and the amazing work that has gone into [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract), on which much of Relude is based.
 
 For example, the following functions all exist in Relude, and are all backed by the same underlying function (`fold` from `Foldable`, when the inner type implements `Monoid`):
 
