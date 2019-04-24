@@ -1,5 +1,8 @@
 {
   "name": "relude",
+  "description": "Alternative standard library (prelude) for ReasonML",
+  "homepage": "https://github.com/reazen/relude",
+  "bugs": "https://github.com/reazen/relude/issues",
   "version": "0.3.0",
   "repository": {
     "type": "git",
@@ -15,7 +18,11 @@
     "start": "bsb -make-world -w"
   },
   "keywords": [
-    "BuckleScript"
+    "ReasonML",
+    "BuckleScript",
+    "Utility",
+    "Prelude",
+    "Standard Library"
   ],
   "author": "",
   "license": "MIT",
