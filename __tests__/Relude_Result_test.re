@@ -33,6 +33,14 @@ describe("Result", () => {
     |> toEqual("error")
   );
 
+  test("merge Error", () => {
+    expect(Result.merge(Belt.Result.Error(1))) |> toEqual(1)
+  });
+
+  test("merge Ok", () => {
+    expect(Result.merge(Belt.Result.Ok(1))) |> toEqual(1)
+  });
+
   test("isOk when Ok", () =>
     expect(Result.isOk(Belt.Result.Ok(1))) |> toEqual(true)
   );
