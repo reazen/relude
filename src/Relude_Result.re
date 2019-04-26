@@ -1,8 +1,11 @@
 type t('a, 'e) = Belt.Result.t('a, 'e);
 
 let pure: 'a 'e. 'a => t('a, 'e) = a => Ok(a);
+
 let ok: 'a 'e. 'a => t('a, 'e) = pure;
+
 let error: 'a 'e. 'e => t('a, 'e) = e => Error(e);
+
 let unit: 'e. t(unit, 'e) = pure();
 
 let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
@@ -11,6 +14,8 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
     | Ok(a) => ac(a)
     | Error(e) => ec(e)
     };
+
+let merge: 'a. t('a, 'a) => 'a = fa => fold(a => a, a => a, fa);
 
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, ra) => Belt.Result.map(ra, f);
@@ -143,6 +148,7 @@ let triesAsString: 'a. (unit => 'a) => t('a, string) =
   fn => tries(fn) |> mapError(Js.String.make);
 
 let toValidation = Relude_Validation.fromResult;
+
 let fromValidation = Relude_Validation.toResult;
 
 let toValidationNel:
