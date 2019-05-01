@@ -12,6 +12,7 @@
 /*******************************************************************************
  * Type definition and constructors
  ******************************************************************************/
+
 type t('a) =
   | Init
   | Loading
@@ -27,9 +28,9 @@ let complete: 'a => t('a) = a => Complete(a);
  * Needed by typeclasses
  ******************************************************************************/
 
-let pure: 'a => t('a) = a => Complete(a);
+let pure: 'a. 'a => t('a) = a => Complete(a);
 
-let map: ('a => 'b, t('a)) => t('b) =
+let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
   (f, fa) =>
     switch (fa) {
     | Init => Init
@@ -38,8 +39,7 @@ let map: ('a => 'b, t('a)) => t('b) =
     | Complete(a) => Complete(f(a))
     };
 
-/* TODO: not sure about this */
-let alt: (t('a), t('a)) => t('a) =
+let alt: 'a. (t('a), t('a)) => t('a) =
   (fa, fb) =>
     switch (fa, fb) {
     | (Init, Init) => Init
@@ -63,11 +63,11 @@ let alt: (t('a), t('a)) => t('a) =
     | (Complete(_) as c, Complete(_)) => c
     };
 
-let apply: (t('a => 'b), t('a)) => t('b) =
+let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
   (ff, fa) =>
     switch (ff, fa) {
     | (Init, Init) => Init
-    | (Init, Loading) => Loading /* prefer Loading over Init */
+    | (Init, Loading) => Loading
     | (Init, Reloading(_)) => Init
     | (Init, Complete(_)) => Init
 
@@ -87,7 +87,7 @@ let apply: (t('a => 'b), t('a)) => t('b) =
     | (Complete(f), Complete(a)) => Complete(f(a))
     };
 
-let bind: (t('a), 'a => t('b)) => t('b) =
+let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
   (fa, f) =>
     switch (fa) {
     | Init => Init
@@ -96,56 +96,140 @@ let bind: (t('a), 'a => t('b)) => t('b) =
     | Complete(a) => f(a)
     };
 
-let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
+let flatMap: 'a 'b. ('a => t('b), t('a)) => t('b) =
+  (f, fa) => bind(fa, f);
 
 /*******************************************************************************
  * Utilities specific to this type
  ******************************************************************************/
 
-let isInit: t('a) => bool =
+let isInit: 'a. t('a) => bool =
   fun
   | Init => true
-  | _ => false;
+  | Loading => false
+  | Reloading(_) => false
+  | Complete(_) => false;
 
-let isBusy: t('a) => bool =
+let isLoading: 'a. t('a) => bool =
   fun
-  | Loading
-  | Reloading(_) => true
-  | _ => false;
-
-let isLoading: t('a) => bool =
-  fun
+  | Init => false
   | Loading => true
-  | _ => false;
+  | Reloading(_) => false
+  | Complete(_) => false;
 
-let isReloading: t('a) => bool =
+let isReloading: 'a. t('a) => bool =
   fun
+  | Init => false
+  | Loading => false
   | Reloading(_) => true
-  | _ => false;
+  | Complete(_) => false;
 
-let isComplete: t('a) => bool =
+let isComplete: 'a. t('a) => bool =
   fun
-  | Complete(_) => true
-  | _ => false;
+  | Init => false
+  | Loading => false
+  | Reloading(_) => false
+  | Complete(_) => true;
+
+let isBusy: 'a. t('a) => bool =
+  fun
+  | Init => false
+  | Loading => true
+  | Reloading(_) => true
+  | Complete(_) => false;
+
+let isIdle: 'a. t('a) => bool = fa => !isBusy(fa);
+
+/**
+ * Creates a new `AsyncData` by transitioning the given `AsyncData` into a busy state (`Loading` or `Reloading`), and carrying over the internal data if available.
+ */
+let toBusy: 'a. t('a) => t('a) =
+  fun
+  | Init => Loading
+  | Loading as a => a
+  | Reloading(_) as a => a
+  | Complete(a) => Reloading(a);
+
+/**
+ * Creates a new `AsyncData` by transitioning the given `AsyncData` into an idle state (`Init` or `Complete`), and carrying over the internal data if available.
+ */
+let toIdle: 'a. t('a) => t('a) =
+  fun
+  | Init as a => a
+  | Loading => Init
+  | Reloading(a) => Complete(a)
+  | Complete(_) as a => a;
 
 /**
  * Get a value of type `'a`, using the `Complete` value if the AsyncData is
  * complete, or the last known complete value in `Reloading`.
  */
-let getValue: t('a) => option('a) =
+let getValue: 'a. t('a) => option('a) =
   fun
-  | Complete(v)
+  | Init => None
+  | Loading => None
   | Reloading(v) => Some(v)
-  | _ => None;
+  | Complete(v) => Some(v);
+
+/**
+ * Get `Some` value of type `'a` only from the `Reloading` state, and `None` in
+ * all other cases, including `Complete`
+ */
+let getReloading: 'a. t('a) => option('a) =
+  fun
+  | Init => None
+  | Loading => None
+  | Reloading(a) => Some(a)
+  | Complete(_) => None;
 
 /**
  * Get `Some` value of type `'a` only from the `Complete` state, and `None` in
  * all other cases, including `Reloading`.
  */
-let getComplete: t('a) => option('a) =
+let getComplete: 'a. t('a) => option('a) =
   fun
-  | Complete(v) => Some(v)
-  | _ => None;
+  | Init => None
+  | Loading => None
+  | Reloading(_) => None
+  | Complete(a) => Some(a);
+
+/**
+ * Fold the `AsyncData` into a new type by providing a strict value or function to handle each case.
+ */
+let fold: 'a 'b. ('b, 'b, 'a => 'b, 'a => 'b, t('a)) => 'b =
+  (initValue, loadingValue, onReloading, onComplete, fa) =>
+    switch (fa) {
+    | Init => initValue
+    | Loading => loadingValue
+    | Reloading(a) => onReloading(a)
+    | Complete(a) => onComplete(a)
+    };
+
+/**
+ * Fold the `AsyncData` into a new value by providing a function to handle each case.
+ */
+let foldLazy: 'a 'b. (unit => 'b, unit => 'b, 'a => 'b, 'a => 'b, t('a)) => 'b =
+  (onInit, onLoading, onReloading, onComplete, fa) =>
+    switch (fa) {
+    | Init => onInit()
+    | Loading => onLoading()
+    | Reloading(a) => onReloading(a)
+    | Complete(a) => onComplete(a)
+    };
+
+/**
+ * Fold the `AsyncData` into a new value by providing a strict value to use when there is no data, or function to handle when there is data.
+ */
+let foldByValue: 'a 'b. ('b, 'a => 'b, t('a)) => 'b =
+  (defaultValue, onValue, fa) =>
+    fold(defaultValue, defaultValue, onValue, onValue, fa);
+
+/**
+ * Fold the `AsyncData` into a new value by providing a lazy value to use when there is no data, or function to handle when there is data.
+ */
+let foldByValueLazy: 'a 'b. (unit => 'b, 'a => 'b, t('a)) => 'b =
+  (onNoValue, onValue, fa) =>
+    foldLazy(onNoValue, onNoValue, onValue, onValue, fa);
 
 /*******************************************************************************
  * Typeclass implementations
@@ -189,12 +273,17 @@ module Infix = {
 module ApplyFunctions = BsAbstract.Functions.Apply(Apply);
 
 /* These can be derived from BsAbstract.Functions.Apply, but because we have an error type, it becomes a module functor with an error type */
-let map2: (('a, 'b) => 'c, t('a), t('b)) => t('c) = ApplyFunctions.lift2;
+let map2: 'a 'b 'c. (('a, 'b) => 'c, t('a), t('b)) => t('c) = ApplyFunctions.lift2;
 
-let map3: (('a, 'b, 'c) => 'd, t('a), t('b), t('c)) => t('d) = ApplyFunctions.lift3;
+let map3: 'a 'b 'c 'd. (('a, 'b, 'c) => 'd, t('a), t('b), t('c)) => t('d) = ApplyFunctions.lift3;
 
-let map4: (('a, 'b, 'c, 'd) => 'e, t('a), t('b), t('c), t('d)) => t('e) = ApplyFunctions.lift4;
+let map4:
+  'a 'b 'c 'd 'e.
+  (('a, 'b, 'c, 'd) => 'e, t('a), t('b), t('c), t('d)) => t('e)
+ = ApplyFunctions.lift4;
 
 let map5:
+  'a 'b 'c 'd 'e 'f.
   (('a, 'b, 'c, 'd, 'e) => 'f, t('a), t('b), t('c), t('d), t('e)) =>
-  t('f) = ApplyFunctions.lift5;
+  t('f)
+ = ApplyFunctions.lift5;
