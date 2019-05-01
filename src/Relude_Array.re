@@ -233,7 +233,7 @@ let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b) =
   case `get()` returns `None.`
   
   ## Example
-  ```reason
+  ```re
   get(0, [|100, 101, 102|]) == Some(100);
   get(2, [|100, 101, 102|]) == Some(102);
   get(-1, [|100, 101, 102|]) == None;
@@ -265,7 +265,7 @@ let set: (int, 'a, array('a)) => bool =
   as `Some(value)`. For an empty array, the function returns `None`.
   
   ## Example
-  ```reason
+  ```re
   head([|100, 101, 102|]) == Some(100);
   head([| |]) == None;
   ```
@@ -278,7 +278,7 @@ let head: array('a) => option('a) = arr => Belt.Array.get(arr, 0);
   function returns `None`.
   
   ## Example
-  ```reason
+  ```re
   tail([|100, 101, 102|]) == Some([|101, 102|]);
   tail([| |]) == None;
   ```
@@ -302,7 +302,7 @@ let tail: array('a) => option(array('a)) =
   an empty array.
   
   ## Example
-  ```reason
+  ```re
   tailOrEmpty([|100, 101, 102|]) == [|101, 102|];
   tailOrEmpty([| |]) == [| |];
   ```
@@ -316,7 +316,7 @@ let tailOrEmpty: array('a) => array('a) =
   `None` if given an empty array.
   
   ## Example
-  ```reason
+  ```re
   init([|100, 101, 102|]) == Some([|100, 101|]);
   init([| |]) == None;
   ```
@@ -337,7 +337,7 @@ let init: array('a) => option(array('a)) =
   `None` if given an empty array.
   
   ## Example
-  ```reason
+  ```re
   last([|100, 101, 102|]) == Some(102);
   last([| |]) == None;
   ```
@@ -358,10 +358,10 @@ let last: array('a) => option('a) =
   If `n` is greater than or equal to the length  of `xs`, `take()` returns `None`.
   
   ## Example
-  ```reason
+  ```re
   take(2, [|100, 101, 102, 103|]) == Some([|100, 101|]);
   take(0, [|100, 101, 102|]) == Some([| |]);
-  take(-1, [|100, 101, 102|]) == None);
+  take(-1, [|100, 101, 102|]) == None;
   take(4, [|100, 101, 102|]) == None;
   take(1, [| |]) == None;
   ```
@@ -381,7 +381,7 @@ let take: (int, array('a)) => option(array('a)) =
   entire array `xs`.
   
   ## Example
-  ```reason
+  ```re
   takeUpTo(0, [|100, 101, 102|]) == [| |];
   takeUpTo(-1, [|100, 101, 102|]) == [| |];
   takeUpTo(4, [|100, 101, 102|]) == [|100, 101, 102|];
@@ -405,7 +405,7 @@ let takeUpTo: (int, array('a)) => array('a) =
   could be an empty array.)
   
   ## Example
-  ```reason
+  ```re
   let even = (x) => {x mod 2 == 0};
   takeWhile(even, [|2, 6, 5, 3, 8|]) == [|2, 6|];
   takeWhile(even, [|5, 3, 8, 2, 6|]) == [| |];
@@ -426,7 +426,7 @@ let rec takeWhile: ('a => bool, array('a)) => array('a) =
   `drop()` returns `None`.
   
   ## Example
-  ```reason
+  ```re
   drop(2, [|100, 101, 102, 103|]) == Some([|102, 103|]);
   drop(0, [|100, 101, 102|]) == Some([| |]);
   drop(4, [|100, 101, 102|]) == None;
@@ -448,14 +448,15 @@ let drop: (int, array('a)) => option(array('a)) =
   `dropUpTo()` returns the empty array.
   
   ## Example
-  ```reason
+  ```re
   dropUpTo(2, [|100, 101, 102, 103|]) == [|102, 103|];
   dropUpTo(0, [|100, 101, 102|]) == [|100, 101, 102|];
   dropUpTo(4, [|100, 101, 102|]) == [| |];
   dropUpTo(-1, [|100, 101, 102|]) == [| |];
   dropUpTo(1, [| |]) == [| |];
   ```
-*/let dropUpTo: (int, array('a)) => array('a) =
+*/
+let dropUpTo: (int, array('a)) => array('a) =
   (i, xs) => {
     let l = length(xs);
     if (i >= 0) {
@@ -480,7 +481,7 @@ let drop: (int, array('a)) => option(array('a)) =
   (This could be an empty array.)
   
   ## Example
-  ```reason
+  ```re
   let even = (x) => {x mod 2 == 0};
   dropWhile(even, [|2, 6, 5, 3, 8|]) == [|5, 3, 8|];
   dropWhile(even, [|5, 3, 8|]) == [|5, 3, 8|];
@@ -502,7 +503,7 @@ let rec dropWhile: ('a => bool, array('a)) => array('a) =
   the elements of `xs` that satisfy the predicate.
   
   ## Example
-  ```reason
+  ```re
   let even = (x) => {x mod 2 == 0};
   filter(even, [|2, 6, 5, 3, 4, 1|]) == [|2, 6, 4|];
   filter(even, [|5, 3, 1|]) == [| |];
@@ -520,7 +521,7 @@ let filter: ('a => bool, array('a)) => array('a) =
   the elements of `xs` that satisfy the predicate.
   
   ## Example
-  ```reason
+  ```re
   let bothEven = (x, i) => {x mod 2 == 0 && i mod 2 == 0};
   filterWithIndex(bothEven, [|2, 4, 3, 1, 6, 5|]) == [|2, 6|];
   filterWithIndex(bothEven, [|1, 4, 3, 6, 5, 2|]) == [| |];
@@ -537,7 +538,7 @@ let filterWithIndex: (('a, int) => bool, array('a)) => array('a) =
   value in `xs` satisfies the predicate, `find()` returns `None`.
   
   ## Example
-  ```reason
+  ```re
   let even = (x) => {x mod 2 == 0};
   find(even, [|1, 3, 5, 6, 2, 4|]) == Some(6);
   find(even, [|1, 3, 5|]) == None;
@@ -560,7 +561,7 @@ let rec find: ('a => bool, array('a)) => option('a) =
   value in `xs` satisfies the predicate, `findWithIndex()` returns `None`.
   
   ## Example
-  ```reason
+  ```re
   let bothEven = (x, i) => {(x mod 2 == 0) && (i mod 2 == 0)};
   findWithIndex(bothEven, [|1, 5, 2, 4, 3, 6|]) == Some(2);
   findWithIndex(bothEven, [|1, 2, 3|]) == None;
@@ -587,7 +588,7 @@ let findWithIndex: (('a, int) => bool, array('a)) => option('a) =
   
   ## Example
   
-  ```reason
+  ```re
   let even = (x) => {x mod 2 == 0};
   partition(even, [|6, 1, 3, 2, 4, 5|]) == ([|6, 2, 4|], [|1, 3, 5|]);
   partition(even, [|6, 2, 4|]) == ([|6, 2, 4|], [| |]);
@@ -605,7 +606,7 @@ let partition: ('a => bool, array('a)) => (array('a), array('a)) =
   to the length of `xs`.  Otherwise, `splitAt()` returns `None`.
   
   ## Example
-  ```reason
+  ```re
   splitAt(2, [|100, 101, 102, 103|]) == Some(([|100, 101|], [|102, 103|]));
   splitAt(0, [|100, 101, 102, 103|]) == Some(([| |], [|100, 101, 102, 103|]));
   splitAt(4, [|100, 101, 102, 103|]) == Some(([|100, 101, 102, 103|], [| |]));
@@ -629,7 +630,7 @@ let splitAt: (int, array('a)) => option((array('a), array('a))) =
   before every current element of `xs`.
   
   ## Example
-  ```reason
+  ```re
   prependToAll(999, [|100, 101, 102|]) == [|999, 100, 999, 101, 999, 102|];
   prependToAll(999, [| |]) == [| |];
   ```
@@ -646,7 +647,7 @@ let rec prependToAll: ('a, array('a)) => array('a) =
   between all the current elements of `xs`.
   
   ## Example
-  ```reason
+  ```re
   intersperse(999, [|100, 101, 102|]) == [|100, 999, 101, 999, 102|];
   intersperse(999, [| |]) == [| |];
   ```
@@ -664,7 +665,7 @@ let intersperse: ('a, array('a)) => array('a) =
   empty array.
   
   ## Example
-  ```reason
+  ```re
   replicate(3, [|1, 2|]) == [|1, 2, 1, 2, 1, 2|];
   replicate(0, [|1, 2|]) == [| |];
   replicate(-1, [|1, 2|]) == [| |];
@@ -680,7 +681,7 @@ let replicate: (int, array('a)) => array('a) =
   elements stops when the shorter of the two arrays is finished.
   
   ### Example
-  ```reason
+  ```re
   zip([|1, 2, 3|], [|4.4, 5.5, 6.6|]) == [|(1, 4.4), (2, 5.5), (3, 6.6)|];
   zip([|1, 2, 3|], [|4.4, 5.5|]) == [|(1, 4.4), (2, 5.5)|];
   zip([|1, 2|], [|3.3, 4.4, 5.5|]) == [| (1, 3.3), (2, 4.4) |];
@@ -688,34 +689,165 @@ let replicate: (int, array('a)) => array('a) =
 */
 let zip: (array('a), array('b)) => array(('a, 'b)) = Belt.Array.zip;
 
+/**
+  `zipWith(f, xs, ys)` returns an array that is the result of applying
+  `f` to corresponding elements of `xs` and `ys`, stopping when it hits
+  the end of the shorter array.
+  
+  ### Example
+  ```re
+  zipWith( (x, y) => { 2 * x + y }, [|1, 2, 3|], [|4, 5|]) == [|6, 9|];
+  zipWith( (x, y) => { 2 * x + y }, [| |], [|4, 5|]) == [| |];
+  ```
+*/
 let zipWith: (('a, 'b) => 'c, array('a), array('b)) => array('c) =
   (f, xs, ys) => Belt.Array.zipBy(xs, ys, f);
 
+/**
+  `zipWithIndex(xs)` produces an array of two-tuples where
+  each tuple contains the item from the array and its index number,
+  starting at zero.
+  
+  ### Example
+  ```re
+  zipWithIndex([|"a", "b", "c"|]) == [|("a", 0), ("b", 1), ("c", 2)|];
+  ```
+*/
 let zipWithIndex: array('a) => array(('a, int)) =
   xs => zip(xs, Relude_Int.rangeAsArray(0, length(xs)));
 
+/**
+  `unzip(xs)` takes an array of pairs and creates a pair of arrays.
+  The first array contains all the first items of the pairs, and the second
+  array contains all the second items.
+  
+  ### Example
+  ```re
+  unzip([|("a", 0), ("b", 1), ("c", 2)|]) == ([|"a", "b", "c"|], [|0, 1, 2|]);
+  ```
+*/
 let unzip: array(('a, 'b)) => (array('a), array('b)) = Belt.Array.unzip;
 
+/**
+  `sortWithInt(f, xs)` sorts the array `xs`, calling `f` every time it needs to
+  compare two array elements `a` and `b`.  If `f(a, b)` is negative, then `a`
+  precedes `b` in sorting order. If `f(a, b)` is positive, then `a` follows `b`
+  in sorting order. If `f(a, b) is zero, then `a` and `b` are considered equal.
+  
+  This is a stable sort; equal elements will appear in the output array in the
+  same order that they appeared in the input array.
+  
+  ### Example
+  ```re
+  let cmpMod12 = (a, b) => {(a mod 12) - (b mod 12)};
+  sortWithInt(cmpMod12, [|17, 3, 9, 4, 15, 20|]) == [|3, 15, 4, 17, 20, 9|];
+  ```
+*/
 let sortWithInt: (('a, 'a) => int, array('a)) => array('a) =
   (f, xs) => Belt.SortArray.stableSortBy(xs, f);
 
+/**
+  `sort(f, xs)` sorts the array `xs`, calling `f` every time it needs to
+  compare two array elements `a` and `b`.  If `f(a, b)` returns
+  ` `less_than `, ` `equal_to `, or ` `greater_than ` depending on the
+  relationship between `a` and `b`. (These are values defined in `bs-abstract`.)
+  
+  This is a stable sort; equal elements will appear in the output array in the
+  same order that they appeared in the input array.
+  
+  ### Example
+  ```re
+  let cmpMod12 = (a, b) => {
+    if (a mod 12 < b mod 12) {
+      `less_than;
+    } else if (a mod 12 > b mod 12) {
+      `greater_than;
+    } else {
+      `equal_to;
+    }
+  };
+  sort(cmpMod12, [|17, 3, 9, 4, 15, 20|]) == [|3, 15, 4, 17, 20, 9|];
+  ```
+  */
 let sort: (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => array('a) =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
+/**
+  `shuffleInPlace(xs)` will shuffle the array `xs`, returning the randomly ordered
+  array. The original array *will* be changed as well.
+
+  ### Example
+  ```re
+  let data = [|100, 101, 102, 103, 104|];
+  let mixed = shuffleInPlace(data);
+  mixed == data;
+  ```
+*/
 let shuffleInPlace: array('a) => array('a) =
   xs => {
     Belt.Array.shuffleInPlace(xs);
     xs;
   };
 
+/**
+  `reverse(xs)` returns an array with elements in the reverse order
+  from the original array.
+  
+  ### Example
+  ```re
+  reverse([|100, 101, 102|]) == [|102, 101, 100|];
+  ```
+*/
 let reverse: array('a) => array('a) = Belt.Array.reverse;
 
+/**
+  In `any(pred, xs)`, `pred` is a function that takes an item of the type in the
+  array and returns a boolean value.  The `any()` function returns `true` if
+  `pred(x)` returns true for any item `x` in the array, `false` otherwise.
+  
+  ### Example
+  ```re
+  any( (x) => {x < 0}, [|100, -101, 102|]) == true;
+  any( (x) => {x < 0}, [|100, 101, 102|]) == false;
+  ```
+*/
 let any: ('a => bool, array('a)) => bool =
   (f, xs) => Belt.Array.some(xs, f);
 
+/**
+  In `contains(f, value, xs)`, the function `f` takes two items
+  of the type in the array and returns a predicate function `p()`
+  by calling `f(value)`.
+  
+  `contains() returns `true` if any item in `xs` satisfies this
+  new predicate function `p()`.
+  
+  ### Example
+  ```re
+  let aboveLimit = (limit, x) => { x > limit };
+  contains(aboveLimit, 50, [|30, 70, 20|]) == true;
+  contains(aboveLimit, 90, [|30, 70, 20|]) == false;
+  ```
+*/
 let contains: (('a, 'a) => bool, 'a, array('a)) => bool =
   (f, x, xs) => any(f(x), xs);
 
+/**
+  In `indexOf(f, value, xs)`, the function `f` takes two items
+  of the type in the array and returns a predicate function `p()`
+  by calling `f(value)`.
+  
+  `index() returns `Some(position)` where `position` is the index
+  of the first item in `xs` that satisfies this new predicate function `p()`,
+  or `None` if no item in `xs` satisfies the predicate..
+  
+  ### Example
+  ```re
+  let aboveLimit = (limit, x) => { x > limit };
+  indexOf(aboveLimit, 50, [|30, 70, 20, 80|]) == Some(1);
+  indexOf(aboveLimit, 90, [|30, 70, 20, 80|]) == None;
+  ```
+*/
 let indexOf: (('a, 'a) => bool, 'a, array('a)) => option(int) =
   (f, x, xs) => {
     let rec go = (f, ys, i) =>
@@ -727,11 +859,36 @@ let indexOf: (('a, 'a) => bool, 'a, array('a)) => option(int) =
     go(f, xs, 0);
   };
 
+/**
+  In `all(pred, xs)`, `pred` is a function that takes an item of the type in the
+  array and returns a boolean value.  The `all()` function returns `true` if
+  `pred(x)` returns true for every item `x` in the array, `false` otherwise.
+  
+  ### Example
+  ```re
+  all( (x) => {x < 0}, [|-100, -101, -102|]) == true;
+  all( (x) => {x < 0}, [|-100, 101, -102|]) == false;
+  ```
+*/
 let all: ('a => bool, array('a)) => bool =
   (f, xs) => Belt.Array.every(xs, f);
 
 /* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
 
+/**
+ In `distinct(f, xs)`, the function `f` compares two items
+ of the type in the array `xs` and returns `true` if the two
+ items are considered to be equal, `false` otherwise.
+ 
+ `distinct()` returns all the items which have unique
+ values with respect to `f()`.
+ 
+  ### Example
+  ```re
+  let eqMod12 = (x, y) => {x mod 12 == y mod 12};
+  distinct(eqMod12, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 2, 12, 9|];
+  ```
+*/
 let distinct: (('a, 'a) => bool, array('a)) => array('a) =
   (eq, xs) =>
     foldLeft(
@@ -746,29 +903,157 @@ let distinct: (('a, 'a) => bool, array('a)) => array('a) =
       xs,
     );
 
+/**
+  `map(f, xs)` creates a new array whose elements are `f(x)` for every element `x`
+  in `xs`.  The result array does not need to have the same type of elements as `xs`.
+  
+  ### Example
+  ```re
+  map((x) => {sqrt(float_of_int(x))}, [|16, 25, 36|]) == [|4.0, 5.0, 6.0|];
+  ```
+*/
 let map: 'a 'b. ('a => 'b, array('a)) => array('b) = BsAbstract.Array.Functor.map;
 
+/**
+  `mapWithIndex(f, xs) creates a new array whose elements are `f(i, x)` where
+  `i` is the index of the element being mapped (starting at zero), and `x` is an
+  element of `xs`.
+  
+  ### Example
+  ```re
+  mapWithIndex((x, i) => { x * i }, [|100, 101, 102, 103|]) == [|0, 101, 204, 309|];
+  ```
+*/
 let mapWithIndex: 'a 'b. (('a, int) => 'b, array('a)) => array('b) =
   (f, xs) => Belt.Array.mapWithIndex(xs, (i, x) => f(x, i));
 
+/**
+  `forEach(f, xs)` applies `f()` to each element of `xs`.  Function `f()`
+  returns `unit`, as does `forEach()`. You use `forEach()` when you want
+  to evaluate each element with a function that produces side effects.
+  
+  The following example prints each item in the array to the console.
+
+  ### Example
+  ```re
+  forEach(Js.log, [|100, 101, 102|]) == ();
+  ```
+*/
 let forEach: 'a. ('a => unit, array('a)) => unit =
   (f, xs) => Belt.Array.forEach(xs, f);
 
+/**
+  `forEachWithIndex(f, xs)` calls `f()` with two arguments: an
+  item from the array and its index (starting at zero). Both `f()`
+  and `forEachWithIndex()` return `unit`. You use `forEachWithIndex()`
+  when you want to evaluate each element with a function that
+  produces side effects.
+  
+  The following example prints each item in the array and its index
+  number.
+  
+  ### Example
+  ```re
+  forEachWithIndex( (x, i) => {Js.log2(x, i)}, [|100, 101, 102|]) == ();
+  ```
+*/
 let forEachWithIndex: 'a. (('a, int) => unit, array('a)) => unit =
   (f, xs) => Belt.Array.forEachWithIndex(xs, (i, x) => f(x, i));
 
+/**
+  `apply(fs, xs)` takes an array of functions `fs` and creates an array by
+  applying the first function in `fs` to all the elements in `xs`, then
+  the second function in `fs` to all the elements in `xs`, and so on.
+  
+  ### Example
+  ```re
+  let f_arr = [| (x) => {x * 2}, (x) => {x + 5} |];
+  apply(f_arr, [|100, 101, 102|]) == [|200, 202, 204, 105, 106, 107|];
+  ```
+*/
 let apply: (array('a => 'b), array('a)) => array('b) = BsAbstract.Array.Apply.apply;
 
+/**
+  In `bind(xs, f)`, function `f()` takes an element of `xs` and returns an array.
+  The result of bind is an array whose elements are the concatenated results
+  of `f(x)` for each `x` in `xs`.
+  
+  ### Example
+  ```re
+  let f = (x) => {[|x - 5, x + 5|]};
+  bind([|100, 101, 102|], f) == [|95, 105, 96, 106, 97, 107|];
+  ```
+
+  Note: `bind()` is the same as `flatMap()`, except the arguments are in the
+  reverse order.
+*/
 let bind: (array('a), 'a => array('b)) => array('b) = BsAbstract.Array.Monad.flat_map;
 
+/**
+  In `flatMap(f, xs)`, function `f()` takes an element of `xs` and returns an array.
+  The result of flatMap is an array whose elements are the concatenated results
+  of `f(x)` for each `x` in `xs`.
+
+  ### Example
+  ```re
+  let f = (x) => {[|x - 5, x + 5|]};
+  flatMap(f, [|100, 101, 102|]) == [|95, 105, 96, 106, 97, 107|];
+  ```
+  
+  Note: `flatMap()` is the same as `bind()`, except the arguments are in the
+  reverse order.
+*/
 let flatMap: ('a => array('b), array('a)) => array('b) = (f, fa) => bind(fa, f);
 
+/**
+  `flatten(xxs)` takes an array of arrays and returns an array with all the
+  sub-arrays concatenated together.
+  
+  ### Example
+  ```re
+  flatten([| [|"a", "b"|], [| |], [|"c"|], [|"d", "e"|] |]) ==
+    [|"a", "b", "c", "d", "e"|];
+  ```
+*/
 let flatten: array(array('a)) => array('a) = Belt.Array.concatMany;
 
+/**
+  `fromList(xs)` creates an array whose elements are the same as those
+  in the list `xs`.
+  
+  ### Example
+  ```re
+  fromList([100, 101, 102]) == [|100, 101, 102|];
+  fromList([]) == [| |];
+  ```
+*/
 let fromList: list('a) => array('a) = Belt.List.toArray;
 
+/**
+  `toList(xs) creates a list whose elements are the same as those
+  in the array `xs`.
+  
+  ### Example
+  ```re
+  toList([|100, 101, 102|]) == [100, 101, 102];
+  toList([| |]) == [];
+  ```
+*/
 let toList: array('a) => list('a) = Belt.List.fromArray;
 
+/**
+  `mkString(delim, xs)` creates a string consisting of all
+  the elements in `xs` separated by the given `delim`. The
+  array `xs` must be an array of strings.
+  
+  ### Example
+  ```re
+  mkString("--", [|"a", "b", "c"|]) == "a--b--c";
+  mkString("/", [|"2019", "05", "01"|]) == "2019/05/01";
+  mkString("", [|"a", "b", "c"|]) == "abc";
+  mkString("/", [| |]) == "";
+  ```
+*/
 let mkString: (string, array(string)) => string =
   (delim, xs) => {
     let delimited = intersperse(delim, xs);
