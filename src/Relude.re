@@ -4,6 +4,7 @@ module AsyncResult = Relude_AsyncResult;
 module Bool = Relude_Bool;
 module Float = Relude_Float;
 module Function = Relude_Function;
+module Globals = Relude_Globals;
 module Identity = Relude_Identity;
 module Int = Relude_Int;
 module IO = Relude_IO;
