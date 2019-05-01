@@ -304,7 +304,7 @@ let uncons: array('a) => option(('a, array('a)));
 
   ## Example
   ```re
-  append(999, [|100, 101, 102|]) == [|100, 102, 103, 999|];
+  append(999, [|100, 101, 102|]) == [|100, 101, 102, 999|];
   append(999, [| |]) == [|999|];
   ```
 */
@@ -532,9 +532,9 @@ let takeWhile: ('a => bool, array('a)) => array('a);
   ## Example
   ```re
   drop(2, [|100, 101, 102, 103|]) == [|102, 103|];
-  drop(0, [|100, 101, 102|]) == [|100, 101, 102, 103|];
+  drop(0, [|100, 101, 102|]) == [|100, 101, 102|];
   drop(4, [|100, 101, 102|]) == [| |];
-  drop(-1, [|100, 101, 102|]) == [|100, 101, 102, 103|];
+  drop(-1, [|100, 101, 102|]) == [|100, 101, 102|];
   drop(1, [| |]) == [| |];
   ```
 */
@@ -550,7 +550,7 @@ let drop: (int, array('a)) => array('a);
   ## Example
   ```re
   dropExactly(2, [|100, 101, 102, 103|]) == Some([|102, 103|]);
-  dropExactly(0, [|100, 101, 102|]) == Some([| |]);
+  dropExactly(0, [|100, 101, 102|]) == Some([|100, 101, 102|]);
   dropExactly(4, [|100, 101, 102|]) == None;
   dropExactly(-1, [|100, 101, 102|]) == None;
   dropExactly(1, [| |]) == None;
@@ -762,7 +762,7 @@ let sortWithInt: (('a, 'a) => int, array('a)) => array('a);
   
   ### Example
   ```re
-  let cmpMod12 = (a, b) => {
+  let cmpMod12 = (a: int, b: int): BsAbstract.Interface.ordering => {
     if (a mod 12 < b mod 12) {
       `less_than;
     } else if (a mod 12 > b mod 12) {
