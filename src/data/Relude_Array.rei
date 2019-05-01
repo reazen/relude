@@ -777,6 +777,39 @@ let sortWithInt: (('a, 'a) => int, array('a)) => array('a);
 let sortBy:
   (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => array('a);
 
+/**
+  `sort((module M), xs)` sorts the array `xs`, using the given module to
+  compare items in the array.  The module must:
+  
+  - Specify a type `t` for the items to be compared
+  - Specify a function `eq`, which takes two items of type `t` and returns
+    `true` if they are considered equal, `false` otherwise.
+  - Specify a function `compare`, which takes two items of type `t` and
+    returns ` `less_than `, ` `equal_to `, or ` `greater_than `, depending on the
+    relation between the two items.
+  
+  This is a stable sort; equal elements will appear in the output array in the
+  same order that they appeared in the input array.
+  
+  ### Example
+  ```re
+  module ClockArithmetic = {
+    type t = int;
+    let eq = (a, b) => { a mod 12 == b mod 12 };
+    let compare = (a, b) => {
+      if (a mod 12 < b mod 12) {
+        `less_than
+      } else if (a mod 12 > b mod 12) {
+        `greater_than
+      } else {
+        `equal_to
+      };
+    }
+  };
+  
+  sort((module ClockArithmetic), [|17, 3, 9, 4, 15, 20|]) == [|3, 15, 4, 17, 20, 9|];
+  ```
+*/
 let sort:
   ((module BsAbstract.Interface.ORD with type t = 'a), array('a)) =>
   array('a);
@@ -796,13 +829,115 @@ let sort:
   ```
 */
 let distinctBy: (('a, 'a) => bool, array('a)) => array('a);
+
+/**
+  In `removeFirstBy(f, value, xs)`, the function `f` compares two items
+  of the type in the array `xs` and returns `true` if the two
+  items are considered to be equal, `false` otherwise.
+ 
+  `removeFirstBy()` returns an array with the first element that
+  is considered equal to `value` with respect to `f()` removed. 
+  
+  If no such elements exist, the result is the same as the original array.
+ 
+  ### Example
+  ```re
+  let eqMod12 = (x, y) => {x mod 12 == y mod 12};
+  removeFirstBy(eqMod12, 14, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 12, 9, 21, 0|];
+  removeFirstBy(eqMod12, 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
+  ```
+*/
 let removeFirstBy: (('a, 'a) => bool, 'a, array('a)) => array('a);
+
+/**
+  In `removeEachBy(f, value, xs)`, the function `f` compares two items
+  of the type in the array `xs` and returns `true` if the two
+  items are considered to be equal, `false` otherwise.
+ 
+  `removeEachBy()` returns an array with every element that
+  is considered equal to `value` with respect to `f()` removed. 
+  
+  If no such elements exist, the result is the same as the original array.
+ 
+  ### Example
+  ```re
+  let eqMod12 = (x, y) => {x mod 12 == y mod 12};
+  removeEachBy(eqMod12, 12, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 9, 21|];
+  removeEachBy(eqMod12, 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
+  ```
+*/
 let removeEachBy: (('a, 'a) => bool, 'a, array('a)) => array('a);
+
+/*
+  `distinct((module M), xs)` returns an array of the unique elements `xs`,
+  using the given module to determine which elements are considered to be equal.
+  The module must:
+  
+  - Specify a type `t` for the items to be compared
+  - Specify a function `eq`, which takes two items of type `t` and returns
+    `true` if they are considered equal, `false` otherwise.
+    
+  ### Example
+  ```re
+  module ClockEqual = {
+    type t = int;
+    let eq = (a, b) => { a mod 12 == b mod 12 };
+  };
+
+  distinct((module ClockEqual), [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 2, 12, 9|];
+  ```
+*/    
 let distinct:
   ((module BsAbstract.Interface.EQ with type t = 'a), array('a)) => array('a);
+
+/**
+  `removeFirst((module M), value, xs)` returns an array with the first element that
+  is considered equal to `value` with respect to `module M` removed.
+ 
+  The module must:
+  
+  - Specify a type `t` for the items to be compared
+  - Specify a function `eq`, which takes two items of type `t` and returns
+    `true` if they are considered equal, `false` otherwise.
+  
+  If no elements are equal to the `value`, the result is the same as the original array.
+ 
+  ### Example
+  ```re
+  module ClockEq2 = {
+    type t = int;
+    let eq = (a, b) => { a mod 12 == b mod 12 };
+  };
+  removeFirst((module ClockEq2), 14, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 12, 9, 21, 0|];
+  removeFirst((module ClockEq2), 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
+  ```
+*/
 let removeFirst:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
   array('a);
+
+/**
+  `removeEach((module M), value, xs)` returns an array with every element that
+  is considered equal to `value` with respect to `module M` removed.
+ 
+  The module must:
+  
+  - Specify a type `t` for the items to be compared
+  - Specify a function `eq`, which takes two items of type `t` and returns
+    `true` if they are considered equal, `false` otherwise.
+  
+  If no elements are equal to the `value`, the result is the same as the original array.
+ 
+  ### Example
+  ```re
+  module ClockEq3 = {
+    type t = int;
+    let eq = (a, b) => { a mod 12 == b mod 12 };
+  };
+  removeEach((module ClockEq3), 12, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 9, 21|];
+  removeEach((module ClockEq3), 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
+  ```
+*/
 let removeEach:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
   array('a);
