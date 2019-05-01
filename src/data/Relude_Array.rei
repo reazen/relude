@@ -153,7 +153,44 @@ let toList: array('a) => list('a);
 module Traversable:
   (BsAbstract.Interface.APPLICATIVE) => BsAbstract.Interface.TRAVERSABLE;
 
+/**
+  `scanLeft(f, init, xs)` returns an array of values. Starting with `init`,
+  as the initial value of an accumulator, `scanLeft` applies function
+  `f` to the accumulator and the first element in the list. The result
+  is appended to the array of values and becomes the new value of the accumulator
+  Then `f` is applied to the new accumulator and the next element in `xs`.
+  This process continues until all elements in `xs` are processed.
+  `scanLeft` returns the array of all the accumulated values.
+
+  In short, `scanLeft` returns an array of the values that a
+  `foldLeft` would have computed, in left to right order.
+
+  ## Example
+  ```re
+  scanLeft( (acc, item) => {acc - item}, 0, [|1, 2, 3|]) == [|-1, -3, -6|];
+  scanLeft( (acc, item) => {acc + item}, 0, [| |]) == [| |];
+  ```
+*/
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b);
+
+/**
+  `scanRight(f, init, xs)` returns an array of values. Starting with `init`,
+  as the initial value of an accumulator, `scanRight` applies function
+  `f` to the last element in the list and the accumulator. The result
+  is prepended to the array of values and becomes the new value of the accumulator.
+  Then `f` is applied to the preceding element in `xs` and the accumulator.
+  This process continues until all elements in `xs` are processed.
+  `scanRight` returns the array of all the accumulated values.
+  
+  In short, `scanRight` returns an array of the values that a
+  `foldRight` would have computed, in right to left order.
+  
+  ## Example
+  ```re
+  scanRight( (item, acc) => {acc - item}, 0, [|1, 2, 3|]) == [|-6, -5, -3|];
+  scanRight( (item, acc) => {acc + item}, 0, [| |]) == [| |];
+  ```
+*/
 let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b);
 
 let eqBy: (('a, 'a) => bool, array('a), array('a)) => bool;
@@ -254,14 +291,131 @@ let isEmpty: array('a) => bool;
 */
 let isNotEmpty: array('a) => bool;
 
+/**
+  `at(n, xs)` returns the value at the given index position as `Some(value)`
+  unless `n` is less than zero or greater than the length of `xs`, in which
+  case `at()` returns `None.`
+  
+  ## Example
+  ```re
+  at(0, [|100, 101, 102|]) == Some(100);
+  at(2, [|100, 101, 102|]) == Some(102);
+  at(-1, [|100, 101, 102|]) == None;
+  at(3, [|100, 101, 102|]) == None;
+  ```
+*/
 let at: (int, array('a)) => option('a);
+
+/**
+  `set(n, value, xs)` updates the given array with item `n` set to `value` and
+  returns `true` when `n` is greater than or equal to zero and less than
+  the length of `xs`. If `n` is not a valid index, the array remains unchanged
+  and the function returns `false`.
+  
+  In the following example, the statements are performed in order.
+  
+  ## Example
+  let arr = [|100, 101, 102|];
+  set(1, 999, arr) == true && arr == [|100, 999, 102|];
+  set(-1, 888, arr) == false && arr == [|100, 999, 102|];
+  set(3, 777, arr) == false && arr == [|100, 999, 102|];
+  ```
+*/
 let setAt: (int, 'a, array('a)) => option(array('a));
+
+/**
+  For non-empty arrays, `head(xs)` returns the first item in the array
+  as `Some(value)`. For an empty array, the function returns `None`.
+  
+  ## Example
+  ```re
+  head([|100, 101, 102|]) == Some(100);
+  head([| |]) == None;
+  ```
+*/
 let head: array('a) => option('a);
+
+/**
+  For non-empty arrays, `tail(xs)` returns an array consisting of all
+  but the first item in `xs` as `Some(ys)`. For an empty array, the
+  function returns `None`.
+  
+  ## Example
+  ```re
+  tail([|100, 101, 102|]) == Some([|101, 102|]);
+  tail([| |]) == None;
+  ```
+*/
 let tail: array('a) => option(array('a));
+
+/**
+  For non-empty arrays, `tailOrEmpty(xs)` returns an array consisting of all
+  but the first item in `xs`. For an empty array, the function returns
+  an empty array.
+  
+  ## Example
+  ```re
+  tailOrEmpty([|100, 101, 102|]) == [|101, 102|];
+  tailOrEmpty([| |]) == [| |];
+  ```
+*/
 let tailOrEmpty: array('a) => array('a);
+
+/**
+  For non-empty arrays, `init(xs)` returns an array containing
+  all but the last item in `xs` as `Some(ys)`. The function returns
+  `None` if given an empty array.
+  
+  ## Example
+  ```re
+  init([|100, 101, 102|]) == Some([|100, 101|]);
+  init([| |]) == None;
+  ```
+*/
 let init: array('a) => option(array('a));
+
+/**
+  For non-empty arrays, `last(xs)` returns the last
+  item in `xs` as `Some(value)`. The function returns
+  `None` if given an empty array.
+  
+  ## Example
+  ```re
+  last([|100, 101, 102|]) == Some(102);
+  last([| |]) == None;
+  ```
+*/
 let last: array('a) => option('a);
+
+/**
+  `take(n, xs)` returns an array of the first `n` items in `xs` as
+  `Some(ys)`, `n` is pinned to the range 0..`n` - 1.
+  
+  ## Example
+  ```re
+  take(2, [|100, 101, 102, 103|]) == [|100, 101|];
+  take(0, [|100, 101, 102|]) == [| |];
+  take(-1, [|100, 101, 102|]) == [| |];
+  take(4, [|100, 101, 102|]) == [|100, 101, 102|];
+  take(1, [| |]) == [| |];
+  ```
+*/
 let take: (int, array('a)) => array('a);
+
+/**
+  `takeExactly(n, xs)` returns an array of the first `n` items in `xs` as
+  `Some(ys)`, If `n` is less than or equal to zero, `takeExactly()` returns `Some([| |])`.
+  If `n` is greater than or equal to the length  of `xs`, `takeExactly()` returns `None`.
+  
+  ## Example
+  ```re
+  takeExactly(2, [|100, 101, 102, 103|]) == Some([|100, 101|]);
+  takeExactly(0, [|100, 101, 102|]) == Some([| |]);
+  takeExactly(-1, [|100, 101, 102|]) == None;
+  takeExactly(4, [|100, 101, 102|]) == None;
+  takeExactly(1, [| |]) == None;
+  ```
+*/
 let takeExactly: (int, array('a)) => option(array('a));
 let takeWhile: ('a => bool, array('a)) => array('a);
 let drop: (int, array('a)) => array('a);
