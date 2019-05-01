@@ -164,32 +164,6 @@ describe("Array", () => {
     expect(Array.setAt(5, "a", [|"0", "1", "2"|])) |> toEqual(None)
   );
 
-  test("set success part 1", () => {
-    let arr = [|100, 101, 102|];
-    expect(Array.set(1, 999, arr)) |> toEqual(true)
-    }
-  );
-
-  test("set success part 2", () => {
-    let arr = [|100, 101, 102|];
-    let _ = Array.set(1, 999, arr);
-    expect(arr)|> toEqual([|100, 999, 102|])
-    }
-  );
-
-  test("set failure part 1", () => {
-    let arr = [|100, 101, 102|];
-    expect(Array.set(-1, 999, arr)) |> toEqual(false)
-    }
-  );
-
-  test("set failure part 2", () => {
-    let arr = [|100, 101, 102|];
-    let _ = Array.set(-1, 999, arr);
-    expect(arr)|> toEqual([|100, 101, 102|])
-    }
-  );
-
   test("head empty array", () =>
     expect(Array.head([||])) |> toEqual(None)
   );

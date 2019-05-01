@@ -307,7 +307,7 @@ let isNotEmpty: array('a) => bool;
 let at: (int, array('a)) => option('a);
 
 /**
-  `set(n, value, xs)` updates the given array with item `n` set to `value` and
+  `setAt(n, value, xs)` updates the given array with item `n` setAt to `value` and
   returns `true` when `n` is greater than or equal to zero and less than
   the length of `xs`. If `n` is not a valid index, the array remains unchanged
   and the function returns `false`.
@@ -316,9 +316,9 @@ let at: (int, array('a)) => option('a);
   
   ## Example
   let arr = [|100, 101, 102|];
-  set(1, 999, arr) == true && arr == [|100, 999, 102|];
-  set(-1, 888, arr) == false && arr == [|100, 999, 102|];
-  set(3, 777, arr) == false && arr == [|100, 999, 102|];
+  setAt(1, 999, arr) == true && arr == [|100, 999, 102|];
+  setAt(-1, 888, arr) == false && arr == [|100, 999, 102|];
+  setAt(3, 777, arr) == false && arr == [|100, 999, 102|];
   ```
 */
 let setAt: (int, 'a, array('a)) => option(array('a));
