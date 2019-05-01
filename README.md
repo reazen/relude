@@ -1,6 +1,7 @@
 # Relude
 
-[![CircleCI](https://circleci.com/gh/reazen/relude.svg?style=svg)](https://circleci.com/gh/reazen/relude)
+[![CircleCI branch](https://img.shields.io/circleci/project/github/reazen/relude/master.svg)](https://circleci.com/gh/reazen/relude)
+[![npm](https://img.shields.io/npm/v/relude.svg)](https://npmjs.org/relude)
 
 Relude is a standard library replacement ("prelude") written in [ReasonML](https://reasonml.github.io/), targeting compilation to JavaScript via the [BuckleScript](https://bucklescript.github.io/) compiler.
 
