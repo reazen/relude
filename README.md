@@ -74,6 +74,26 @@ or a specific commit:
   * Note: this currently uses `jaredly/redoc` but this may change. If you have any trouble running `npm install`, you may want to try removing `redoc` as a dependency
 * Start compiler watcher: `npm run start`
 
+### Publishing to npm
+
+We currently do this by hand:
+
+```
+# Bump the version, update package.json, and create the git tag
+> npm version major|minor|patch
+
+# Push git commit and tags to upstream/origin
+> git push upstream
+> git push upstream --tags
+> git push origin
+> git push origin --tags
+
+# Publish the new version to npm
+> npm publish
+
+# Go to GitHub and create a new release
+```
+
 ### NixOS
 
 If you are using NixOS, there is an extremely basic `default.nix` file that you can
