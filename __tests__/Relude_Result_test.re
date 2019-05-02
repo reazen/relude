@@ -33,13 +33,23 @@ describe("Result", () => {
     |> toEqual("error")
   );
 
-  test("merge Error", () => {
+  test("merge Error", () =>
     expect(Result.merge(Belt.Result.Error(1))) |> toEqual(1)
-  });
+  );
 
-  test("merge Ok", () => {
+  test("merge Ok", () =>
     expect(Result.merge(Belt.Result.Ok(1))) |> toEqual(1)
-  });
+  );
+
+  test("flip Ok", () =>
+    expect(Result.flip(Belt.Result.Ok(1)))
+    |> toEqual(Belt.Result.Error(1))
+  );
+
+  test("flip Error", () =>
+    expect(Result.flip(Belt.Result.Error("my error")))
+    |> toEqual(Belt.Result.Ok("my error"))
+  );
 
   test("isOk when Ok", () =>
     expect(Result.isOk(Belt.Result.Ok(1))) |> toEqual(true)

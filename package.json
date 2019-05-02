@@ -12,10 +12,11 @@
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
     "cleanbuild": "npm run clean && npm run build",
+    "watch": "bsb -make-world -w",
     "test": "npm run build && jest",
     "cleantest": "npm run clean && npm run test",
     "docs": "npm install jaredly/redoc#c5e746b && npm run cleanbuild && rm -rf docs && redoc --debug",
-    "start": "bsb -make-world -w"
+    "start": "npm run watch"
   },
   "keywords": [
     "ReasonML",

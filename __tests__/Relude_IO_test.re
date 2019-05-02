@@ -54,6 +54,92 @@ let parseData: string => IO.t(int, parseError) =
 let printNumber: int => IO.t(unit, printError) = _num => IO.unit;
 
 describe("IO", () => {
+  testAsync("flip pure", onDone =>
+    IO.pure(42)
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(42)),
+       )
+  );
+
+  testAsync("flip throw", onDone =>
+    IO.throw("my error")
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(a) => onDone(expect(a) |> toEqual("my error"))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("flip suspend", onDone =>
+    IO.suspend(() => 42)
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(42)),
+       )
+  );
+
+  testAsync("flip suspendIO", onDone =>
+    IO.suspendIO(() => Pure(42))
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(42)),
+       )
+  );
+
+  testAsync("flip async", onDone =>
+    IO.async(onDone => onDone(Ok(42)))
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(42)),
+       )
+  );
+
+  testAsync("flip map", onDone =>
+    IO.pure(42)
+    |> IO.map(a => a + 10)
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(52)),
+       )
+  );
+
+  testAsync("flip flatMap", onDone =>
+    IO.pure(42)
+    |> IO.flatMap(a => Pure(a + 10))
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(52)),
+       )
+  );
+
+  testAsync("flip multi", onDone =>
+    IO.pure(42)
+    |> IO.flatMap(a => Pure(a + 10))
+    |> IO.flatMap(a => Pure(a + 100))
+    |> IO.map(a => a + 1000)
+    |> IO.flatMap(a => IO.async(onDone => onDone(Result.ok(a + 10000))))
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(11152)),
+       )
+  );
+
   testAsync("unsafeRunAsync pure", onDone =>
     IO.pure(42)
     |> IO.unsafeRunAsync(
