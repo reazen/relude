@@ -17,6 +17,8 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
 
 let merge: 'a. t('a, 'a) => 'a = fa => fold(a => a, a => a, fa);
 
+let flip: 'a 'e. t('a, 'e) => t('e, 'a) = fa => fa |> fold(ok, error);
+
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, ra) => Belt.Result.map(ra, f);
 
