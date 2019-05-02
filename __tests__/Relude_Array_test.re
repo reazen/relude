@@ -315,7 +315,8 @@ describe("Array", () => {
   );
 
   test("dropExactly some from long array ", () =>
-    expect(Array.dropExactly(2, [|1, 2, 3, 4|])) |> toEqual(Some([|3, 4|]))
+    expect(Array.dropExactly(2, [|1, 2, 3, 4|]))
+    |> toEqual(Some([|3, 4|]))
   );
 
   test("dropExactly more from long array ", () =>
@@ -550,13 +551,28 @@ describe("Array", () => {
   );
 
   test("Array.String.joinWith", () =>
-    expect(Array.String.joinWith(", ", [|"a", "b", "c"|])) |> toEqual("a, b, c")
+    expect(Array.String.joinWith(", ", [|"a", "b", "c"|]))
+    |> toEqual("a, b, c")
   );
 
   test("showBy", () =>
     expect(Array.showBy(string_of_int, [|1, 2, 3|]))
     |> toEqual("[1, 2, 3]")
   );
+
+  // TODO: this fails
+  // https://github.com/Risto-Stevcev/bs-abstract/issues/9
+  // test("alt", () =>
+  //   expect(Array.Alt.alt([|"a", "b"|], [|"c"|]))
+  //   |> toEqual([|"a", "b", "c"|])
+  // );
+
+  test("<|> is associative", () => {
+    let (<|>) = Array.Infix.(<|>);
+    expect([|0, 1|] <|> [|2, 3|] <|> [|4, 5|])
+    |> toEqual([|0, 1|] <|> ([|2, 3|] <|> [|4, 5|]));
+  });
+
   /*
    test("void", () =>
      expect(Array.void([1, 2, 3])) |> toEqual([(), (), ()])
