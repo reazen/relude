@@ -942,19 +942,170 @@ let removeEach:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
   array('a);
 
+/**
+  This submodule contains operations which have been optimized
+  to work on arrays of strings.
+*/
 module String: {
+
+  /**
+    `String.contains(value, xs)` returns `true` if `value` is one of the
+    elements of `xs`, `false` otherwise.
+    
+    ### Example
+    ```re
+    String.contains("bee", [|"ant", "bee", "cat"|]) == true;
+    String.contains("elk", [|"ant", "bee", "cat"|]) == false;
+    ```
+  */
   let contains: (string, array(string)) => bool;
+  
+  /**
+    `String.indexOf(value, xs)` returns `Some(index)` where `index`
+    is the zero-based position where `value` occurs within `xs`. If
+    `value` is not in `xs`, the function returns `None`.
+    
+    ### Example
+    ```re
+    String.indexOf("bee", [|"ant", "bee", "cat"|]) == Some(1);
+    String.indexOf("elk", [|"ant", "bee", "cat"|]) == None;
+    ```
+  */
   let indexOf: (string, array(string)) => option(int);
+  
+  /**
+    `String.distinct(xs)` returns an array containing the unique
+    elements of `xs` in the same order that they occurred in that array.
+    
+    ### Example
+    ```re
+    String.distinct([|"noun", "verb", "noun", "adjective", "verb"|]) == [|"noun", "verb", "adjective"|];
+    ```
+  */
   let distinct: array(string) => array(string);
+  
+  /**
+    `String.removeFirst(value, xs)` returns an array where the first occurrence
+    (if any) of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    String.removeFirst("x", [|"a", "x", "b", "x"|]) == [|"a", "b", "x"|];
+    String.removeFirst("?", [|"a", "x", "b", "x"|]) == [|"a", "x", "b", "x"|];
+    ```
+  */
   let removeFirst: (string, array(string)) => array(string);
+
+  /**
+    `String.removeEach(value, xs)` returns an array where every occurrence
+    of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    String.removeEach("x", [|"a", "x", "b", "x"|]) == [|"a", "b"|];
+    String.removeEach("?", [|"a", "x", "b", "x"|]) == [|"a", "x", "b", "x"|];
+    ```
+  */
   let removeEach: (string, array(string)) => array(string);
+  
+  /**
+    `String.eq(xs, ys)` returns `true` if the two arrays are element-for-element
+    equal, `false` otherwise.
+    
+    ### Example
+    ```re
+    String.eq([|"a", "b", "c"|], [|"a", "b", "c"|]) == true;
+    String.eq([|"a", "b", "c"|], [|"a", "b"|]) == false;
+    String.eq([|"a", "b", "c"|], [|"a", "b", "d"|]) == false;
+    String.eq([|"a", "b", "c"|], [|"A", "B", "C"|]) == false;
+    ```
+  */
   let eq: (array(string), array(string)) => bool;
+  
+  /**
+    `min(xs)` returns the element with the minimum lexicographic
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    String.min([|"z", "A", "a"|]) == Some("A");
+    String.min([|"bee", "bed", "bet", "beg"|]) == Some("bed");
+    String.min([| |]) == None;
+    ```
+  */
   let min: array(string) => option(string);
+
+  /**
+    `max(xs)` returns the element with the maximum lexicographic
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    String.max([|"z", "A", "a"|]) == Some("z");
+    String.max([|"bee", "bed", "bet", "beg"|]) == Some("bet");
+    String.max([| |]) == None;
+    ```
+  */
   let max: array(string) => option(string);
+  
+  /**
+    `sort(xs)` sorts the elements of `xs` into lexicographic order.
+    
+    ### Example
+    ```re
+    String.sort([|"z", "A", "a"|]) == [|"A", "a", "z"|];
+    String.sort([|"bee", "bed", "bet", "beg"|]) == [|"bed", "bee", "beg", "bet"|];
+    String.sort([| |]) == [| |];
+    ```
+  */
   let sort: array(string) => array(string);
+  
+  /**
+    `String.fold(xs)` concatenates the elements of `xs` into a single string.
+    Same as `String.join().`
+    
+    ### Example
+    ```re
+    String.fold([|"a", "b", "c"|]) == "abc";
+    String.fold([| |]) == "";
+    ```
+  */
   let fold: array(string) => string;
+  
+  /**
+    `String.join(xs)` concatenates the elements of `xs` into a single string.
+    Same as `String.fold().`
+    
+    ### Example
+    ```re
+    String.join([|"a", "b", "c"|]) == "abc";
+    String.join([| |]) == "";
+    ```
+  */
   let join: array(string) => string;
+  
+  /**
+    `String.intercalate(delim, xs)` returns a concatenated string with
+    `delim` inserted  between the elements of `xs`. Same as `String.joinWith().`
+    
+    ### Example
+    ```re
+    String.intercalate("-", [|"year", "month", "day"|]) == "year-month-day";
+    String.intercalate(" and ", [|"bread", "wine", "thou"|]) == "bread and wine and thou";
+    ```
+  */
   let intercalate: (string, array(string)) => string;
+  
+  /**
+    `String.joinWith(delim, xs)` returns a concatenated string with
+    `delim` inserted  between the elements of `xs`. Same as `String.intercalate().`
+    
+    ### Example
+    ```re
+    String.joinWith("-", [|"year", "month", "day"|]) == "year-month-day";
+    String.joinWith(" and ", [|"bread", "wine", "thou"|]) == "bread and wine and thou";
+    ```
+  */
   let joinWith: (string, array(string)) => string;
 };
 
