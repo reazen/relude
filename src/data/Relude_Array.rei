@@ -1248,30 +1248,228 @@ module Int: {
   let product: array(int) => int;
 };
 
+/**
+  This submodule contains operations which have been optimized
+  to work on arrays of integers.
+*/
 module Float: {
+
+  /**
+    `Float.contains(value, xs)` returns `true` if `value` is one of the
+    elements of `xs`, `false` otherwise.
+    
+    ### Example
+    ```re
+    Float.contains(101.1, [|100.0, 101.1, 102.2|]) == true;
+    Float.contains(104.4, [|100.0, 101.1, 102.2|]) == false;
+    ```
+  */
   let contains: (float, array(float)) => bool;
+  
+  /**
+    `Float.indexOf(value, xs)` returns `Some(index)` where `index`
+    is the zero-based position where `value` occurs within `xs`. If
+    `value` is not in `xs`, the function returns `None`.
+    
+    ### Example
+    ```re
+    Float.indexOf(101.1, [|100.0, 101.1, 102.2|]) == Some(1);
+    Float.indexOf(104.4, [|100.0, 101.1, 102.2|]) == None;
+    ```
+  */
+
   let indexOf: (float, array(float)) => option(int);
+  
+  /**
+    `Float.distinct(xs)` returns an array containing the unique
+    elements of `xs` in the same order that they occurred in that array.
+    
+    ### Example
+    ```re
+    Float.distinct([|87.7, 99.9, 87.7, 65.5, 99.9|]) == [|87.7, 99.9, 65.5|];
+    ```
+  */
   let distinct: array(float) => array(float);
+
+  /**
+    `Float.removeFirst(value, xs)` returns an array where the first occurrence
+    (if any) of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Float.removeFirst(99.9, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 101.1, 99.9|];
+    Float.removeFirst(88.8, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 99.9, 101.1, 99.9|];
+    ```
+  */
   let removeFirst: (float, array(float)) => array(float);
+
+  /**
+    `Float.removeEach(value, xs)` returns an array where every occurrence
+    of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Float.removeEach(99.9, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 101.1|];
+    Float.removeEach(88.8, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 99.9, 101.1, 99.9|];
+    ```
+  */
   let removeEach: (float, array(float)) => array(float);
+  
+  /**
+    `Float.eq(xs, ys)` returns `true` if the two arrays are element-for-element
+    equal, `false` otherwise.
+    
+    ### Example
+    ```re
+    Float.eq([|100.0, 101.1, 102.2|], [|100.0, 101.1, 102.2|]) == true;
+    Float.eq([|100.0, 101.1, 102.2|], [|100.0, 101.1|]) == false;
+    Float.eq([|100.0, 101.1, 102.2|], [|100.0, 101.1, 99.9|]) == false;
+    Float.eq([|100.0, 101.1, 102.2|], [|-100.0, -101.1, -102.2|]) == false;
+    ```
+  */
   let eq: (array(float), array(float)) => bool;
+
+  /**
+    `Float.min(xs)` returns the element with the minimum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Float.min([|77.7, -99.9, 88.8, 66.6|]) == Some(-99.9);
+    Float.min([| |]) == None;
+    ```
+  */
   let min: array(float) => option(float);
+
+  /**
+    `Float.max(xs)` returns the element with the maximum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Float.max([|77.7, -99.9, 88.8, 66.6|]) == Some(88.8);
+    Float.max([| |]) == None;
+    ```
+  */
   let max: array(float) => option(float);
+  
+  /**
+    `Float.sort(xs)` sorts the elements of `xs` floato ascending order.
+    
+    ### Example
+    ```re
+    Float.sort([|77.7, -99.9, 88.8, 66.6|]) == [|-99.9, 66.6, 77.7, 88.8|];
+    Float.sort([| |]) == [| |];
+    ```
+  */
   let sort: array(float) => array(float);
+  
+  /**
+    `Float.sum(xs)` returns the sum of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Float.sum([|3.0, 7.5, 5.5|]) == 16.0;
+    Float.sum([| |]) == 0.0;
+    ```
+  */
   let sum: array(float) => float;
+  
+  /**
+    `Float.product(xs)` returns the product of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Float.product([|3.0, 7.5, 5.5|]) == 123.75;
+    Float.product([| |]) == 1.0;
+    ```
+  */  
   let product: array(float) => float;
 };
 
 module Option: {
+  /**
+    `Option.traverse(f, xs)`, `f()` is a function that takes an item of the
+    same type as `xs` and returns an `option` value.
+    
+    If `f(x)` returns `Some(value)` for all elements in `xs`, the result is `Some(xs)`.
+    
+    If `f(x)` returns `None` for any element in `xs`, the result is `None`.
+    
+    ### Example
+    ```re
+    let evenValue = (x) => {(x mod 2 == 0) ? Some(x) : None};
+    Option.traverse(evenValue, [|100, 102, 104, 106|]) == Some([|100, 102, 104, 106|]);
+    Option.traverse(evenValue, [|100, 101, 102, 103|]) == None;
+    Option.traverse(evenValue, [| |]) == Some([| |]);
+    ```
+  */
   let traverse: ('a => option('a), array('a)) => option(array('a));
+
+  /**
+    `Option.sequence(opts)`, takes an array of `option` types as its argument.
+    If all the elements of `opts` are `Some(value)`, then the return value is
+    `Some(xs)`, where each element in `opts` has been unwrapped from its `Some()`.
+    
+    If any element of `opts` is `None`, then the return value is `None`.
+
+    
+    ### Example
+    ```re
+    Option.sequence([|Some("a"), Some("b"), Some("c")|]) == Some([|"a", "b", "c"|]);
+    Option.sequence([|Some("a"), None, Some("c")|]) == None;
+    Option.sequence([| |]) == Some([| |]);
+    ```
+  */
   let sequence: array(option('a)) => option(array('a));
 };
 
 module Result: {
+  /**
+    `Result.traverse(f, xs)`, `f()` is a function that takes an item of the
+    same type as `xs` and returns a `Belt.Result.t` value.
+    
+    If `f(x)` returns `Belt.Result.Ok(value)` for all elements in `xs`, the result is `Ok(xs)`.
+    
+    If `f(x)` returns `Belt.Result.Error(err)` for any element in `xs`, the result is the
+    first `Error(err)` that was encountered.
+    
+    ### Example
+    ```re
+    let evenValue = (x) => {
+      if (x mod 2 == 0) {
+        Belt.Result.Ok(x)
+      } else {
+        Belt.Result.Error(string_of_int(x) ++ " is odd")
+      }
+    };
+    Result.traverse(evenValue, [|100, 102, 104, 106|]) == Belt.Result.Ok([|100, 102, 104, 106|]);
+    Result.traverse(evenValue, [|100, 101, 102, 103|]) == Belt.Result.Error("101 is odd");
+    Result.traverse(evenValue, [| |]) == Belt.Result.Ok([| |]);
+    ```
+  */
   let traverse:
     ('a => Belt.Result.t('b, 'c), array('a)) =>
     Belt.Result.t(array('b), 'c);
 
+  /**
+    `Result.sequence(results)`, takes an array of `Belt.Result.t` types as its argument.
+    If all the elements of `results` are `Ok(value)`, then the return value is
+    `Ok(xs)`, where each element in `results` has been unwrapped from its `Belt.Result.Ok()`.
+    
+    If any element of `results` is `Belt.Error(err)`, then the return value is the
+    first such value encountered..
+
+    
+    ### Example
+    ```re
+    Result.sequence([|Belt.Result.Ok("a"), Belt.Result.Ok("b"), Belt.Result.Ok("c")|]) ==
+      Belt.Result.Ok([|"a", "b", "c"|]);
+    Result.sequence([|Belt.Result.Ok("a"), Belt.Result.Error(1),
+      Belt.Result.Ok("c"), Belt.Result.Error(2)|]) == Belt.Result.Error(1);
+    Result.sequence([| |]) == Belt.Result.Ok([| |]);
+    ```
+  */
   let sequence:
     array(Belt.Result.t('a, 'c)) => Belt.Result.t(array('a), 'c);
 };
