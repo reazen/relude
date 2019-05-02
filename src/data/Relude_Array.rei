@@ -1658,7 +1658,38 @@ module Infix: {
   */
   let (=<<): ('a => array('b), array('a)) => array('b);
   
+  /**
+    `f >=> g` takes two functions, each of which
+    takes a single item and returns an array. The `>=>` operator
+    returns a new function that takes a single item of the type
+    required for `f()` and returns an array of the type produced
+    by `g()`.
+    
+    ### Example:
+    ```re
+    let f = (s) => {[|Js.String.length(s) - 1, Js.String.length(s) + 1|]};
+    let g = (n) => {[|float_of_int(n) -. 0.5, float_of_int(n) +. 0.5|]};
+    let h = (f >=> g);
+    h("ReasonML") == [| 6.5, 7.5, 8.5, 9.5 |];
+    ```
+  */    
   let (>=>): ('a => array('b), 'b => array('c), 'a) => array('c);
+
+  /**
+    `f <=< g` takes two functions, each of which
+    takes a single item and returns an array. The `<=<` operator
+    returns a new function that takes a single item of the type
+    required for `g()` and returns an array of the type produced
+    by `f()`.
+    
+    ### Example:
+    ```re
+    let f = (n) => {[|float_of_int(n) -. 0.5, float_of_int(n) +. 0.5|]};
+    let g = (s) => {[|Js.String.length(s) - 1, Js.String.length(s) + 1|]};
+    let h = (f <=< g);
+    h("ReasonML") == [| 6.5, 7.5, 8.5, 9.5 |];
+    ```
+  */
   let (<=<): ('a => array('b), 'c => array('a), 'c) => array('b);
   
   /**
