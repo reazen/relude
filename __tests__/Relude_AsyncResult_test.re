@@ -123,4 +123,28 @@ describe("AsyncResult state checks", () => {
     expect(AsyncResult.(reloadingError("fail") |> getCompleteError))
     |> toEqual(None)
   );
+
+  test("eqBy different constructors", () =>
+    expect(
+      AsyncResult.eqBy(
+        (_, _) => true,
+        (_, _) => true,
+        AsyncResult.init,
+        AsyncResult.loading,
+      ),
+    )
+    |> toEqual(false)
+  );
+
+  test("eqBy same success value", () =>
+    expect(
+      AsyncResult.eqBy(
+        Relude_String.eq,
+        Relude_Int.eq,
+        AsyncResult.ok(1),
+        AsyncResult.ok(1),
+      ),
+    )
+    |> toEqual(true)
+  );
 });

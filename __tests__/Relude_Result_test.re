@@ -82,4 +82,36 @@ describe("Result", () => {
   test("getError when Ok", () =>
     expect(Result.getError(Belt.Result.Ok(1))) |> toEqual(None)
   );
+
+  test("eqBy when eq, both Ok", () =>
+    expect(Result.eqBy(Relude_Int.eq, Relude_String.eq, Ok("a"), Ok("a")))
+    |> toEqual(true)
+  );
+
+  test("eqBy when not eq, both Ok", () =>
+    expect(Result.eqBy((_, _) => true, Relude_Int.eq, Ok(1), Ok(2)))
+    |> toEqual(false)
+  );
+
+  test("eqBy when first Ok, second Error", () =>
+    expect(Result.eqBy((_, _) => true, (_, _) => true, Ok(1), Error(1)))
+    |> toEqual(false)
+  );
+
+  test("eqBy when first Error, second Ok", () =>
+    expect(Result.eqBy((_, _) => true, (_, _) => true, Error(1), Ok(1)))
+    |> toEqual(false)
+  );
+
+  test("eqBy when eq, both Error", () =>
+    expect(Result.eqBy(Relude_Int.eq, (_, _) => true, Error(1), Error(1)))
+    |> toEqual(true)
+  );
+
+  test("eqBy when not eq, both Error", () =>
+    expect(
+      Result.eqBy((_, _) => false, (_, _) => true, Error(1), Error(1)),
+    )
+    |> toEqual(false)
+  );
 });
