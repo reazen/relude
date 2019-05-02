@@ -38,16 +38,121 @@ let concat: (array('a), array('a)) => array('a);
 */
 let empty: array('a);
 
+/**
+  `map(f, xs)` creates a new array by applying `f` to
+  each element of `xs`.
+  
+  ### Example
+  ```re
+  let f = (x) => {Js.String.length(x)};
+  map(f, [|"ReasonML", "OCaml"|]) == [|8, 5|];
+  ```
+*/
 let map: ('a => 'b, array('a)) => array('b);
+
+/**
+  `void(xs)` returns an array of the same length as `xs`,
+  with each element equal to unit `()`.
+
+  ### Example
+  ```re
+  void([|100, 101, 102|]) == [|(), (), ()|];
+  ```
+*/
 let void: array('a) => array(unit);
+
+/**
+  `apply(fs, xs) takes an array of functions and an array of values and creates
+  an array whose contents are the result of applying the first function of `fs`
+  to all the elements of `xs`, the second function of
+  `fs` to all the elements of `xs`, and so on. All the functions in `fs` must
+  have the same result type.
+  
+  ### Example
+  ```re
+  let square = (x) => {x * x};
+  let cube = (x) => {x * x * x};
+  apply([|square, cube|], [|10, 11, 12|]) == [|100, 121, 144, 1000, 1331, 1728|];
+  ```
+*/
 let apply: (array('a => 'b), array('a)) => array('b);
+
+/**
+  `flap(fs, x)` creates an array whose contents are the result of applying every
+  function in `fs` to `x`.
+  
+  ### Example
+  ```re
+  let square = (x) => {x * x};
+  let cube = (x) => {x * x * x};
+  flap([|square, cube|], 10) == [|100, 1000|];
+  ```
+*/
+
 let flap: (array('a => 'b), 'a) => array('b);
+
+/**
+  `map2(f, xs, ys)` has a function that takes two arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y)` combinations, iterating through `ys` first,
+  then `xs`.
+  
+  ### Example
+  ```re
+  let phrase = (str, n) => { str ++ " " ++ string_of_int(n) };
+  map2(phrase, [|"cat", "dog"|], [|1, 2, 3|]) ==
+    [|"cat 1", "cat 2", "cat 3", "dog 1", "dog 2", "dog 3"|];
+  ```
+*/
 let map2: (('a, 'b) => 'c, array('a), array('b)) => array('c);
+
+/**
+  `map3(f, xs, ys, zs)` has a function that takes three arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y, z)` combinations, iterating through `zs` first,
+  then `ys`, then `xs`.
+  
+  ### Example
+  ```re
+  let together = (x, y, z) => {x ++ y ++ z};
+  map3(together, [|"a", "b", "c"|], [|"d", "e"|], [|"f"|]) ==
+    [|"adf", "aef", "bdf", "bef", "cdf", "cef"|];
+  ```
+*/
 let map3:
   (('a, 'b, 'c) => 'd, array('a), array('b), array('c)) => array('d);
+
+/**
+  `map4(f, xs, ys, zs, ws)` has a function that takes four arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y, z, w)` combinations, iterating through `ws` first,
+  then `zs`, then `ys`, then `xs`.
+  
+  ### Example
+  ```re
+  let together = (x, y, z, w) => {x ++ y ++ z ++ w};
+  map4(together, [|"a", "b"|], [|"c", "d"|], [|"e", "f"|], [|"g", "h"|]) ==
+    [|"aceg", "aceh", "acfg", "acfh", "adeg", "adeh", "adfg", "adfh",
+      "bceg", "bceh", "bcfg", "bcfh", "bdeg", "bdeh", "bdfg", "bdfh"|];
+  ```
+*/
 let map4:
   (('a, 'b, 'c, 'd) => 'e, array('a), array('b), array('c), array('d)) =>
   array('e);
+
+/**
+  `map5(f, xs, ys, zs, ws, qs)` has a function that takes five arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y, z, w, q)` combinations, iterating through `qs` first,
+  then `ws`, then `zs`, then `ys`, then `xs`.
+  
+  ### Example
+  ```re
+  let together = (x, y, z, w, q) => {x ++ y ++ z ++ w ++ q};
+  map5(together, [|"a", "b"|], [|"c"|], [|"d", "e"|], [|"f"|], [|"g", "h"|]) ==
+    [|"acdfg", "acdfh", "acefg", "acefh", "bcdfg", "bcdfh", "bcefg", "bcefh"|];
+  ```
+*/
 let map5:
   (
     ('a, 'b, 'c, 'd, 'e) => 'f,
