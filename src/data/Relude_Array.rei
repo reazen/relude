@@ -1023,7 +1023,7 @@ module String: {
   let eq: (array(string), array(string)) => bool;
   
   /**
-    `min(xs)` returns the element with the minimum lexicographic
+    `String.min(xs)` returns the element with the minimum lexicographic
     value as `Some(value)`; returns `None` if given an empty array.
     
     ### Example
@@ -1036,7 +1036,7 @@ module String: {
   let min: array(string) => option(string);
 
   /**
-    `max(xs)` returns the element with the maximum lexicographic
+    `String.max(xs)` returns the element with the maximum lexicographic
     value as `Some(value)`; returns `None` if given an empty array.
     
     ### Example
@@ -1049,7 +1049,7 @@ module String: {
   let max: array(string) => option(string);
   
   /**
-    `sort(xs)` sorts the elements of `xs` into lexicographic order.
+    `String.sort(xs)` sorts the elements of `xs` into lexicographic order.
     
     ### Example
     ```re
@@ -1109,17 +1109,142 @@ module String: {
   let joinWith: (string, array(string)) => string;
 };
 
+/**
+  This submodule contains operations which have been optimized
+  to work on arrays of integers.
+*/
 module Int: {
+
+  /**
+    `Int.contains(value, xs)` returns `true` if `value` is one of the
+    elements of `xs`, `false` otherwise.
+    
+    ### Example
+    ```re
+    Int.contains(101, [|100, 101, 102|]) == true;
+    Int.contains(104, [|100, 101, 102|]) == false;
+    ```
+  */
   let contains: (int, array(int)) => bool;
+  
+  /**
+    `Int.indexOf(value, xs)` returns `Some(index)` where `index`
+    is the zero-based position where `value` occurs within `xs`. If
+    `value` is not in `xs`, the function returns `None`.
+    
+    ### Example
+    ```re
+    Int.indexOf(101, [|100, 101, 102|]) == Some(1);
+    Int.indexOf(104, [|100, 101, 102|]) == None;
+    ```
+  */
+
   let indexOf: (int, array(int)) => option(int);
+  
+  /**
+    `Int.distinct(xs)` returns an array containing the unique
+    elements of `xs` in the same order that they occurred in that array.
+    
+    ### Example
+    ```re
+    Int.distinct([|87, 99, 87, 65, 99|]) == [|87, 99, 65|];
+    ```
+  */
   let distinct: array(int) => array(int);
+
+  /**
+    `Int.removeFirst(value, xs)` returns an array where the first occurrence
+    (if any) of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Int.removeFirst(99, [|100, 99, 101, 99|]) == [|100, 101, 99|];
+    Int.removeFirst(88, [|100, 99, 101, 99|]) == [|100, 99, 101, 99|];
+    ```
+  */
   let removeFirst: (int, array(int)) => array(int);
+
+  /**
+    `Int.removeEach(value, xs)` returns an array where every occurrence
+    of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Int.removeEach(99, [|100, 99, 101, 99|]) == [|100, 101|];
+    Int.removeEach(88, [|100, 99, 101, 99|]) == [|100, 99, 101, 99|];
+    ```
+  */
   let removeEach: (int, array(int)) => array(int);
+  
+  /**
+    `Int.eq(xs, ys)` returns `true` if the two arrays are element-for-element
+    equal, `false` otherwise.
+    
+    ### Example
+    ```re
+    Int.eq([|100, 101, 102|], [|100, 101, 102|]) == true;
+    Int.eq([|100, 101, 102|], [|100, 101|]) == false;
+    Int.eq([|100, 101, 102|], [|100, 101, 99|]) == false;
+    Int.eq([|100, 101, 102|], [|-100, -101, -102|]) == false;
+    ```
+  */
   let eq: (array(int), array(int)) => bool;
+
+  /**
+    `Int.min(xs)` returns the element with the minimum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Int.min([|77, -99, 88, 66|]) == Some(-99);
+    Int.min([| |]) == None;
+    ```
+  */
   let min: array(int) => option(int);
+
+  /**
+    `Int.max(xs)` returns the element with the maximum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Int.max([|77, -99, 88, 66|]) == Some(88);
+    Int.max([| |]) == None;
+    ```
+  */
   let max: array(int) => option(int);
+  
+  /**
+    `Int.sort(xs)` sorts the elements of `xs` into ascending order.
+    
+    ### Example
+    ```re
+    Int.sort([|77, -99, 88, 66|]) == [|-99, 66, 77, 88|];
+    Int.sort([| |]) == [| |];
+    ```
+  */
   let sort: array(int) => array(int);
+  
+  /**
+    `Int.sum(xs)` returns the sum of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Int.sum([|3, 7, 5|]) == 15;
+    Int.sum([| |]) == 0;
+    ```
+  */
   let sum: array(int) => int;
+  
+  /**
+    `Int.product(xs)` returns the product of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Int.product([|3, 7, 5|]) == 105;
+    Int.product([| |]) == 1;
+    ```
+  */  
   let product: array(int) => int;
 };
 
