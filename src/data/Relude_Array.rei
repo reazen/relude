@@ -69,8 +69,46 @@ let map5:
 */
 let pure: 'a => array('a);
 
+/**
+  In `bind(xs, f)`, `f` is a function that takes an element
+  of the type in `xs` and returns an array. The result of `bind`
+  is the concatenation of all the arrays produced by applying
+  `f()` to the elements of `xs`.
+  
+  ### Example
+  ```re
+  let f = (x) => [| x - 5, x + 5 |];
+  bind([|100, 101, 102|], f) == [|95, 105, 96, 106, 97, 107|];
+  bind([| |], f) == [| |];
+  ```
+*/
 let bind: (array('a), 'a => array('b)) => array('b);
+
+/**
+  In `flatMap(f, xs)`, `f` is a function that takes an element
+  of the type in `xs` and returns an array. The result of `bind`
+  is the concatenation of all the arrays produced by applying
+  `f()` to the elements of `xs`.
+  
+  ### Example
+  ```re
+  let f = (x) => [| x - 5, x + 5 |];
+  flatMap(f, [|100, 101, 102|]) == [|95, 105, 96, 106, 97, 107|];
+  flatMap(f, [| |]) == [| |];
+  ```
+*/
 let flatMap: ('a => array('b), array('a)) => array('b);
+
+/**
+  `flatten(xs_of_xs)` takes an array of arrays as its argument
+  and returns an array with all the sub-arrays concatenated.
+  
+  ### Example
+  ```re
+  flatten([| [|"a", "b"|], [| |], [|"c"|], [|"d", "e", "f"|] |]) ==
+    [|"a", "b", "c", "d", "e", "f"|];
+  ```
+*/
 let flatten: array(array('a)) => array('a);
 
 /**
@@ -1475,6 +1513,10 @@ module Result: {
 };
 
 module Infix: {
+
+  /**
+    `>>=` is an operator that does the same as `flatMap`
+  */
   let (>>=): (array('a), 'a => array('b)) => array('b);
   let (=<<): ('a => array('b), array('a)) => array('b);
   let (>=>): ('a => array('b), 'b => array('c), 'a) => array('c);
