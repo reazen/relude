@@ -117,6 +117,12 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
+let eqBy:
+  'a 'e.
+  (('e, 'e) => bool, ('a, 'a) => bool, t('a, 'e), t('a, 'e)) => bool
+ =
+  (errEq, okEq) => Relude_AsyncData.eqBy(Relude_Result.eqBy(errEq, okEq));
+
 /*******************************************************************************
  * Utilities specific to this type
  ******************************************************************************/

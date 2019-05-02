@@ -140,6 +140,18 @@ let isOk: 'a 'e. t('a, 'e) => bool = r => fold(_ => false, _ => true, r);
 
 let isError: 'a 'e. t('a, 'e) => bool = r => fold(_ => true, _ => false, r);
 
+let eqBy:
+  'a 'e.
+  (('e, 'e) => bool, ('a, 'a) => bool, t('a, 'e), t('a, 'e)) => bool
+ =
+  (errorEq, okEq, a, b) =>
+    switch (a, b) {
+    | (Ok(innerA), Ok(innerB)) => okEq(innerA, innerB)
+    | (Error(innerA), Error(innerB)) => errorEq(innerA, innerB)
+    | (Ok(_), Error(_))
+    | (Error(_), Ok(_)) => false
+    };
+
 let tries: 'a. (unit => 'a) => t('a, exn) =
   fn =>
     try (Ok(fn())) {
