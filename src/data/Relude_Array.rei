@@ -1512,17 +1512,99 @@ module Result: {
     array(Belt.Result.t('a, 'c)) => Belt.Result.t(array('a), 'c);
 };
 
+/**
+  This submodule provides infix operators for common array
+  operations. You can use these operators by opening the
+  module:
+  
+  ```re
+  open Relude.Array.Infix;
+  ```
+*/
 module Infix: {
 
   /**
-    `>>=` is an operator that does the same as `flatMap`
+    In `xs >>= f`, `f` is a function that takes an element
+    of the type in `xs` and returns an array. The result of `>>=`
+    is the concatenation of all the arrays produced by applying
+    `f()` to the elements of `xs`. (Same as `bind()`.)
+    
+    ### Example
+    ```re
+    let f = (x) => [| x - 5, x + 5 |];
+    [|100, 101, 102|] >>= f == [|95, 105, 96, 106, 97, 107|];
+    [| |] >>= f == [| |];
+  ```
   */
   let (>>=): (array('a), 'a => array('b)) => array('b);
+  
+  /**
+    In `f =<< xs`, `f` is a function that takes an element
+    of the type in `xs` and returns an array. The result of `=<<`
+    is the concatenation of all the arrays produced by applying
+    `f()` to the elements of `xs`. (Same as `flatMap()`.)
+    
+    ### Example
+    ```re
+    let f = (x) => [| x - 5, x + 5 |];
+    f =<< [|100, 101, 102|] == [|95, 105, 96, 106, 97, 107|];
+    f =<< [| |] == [| |];
+    ```
+  */
   let (=<<): ('a => array('b), array('a)) => array('b);
+  
   let (>=>): ('a => array('b), 'b => array('c), 'a) => array('c);
   let (<=<): ('a => array('b), 'c => array('a), 'c) => array('b);
+  
+  /**
+    `<|>` takes two arrays with elements of the same type and concatenates them
+    in reverse order.
+    
+    ### Example
+    ```re
+    [|"a", "b"|] <|> [| |] <|> [|"c"|] <|> [|"d", "e", "f"|] ==
+      [|"d", "e", "f", "c", "a", "b"|];
+    ```
+  */
   let (<|>): (array('a), array('a)) => array('a);
+  
+  /**
+    `f <$> xs` is a shorthand for `map(f, xs)`; it takes a function and an array
+    and returns an array with the function applied to each element of `xs`.
+    
+    ### Example
+    ```re
+    let f = (x) => {Js.String.length(x)};
+    f <$> [|"ReasonML", "OCaml"|] == [|8, 5|];
+    ```
+  */
   let (<$>): ('a => 'b, array('a)) => array('b);
+  
+  /**
+    `xs <#> f` is a shorthand for `map(f, xs)`; it takes a function and an array
+    and returns an array with the function applied to each element of `xs`.
+    
+    ### Example
+    ```re
+    let f = (x) => {Js.String.length(x)};
+    [|"ReasonML", "OCaml"|] <#> f == [|8, 5|];
+    ```
+  */
   let (<#>): (array('a), 'a => 'b) => array('b);
+  
+  /**
+    `fs <*> xs` takes an array of functions and an array of values and creates
+    an array whose contents are the result of applying the first function of `fs`
+    to all the elements of `xs`, the second function of
+    `fs` to all the elements of `xs`, and so on. All the functions in `fs` must
+    have the same result type.
+    
+    ### Example
+    ```re
+    let square = (x) => {x * x};
+    let cube = (x) => {x * x * x};
+    [|square, cube|] <*> [|10, 11, 12|] == [|100, 121, 144, 1000, 1331, 1728|];
+    ```
+  */
   let (<*>): (array('a => 'b), array('a)) => array('b);
 };
