@@ -107,10 +107,6 @@ let getOrElse: ('a, option('a)) => 'a = default => fold(default, a => a);
   toList(None) == [];
   ```
 */
-  toList(Some(5)) == [5];
-  toList(None) == [];
-  ```
-*/
 let toList: option('a) => list('a) = t => fold([], v => [v], t);
 
 /**
@@ -530,7 +526,6 @@ module Infix = {
     Some(3) |? 0 == 3;
     None |? 0 == 0;
     ```
-  */
   */
   let (|?) = (opt, default) => getOrElse(default, opt);
 
