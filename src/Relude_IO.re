@@ -1,5 +1,5 @@
 module Function = Relude_Function;
-module JsExn = Relude_JsExn;
+module JsExn = Relude_Js_Exn;
 module Option = Relude_Option;
 module Result = Relude_Result;
 module Void = Relude_Void;

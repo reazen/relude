@@ -1,13 +1,13 @@
 /**
   `foldLazy(defaultFcn, f, opt)` returns `f(v)` when `opt` is
   `Some(v)`. If `opt` is `None`, `foldLazy()` returns `default()`.
-  
+
   The `default()` function must have no parameters and must return
   a value of the same type that `f()` returns.
-  
+
   This is a *lazy* function because the default value is not evaluated
   unless `opt` is `None`.
-  
+
   ### Example
   ```re
   let zero = () => 0.0;
@@ -26,10 +26,10 @@ let foldLazy: (unit => 'b, 'a => 'b, option('a)) => 'b =
   `fold(default, f, opt)` returns `f(v)` when `opt` is `Some(v)`.
   If `opt` is `None`, `fold()` returns `default`, which must be of
   the same type that `f()` returns.
-  
+
   This is not a lazy function, as the `default` value is always
   evaluated, no matter what `opt`’s value is.
-  
+
   ### Example
   ```re
   fold(0.0, (x) => {1.0 /. x}, Some(2.0)) == 0.5;
@@ -47,9 +47,9 @@ let fold: ('b, 'a => 'b, option('a)) => 'b =
   In `forEach(f, opt)`, `f()` is a function with one parameter
   that returns unit. If `opt` is `Some(v)`, `forEach()` calls
   `f(v)`. If `opt` is `None`, `forEach()` returns unit.
-  
+
   You use `forEach()` to produce side effects on option values.
-  
+
   ### Example
   ```re
   forEach(Js.log, Some(2)) == (); // prints 2
@@ -62,10 +62,10 @@ let forEach: 'a. ('a => unit, option('a)) => unit =
 /**
   `getOrElseLazy(defaultFcn, opt)` returns `v` when `opt` is
   `Some(v)`. If `opt` is `None`, `getOrElseLazy()` returns `defaultFcn()`.
-  
+
   The `defaultFcn()` function must have no parameters and must return
   a value of the same type that `f()` returns.
-  
+
   This is a *lazy* function because the default value is not evaluated
   unless `opt` is `None`.
 
@@ -82,10 +82,10 @@ let getOrElseLazy: (unit => 'a, option('a)) => 'a =
 /**
   `getOrElse(default, opt)` returns `v` when `opt` is
   `Some(v)`. If `opt` is `None`, `getOrelse()` returns `default`.
-  
+
   If `opt` is `None`, `getOrElse()` returns `default`, which must be of
   the same type that as `v`.
-  
+
   This is not a lazy function, as the `default` value is always
   evaluated, no matter what `opt`’s value is.
 
@@ -95,13 +95,12 @@ let getOrElseLazy: (unit => 'a, option('a)) => 'a =
   getOrElse(0, None) == 0;
   ```
 */
-let getOrElse: ('a, option('a)) => 'a =
-  default => fold(default, a => a);
+let getOrElse: ('a, option('a)) => 'a = default => fold(default, a => a);
 
 /**
   `toList(opt)` returns the list `[v]` if `opt` is of the form
   `Some(v)`, or the empty list if `opt` is `None`.
-  
+
   ### Example
   ```re
   toList(Some(5)) == [5];
@@ -113,7 +112,7 @@ let toList: option('a) => list('a) = t => fold([], v => [v], t);
 /**
   `toArray(opt)` returns the array `[|v|]` if `opt` is of the form
   `Some(v)`, or the empty array if `opt` is `None`.
-  
+
   ### Example
   ```re
   toArray(Some(5)) == [|5|];
@@ -137,7 +136,7 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
 /**
   `map(f, opt)`, when `opt` is `Some(v)`, returns `Some(f(v))`.
   When `opt` is `None`, it returns `None`.
-  
+
   ### Example
   ```re
   map((x) => {x * x}, Some(12)) == Some(144);
@@ -148,10 +147,20 @@ let map: ('a => 'b, option('a)) => option('b) =
   (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
 
 /**
+  `void` discards the optional value and makes it `unit`.
+
+  ### Example
+  ```re
+  Some(42) |> Option.void;
+  ```
+ */
+let void: 'a. option('a) => option(unit) = opt => opt |> map(_ => ());
+
+/**
   `apply(optFcn, optVal)` returns `Some(f(v))` if `optFcn`
   is `Some(f)` and `optVal` is `Some(v)`. In all other cases,
   `apply()` returns `None`.
-  
+
   ### Example
   ```re
   let square = (x) => {x * x};
@@ -166,7 +175,7 @@ let apply: (option('a => 'b), option('a)) => option('b) =
 
 /**
   `pure(v)` returns `Some(v)`.
-  
+
   ### Example
   ```re
   pure("Reason") == Some("Reason");
@@ -178,7 +187,7 @@ let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
   `bind(opt, f)` returns `f(v)` if `opt` is `Some(v)`,
   `None` otherwise. In this case, `f` is a function that
   takes a non-`option` argument and returns an `option` result.
-  
+
   ### Example
   ```re
   let reciprocalOpt = (x) => { x == 0.0 ? None : Some(1.0 /. x) };
@@ -186,7 +195,7 @@ let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
   bind(Some(0.0), reciprocalOpt) == None;
   bind(None, reciprocalOpt) == None;
   ```
-  
+
   `bind()` is the same as `flatMap()`, but with the arguments in
   the reverse order.
 
@@ -198,7 +207,7 @@ let bind: (option('a), 'a => option('b)) => option('b) =
   `flatMap(f, opt)` returns `f(v)` if `opt` is `Some(v)`,
   `None` otherwise. In this case, `f` is a function that
   takes a non-`option` argument and returns an `option` result.
-  
+
   ### Example
   ```re
   let reciprocalOpt = (x) => { x == 0.0 ? None : Some(1.0 /. x) };
@@ -217,9 +226,9 @@ let flatMap: ('a => option('b), option('a)) => option('b) =
   `foldLeft(f, init, opt)` takes as its first argument a function `f`
   that has two arguments. The first argument is an “accumulator“ of the same type
   as `init` (the initial value of the accumulator), and the second is of
-  the same type as the value wrapped in `opt`. 
+  the same type as the value wrapped in `opt`.
   `f()` returns a value of the same type as `init`.
-  
+
   If `opt` is `Some(v)`, `foldLeft()` returns `f(accumulator,v)`.
   If `opt` is `None`, `foldLeft()` returns `accumulator`.
 
@@ -237,9 +246,9 @@ let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   `foldRight(f, init, opt)` takes as its first argument a function `f`
   that has two arguments. The first argument is of the same type as the value
   wrapped in `opt`, and the second is an “accumulator“ of the same type
-  as `init` (the initial value of the accumulator). 
+  as `init` (the initial value of the accumulator).
   `f()` returns a value of the same type as `init`.
-  
+
   If `opt` is `Some(v)`, `foldLeft()` returns `f(v, accumulator)`.
   If `opt` is `None`, `foldLeft()` returns `accumulator`.
 
@@ -256,7 +265,7 @@ let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
 /**
   `alt(opt1, opt2)` returns `opt1` if it is of the form `Some(v)`;
   otherwise it returns `opt2`.
-  
+
   ### Example
   ```re
   alt(Some(3), Some(4)) == Some(3);
@@ -283,7 +292,7 @@ let empty: option('a) = None;
   - If `opt` is `Some(v)` and `f(v)` is `true`, the result is `Some(v)`.
   - If `opt` is `Some(v)` and `f(v)` is `false`, the result is `None`.
   - If `opt` is `None`, the result is `None`.
-  
+
   ### Example
   ```re
   filter((x) => {x mod 2 == 0}, Some(2)) == Some(2);
@@ -297,9 +306,9 @@ let filter: ('a => bool, option('a)) => option('a) =
 /**
   `flatten(optOpt)` takes a value of the form `Some(Some(v))` and
   returns `Some(v)`.  If `optOpt` is `Some(None)`, the result is `None`.
-  
+
   In other words, `flatten` “unwraps” one level of `Some(...)`.
-  
+
   ### Example
   ```re
   flatten(Some(Some(1066))) == Some(1066);
@@ -314,7 +323,7 @@ let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
   and `opt2` are `Some(v1)` and `Some(v2)`, then `eqBy()` returns
   `f(v1, v2)`.  If both `opt1` and `opt2` are `None`, then `eqBy()`
   also returns `true`. In all other cases, the result is `false`.
-  
+
   ### Example
   ```re
   let clockEqual = (a, b) => {a mod 12 == b mod 12};
@@ -341,11 +350,11 @@ let eqBy: (('a, 'a) => bool, option('a), option('a)) => bool =
   according to `module M`.
   If both `opt1` and `opt2` are `None`, then `eq()`
   also returns `true`. In all other cases, the result is `false`.
-  
+
   `module M` must implement:
   - a type `t`
   - a function `eq(t, t)` that evaluates equality and returns a boolean
-  
+
   ### Example
   ```re
   module ClockEq = {
@@ -413,7 +422,7 @@ module ApplyFunctions = BsAbstract.Functions.Apply(BsAbstract.Option.Apply);
 /**
   `map2(f, opt1, opt2)` returns `Some(f(v1, v2))` if `opt1` and `opt2`
   are `Some(v1)` and `Some(v2)`. It returns `None` in all other cases.
-  
+
   ### Example
   ```re
   let combine = (s, n) => {s ++ " " ++ string_of_int(n)};
@@ -429,9 +438,9 @@ let map2: (('a, 'b) => 'c, option('a), option('b)) => option('c) =
 /**
   `map3(f, opt1, opt2, opt3)` returns `Some(f(v1, v2, v3))` if `opt1`, `opt2`,
   and `opt3` are `Some(v1)`, `Some(v2)`, and `Some(v3)`. It returns `None` in all other cases.
-  
+
   We are not showing all the possible combinations in the following example.
-  
+
   ### Example
   ```re
   let combine = (s1, s2, s3) => {s1 ++ s2 ++ s3};
@@ -449,9 +458,9 @@ let map3:
   `map4(f, opt1, opt2, opt3, opt4)` returns `Some(f(v1, v2, v3, v4))` if `opt1`, `opt2`,
   `opt3` and `opt4` are `Some(v1)`, `Some(v2)`, `Some(v3)`, and `Some(v4)`.
   It returns `None` in all other cases.
-  
+
   We are not showing all the possible combinations in the following example.
-  
+
   ### Example
   ```re
   let combine = (s1, s2, s3, s4) => {s1 ++ s2 ++ s3 ++ s4};
@@ -476,9 +485,9 @@ let map4:
   if `opt1`, `opt2`, `opt3`, `opt4`, and `opt5` are `Some(v1)`, `Some(v2)`,
   `Some(v3)`, `Some(v4)`, and `Some(v5)`.
   It returns `None` in all other cases.
-  
+
   We are not showing all the possible combinations in the following example.
-  
+
   ### Example
   ```re
   let combine = (s1, s2, s3, s4, s5) => {s1 ++ s2 ++ s3 ++ s4 ++ s5};
@@ -502,17 +511,16 @@ let map5:
 /**
   The following submodule defines infix operators that you can
   use as shortcuts for function calls. To use them, you should:
-  
+
   ```re
   open Relude.Option.Infix;
   ```
 */
 module Infix = {
-
   /**
     `opt |? default` yields `v` if `opt` is `Some(v)`; otherwise
     it yields `default`. (Same as `getOrElse(default, opt)`.)
-    
+
     ### Example
     ```re
     Some(3) |? 0 == 3;
@@ -520,11 +528,11 @@ module Infix = {
     ```
   */
   let (|?) = (opt, default) => getOrElse(default, opt);
-  
+
   /**
     `opt1 <|> opt2` yields `opt1` if it is `Some(v)`, otherwise
     it yields `opt2`. (Same as `alt(opt1, opt2)`.)
-    
+
     ### Example
     ```re
     Some(2) <|> Some(3) == Some(2);
@@ -534,11 +542,11 @@ module Infix = {
     ```
   */
   let (<|>) = alt;
-  
+
   /**
     `f <$> opt` yields Some(f(v)) if `opt` is `Some(v)`, otherwise `None`.
     (Same as `map(f, opt)`.)
-    
+
     ### Example
     ```re
     let square = (x) => {x * x};
@@ -547,12 +555,12 @@ module Infix = {
     ```
   */
   let (<$>) = map;
-  
+
   /**
     `optFcn <*> optVal` yields `Some(f(v))` when `optFcn`
     is `Some(f)` and optVal is `Some(v)`. In all other ases,
     `<*>` yields `None`.  (Same as `apply(optFcn, optVal)`.)
-    
+
      ### Example
     ```re
     let square = (x) => {x * x};
@@ -563,13 +571,13 @@ module Infix = {
     ```
   */
   let (<*>) = apply;
-  
+
   /**
     `opt >>= f` yields `f(v)` if `opt` is `Some(v)`,
   `None` otherwise. In this case, `f` is a function that
   takes a non-`option` argument and returns an `option` result.
   (Same as `bind(opt, f)`.)
-  
+
   ### Example
   ```re
   let reciprocalOpt = (x) => { x == 0.0 ? None : Some(1.0 /. x) };

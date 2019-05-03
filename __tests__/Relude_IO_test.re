@@ -269,7 +269,7 @@ describe("IO", () => {
 
   testAsync("unsafeRunAsync throw - mapError", onDone =>
     IO.throw("this is a test")
-    |> IO.mapError(msg => Relude_JsExn.make(msg))
+    |> IO.mapError(msg => Relude_Js_Exn.make(msg))
     |> IO.unsafeRunAsync(
          fun
          | Ok(_a) => onDone(fail("Failed"))
@@ -611,7 +611,7 @@ describe("IO FS examples", () => {
       content =>
         Relude_String.toNonWhitespace(content)
         |> IO.fromOption(_ =>
-             Relude_JsExn.make("Failed to get non-empty file content")
+             Relude_Js_Exn.make("Failed to get non-empty file content")
            )
     )
     >>= (content => IO.pure(expect(content) |> toEqual("IO Aff test")))
