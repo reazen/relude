@@ -3,7 +3,7 @@ open Expect;
 
 module List = Relude_List;
 
-describe("List Submodules", () => {
+describe("List submodules", () => {
   test("String.eq empties true", () =>
     expect(List.String.eq([], [])) |> toEqual(true)
   );

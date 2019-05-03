@@ -26,7 +26,7 @@ describe("Json", () => {
   test("decode array using applicative validation", () => {
     open Json.DSL;
 
-    let decodeString = (_index, json) =>
+    let decodeItem = (_index, json) =>
       json |> Json.toString |> Result.fromOption(_ => "not a string");
 
     let result =
@@ -40,7 +40,7 @@ describe("Json", () => {
         list([null, null]),
         dict(Js.Dict.fromList([("a", null)])),
       |])
-      |> Json.decodeArray(decodeString);
+      |> Json.decodeArray(decodeItem);
 
     expect(result)
     |> toEqual(

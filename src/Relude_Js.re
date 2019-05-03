@@ -1,4 +1,4 @@
 
-module Console = Relude_JsConsole;
-module Exn = Relude_JsExn;
-module Promise = Relude_JsPromise;
+module Console = Relude_Js_Console;
+module Exn = Relude_Js_Exn;
+module Promise = Relude_Js_Promise;
