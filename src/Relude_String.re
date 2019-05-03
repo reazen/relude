@@ -24,6 +24,8 @@ let toNonEmpty: string => option(string) =
       Some(s);
     };
 
+let eq: (string, string) => bool = (==);
+
 let isWhitespace: string => bool = s => s |> trim |> isEmpty;
 
 let toNonWhitespace: string => option(string) =

@@ -10,5 +10,10 @@ npm-debug.log
 .bsb.lock
 /lib/bs/
 *.bs.js
+
+# Git
+*.orig
+
+# Project files
 # TODO: remove the tests that create these files
 **/testUtils/**/*.txt

@@ -38,16 +38,121 @@ let concat: (array('a), array('a)) => array('a);
 */
 let empty: array('a);
 
+/**
+  `map(f, xs)` creates a new array by applying `f` to
+  each element of `xs`.
+  
+  ### Example
+  ```re
+  let f = (x) => {Js.String.length(x)};
+  map(f, [|"ReasonML", "OCaml"|]) == [|8, 5|];
+  ```
+*/
 let map: ('a => 'b, array('a)) => array('b);
+
+/**
+  `void(xs)` returns an array of the same length as `xs`,
+  with each element equal to unit `()`.
+
+  ### Example
+  ```re
+  void([|100, 101, 102|]) == [|(), (), ()|];
+  ```
+*/
 let void: array('a) => array(unit);
+
+/**
+  `apply(fs, xs) takes an array of functions and an array of values and creates
+  an array whose contents are the result of applying the first function of `fs`
+  to all the elements of `xs`, the second function of
+  `fs` to all the elements of `xs`, and so on. All the functions in `fs` must
+  have the same result type.
+  
+  ### Example
+  ```re
+  let square = (x) => {x * x};
+  let cube = (x) => {x * x * x};
+  apply([|square, cube|], [|10, 11, 12|]) == [|100, 121, 144, 1000, 1331, 1728|];
+  ```
+*/
 let apply: (array('a => 'b), array('a)) => array('b);
+
+/**
+  `flap(fs, x)` creates an array whose contents are the result of applying every
+  function in `fs` to `x`.
+  
+  ### Example
+  ```re
+  let square = (x) => {x * x};
+  let cube = (x) => {x * x * x};
+  flap([|square, cube|], 10) == [|100, 1000|];
+  ```
+*/
+
 let flap: (array('a => 'b), 'a) => array('b);
+
+/**
+  `map2(f, xs, ys)` has a function that takes two arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y)` combinations, iterating through `ys` first,
+  then `xs`.
+  
+  ### Example
+  ```re
+  let phrase = (str, n) => { str ++ " " ++ string_of_int(n) };
+  map2(phrase, [|"cat", "dog"|], [|1, 2, 3|]) ==
+    [|"cat 1", "cat 2", "cat 3", "dog 1", "dog 2", "dog 3"|];
+  ```
+*/
 let map2: (('a, 'b) => 'c, array('a), array('b)) => array('c);
+
+/**
+  `map3(f, xs, ys, zs)` has a function that takes three arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y, z)` combinations, iterating through `zs` first,
+  then `ys`, then `xs`.
+  
+  ### Example
+  ```re
+  let together = (x, y, z) => {x ++ y ++ z};
+  map3(together, [|"a", "b", "c"|], [|"d", "e"|], [|"f"|]) ==
+    [|"adf", "aef", "bdf", "bef", "cdf", "cef"|];
+  ```
+*/
 let map3:
   (('a, 'b, 'c) => 'd, array('a), array('b), array('c)) => array('d);
+
+/**
+  `map4(f, xs, ys, zs, ws)` has a function that takes four arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y, z, w)` combinations, iterating through `ws` first,
+  then `zs`, then `ys`, then `xs`.
+  
+  ### Example
+  ```re
+  let together = (x, y, z, w) => {x ++ y ++ z ++ w};
+  map4(together, [|"a", "b"|], [|"c", "d"|], [|"e", "f"|], [|"g", "h"|]) ==
+    [|"aceg", "aceh", "acfg", "acfh", "adeg", "adeh", "adfg", "adfh",
+      "bceg", "bceh", "bcfg", "bcfh", "bdeg", "bdeh", "bdfg", "bdfh"|];
+  ```
+*/
 let map4:
   (('a, 'b, 'c, 'd) => 'e, array('a), array('b), array('c), array('d)) =>
   array('e);
+
+/**
+  `map5(f, xs, ys, zs, ws, qs)` has a function that takes five arguments
+  as its first parameter. It returns an array with the results
+  of all the `f(x, y, z, w, q)` combinations, iterating through `qs` first,
+  then `ws`, then `zs`, then `ys`, then `xs`.
+  
+  ### Example
+  ```re
+  let together = (x, y, z, w, q) => {x ++ y ++ z ++ w ++ q};
+  map5(together, [|"a", "b"|], [|"c"|], [|"d", "e"|], [|"f"|], [|"g", "h"|]) ==
+    [|"acdfg", "acdfh", "acefg", "acefh", "bcdfg", "bcdfh", "bcefg", "bcefh"|];
+  ```
+*/
 let map5:
   (
     ('a, 'b, 'c, 'd, 'e) => 'f,
@@ -69,8 +174,46 @@ let map5:
 */
 let pure: 'a => array('a);
 
+/**
+  In `bind(xs, f)`, `f` is a function that takes an element
+  of the type in `xs` and returns an array. The result of `bind`
+  is the concatenation of all the arrays produced by applying
+  `f()` to the elements of `xs`.
+  
+  ### Example
+  ```re
+  let f = (x) => [| x - 5, x + 5 |];
+  bind([|100, 101, 102|], f) == [|95, 105, 96, 106, 97, 107|];
+  bind([| |], f) == [| |];
+  ```
+*/
 let bind: (array('a), 'a => array('b)) => array('b);
+
+/**
+  In `flatMap(f, xs)`, `f` is a function that takes an element
+  of the type in `xs` and returns an array. The result of `bind`
+  is the concatenation of all the arrays produced by applying
+  `f()` to the elements of `xs`.
+  
+  ### Example
+  ```re
+  let f = (x) => [| x - 5, x + 5 |];
+  flatMap(f, [|100, 101, 102|]) == [|95, 105, 96, 106, 97, 107|];
+  flatMap(f, [| |]) == [| |];
+  ```
+*/
 let flatMap: ('a => array('b), array('a)) => array('b);
+
+/**
+  `flatten(xs_of_xs)` takes an array of arrays as its argument
+  and returns an array with all the sub-arrays concatenated.
+  
+  ### Example
+  ```re
+  flatten([| [|"a", "b"|], [| |], [|"c"|], [|"d", "e", "f"|] |]) ==
+    [|"a", "b", "c", "d", "e", "f"|];
+  ```
+*/
 let flatten: array(array('a)) => array('a);
 
 /**
@@ -942,60 +1085,534 @@ let removeEach:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
   array('a);
 
+/**
+  This submodule contains operations which have been optimized
+  to work on arrays of strings.
+*/
 module String: {
+
+  /**
+    `String.contains(value, xs)` returns `true` if `value` is one of the
+    elements of `xs`, `false` otherwise.
+    
+    ### Example
+    ```re
+    String.contains("bee", [|"ant", "bee", "cat"|]) == true;
+    String.contains("elk", [|"ant", "bee", "cat"|]) == false;
+    ```
+  */
   let contains: (string, array(string)) => bool;
+  
+  /**
+    `String.indexOf(value, xs)` returns `Some(index)` where `index`
+    is the zero-based position where `value` occurs within `xs`. If
+    `value` is not in `xs`, the function returns `None`.
+    
+    ### Example
+    ```re
+    String.indexOf("bee", [|"ant", "bee", "cat"|]) == Some(1);
+    String.indexOf("elk", [|"ant", "bee", "cat"|]) == None;
+    ```
+  */
   let indexOf: (string, array(string)) => option(int);
+  
+  /**
+    `String.distinct(xs)` returns an array containing the unique
+    elements of `xs` in the same order that they occurred in that array.
+    
+    ### Example
+    ```re
+    String.distinct([|"noun", "verb", "noun", "adjective", "verb"|]) == [|"noun", "verb", "adjective"|];
+    ```
+  */
   let distinct: array(string) => array(string);
+  
+  /**
+    `String.removeFirst(value, xs)` returns an array where the first occurrence
+    (if any) of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    String.removeFirst("x", [|"a", "x", "b", "x"|]) == [|"a", "b", "x"|];
+    String.removeFirst("?", [|"a", "x", "b", "x"|]) == [|"a", "x", "b", "x"|];
+    ```
+  */
   let removeFirst: (string, array(string)) => array(string);
+
+  /**
+    `String.removeEach(value, xs)` returns an array where every occurrence
+    of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    String.removeEach("x", [|"a", "x", "b", "x"|]) == [|"a", "b"|];
+    String.removeEach("?", [|"a", "x", "b", "x"|]) == [|"a", "x", "b", "x"|];
+    ```
+  */
   let removeEach: (string, array(string)) => array(string);
+  
+  /**
+    `String.eq(xs, ys)` returns `true` if the two arrays are element-for-element
+    equal, `false` otherwise.
+    
+    ### Example
+    ```re
+    String.eq([|"a", "b", "c"|], [|"a", "b", "c"|]) == true;
+    String.eq([|"a", "b", "c"|], [|"a", "b"|]) == false;
+    String.eq([|"a", "b", "c"|], [|"a", "b", "d"|]) == false;
+    String.eq([|"a", "b", "c"|], [|"A", "B", "C"|]) == false;
+    ```
+  */
   let eq: (array(string), array(string)) => bool;
+  
+  /**
+    `String.min(xs)` returns the element with the minimum lexicographic
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    String.min([|"z", "A", "a"|]) == Some("A");
+    String.min([|"bee", "bed", "bet", "beg"|]) == Some("bed");
+    String.min([| |]) == None;
+    ```
+  */
   let min: array(string) => option(string);
+
+  /**
+    `String.max(xs)` returns the element with the maximum lexicographic
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    String.max([|"z", "A", "a"|]) == Some("z");
+    String.max([|"bee", "bed", "bet", "beg"|]) == Some("bet");
+    String.max([| |]) == None;
+    ```
+  */
   let max: array(string) => option(string);
+  
+  /**
+    `String.sort(xs)` sorts the elements of `xs` into lexicographic order.
+    
+    ### Example
+    ```re
+    String.sort([|"z", "A", "a"|]) == [|"A", "a", "z"|];
+    String.sort([|"bee", "bed", "bet", "beg"|]) == [|"bed", "bee", "beg", "bet"|];
+    String.sort([| |]) == [| |];
+    ```
+  */
   let sort: array(string) => array(string);
+  
+  /**
+    `String.fold(xs)` concatenates the elements of `xs` into a single string.
+    Same as `String.join().`
+    
+    ### Example
+    ```re
+    String.fold([|"a", "b", "c"|]) == "abc";
+    String.fold([| |]) == "";
+    ```
+  */
   let fold: array(string) => string;
+  
+  /**
+    `String.join(xs)` concatenates the elements of `xs` into a single string.
+    Same as `String.fold().`
+    
+    ### Example
+    ```re
+    String.join([|"a", "b", "c"|]) == "abc";
+    String.join([| |]) == "";
+    ```
+  */
   let join: array(string) => string;
+  
+  /**
+    `String.intercalate(delim, xs)` returns a concatenated string with
+    `delim` inserted  between the elements of `xs`. Same as `String.joinWith().`
+    
+    ### Example
+    ```re
+    String.intercalate("-", [|"year", "month", "day"|]) == "year-month-day";
+    String.intercalate(" and ", [|"bread", "wine", "thou"|]) == "bread and wine and thou";
+    ```
+  */
   let intercalate: (string, array(string)) => string;
+  
+  /**
+    `String.joinWith(delim, xs)` returns a concatenated string with
+    `delim` inserted  between the elements of `xs`. Same as `String.intercalate().`
+    
+    ### Example
+    ```re
+    String.joinWith("-", [|"year", "month", "day"|]) == "year-month-day";
+    String.joinWith(" and ", [|"bread", "wine", "thou"|]) == "bread and wine and thou";
+    ```
+  */
   let joinWith: (string, array(string)) => string;
 };
 
+/**
+  This submodule contains operations which have been optimized
+  to work on arrays of integers.
+*/
 module Int: {
+
+  /**
+    `Int.contains(value, xs)` returns `true` if `value` is one of the
+    elements of `xs`, `false` otherwise.
+    
+    ### Example
+    ```re
+    Int.contains(101, [|100, 101, 102|]) == true;
+    Int.contains(104, [|100, 101, 102|]) == false;
+    ```
+  */
   let contains: (int, array(int)) => bool;
+  
+  /**
+    `Int.indexOf(value, xs)` returns `Some(index)` where `index`
+    is the zero-based position where `value` occurs within `xs`. If
+    `value` is not in `xs`, the function returns `None`.
+    
+    ### Example
+    ```re
+    Int.indexOf(101, [|100, 101, 102|]) == Some(1);
+    Int.indexOf(104, [|100, 101, 102|]) == None;
+    ```
+  */
+
   let indexOf: (int, array(int)) => option(int);
+  
+  /**
+    `Int.distinct(xs)` returns an array containing the unique
+    elements of `xs` in the same order that they occurred in that array.
+    
+    ### Example
+    ```re
+    Int.distinct([|87, 99, 87, 65, 99|]) == [|87, 99, 65|];
+    ```
+  */
   let distinct: array(int) => array(int);
+
+  /**
+    `Int.removeFirst(value, xs)` returns an array where the first occurrence
+    (if any) of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Int.removeFirst(99, [|100, 99, 101, 99|]) == [|100, 101, 99|];
+    Int.removeFirst(88, [|100, 99, 101, 99|]) == [|100, 99, 101, 99|];
+    ```
+  */
   let removeFirst: (int, array(int)) => array(int);
+
+  /**
+    `Int.removeEach(value, xs)` returns an array where every occurrence
+    of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Int.removeEach(99, [|100, 99, 101, 99|]) == [|100, 101|];
+    Int.removeEach(88, [|100, 99, 101, 99|]) == [|100, 99, 101, 99|];
+    ```
+  */
   let removeEach: (int, array(int)) => array(int);
+  
+  /**
+    `Int.eq(xs, ys)` returns `true` if the two arrays are element-for-element
+    equal, `false` otherwise.
+    
+    ### Example
+    ```re
+    Int.eq([|100, 101, 102|], [|100, 101, 102|]) == true;
+    Int.eq([|100, 101, 102|], [|100, 101|]) == false;
+    Int.eq([|100, 101, 102|], [|100, 101, 99|]) == false;
+    Int.eq([|100, 101, 102|], [|-100, -101, -102|]) == false;
+    ```
+  */
   let eq: (array(int), array(int)) => bool;
+
+  /**
+    `Int.min(xs)` returns the element with the minimum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Int.min([|77, -99, 88, 66|]) == Some(-99);
+    Int.min([| |]) == None;
+    ```
+  */
   let min: array(int) => option(int);
+
+  /**
+    `Int.max(xs)` returns the element with the maximum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Int.max([|77, -99, 88, 66|]) == Some(88);
+    Int.max([| |]) == None;
+    ```
+  */
   let max: array(int) => option(int);
+  
+  /**
+    `Int.sort(xs)` sorts the elements of `xs` into ascending order.
+    
+    ### Example
+    ```re
+    Int.sort([|77, -99, 88, 66|]) == [|-99, 66, 77, 88|];
+    Int.sort([| |]) == [| |];
+    ```
+  */
   let sort: array(int) => array(int);
+  
+  /**
+    `Int.sum(xs)` returns the sum of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Int.sum([|3, 7, 5|]) == 15;
+    Int.sum([| |]) == 0;
+    ```
+  */
   let sum: array(int) => int;
+  
+  /**
+    `Int.product(xs)` returns the product of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Int.product([|3, 7, 5|]) == 105;
+    Int.product([| |]) == 1;
+    ```
+  */  
   let product: array(int) => int;
 };
 
+/**
+  This submodule contains operations which have been optimized
+  to work on arrays of integers.
+*/
 module Float: {
+
+  /**
+    `Float.contains(value, xs)` returns `true` if `value` is one of the
+    elements of `xs`, `false` otherwise.
+    
+    ### Example
+    ```re
+    Float.contains(101.1, [|100.0, 101.1, 102.2|]) == true;
+    Float.contains(104.4, [|100.0, 101.1, 102.2|]) == false;
+    ```
+  */
   let contains: (float, array(float)) => bool;
+  
+  /**
+    `Float.indexOf(value, xs)` returns `Some(index)` where `index`
+    is the zero-based position where `value` occurs within `xs`. If
+    `value` is not in `xs`, the function returns `None`.
+    
+    ### Example
+    ```re
+    Float.indexOf(101.1, [|100.0, 101.1, 102.2|]) == Some(1);
+    Float.indexOf(104.4, [|100.0, 101.1, 102.2|]) == None;
+    ```
+  */
+
   let indexOf: (float, array(float)) => option(int);
+  
+  /**
+    `Float.distinct(xs)` returns an array containing the unique
+    elements of `xs` in the same order that they occurred in that array.
+    
+    ### Example
+    ```re
+    Float.distinct([|87.7, 99.9, 87.7, 65.5, 99.9|]) == [|87.7, 99.9, 65.5|];
+    ```
+  */
   let distinct: array(float) => array(float);
+
+  /**
+    `Float.removeFirst(value, xs)` returns an array where the first occurrence
+    (if any) of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Float.removeFirst(99.9, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 101.1, 99.9|];
+    Float.removeFirst(88.8, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 99.9, 101.1, 99.9|];
+    ```
+  */
   let removeFirst: (float, array(float)) => array(float);
+
+  /**
+    `Float.removeEach(value, xs)` returns an array where every occurrence
+    of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Float.removeEach(99.9, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 101.1|];
+    Float.removeEach(88.8, [|100.0, 99.9, 101.1, 99.9|]) == [|100.0, 99.9, 101.1, 99.9|];
+    ```
+  */
   let removeEach: (float, array(float)) => array(float);
+  
+  /**
+    `Float.eq(xs, ys)` returns `true` if the two arrays are element-for-element
+    equal, `false` otherwise.
+    
+    ### Example
+    ```re
+    Float.eq([|100.0, 101.1, 102.2|], [|100.0, 101.1, 102.2|]) == true;
+    Float.eq([|100.0, 101.1, 102.2|], [|100.0, 101.1|]) == false;
+    Float.eq([|100.0, 101.1, 102.2|], [|100.0, 101.1, 99.9|]) == false;
+    Float.eq([|100.0, 101.1, 102.2|], [|-100.0, -101.1, -102.2|]) == false;
+    ```
+  */
   let eq: (array(float), array(float)) => bool;
+
+  /**
+    `Float.min(xs)` returns the element with the minimum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Float.min([|77.7, -99.9, 88.8, 66.6|]) == Some(-99.9);
+    Float.min([| |]) == None;
+    ```
+  */
   let min: array(float) => option(float);
+
+  /**
+    `Float.max(xs)` returns the element with the maximum
+    value as `Some(value)`; returns `None` if given an empty array.
+    
+    ### Example
+    ```re
+    Float.max([|77.7, -99.9, 88.8, 66.6|]) == Some(88.8);
+    Float.max([| |]) == None;
+    ```
+  */
   let max: array(float) => option(float);
+  
+  /**
+    `Float.sort(xs)` sorts the elements of `xs` floato ascending order.
+    
+    ### Example
+    ```re
+    Float.sort([|77.7, -99.9, 88.8, 66.6|]) == [|-99.9, 66.6, 77.7, 88.8|];
+    Float.sort([| |]) == [| |];
+    ```
+  */
   let sort: array(float) => array(float);
+  
+  /**
+    `Float.sum(xs)` returns the sum of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Float.sum([|3.0, 7.5, 5.5|]) == 16.0;
+    Float.sum([| |]) == 0.0;
+    ```
+  */
   let sum: array(float) => float;
+  
+  /**
+    `Float.product(xs)` returns the product of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Float.product([|3.0, 7.5, 5.5|]) == 123.75;
+    Float.product([| |]) == 1.0;
+    ```
+  */  
   let product: array(float) => float;
 };
 
 module Option: {
+  /**
+    `Option.traverse(f, xs)`, `f()` is a function that takes an item of the
+    same type as `xs` and returns an `option` value.
+    
+    If `f(x)` returns `Some(value)` for all elements in `xs`, the result is `Some(xs)`.
+    
+    If `f(x)` returns `None` for any element in `xs`, the result is `None`.
+    
+    ### Example
+    ```re
+    let evenValue = (x) => {(x mod 2 == 0) ? Some(x) : None};
+    Option.traverse(evenValue, [|100, 102, 104, 106|]) == Some([|100, 102, 104, 106|]);
+    Option.traverse(evenValue, [|100, 101, 102, 103|]) == None;
+    Option.traverse(evenValue, [| |]) == Some([| |]);
+    ```
+  */
   let traverse: ('a => option('a), array('a)) => option(array('a));
+
+  /**
+    `Option.sequence(opts)`, takes an array of `option` types as its argument.
+    If all the elements of `opts` are `Some(value)`, then the return value is
+    `Some(xs)`, where each element in `opts` has been unwrapped from its `Some()`.
+    
+    If any element of `opts` is `None`, then the return value is `None`.
+
+    
+    ### Example
+    ```re
+    Option.sequence([|Some("a"), Some("b"), Some("c")|]) == Some([|"a", "b", "c"|]);
+    Option.sequence([|Some("a"), None, Some("c")|]) == None;
+    Option.sequence([| |]) == Some([| |]);
+    ```
+  */
   let sequence: array(option('a)) => option(array('a));
 };
 
 module Result: {
+  /**
+    `Result.traverse(f, xs)`, `f()` is a function that takes an item of the
+    same type as `xs` and returns a `Belt.Result.t` value.
+    
+    If `f(x)` returns `Belt.Result.Ok(value)` for all elements in `xs`, the result is `Ok(xs)`.
+    
+    If `f(x)` returns `Belt.Result.Error(err)` for any element in `xs`, the result is the
+    first `Error(err)` that was encountered.
+    
+    ### Example
+    ```re
+    let evenValue = (x) => {
+      if (x mod 2 == 0) {
+        Belt.Result.Ok(x)
+      } else {
+        Belt.Result.Error(string_of_int(x) ++ " is odd")
+      }
+    };
+    Result.traverse(evenValue, [|100, 102, 104, 106|]) == Belt.Result.Ok([|100, 102, 104, 106|]);
+    Result.traverse(evenValue, [|100, 101, 102, 103|]) == Belt.Result.Error("101 is odd");
+    Result.traverse(evenValue, [| |]) == Belt.Result.Ok([| |]);
+    ```
+  */
   let traverse:
     ('a => Belt.Result.t('b, 'c), array('a)) =>
     Belt.Result.t(array('b), 'c);
 
+  /**
+    `Result.sequence(results)`, takes an array of `Belt.Result.t` types as its argument.
+    If all the elements of `results` are `Ok(value)`, then the return value is
+    `Ok(xs)`, where each element in `results` has been unwrapped from its `Belt.Result.Ok()`.
+    
+    If any element of `results` is `Belt.Error(err)`, then the return value is the
+    first such value encountered..
+
+    
+    ### Example
+    ```re
+    Result.sequence([|Belt.Result.Ok("a"), Belt.Result.Ok("b"), Belt.Result.Ok("c")|]) ==
+      Belt.Result.Ok([|"a", "b", "c"|]);
+    Result.sequence([|Belt.Result.Ok("a"), Belt.Result.Error(1),
+      Belt.Result.Ok("c"), Belt.Result.Error(2)|]) == Belt.Result.Error(1);
+    Result.sequence([| |]) == Belt.Result.Ok([| |]);
+    ```
+  */
   let sequence:
     array(Belt.Result.t('a, 'c)) => Belt.Result.t(array('a), 'c);
 };
@@ -1102,13 +1719,130 @@ module Validation: {
     Relude_Validation.t(array('b), Relude_NonEmpty.Array.t('e));
 };
 
+/**
+  This submodule provides infix operators for common array
+  operations. You can use these operators by opening the
+  module:
+  
+  ```re
+  open Relude.Array.Infix;
+  ```
+*/
 module Infix: {
+
+  /**
+    In `xs >>= f`, `f` is a function that takes an element
+    of the type in `xs` and returns an array. The result of `>>=`
+    is the concatenation of all the arrays produced by applying
+    `f()` to the elements of `xs`. (Same as `bind()`.)
+    
+    ### Example
+    ```re
+    let f = (x) => [| x - 5, x + 5 |];
+    [|100, 101, 102|] >>= f == [|95, 105, 96, 106, 97, 107|];
+    [| |] >>= f == [| |];
+  ```
+  */
   let (>>=): (array('a), 'a => array('b)) => array('b);
+  
+  /**
+    In `f =<< xs`, `f` is a function that takes an element
+    of the type in `xs` and returns an array. The result of `=<<`
+    is the concatenation of all the arrays produced by applying
+    `f()` to the elements of `xs`. (Same as `flatMap()`.)
+    
+    ### Example
+    ```re
+    let f = (x) => [| x - 5, x + 5 |];
+    f =<< [|100, 101, 102|] == [|95, 105, 96, 106, 97, 107|];
+    f =<< [| |] == [| |];
+    ```
+  */
   let (=<<): ('a => array('b), array('a)) => array('b);
+  
+  /**
+    `f >=> g` takes two functions, each of which
+    takes a single item and returns an array. The `>=>` operator
+    returns a new function that takes a single item of the type
+    required for `f()` and returns an array of the type produced
+    by `g()`.
+    
+    ### Example:
+    ```re
+    let f = (s) => {[|Js.String.length(s) - 1, Js.String.length(s) + 1|]};
+    let g = (n) => {[|float_of_int(n) -. 0.5, float_of_int(n) +. 0.5|]};
+    let h = (f >=> g);
+    h("ReasonML") == [| 6.5, 7.5, 8.5, 9.5 |];
+    ```
+  */    
   let (>=>): ('a => array('b), 'b => array('c), 'a) => array('c);
+
+  /**
+    `f <=< g` takes two functions, each of which
+    takes a single item and returns an array. The `<=<` operator
+    returns a new function that takes a single item of the type
+    required for `g()` and returns an array of the type produced
+    by `f()`.
+    
+    ### Example:
+    ```re
+    let f = (n) => {[|float_of_int(n) -. 0.5, float_of_int(n) +. 0.5|]};
+    let g = (s) => {[|Js.String.length(s) - 1, Js.String.length(s) + 1|]};
+    let h = (f <=< g);
+    h("ReasonML") == [| 6.5, 7.5, 8.5, 9.5 |];
+    ```
+  */
   let (<=<): ('a => array('b), 'c => array('a), 'c) => array('b);
+  
+  /**
+    `<|>` takes two arrays with elements of the same type and concatenates them
+    in reverse order.
+    
+    ### Example
+    ```re
+    [|"a", "b"|] <|> [| |] <|> [|"c"|] <|> [|"d", "e", "f"|] ==
+      [|"d", "e", "f", "c", "a", "b"|];
+    ```
+  */
   let (<|>): (array('a), array('a)) => array('a);
+  
+  /**
+    `f <$> xs` is a shorthand for `map(f, xs)`; it takes a function and an array
+    and returns an array with the function applied to each element of `xs`.
+    
+    ### Example
+    ```re
+    let f = (x) => {Js.String.length(x)};
+    f <$> [|"ReasonML", "OCaml"|] == [|8, 5|];
+    ```
+  */
   let (<$>): ('a => 'b, array('a)) => array('b);
+  
+  /**
+    `xs <#> f` is a shorthand for `map(f, xs)`; it takes a function and an array
+    and returns an array with the function applied to each element of `xs`.
+    
+    ### Example
+    ```re
+    let f = (x) => {Js.String.length(x)};
+    [|"ReasonML", "OCaml"|] <#> f == [|8, 5|];
+    ```
+  */
   let (<#>): (array('a), 'a => 'b) => array('b);
+  
+  /**
+    `fs <*> xs` takes an array of functions and an array of values and creates
+    an array whose contents are the result of applying the first function of `fs`
+    to all the elements of `xs`, the second function of
+    `fs` to all the elements of `xs`, and so on. All the functions in `fs` must
+    have the same result type.
+    
+    ### Example
+    ```re
+    let square = (x) => {x * x};
+    let cube = (x) => {x * x * x};
+    [|square, cube|] <*> [|10, 11, 12|] == [|100, 121, 144, 1000, 1331, 1728|];
+    ```
+  */
   let (<*>): (array('a => 'b), array('a)) => array('b);
 };

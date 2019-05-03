@@ -99,6 +99,19 @@ let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
 let flatMap: 'a 'b. ('a => t('b), t('a)) => t('b) =
   (f, fa) => bind(fa, f);
 
+let eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
+  (innerEq, a, b) =>
+    switch (a, b) {
+    | (Init, Init)
+    | (Loading, Loading) => true
+    | (Reloading(innerA), Reloading(innerB)) => innerEq(innerA, innerB)
+    | (Complete(innerA), Complete(innerB)) => innerEq(innerA, innerB)
+    | (Init, _)
+    | (Loading, _)
+    | (Reloading(_), _)
+    | (Complete(_), _) => false
+    };
+
 /*******************************************************************************
  * Utilities specific to this type
  ******************************************************************************/
@@ -258,6 +271,11 @@ module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
 module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
   include Applicative;
   let flat_map = bind;
+};
+
+module Eq = (E: BsAbstract.Interface.EQ) : BsAbstract.Interface.EQ => {
+  type nonrec t = t(E.t);
+  let eq = eqBy(E.eq);
 };
 
 module Infix = {

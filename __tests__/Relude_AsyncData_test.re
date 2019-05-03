@@ -109,11 +109,13 @@ describe("AsyncData state checks", () => {
   );
 
   test("toBusy when Reloading", () =>
-    expect(AsyncData.toBusy(Reloading(1))) |> toEqual(AsyncData.Reloading(1))
+    expect(AsyncData.toBusy(Reloading(1)))
+    |> toEqual(AsyncData.Reloading(1))
   );
 
   test("toBusy when Complete", () =>
-    expect(AsyncData.toBusy(Complete(1))) |> toEqual(AsyncData.Reloading(1))
+    expect(AsyncData.toBusy(Complete(1)))
+    |> toEqual(AsyncData.Reloading(1))
   );
 
   test("toIdle when Init", () =>
@@ -125,11 +127,13 @@ describe("AsyncData state checks", () => {
   );
 
   test("toIdle when Reloading", () =>
-    expect(AsyncData.toIdle(Reloading(1))) |> toEqual(AsyncData.Complete(1))
+    expect(AsyncData.toIdle(Reloading(1)))
+    |> toEqual(AsyncData.Complete(1))
   );
 
   test("toIdle when Complete", () =>
-    expect(AsyncData.toIdle(Complete(1))) |> toEqual(AsyncData.Complete(1))
+    expect(AsyncData.toIdle(Complete(1)))
+    |> toEqual(AsyncData.Complete(1))
   );
 
   test("getReloading when Init", () =>
@@ -275,6 +279,27 @@ describe("AsyncData state checks", () => {
   test("foldByValueLazy when Complete", () =>
     expect(AsyncData.foldByValueLazy(() => 1, a => a + 2, Complete(10)))
     |> toEqual(12)
+  );
+
+  // some sanity checks for equality
+
+  test("eqBy false for Init vs Loading", () =>
+    expect(AsyncData.eqBy((_, _) => true, Init, Loading)) |> toEqual(false)
+  );
+
+  test("eqBy false for Reloading and Complete", () =>
+    expect(AsyncData.eqBy((_, _) => true, Reloading(1), Complete(1)))
+    |> toEqual(false)
+  );
+
+  test("eqBy true for both Complete", () =>
+    expect(AsyncData.eqBy(Relude_String.eq, Complete("a"), Complete("a")))
+    |> toEqual(true)
+  );
+
+  test("eqBy false for both Complete, different values", () =>
+    expect(AsyncData.eqBy(Relude_Int.eq, Complete(0), Complete(1)))
+    |> toEqual(false)
   );
 });
 
