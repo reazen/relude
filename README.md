@@ -1,7 +1,7 @@
 # Relude
 
 [![CircleCI branch](https://img.shields.io/circleci/project/github/reazen/relude/master.svg)](https://circleci.com/gh/reazen/relude)
-[![npm](https://img.shields.io/npm/v/relude.svg)](https://npmjs.org/relude)
+[![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)
 
 Relude is a ReasonML/BuckleScript/OCaml standard library replacement ("prelude") written in [ReasonML](https://reasonml.github.io/), targeting compilation to JavaScript via the [BuckleScript](https://bucklescript.github.io/) compiler.
 
@@ -25,7 +25,7 @@ Unlike Belt, Relude prefers **significant-data-last** (i.e. **pipe last** or **t
 
 ## Installation
 
-The library is published npm. We try to respect semantic versioning, but while Relude is at version 0.x, there will likely be major breaking changes without corresponding major version bumps.
+The library is published on [npm](https://www.npmjs.com/package/relude). We try to respect semantic versioning, but while Relude is at version 0.x, there will likely be major breaking changes without corresponding major version bumps.
 We will try to document migration paths in release notes when possible.
 
 ```
