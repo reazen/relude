@@ -1,11 +1,11 @@
-let foldLazy: (unit => 'b, 'a => 'b, option('a)) => 'b =
+let foldLazy: 'a 'b. (unit => 'b, 'a => 'b, option('a)) => 'b =
   (default, f, opt) =>
     switch (opt) {
     | Some(v) => f(v)
     | None => default()
     };
 
-let fold: ('b, 'a => 'b, option('a)) => 'b =
+let fold: 'a 'b. ('b, 'a => 'b, option('a)) => 'b =
   (default, f, opt) =>
     switch (opt) {
     | Some(v) => f(v)
@@ -15,55 +15,57 @@ let fold: ('b, 'a => 'b, option('a)) => 'b =
 let forEach: 'a. ('a => unit, option('a)) => unit =
   (f, opt) => fold((), f, opt);
 
-let getOrElseLazy: (unit => 'a, option('a)) => 'a =
+let getOrElseLazy: 'a. (unit => 'a, option('a)) => 'a =
   default => foldLazy(default, a => a);
 
-let getOrElse: ('a, option('a)) => 'a =
-  default => fold(default, a => a);
+let getOrElse: 'a. ('a, option('a)) => 'a = default => fold(default, a => a);
 
-let toList: option('a) => list('a) = t => fold([], v => [v], t);
+let toList: 'a. option('a) => list('a) = t => fold([], v => [v], t);
 
-let toArray: option('a) => array('a) = t => fold([||], v => [|v|], t);
+let toArray: 'a. option('a) => array('a) = t => fold([||], v => [|v|], t);
 
-let isSome: option('a) => bool = t => fold(false, _ => true, t);
+let isSome: 'a. option('a) => bool = t => fold(false, _ => true, t);
 
-let isNone: option('a) => bool = t => fold(true, _ => false, t);
+let isNone: 'a. option('a) => bool = t => fold(true, _ => false, t);
 
-let map: ('a => 'b, option('a)) => option('b) =
+let map: 'a 'b. ('a => 'b, option('a)) => option('b) =
   (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
 
-let apply: (option('a => 'b), option('a)) => option('b) =
+let void: 'a. option('a) => option(unit) = fa => fa |> map(_ => ());
+
+let apply: 'a 'b. (option('a => 'b), option('a)) => option('b) =
   (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
 
-let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
+let pure: 'a. 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
 
-let bind: (option('a), 'a => option('b)) => option('b) =
+let bind: 'a 'b. (option('a), 'a => option('b)) => option('b) =
   (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
 
 let flatMap: ('a => option('b), option('a)) => option('b) =
   (f, fa) => bind(fa, f);
 
-let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
+let foldLeft: 'a 'b. (('b, 'a) => 'b, 'b, option('a)) => 'b =
   (fn, default) => BsAbstract.Option.Foldable.fold_left(fn, default);
 
-let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
+let foldRight: 'a 'b. (('a, 'b) => 'b, 'b, option('a)) => 'b =
   (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
 
-let alt: (option('a), option('a)) => option('a) =
+let alt: 'a. (option('a), option('a)) => option('a) =
   (a, b) =>
     switch (a) {
     | Some(_) as v => v
     | None => b
     };
 
-let empty: option('a) = None;
+let empty: 'a. option('a) = None;
 
-let filter: ('a => bool, option('a)) => option('a) =
+let filter: 'a. ('a => bool, option('a)) => option('a) =
   fn => foldLeft((default, v) => fn(v) ? pure(v) : default, empty);
 
-let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
+let flatten: 'a. option(option('a)) => option('a) =
+  opt => bind(opt, a => a);
 
-let eqBy: (('a, 'a) => bool, option('a), option('a)) => bool =
+let eqBy: 'a. (('a, 'a) => bool, option('a), option('a)) => bool =
   (innerEq, a, b) =>
     switch (a, b) {
     | (Some(va), Some(vb)) => innerEq(va, vb)
@@ -122,14 +124,17 @@ module Show = BsAbstract.Option.Show;
 
 module ApplyFunctions = BsAbstract.Functions.Apply(BsAbstract.Option.Apply);
 
-let map2: (('a, 'b) => 'c, option('a), option('b)) => option('c) =
+let map2: 'a 'b 'c. (('a, 'b) => 'c, option('a), option('b)) => option('c) =
   (fn, a, b) => ApplyFunctions.lift2(fn, a, b);
 
 let map3:
-  (('a, 'b, 'c) => 'd, option('a), option('b), option('c)) => option('d) =
+  'a 'b 'c 'd.
+  (('a, 'b, 'c) => 'd, option('a), option('b), option('c)) => option('d)
+ =
   (fn, a, b, c) => ApplyFunctions.lift3(fn, a, b, c);
 
 let map4:
+  'a 'b 'c 'd 'e.
   (
     ('a, 'b, 'c, 'd) => 'e,
     option('a),
@@ -137,10 +142,12 @@ let map4:
     option('c),
     option('d)
   ) =>
-  option('e) =
+  option('e)
+ =
   (fn, a, b, c, d) => ApplyFunctions.lift4(fn, a, b, c, d);
 
 let map5:
+  'a 'b 'c 'd 'e 'f.
   (
     ('a, 'b, 'c, 'd, 'e) => 'f,
     option('a),
@@ -149,7 +156,8 @@ let map5:
     option('d),
     option('e)
   ) =>
-  option('f) =
+  option('f)
+ =
   (fn, a, b, c, d, e) => ApplyFunctions.lift5(fn, a, b, c, d, e);
 
 module Infix = {

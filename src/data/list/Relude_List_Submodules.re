@@ -124,12 +124,15 @@ module Validation = {
     BsAbstract.List.Traversable(
       (Relude_Validation.Applicative(Errors, Error)),
     );
+
   module TraversableWithErrorsAsList = (Error: BsAbstract.Interface.TYPE) =>
     Traversable(Relude_List_Types.SemigroupAny, Error);
+
   module TraversableWithErrorsAsListOfStrings =
     TraversableWithErrorsAsList({
       type t = string;
     });
+
   module TraversableWithErrorsAsNonEmptyList =
          (Error: BsAbstract.Interface.TYPE) =>
     Traversable(Relude_NonEmpty.List.SemigroupAny, Error);
@@ -142,11 +145,12 @@ module Validation = {
   let traverse =
       (
         type a,
+        type b,
         type e,
-        f: a => Belt.Result.t(a, e), /* Each a produces a Result with a success value or a single error value */
+        f: a => Belt.Result.t(b, e), /* Each a produces a Result with a success value or a single error value */
         list: list(a),
       )
-      : Relude_Validation.t(list(a), Relude_NonEmpty.List.t(e)) => {
+      : Relude_Validation.t(list(b), Relude_NonEmpty.List.t(e)) => {
     module Error = {
       type t = e;
     };

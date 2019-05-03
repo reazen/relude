@@ -132,10 +132,10 @@ let tail: list('a) => option(list('a));
 let tailOrEmpty: list('a) => list('a);
 let init: list('a) => option(list('a));
 let last: list('a) => option('a);
-let take: (int, list('a)) => (list('a));
+let take: (int, list('a)) => list('a);
 let takeExactly: (int, list('a)) => option(list('a));
 let takeWhile: ('a => bool, list('a)) => list('a);
-let drop: (int, list('a)) => (list('a));
+let drop: (int, list('a)) => list('a);
 let dropExactly: (int, list('a)) => option(list('a));
 let dropWhile: ('a => bool, list('a)) => list('a);
 let filter: ('a => bool, list('a)) => list('a);
@@ -250,6 +250,7 @@ module Validation: {
         ('a => applicative_t('b), t('a)) => applicative_t(t('b));
       let sequence: t(applicative_t('a)) => applicative_t(t('a));
     };
+
   module TraversableWithErrorsAsList:
     (Error: BsAbstract.Interface.TYPE) =>
      {
@@ -274,6 +275,7 @@ module Validation: {
         ('a => applicative_t('b), t('a)) => applicative_t(t('b));
       let sequence: t(applicative_t('a)) => applicative_t(t('a));
     };
+
   module TraversableWithErrorsAsListOfStrings: {
     type t('a) = list('a);
     let map: ('a => 'b, t('a)) => t('b);
@@ -293,6 +295,7 @@ module Validation: {
     let traverse: ('a => applicative_t('b), t('a)) => applicative_t(t('b));
     let sequence: t(applicative_t('a)) => applicative_t(t('a));
   };
+
   module TraversableWithErrorsAsNonEmptyList:
     (Error: BsAbstract.Interface.TYPE) =>
      {
@@ -317,9 +320,10 @@ module Validation: {
         ('a => applicative_t('b), t('a)) => applicative_t(t('b));
       let sequence: t(applicative_t('a)) => applicative_t(t('a));
     };
+
   let traverse:
-    ('a => Belt.Result.t('a, 'b), list('a)) =>
-    Relude_Validation.t(list('a), Relude_NonEmpty.List.t('b));
+    ('a => Belt.Result.t('b, 'e), list('a)) =>
+    Relude_Validation.t(list('b), Relude_NonEmpty.List.t('e));
 };
 
 module Infix: {

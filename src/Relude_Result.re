@@ -160,6 +160,13 @@ let toValidationNel:
   | Error(error) =>
     Relude_Validation.VError(Relude_NonEmpty.List.pure(error));
 
+let toValidationNea:
+  t('a, 'e) => Relude_Validation.t('a, Relude_NonEmpty.Array.t('e)) =
+  fun
+  | Ok(value) => Relude_Validation.VOk(value)
+  | Error(error) =>
+    Relude_Validation.VError(Relude_NonEmpty.Array.pure(error));
+
 module Functor = BsAbstract.Result.Functor;
 
 module Alt = BsAbstract.Result.Alt;

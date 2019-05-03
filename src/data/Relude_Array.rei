@@ -1000,6 +1000,108 @@ module Result: {
     array(Belt.Result.t('a, 'c)) => Belt.Result.t(array('a), 'c);
 };
 
+module Validation: {
+  module Traversable:
+    (
+      Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+      Error: BsAbstract.Interface.TYPE,
+    ) =>
+     {
+      type t('a) = array('a);
+      let map: ('a => 'b, t('a)) => t('b);
+      let fold_left: (('a, 'b) => 'a, 'a, t('b)) => 'a;
+      let fold_right: (('b, 'a) => 'a, 'a, t('b)) => 'a;
+      module Fold_Map:
+        (M: BsAbstract.Interface.MONOID) =>
+         {let fold_map: ('a => M.t, t('a)) => M.t;};
+      module Fold_Map_Any:
+        (M: BsAbstract.Interface.MONOID_ANY) =>
+         {let fold_map: ('a => M.t('a), t('a)) => M.t('a);};
+      module Fold_Map_Plus:
+        (P: BsAbstract.Interface.PLUS) =>
+         {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
+      type applicative_t('a) =
+        Relude_Validation.Applicative(Errors)(Error).t('a);
+      let traverse:
+        ('a => applicative_t('b), t('a)) => applicative_t(t('b));
+      let sequence: t(applicative_t('a)) => applicative_t(t('a));
+    };
+
+  module TraversableWithErrorsAsArray:
+    (Error: BsAbstract.Interface.TYPE) =>
+     {
+      type t('a) = array('a);
+      let map: ('a => 'b, t('a)) => t('b);
+      let fold_left: (('a, 'b) => 'a, 'a, t('b)) => 'a;
+      let fold_right: (('b, 'a) => 'a, 'a, t('b)) => 'a;
+      module Fold_Map:
+        (M: BsAbstract.Interface.MONOID) =>
+         {let fold_map: ('a => M.t, t('a)) => M.t;};
+      module Fold_Map_Any:
+        (M: BsAbstract.Interface.MONOID_ANY) =>
+         {let fold_map: ('a => M.t('a), t('a)) => M.t('a);};
+      module Fold_Map_Plus:
+        (P: BsAbstract.Interface.PLUS) =>
+         {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
+      type applicative_t('a) =
+        Relude_Validation.Applicative(Relude_Array_Types.SemigroupAny)(Error).t(
+          'a,
+        );
+      let traverse:
+        ('a => applicative_t('b), t('a)) => applicative_t(t('b));
+      let sequence: t(applicative_t('a)) => applicative_t(t('a));
+    };
+
+  module TraversableWithErrorsAsArrayOfStrings: {
+    type t('a) = array('a);
+    let map: ('a => 'b, t('a)) => t('b);
+    let fold_left: (('a, 'b) => 'a, 'a, t('b)) => 'a;
+    let fold_right: (('b, 'a) => 'a, 'a, t('b)) => 'a;
+    module Fold_Map:
+      (M: BsAbstract.Interface.MONOID) =>
+       {let fold_map: ('a => M.t, t('a)) => M.t;};
+    module Fold_Map_Any:
+      (M: BsAbstract.Interface.MONOID_ANY) =>
+       {let fold_map: ('a => M.t('a), t('a)) => M.t('a);};
+    module Fold_Map_Plus:
+      (P: BsAbstract.Interface.PLUS) =>
+       {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
+    type applicative_t('a) =
+      Relude_Validation.t('a, Relude_Array_Types.SemigroupAny.t(string));
+    let traverse: ('a => applicative_t('b), t('a)) => applicative_t(t('b));
+    let sequence: t(applicative_t('a)) => applicative_t(t('a));
+  };
+
+  module TraversableWithErrorsAsNonEmptyArray:
+    (Error: BsAbstract.Interface.TYPE) =>
+     {
+      type t('a) = array('a);
+      let map: ('a => 'b, t('a)) => t('b);
+      let fold_left: (('a, 'b) => 'a, 'a, t('b)) => 'a;
+      let fold_right: (('b, 'a) => 'a, 'a, t('b)) => 'a;
+      module Fold_Map:
+        (M: BsAbstract.Interface.MONOID) =>
+         {let fold_map: ('a => M.t, t('a)) => M.t;};
+      module Fold_Map_Any:
+        (M: BsAbstract.Interface.MONOID_ANY) =>
+         {let fold_map: ('a => M.t('a), t('a)) => M.t('a);};
+      module Fold_Map_Plus:
+        (P: BsAbstract.Interface.PLUS) =>
+         {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
+      type applicative_t('a) =
+        Relude_Validation.Applicative(Relude_NonEmpty.Array.SemigroupAny)(Error).t(
+          'a,
+        );
+      let traverse:
+        ('a => applicative_t('b), t('a)) => applicative_t(t('b));
+      let sequence: t(applicative_t('a)) => applicative_t(t('a));
+    };
+
+  let traverse:
+    ('a => Belt.Result.t('b, 'e), array('a)) =>
+    Relude_Validation.t(array('b), Relude_NonEmpty.Array.t('e));
+};
+
 module Infix: {
   let (>>=): (array('a), 'a => array('b)) => array('b);
   let (=<<): ('a => array('b), array('a)) => array('b);

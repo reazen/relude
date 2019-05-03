@@ -77,3 +77,49 @@ module Result = {
     TraverseResult.sequence(xs);
   };
 };
+
+module Validation = {
+  module Traversable =
+         (
+           Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+           Error: BsAbstract.Interface.TYPE,
+         ) =>
+    BsAbstract.Array.Traversable(
+      (Relude_Validation.Applicative(Errors, Error)),
+    );
+
+  module TraversableWithErrorsAsArray = (Error: BsAbstract.Interface.TYPE) =>
+    Traversable(Relude_Array_Types.SemigroupAny, Error);
+
+  module TraversableWithErrorsAsArrayOfStrings =
+    TraversableWithErrorsAsArray({
+      type t = string;
+    });
+
+  module TraversableWithErrorsAsNonEmptyArray =
+         (Error: BsAbstract.Interface.TYPE) =>
+    Traversable(Relude_NonEmpty.Array.SemigroupAny, Error);
+
+  /*
+   This is a streamlined definition of traverse which allows you to return a Belt.Result.t for each item
+   in the array, and all errors are collected in a NonEmpty.Array of your error type, using applicative semantics
+   for Validation.
+   */
+  let traverse =
+      (
+        type a,
+        type b,
+        type e,
+        f: a => Belt.Result.t(b, e), /* Each a produces a Result with a success value or a single error value */
+        array: array(a),
+      )
+      : Relude_Validation.t(array(b), Relude_NonEmpty.Array.t(e)) => {
+    module Error = {
+      type t = e;
+    };
+    module Traversable =
+      Traversable(Relude_NonEmpty.Array.SemigroupAny, Error);
+    /* Map the reuslts to Validation.t(a, NonEmpty.Array.t(e)), so we can accumulate the errors */
+    Traversable.traverse(a => f(a)->Relude_Result.toValidationNea, array);
+  };
+};
