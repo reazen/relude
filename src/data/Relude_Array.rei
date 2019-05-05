@@ -62,7 +62,7 @@ let map: ('a => 'b, array('a)) => array('b);
 let void: array('a) => array(unit);
 
 /**
-  `apply(fs, xs) takes an array of functions and an array of values and creates
+  `apply(fs, xs)` takes an array of functions and an array of values and creates
   an array whose contents are the result of applying the first function of `fs`
   to all the elements of `xs`, the second function of
   `fs` to all the elements of `xs`, and so on. All the functions in `fs` must
@@ -88,7 +88,6 @@ let apply: (array('a => 'b), array('a)) => array('b);
   flap([|square, cube|], 10) == [|100, 1000|];
   ```
 */
-
 let flap: (array('a => 'b), 'a) => array('b);
 
 /**
@@ -219,7 +218,7 @@ let flatten: array(array('a)) => array('a);
 /**
   `foldLeft(f, init, xs)` accumulates a value. Starting with `init`,
   as the initial value of the accumulator, `foldLeft` applies function
-  `f` to the accumulator and the first element in the list. The result
+  `f` to the accumulator and the first element in the array `xs`. The result
   becomes the new value of the accumulator, and `f` is applied to that value
   and the next element in `xs`. This process continues until all elements in
   `xs` are processed. The final value of the accumulator is returned.
@@ -235,7 +234,7 @@ let foldLeft: (('b, 'a) => 'b, 'b, array('a)) => 'b;
 /**
   `foldRight(f, init, xs)` accumulates a value. Starting with `init`,
   as the initial value of the accumulator, `foldRight` applies function
-  `f` to the last element in the list and the accumulator. The result
+  `f` to the last element in the array `xs` and the accumulator. The result
   becomes the new value of the accumulator, and `f` is applied to that value
   and the preceding element in `xs`. This process continues until all elements in
   `xs` are processed. The final value of the accumulator is returned.
@@ -298,7 +297,7 @@ let containsBy: (('a, 'a) => bool, 'a, array('a)) => bool;
   
   `indexOfBy() returns `Some(position)` where `position` is the index
   of the first item in `xs` that satisfies this new predicate function `p()`,
-  or `None` if no item in `xs` satisfies the predicate..
+  or `None` if no item in `xs` satisfies the predicate.
   
   ### Example
   ```re
@@ -309,10 +308,77 @@ let containsBy: (('a, 'a) => bool, 'a, array('a)) => bool;
 */
 let indexOfBy: (('a, 'a) => bool, 'a, array('a)) => option(int);
 
+/**
+  `minBy(f, xs)` returns the minimum value in array `xs` as
+  `Some(val)`. It uses function `f` to compare values in the array.
+  Function `f` takes two parameters of the type in the array and
+  returns a value of ` `less_than `, ` `equal_to `, or ` `greater_than `,
+  depending on the relationship of the values.
+  
+  If given an empty array, `minBy()` returns `None`.
+  
+  ### Example
+  ```re
+  let clockCompare = (a, b) => {
+    if (a mod 12 < b mod 12) {
+      `less_than
+    } else if (a mod 12 > b mod 12) {
+      `greater_than
+    } else {
+      `equal_to
+    }
+  };
+  
+  minBy(clockCompare, [|5, 3, 17, 14, 9|]) == Some(14);
+  minBy(clockCompare, [|5, 17|]) == Some(5);
+  minBy(clockCompare, [| |]) == None;
+  ```
+*/
 let minBy:
   (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => option('a);
+
+  
+/**
+  `maxBy(f, xs)` returns the maximum value in array `xs` as
+  `Some(val)`. It uses function `f` to compare values in the array.
+  Function `f` takes two parameters of the type in the array and
+  returns a value of ` `less_than `, ` `equal_to `, or ` `greater_than `,
+  depending on the relationship of the values.
+  
+  If given an empty array, `maxBy()` returns `None`.
+  
+  ### Example
+  ```re
+  let clockCompare = (a, b) => {
+    if (a mod 12 < b mod 12) {
+      `less_than
+    } else if (a mod 12 > b mod 12) {
+      `greater_than
+    } else {
+      `equal_to
+    }
+  };
+  
+  maxBy(clockCompare, [|5, 3, 17, 14, 9|]) == Some(9);
+  maxBy(clockCompare, [|5, 17|]) == Some(5);
+  maxBy(clockCompare, [| |]) == None;
+  ```
+*/
 let maxBy:
   (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => option('a);
+  
+/**
+  `countBy(countFcn, xs)` returns the number of items `x` in array `xs`
+  for which `countFcn(x)` returns `true`.
+  
+  ### Example
+  ```re
+  let isOdd = (x) => {x mod 2 == 1};
+  countBy(isOdd, [|33, 22, 55, 11, 44, 66|]) == 3;
+  countBy(isOdd, [|22, 44, 66|]) == 0;
+  countBy(isOdd, [| |]) == 0;
+  ```
+*/
 let countBy: ('a => bool, array('a)) => int;
 
 /**
@@ -326,15 +392,140 @@ let countBy: ('a => bool, array('a)) => int;
 */
 let length: array('a) => int;
 
+/**
+  In `forEach(f, xs)`, `f()` is a function that takes an element
+  of `xs` and returns `unit`. `forEach()` applies this function to
+  each element of `xs`. You use `forEach()` when you are interested in
+  the side effects rather than the result of a function.
+  
+  ### Example
+  ```re
+  forEach(Js.log, [|"a", "b", "c"|]) == (); // prints a, b, and c
+  ```
+*/
 let forEach: ('a => unit, array('a)) => unit;
+
+/**
+  In `forEachWithIndex(f, xs)`, `f()` is a function that takes an element
+  of `xs` and an integer and returns `unit`. `forEach()` applies this function to
+  each element of `xs`, passing the element and its index number (starting
+  at zero). You use `forEachWithIndex()` when you are interested in
+  the side effects rather than the result of a function.
+  
+  ### Example
+  ```re
+  let debug = (x, i) => {Js.log(string_of_int(i) ++ " " ++ x)};
+  forEachWithIndex(debug, [|"a", "b", "c"|]) == (); // prints 0 a, 1 b, and 2 c
+  ```
+*/
 let forEachWithIndex: (('a, int) => unit, array('a)) => unit;
+
+/**
+  `find(pred, xs)` returns `Some(x)` for the first value in `xs`
+  for which the predicate function `pred(x)` returns `true`.
+  If no value in the array satisfies `pred()`, `find()` returns `None`.
+  
+  ### Example
+  ```re
+  find((x) => {x mod 2 == 0}, [|3, 7, 4, 2, 5|]) == Some(4);
+  find((x) => {x mod 2 == 0}, [|3, 7, 5|]) == None;
+  ```
+*/
 let find: ('a => bool, array('a)) => option('a);
+
+/**
+  `findWithIndex(pred, xs)` calls `pred()` with two arguments: an element
+  of `xs` and its index value (zero-based). If `pred()` returns `true`,
+  the element is returned as `Some(x)`.  If no element in the array satisfies
+  `pred()`, `findWithIndex()` returns `None`.
+
+  
+  ### Example
+  ```re
+  let bothEven = (x, i) => {x mod 2 == 0 && i mod 2 == 0};
+  findWithIndex(bothEven, [|3, 6, 4, 7, 5|]) == Some(4);
+  findWithIndex(bothEven, [|3, 6, 7, 8, 5|]) == None;
+  findWithIndex(bothEven, [|3, 7, 5|]) == None;
+  ```
+*/
 let findWithIndex: (('a, int) => bool, array('a)) => option('a);
 
+/**
+  `fold((module M), xs)` concatenates the elements of `xs` as specified by
+  the given module. The module you provide must define the following:
+  
+  - a type specification
+  - an `append()` function which takes two items of the type and appends them
+    to one another
+  - an “empty” element
+  
+  Appending the empty element and an item must be commutative;
+  `append(x, empty) == append(empty, x)`
+  
+  ### Example
+  ```re
+  module CapString = {
+    type t = string;
+    let append(a, b) = Js.String.toUpperCase(a) ++ Js.String.toUpperCase(b);
+    let empty = "";
+  };
+  
+  fold((module CapString), [|"it ", "works!"|]) == "IT WORKS!";
+  ```
+*/
 let fold:
   ((module BsAbstract.Interface.MONOID with type t = 'a), array('a)) => 'a;
+
+/**
+  `intercalate((module M), delim, xs)` concatenates the elements of `xs` as specified by
+  the given module, with `delim` between all the elements. The module you provide
+  must define:
+  
+  - a type `t`
+  - an `append()` function which takes two items of the type and appends them
+    to one another
+  - an “empty” element
+  
+  Appending the empty element and an item must be commutative;
+  `append(x, empty) == append(empty, x)`
+  
+  ### Example
+  ```re
+  module LowerString = {
+    type t = string;
+    let append(a, b) = Js.String.toLowerCase(a) ++ Js.String.toLowerCase(b);
+    let empty = "";
+  };
+  
+  intercalate((module LowerString), "--", [|"2019", "MAY", "5"|]) == "2019--may--5";
+  ```
+*/
 let intercalate:
   ((module BsAbstract.Interface.MONOID with type t = 'a), 'a, array('a)) => 'a;
+  
+/**
+  `contains((module M), val, xs)` returns `true` if any element of `xs` equals
+  `val`, as determined by the module. It returns `false` if no element equals
+  `val`.  The module you provide must define:
+  
+  - a type `t`
+  - a function `eq()` which takes two items of type `t` and returns `true` if
+    they are to be considered equal, `false` otherwise.
+    
+  ### Example
+  ```re
+  module Pair = {
+    type t = (string, int);
+    let eq = ((pair1First, pair1Second), (pair2First, pair2Second)) => {
+      pair1First == pair2First && pair1Second == pair2Second
+    };
+  };
+  
+  contains((module Pair), ("c", 5), [|("a", 1), ("b", 3), ("c", 5), ("d", 7)|]) == true;
+  contains((module Pair), ("c", 5), [|("c", 1), ("b", 5)|]) == false;
+  contains((module Pair), ("c", 5), [| |]) == false;
+  ```
+*/
 let contains:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) => bool;
 let indexOf:
