@@ -1,3 +1,118 @@
+/**
+  `Relude.Array` contains a large number of functions that assist you
+  in manipulating arrays.
+  
+  Besides arrays of primitive types such as strings or integers, `Relude.Array`
+  lets you manipulate arrays of data types that you create. In order to do this,
+  you must sometimes provide a `module` that tells `Relude.Array` how to do
+  operations such as comparison or checking for equality with your data type.
+  
+  For the documentation of `Relude.Array`, we will create a data type that
+  represents a duration of time in minutes and seconds as a two-tuple of integers.
+  Some of the examples will manipulate an array of these durations. We will use
+  the following type definition:
+  
+  ```re
+  type duration = (int, int);
+  ```
+  
+  Here is a module that will be used when `Relude.Array` needs to check for equality
+  of two `duration` values. We will call this an `EQ` module. An `EQ` module must define:
+  
+  - the type under consideration
+  - a function `eq()`, which takes two items of that type and returns `true` if
+    they are to be considered equal, `false` otherwise
+    
+  ```re
+  module DurationEqual = {
+    type t = duration;
+    let eq = (a, b) => {
+      fst(a) == fst(b) && snd(a) == snd(b)
+    };
+  };
+  ```
+  Here is another `EQ` module that we will use in our examples; it checks if
+  two integers are equal with respect to “clock time” (mod 12):
+  
+  ```re
+  module ClockEqual = {
+    type t = int;
+    let eq = (a, b) => { a mod 12 == b mod 12 };
+  };
+  ```
+
+  Here is a module that will be used when we need to compare
+  two `duration` values. We will call this an `ORD` module. An `ORD` module must define:
+  
+  - the type under consideration
+  - an `eq()` function, as in the preceding module
+  - a `compare()` function that returns one of ` `less_than `, ` `_greater_than `, or ` `equal_to `,
+    depending on the relationship between its two arguments
+    
+  ```re
+  module DurationOrder = {
+    type t = duration;
+    let eq = (a, b) => {
+      fst(a) == fst(b) && snd(a) == snd(b)
+    };
+    let compare = ((min1, sec1), (min2, sec2)) => {
+      if (min1 < min2) {
+        `less_than
+      } else if (min1 > min2) {
+        `greater_than
+      } else {
+        if (sec1 < sec2) {
+          `less_than
+        } else if (sec1 > sec2) {
+          `greater_than
+        } else {
+          `equal_to
+        }
+      }
+    };
+  };
+  ```
+  
+  Here is a module that defines how you append two values of a datatype. We will
+  call this a `MONOID` module. “Monoid“ is a mathematical term that just happens to
+  apply nicely in this context, so we’ll go with it. Besides, it sounds more impressive
+  than “append.” A `MONOID` module must provide:
+  
+  - a type specification
+  - an `append()` function which takes two items of the type and appends them to one another
+  - an `empty` elemnt for which `append(x, empty) == append(empty, x) == x`
+  
+  For our example data type, we will define appending as addition of minutes and seconds, with
+  appropriate calculations to make sure seconds is never greater than 59.
+  
+  ```re
+  module DurationAppend = {
+    type t = duration;
+    let append = ((min1, sec1), (min2, sec2)) => {
+      (min1 + min2 + (sec1 + sec2) / 60, (sec1 + sec2) mod 60)
+    };
+    let empty = (0, 0);
+  };
+  ```
+  
+  The last type of module we will use in the examples is a module
+  that defines how to show a data type. We will call this a `SHOW` module.
+  A `SHOW` module must specify:
+  
+  - the type under consideration
+  - a `show()` function that takes a value of the given type and converts it to a string
+  
+    ```re
+  module DurationShow = {
+    type t = duration;
+    let show = ((min1, sec1)) => {
+      string_of_int(min1) ++ "m " ++ string_of_int(sec1) ++ "s";
+    };
+  };
+  ```
+*/
+
+
 module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = array('a);
 module SemigroupAny:
   BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = array('a);
@@ -62,7 +177,7 @@ let map: ('a => 'b, array('a)) => array('b);
 let void: array('a) => array(unit);
 
 /**
-  `apply(fs, xs) takes an array of functions and an array of values and creates
+  `apply(fs, xs)` takes an array of functions and an array of values and creates
   an array whose contents are the result of applying the first function of `fs`
   to all the elements of `xs`, the second function of
   `fs` to all the elements of `xs`, and so on. All the functions in `fs` must
@@ -88,7 +203,6 @@ let apply: (array('a => 'b), array('a)) => array('b);
   flap([|square, cube|], 10) == [|100, 1000|];
   ```
 */
-
 let flap: (array('a => 'b), 'a) => array('b);
 
 /**
@@ -219,7 +333,7 @@ let flatten: array(array('a)) => array('a);
 /**
   `foldLeft(f, init, xs)` accumulates a value. Starting with `init`,
   as the initial value of the accumulator, `foldLeft` applies function
-  `f` to the accumulator and the first element in the list. The result
+  `f` to the accumulator and the first element in the array `xs`. The result
   becomes the new value of the accumulator, and `f` is applied to that value
   and the next element in `xs`. This process continues until all elements in
   `xs` are processed. The final value of the accumulator is returned.
@@ -235,7 +349,7 @@ let foldLeft: (('b, 'a) => 'b, 'b, array('a)) => 'b;
 /**
   `foldRight(f, init, xs)` accumulates a value. Starting with `init`,
   as the initial value of the accumulator, `foldRight` applies function
-  `f` to the last element in the list and the accumulator. The result
+  `f` to the last element in the array `xs` and the accumulator. The result
   becomes the new value of the accumulator, and `f` is applied to that value
   and the preceding element in `xs`. This process continues until all elements in
   `xs` are processed. The final value of the accumulator is returned.
@@ -298,7 +412,7 @@ let containsBy: (('a, 'a) => bool, 'a, array('a)) => bool;
   
   `indexOfBy() returns `Some(position)` where `position` is the index
   of the first item in `xs` that satisfies this new predicate function `p()`,
-  or `None` if no item in `xs` satisfies the predicate..
+  or `None` if no item in `xs` satisfies the predicate.
   
   ### Example
   ```re
@@ -309,10 +423,77 @@ let containsBy: (('a, 'a) => bool, 'a, array('a)) => bool;
 */
 let indexOfBy: (('a, 'a) => bool, 'a, array('a)) => option(int);
 
+/**
+  `minBy(f, xs)` returns the minimum value in array `xs` as
+  `Some(val)`. It uses function `f` to compare values in the array.
+  Function `f` takes two parameters of the type in the array and
+  returns a value of ` `less_than `, ` `equal_to `, or ` `greater_than `,
+  depending on the relationship of the values.
+  
+  If given an empty array, `minBy()` returns `None`.
+  
+  ### Example
+  ```re
+  let clockCompare = (a, b) => {
+    if (a mod 12 < b mod 12) {
+      `less_than
+    } else if (a mod 12 > b mod 12) {
+      `greater_than
+    } else {
+      `equal_to
+    }
+  };
+  
+  minBy(clockCompare, [|5, 3, 17, 14, 9|]) == Some(14);
+  minBy(clockCompare, [|5, 17|]) == Some(5);
+  minBy(clockCompare, [| |]) == None;
+  ```
+*/
 let minBy:
   (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => option('a);
+
+  
+/**
+  `maxBy(f, xs)` returns the maximum value in array `xs` as
+  `Some(val)`. It uses function `f` to compare values in the array.
+  Function `f` takes two parameters of the type in the array and
+  returns a value of ` `less_than `, ` `equal_to `, or ` `greater_than `,
+  depending on the relationship of the values.
+  
+  If given an empty array, `maxBy()` returns `None`.
+  
+  ### Example
+  ```re
+  let clockCompare = (a, b) => {
+    if (a mod 12 < b mod 12) {
+      `less_than
+    } else if (a mod 12 > b mod 12) {
+      `greater_than
+    } else {
+      `equal_to
+    }
+  };
+  
+  maxBy(clockCompare, [|5, 3, 17, 14, 9|]) == Some(9);
+  maxBy(clockCompare, [|5, 17|]) == Some(5);
+  maxBy(clockCompare, [| |]) == None;
+  ```
+*/
 let maxBy:
   (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => option('a);
+  
+/**
+  `countBy(countFcn, xs)` returns the number of items `x` in array `xs`
+  for which `countFcn(x)` returns `true`.
+  
+  ### Example
+  ```re
+  let isOdd = (x) => {x mod 2 == 1};
+  countBy(isOdd, [|33, 22, 55, 11, 44, 66|]) == 3;
+  countBy(isOdd, [|22, 44, 66|]) == 0;
+  countBy(isOdd, [| |]) == 0;
+  ```
+*/
 let countBy: ('a => bool, array('a)) => int;
 
 /**
@@ -326,28 +507,173 @@ let countBy: ('a => bool, array('a)) => int;
 */
 let length: array('a) => int;
 
+/**
+  In `forEach(f, xs)`, `f()` is a function that takes an element
+  of `xs` and returns `unit`. `forEach()` applies this function to
+  each element of `xs`. You use `forEach()` when you are interested in
+  the side effects rather than the result of a function.
+  
+  ### Example
+  ```re
+  forEach(Js.log, [|"a", "b", "c"|]) == (); // prints a, b, and c
+  ```
+*/
 let forEach: ('a => unit, array('a)) => unit;
+
+/**
+  In `forEachWithIndex(f, xs)`, `f()` is a function that takes an element
+  of `xs` and an integer and returns `unit`. `forEach()` applies this function to
+  each element of `xs`, passing the element and its index number (starting
+  at zero). You use `forEachWithIndex()` when you are interested in
+  the side effects rather than the result of a function.
+  
+  ### Example
+  ```re
+  let debug = (x, i) => {Js.log(string_of_int(i) ++ " " ++ x)};
+  forEachWithIndex(debug, [|"a", "b", "c"|]) == (); // prints 0 a, 1 b, and 2 c
+  ```
+*/
 let forEachWithIndex: (('a, int) => unit, array('a)) => unit;
+
+/**
+  `find(pred, xs)` returns `Some(x)` for the first value in `xs`
+  for which the predicate function `pred(x)` returns `true`.
+  If no value in the array satisfies `pred()`, `find()` returns `None`.
+  
+  ### Example
+  ```re
+  find((x) => {x mod 2 == 0}, [|3, 7, 4, 2, 5|]) == Some(4);
+  find((x) => {x mod 2 == 0}, [|3, 7, 5|]) == None;
+  ```
+*/
 let find: ('a => bool, array('a)) => option('a);
+
+/**
+  `findWithIndex(pred, xs)` calls `pred()` with two arguments: an element
+  of `xs` and its index value (zero-based). If `pred()` returns `true`,
+  the element is returned as `Some(x)`.  If no element in the array satisfies
+  `pred()`, `findWithIndex()` returns `None`.
+
+  
+  ### Example
+  ```re
+  let bothEven = (x, i) => {x mod 2 == 0 && i mod 2 == 0};
+  findWithIndex(bothEven, [|3, 6, 4, 7, 5|]) == Some(4);
+  findWithIndex(bothEven, [|3, 6, 7, 8, 5|]) == None;
+  findWithIndex(bothEven, [|3, 7, 5|]) == None;
+  ```
+*/
 let findWithIndex: (('a, int) => bool, array('a)) => option('a);
 
+/**
+  `fold((module M), xs)` concatenates the elements of `xs` as specified by
+  the given module, which is a `MONOID` module.
+  
+  ### Example
+  ```re
+  fold((module DurationAppend), [|(3, 25), (7, 45)|]) == (11, 10);
+  ```
+*/
 let fold:
   ((module BsAbstract.Interface.MONOID with type t = 'a), array('a)) => 'a;
+
+/**
+  `intercalate((module M), delim, xs)` concatenates the elements of `xs` as specified by
+  the given module, with `delim` between all the elements. The module must be a
+  `MONOID` module.
+  
+  The following example inserts a “rest period“ of fifteen seconds between each
+  duration, for a total of an additional thirty seconds:
+  
+  ### Example
+  ```re
+  intercalate((module DurationAppend), (0, 15), [|(1, 0), (2, 0), (3, 0)|]) == (6, 30);
+  ```
+*/
 let intercalate:
   ((module BsAbstract.Interface.MONOID with type t = 'a), 'a, array('a)) => 'a;
+  
+/**
+  `contains((module M), val, xs)` returns `true` if any element of `xs` equals
+  `val`, as determined by the module. It returns `false` if no element equals
+  `val`. The module must be an `EQ` module.
+    
+  ### Example
+  ```re
+  contains((module DurationEqual), (3, 20), [|(1, 10), (3, 20), (4, 40)|]) == true;
+  contains((module DurationEqual), (3, 20), [|(1, 10), (2, 20), (4, 40)|]) == false;
+  contains((module DurationEqual), (3, 20), [| |]) == false;
+  ```
+*/
 let contains:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) => bool;
+  
+/**
+  `indexOf((module M), val, xs)` finds the position of `val` in the array `xs`.
+  If `val` is at position `index`, the return value is `Some(index)`; if `val`
+  is not in the array, the return value is `None`. The module you pass must be
+  an `EQ` module.
+
+  ### Example
+  ```re
+  indexOf((module DurationEqual), (3, 20), [|(1, 10), (3, 20), (4, 40)|]) == Some(1);
+  indexOf((module DurationEqual), (3, 20), [|(1, 10), (2, 20), (4, 40)|]) == None;
+  indexOf((module DurationEqual), (3, 20), [| |]) == None;
+  ```
+*/
 let indexOf:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, array('a)) =>
   option(int);
+  
+/**
+  `min((module M), xs)` returns `Some(val)` where `val` is the
+  minimum value in `xs` as determined by the  module. The module must be an `ORD` module.
+  `min()` returns `None` if the array is empty.
+  
+  ### Example
+  ```re
+  min((module DurationOrder), [|(2, 20), (1, 10), (4, 40), (3, 30)|]) == Some((1, 10));
+  min((module DurationOrder), [| |]) == None;
+  ```
+*/
 let min:
   ((module BsAbstract.Interface.ORD with type t = 'a), array('a)) =>
   option('a);
+
+/**
+  `max((module M), xs)` returns `Some(val)` where `val` is the
+  maximum value in `xs` as determined by the  module. The module must be an `ORD` module.
+  `max()` returns `None` if the array is empty.
+  
+  ### Example
+  ```re
+  max((module DurationOrder), [|(2, 20), (1, 10), (4, 40), (3, 30)|]) == Some((4, 40));
+  max((module DurationOrder), [| |]) == None;
+  ```
+*/
 let max:
   ((module BsAbstract.Interface.ORD with type t = 'a), array('a)) =>
   option('a);
 
+/**
+  `fromList(xs)` converts a list to an array.
+  
+  ### Example
+  ```re
+  fromList([100, 101, 102]) == [|100, 101, 102|];
+  ```
+*/
 let fromList: list('a) => array('a);
+
+
+/**
+  `toList(xs)` converts an array to a list.
+  
+  ### Example
+  ```re
+  toList([|100, 101, 102|]) == [100, 101, 102];
+  ```
+*/
 let toList: array('a) => list('a);
 
 module Traversable:
@@ -393,8 +719,40 @@ let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b);
 */
 let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b);
 
+/**
+  `eqBy(f, xs, ys)` compares each element of `xs` to the corresponding
+  element of `ys`, using `f(x, y)` to determine if the elements are equal
+  or not. If all elements are equal, `eqBy()` returns `true`; otherwise
+  it returns `false`.
+  
+  ### Example
+  ```re
+  let eqMod12 = (a, b) => {a mod 12 == b mod 12};
+  eqBy(eqMod12, [|2, 4, 3, 5|], [|14, 16, 15, 17|]) == true;
+  eqBy(eqMod12, [|2, 4, 3, 5|], [|2, 4, 3|]) == false;
+  eqBy(eqMod12, [| |], [| |]) == true;
+  ```
+*/
 let eqBy: (('a, 'a) => bool, array('a), array('a)) => bool;
+
 module Eq: (BsAbstract.Interface.EQ) => BsAbstract.Interface.EQ;
+
+/**
+  `eq((module M), xs, ys)` compares each element of `xs` to the corresponding
+  element of `ys`, using an `EQ` module to determine if the elements are equal
+  or not. If all elements are equal, `eq()` returns `true`; otherwise
+  it returns `false`.
+  
+  ### Example
+  ```re
+  eq((module DurationEqual), [|(3, 30), (2, 20), (4, 40)|],
+    [|(3, 30), (2, 20), (4, 40)|]) == true;
+  eq((module DurationEqual), [|(3, 30), (2, 20), (4, 40)|],
+    [|(3, 30), (2, 20)|]) == false;
+  eq((module DurationEqual), [|(3, 30), (2, 20), (4, 40)|],
+    [|(3, 30), (2, 25), (4, 40)|]) == false;
+  ```
+*/
 let eq:
   (
     (module BsAbstract.Interface.EQ with type t = 'a),
@@ -403,13 +761,46 @@ let eq:
   ) =>
   bool;
 
+/**
+  `showBy(f, xs)` uses `f(x)` to convert each element
+  of `xs` to a string, separates the strings with commas, and
+  encloses it all in square brackets to be returned as one string.
+  
+  ### Example
+  ```re
+  let toString = (x) => {string_of_int(x)};
+  showBy(toString, [|100, 101, 102|]) == "[100, 101, 102]";
+  ```
+*/
 let showBy: ('a => string, array('a)) => string;
 module Show: (BsAbstract.Interface.SHOW) => BsAbstract.Interface.SHOW;
+
+/**
+  `show((module M), xs)` uses the given module, which must be a
+  `SHOW` module, to convert each element
+  of `xs` to a string, separates the strings with commas, and
+  encloses it all in square brackets to be returned as one string.
+  
+  ### Example
+  ```re
+  show((module DurationShow), [|(1, 10), (2, 20), (3, 30)|]) == "[1m 10s, 2m 20s, 3m 30s]";
+  ```
+*/
 let show:
   ((module BsAbstract.Interface.SHOW with type t = 'a), array('a)) => string;
 
 module Ord: (BsAbstract.Interface.ORD) => BsAbstract.Interface.ORD;
 
+/**
+  `mapWithIndex(f, xs)` creates a new array by applying `f(x, n)` to each element of `xs`,
+  where `n` is the zero-based index of the array element.
+  
+  ### Example
+  ```re
+  let numbered =(s, index) => {string_of_int(index + 1) ++ ". " ++ s};
+  mapWithIndex(numbered, [|"ant", "bee", "cat"|]) == [|"1. ant", "2. bee", "3. cat"|];
+  ```
+*/
 let mapWithIndex: (('a, int) => 'b, array('a)) => array('b);
 
 /**
@@ -921,36 +1312,16 @@ let sortBy:
   (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => array('a);
 
 /**
-  `sort((module M), xs)` sorts the array `xs`, using the given module to
-  compare items in the array.  The module must:
-  
-  - Specify a type `t` for the items to be compared
-  - Specify a function `eq`, which takes two items of type `t` and returns
-    `true` if they are considered equal, `false` otherwise.
-  - Specify a function `compare`, which takes two items of type `t` and
-    returns ` `less_than `, ` `equal_to `, or ` `greater_than `, depending on the
-    relation between the two items.
+  `sort((module M), xs)` sorts the array `xs`, using an `ORD` module to
+  compare items in the array.
   
   This is a stable sort; equal elements will appear in the output array in the
   same order that they appeared in the input array.
   
   ### Example
   ```re
-  module ClockArithmetic = {
-    type t = int;
-    let eq = (a, b) => { a mod 12 == b mod 12 };
-    let compare = (a, b) => {
-      if (a mod 12 < b mod 12) {
-        `less_than
-      } else if (a mod 12 > b mod 12) {
-        `greater_than
-      } else {
-        `equal_to
-      };
-    }
-  };
-  
-  sort((module ClockArithmetic), [|17, 3, 9, 4, 15, 20|]) == [|3, 15, 4, 17, 20, 9|];
+  sort((module DurationOrder), [|(3, 40), (2, 30), (1, 10), (2,20)|]) ==
+    [|(1, 10), (2, 20), (2, 30), (3, 40) |];
   ```
 */
 let sort:
@@ -1013,20 +1384,10 @@ let removeEachBy: (('a, 'a) => bool, 'a, array('a)) => array('a);
 
 /*
   `distinct((module M), xs)` returns an array of the unique elements `xs`,
-  using the given module to determine which elements are considered to be equal.
-  The module must:
-  
-  - Specify a type `t` for the items to be compared
-  - Specify a function `eq`, which takes two items of type `t` and returns
-    `true` if they are considered equal, `false` otherwise.
+  using the given module, which must be an `EQ` module.
     
   ### Example
   ```re
-  module ClockEqual = {
-    type t = int;
-    let eq = (a, b) => { a mod 12 == b mod 12 };
-  };
-
   distinct((module ClockEqual), [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 2, 12, 9|];
   ```
 */    
@@ -1035,24 +1396,15 @@ let distinct:
 
 /**
   `removeFirst((module M), value, xs)` returns an array with the first element that
-  is considered equal to `value` with respect to `module M` removed.
+  is considered equal to `value` with respect to `module M` removed. The module
+  must be an `EQ` module.
  
-  The module must:
-  
-  - Specify a type `t` for the items to be compared
-  - Specify a function `eq`, which takes two items of type `t` and returns
-    `true` if they are considered equal, `false` otherwise.
-  
-  If no elements are equal to the `value`, the result is the same as the original array.
+ If no elements are equal to the `value`, the result is the same as the original array.
  
   ### Example
   ```re
-  module ClockEq2 = {
-    type t = int;
-    let eq = (a, b) => { a mod 12 == b mod 12 };
-  };
-  removeFirst((module ClockEq2), 14, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 12, 9, 21, 0|];
-  removeFirst((module ClockEq2), 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
+  removeFirst((module ClockEqual), 14, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 12, 9, 21, 0|];
+  removeFirst((module ClockEqual), 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
   ```
 */
 let removeFirst:
@@ -1073,12 +1425,8 @@ let removeFirst:
  
   ### Example
   ```re
-  module ClockEq3 = {
-    type t = int;
-    let eq = (a, b) => { a mod 12 == b mod 12 };
-  };
-  removeEach((module ClockEq3), 12, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 9, 21|];
-  removeEach((module ClockEq3), 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
+  removeEach((module ClockEqual), 12, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 9, 21|];
+  removeEach((module ClockEqual), 15, [|16, 4, 2, 12, 9, 21, 0|]) == [|16, 4, 2, 12, 9, 21, 0|];
   ```
 */
 let removeEach:
