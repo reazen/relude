@@ -682,7 +682,7 @@ module Traversable:
 /**
   `scanLeft(f, init, xs)` returns an array of values. Starting with `init`,
   as the initial value of an accumulator, `scanLeft` applies function
-  `f` to the accumulator and the first element in the list. The result
+  `f` to the accumulator and the first element in the array. The result
   is appended to the array of values and becomes the new value of the accumulator
   Then `f` is applied to the new accumulator and the next element in `xs`.
   This process continues until all elements in `xs` are processed.
@@ -702,7 +702,7 @@ let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b);
 /**
   `scanRight(f, init, xs)` returns an array of values. Starting with `init`,
   as the initial value of an accumulator, `scanRight` applies function
-  `f` to the last element in the list and the accumulator. The result
+  `f` to the last element in the array and the accumulator. The result
   is prepended to the array of values and becomes the new value of the accumulator.
   Then `f` is applied to the preceding element in `xs` and the accumulator.
   This process continues until all elements in `xs` are processed.
@@ -1413,13 +1413,8 @@ let removeFirst:
 
 /**
   `removeEach((module M), value, xs)` returns an array with every element that
-  is considered equal to `value` with respect to `module M` removed.
- 
-  The module must:
-  
-  - Specify a type `t` for the items to be compared
-  - Specify a function `eq`, which takes two items of type `t` and returns
-    `true` if they are considered equal, `false` otherwise.
+  is considered equal to `value` with respect to `module M` removed. The module
+  must be an `EQ` module.
   
   If no elements are equal to the `value`, the result is the same as the original array.
  
@@ -1741,7 +1736,7 @@ module Int: {
 
 /**
   This submodule contains operations which have been optimized
-  to work on arrays of integers.
+  to work on arrays of floats.
 */
 module Float: {
 
