@@ -378,8 +378,12 @@ describe("List", () => {
     expect(List.replicate(1, ["foo"])) |> toEqual(["foo"])
   );
 
+  test("replicate zero", () =>
+    expect(List.replicate(0, ["none"])) |> toEqual([ ])
+  );
+
   test("replicate negative", () =>
-    expect(List.replicate(-1, [0])) |> toEqual([0])
+    expect(List.replicate(-1, [0])) |> toEqual([])
   );
 
   test("replicate empty list", () =>

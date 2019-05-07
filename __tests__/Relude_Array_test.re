@@ -399,6 +399,16 @@ describe("Array", () => {
     |> toEqual([|"a", "b", "c", "a", "b", "c", "a", "b", "c"|])
   );
 
+  test("replicate zero", () =>
+    expect(Array.replicate(0, [|"a", "b", "c"|]))
+    |> toEqual([| |])
+  );
+
+  test("replicate negative", () =>
+    expect(Array.replicate(-3, [|"a", "b", "c"|]))
+    |> toEqual([| |])
+  );
+
   test("zip same length array", () =>
     expect(Array.zip([|1, 2, 3|], [|"4", "5", "6"|]))
     |> toEqual([|(1, "4"), (2, "5"), (3, "6")|])
