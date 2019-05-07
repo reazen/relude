@@ -327,3 +327,13 @@ module Applicative: APPLICATIVE_F =
     include Apply(Errors, Error);
     let pure = pure;
   };
+
+module Infix =
+       (
+         Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+         Error: BsAbstract.Interface.TYPE,
+       ) => {
+  module Functor = BsAbstract.Infix.Functor((Functor(Errors, Error)));
+
+  module Apply = BsAbstract.Infix.Apply((Apply(Errors, Error)));
+};

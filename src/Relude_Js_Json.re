@@ -203,8 +203,10 @@ let field: (string, json) => option(json) =
 module ErrorAsString: BsAbstract.Interface.TYPE with type t = string = {
   type t = string;
 };
+
 module ValidationNonEmptyArrayApply =
   Validation.Apply(NonEmptyArray.SemigroupAny, ErrorAsString);
+
 module ValidationNonEmptyArrayInfix = {
   include BsAbstract.Infix.Apply(ValidationNonEmptyArrayApply);
 };
