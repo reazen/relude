@@ -6,7 +6,6 @@ type t('a, 'e) =
   | VOk('a)
   | VError('e);
 
-
 let pure: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
 
 let ok: 'a 'e. 'a => t('a, 'e) = pure;
@@ -174,3 +173,13 @@ module Applicative: APPLICATIVE_F =
     include Apply(Errors, Error);
     let pure = pure;
   };
+
+module Infix =
+       (
+         Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+         Error: BsAbstract.Interface.TYPE,
+       ) => {
+  module Functor = BsAbstract.Infix.Functor((Functor(Errors, Error)));
+
+  module Apply = BsAbstract.Infix.Apply((Apply(Errors, Error)));
+};
