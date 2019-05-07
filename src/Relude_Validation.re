@@ -6,20 +6,56 @@ type t('a, 'e) =
   | VOk('a)
   | VError('e);
 
-
+/**
+  `pure(val)` wraps its argument in a `VOk()`.
+  
+  ### Example
+  ```re
+  pure(3) = VOk(3);
+  ```
+*/
 let pure: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
 
+/**
+ `ok()` is a synonym for `pure()`.
+*/
 let ok: 'a 'e. 'a => t('a, 'e) = pure;
 
+/**
+  `error(val)` wraps the value in a `VError()`.
+  
+  ### Example
+  ```re
+  error("Not even") == VError("Not even");
+  ```
+*/
 let error: 'a 'e. 'e => t('a, 'e) = e => VError(e);
 
+/**
+  `isOk(v)` returns `true` if `v` is of the form `VOk(val)`;
+  `false` otherwise.
+*/
 let isOk: 'a 'e. t('a, 'e) => bool =
   fun
   | VOk(_) => true
   | VError(_) => false;
 
+/**
+  `isError(x)` returns `true` if `x` is of the form `VError(val)`;
+  `false` otherwise.
+*/
 let isError: 'a 'e. t('a, 'e) => bool = a => !isOk(a);
 
+/**
+  `map(f, x)` returns `VOk(f(x))` if `x` is of the form `VOK(v)`.
+  It returns `VError(e)` if `x` is of the form `VError(e)`.
+  
+  ### Example
+  ```re
+  map((x) => sqrt(float_of_int(x)), VOk(4)) == VOk(2.0);
+  map((x) => sqrt(float_of_int(x)), VError("bad")) == VError("bad");
+  ```
+*/
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, v) =>
     switch (v) {
@@ -27,6 +63,18 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     | VError(e) => VError(e)
     };
 
+/**
+  In `tap(f, x)`, function `f()` returns `unit`. Thus, `f()`
+  is used only for its side effects. If `x` is of the
+  form `VOk(v)`, `tap()` calls `f(v)`. The `tap()` function returns
+  the argument `x`.
+  
+  ### Example
+  ```re
+  tap((x) => Js.log(x), VOk(4)) == VOk(4); // prints 4
+  tap((x) => Js.log(x), VError("bad")) == VError("bad"); // prints nothing
+  ```
+*/
 let tap: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
   (f, fa) =>
     fa
