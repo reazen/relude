@@ -136,15 +136,15 @@ let sliceToEnd: (int, string) => string =
 /**
 Splits a string on a string delimiter, returning the values as an array.
 */
-let splitOnAsArray: (string, string) => array(string) =
+let splitArray: (string, string) => array(string) =
   (delimiter, input) => Js.String.split(delimiter, input);
 
 /**
 Splits a string on a string delimiter, returning the resulting values as an array.
 */
-let splitOnAsList: (string, string) => list(string) =
+let splitList: (string, string) => list(string) =
   (delimiter, str) =>
-    splitOnAsArray(delimiter, str) |> Relude_List_Types.fromArray;
+    splitArray(delimiter, str) |> Relude_List_Types.fromArray;
 
 /**
 Splits a string at the given index, returning a tuple of the parts.
@@ -174,7 +174,7 @@ Replaces each occurrence of `target` with `newValue` in `source`, returning a ne
 */
 let replaceEach: (string, string, string) => string =
   (target, newValue, source) =>
-    splitOnAsList(target, source) |> String.concat(newValue);
+    splitList(target, source) |> String.concat(newValue);
 
 let replaceRegex: (Js.Re.t, string, string) => string =
   (target, newValue, source) =>

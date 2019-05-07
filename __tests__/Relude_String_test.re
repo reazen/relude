@@ -200,12 +200,12 @@ describe("String", () => {
     expect(Str.sliceToEnd(2, "abcdefg")) |> toEqual("cdefg")
   );
 
-  test("splitOnAsArray", () =>
-    expect(Str.splitOnAsArray(",", "a,b,c")) |> toEqual([|"a", "b", "c"|])
+  test("splitArray", () =>
+    expect(Str.splitArray(",", "a,b,c")) |> toEqual([|"a", "b", "c"|])
   );
 
-  test("splitOnAsList", () =>
-    expect(Str.splitOnAsList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
+  test("splitList", () =>
+    expect(Str.splitList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
   );
 
   test("splitAt -7", () =>
