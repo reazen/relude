@@ -120,20 +120,58 @@ let lastIndexOf: (string, string) => option(int) =
     };
   };
 
-let splitArray: (string, string) => array(string) = Js.String.split;
+/**
+Extracts a substring from an `input` string starting at index `fromIndex` and ending before index `toIndex`
+ */
+let slice: (int, int, string) => string =
+  (fromIndex, toIndex, input) =>
+    Js.String.slice(~from=fromIndex, ~to_=toIndex, input);
 
+/**
+Extracts a substring from an `input` string starting at index `fromIndex`, to the end of the string.
+ */
+let sliceToEnd: (int, string) => string =
+  (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
+
+/**
+Splits a string on a string delimiter, returning the values as an array.
+*/
+let splitArray: (string, string) => array(string) =
+  (delimiter, input) => Js.String.split(delimiter, input);
+
+/**
+Splits a string on a string delimiter, returning the resulting values as an array.
+*/
 let splitList: (string, string) => list(string) =
-  (delim, str) => splitArray(delim, str) |> Relude_List_Types.fromArray;
+  (delimiter, str) =>
+    splitArray(delimiter, str) |> Relude_List_Types.fromArray;
 
+/**
+Splits a string at the given index, returning a tuple of the parts.
+
+Note: for negative indices, it slices from the right.
+*/
+let splitAt: (int, string) => (string, string) =
+  (index, input) => (slice(0, index, input), sliceToEnd(index, input));
+
+/**
+Maps a function over the individual characters of a string, returning a new string.
+ */
 let mapChars: (string => string, string) => string =
   (f, str) =>
     toList(str)
     |> Relude_List_Types.map(f)
     |> Relude_List_Types.fold((module Monoid));
 
+/**
+Replaces the first occurrence of `target` with `newValue` in `source`, returning a new string.
+ */
 let replaceFirst: (string, string, string) => string =
   (target, newValue, source) => Js.String.replace(target, newValue, source);
 
+/**
+Replaces each occurrence of `target` with `newValue` in `source`, returning a new string.
+*/
 let replaceEach: (string, string, string) => string =
   (target, newValue, source) =>
     splitList(target, source) |> String.concat(newValue);
@@ -147,13 +185,6 @@ let removeFirst: (string, string) => string =
 
 let removeEach: (string, string) => string =
   (target, source) => replaceEach(target, "", source);
-
-let slice: (int, int, string) => string =
-  (fromIndex, toIndex, str) =>
-    Js.String.slice(~from=fromIndex, ~to_=toIndex, str);
-
-let sliceToEnd: (int, string) => string =
-  (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
 
 let fromInt: int => string = string_of_int;
 
