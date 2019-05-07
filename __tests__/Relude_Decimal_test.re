@@ -25,20 +25,28 @@ describe("Decimal", () => {
     expect(Decimal(12345, 2) |> Decimal.toString) |> toEqual("1234500")
   );
 
-  test("tenToThePowerOf 0 ", () =>
-    expect(Decimal.tenToThePowerOf(0)) |> toEqual(1)
+  test("tenToThePowerOfPositive -2", () =>
+    expect(Decimal.tenToThePowerOfPositive(-2)) |> toEqual(1) // undefined
   );
 
-  test("tenToThePowerOf 1 ", () =>
-    expect(Decimal.tenToThePowerOf(1)) |> toEqual(10)
+  test("tenToThePowerOfPositive -1", () =>
+    expect(Decimal.tenToThePowerOfPositive(-1)) |> toEqual(1) // undefined
   );
 
-  test("tenToThePowerOf 2 ", () =>
-    expect(Decimal.tenToThePowerOf(2)) |> toEqual(100)
+  test("tenToThePowerOfPositive 0 ", () =>
+    expect(Decimal.tenToThePowerOfPositive(0)) |> toEqual(1)
   );
 
-  test("tenToThePowerOf 3 ", () =>
-    expect(Decimal.tenToThePowerOf(3)) |> toEqual(1000)
+  test("tenToThePowerOfPositive 1 ", () =>
+    expect(Decimal.tenToThePowerOfPositive(1)) |> toEqual(10)
+  );
+
+  test("tenToThePowerOfPositive 2 ", () =>
+    expect(Decimal.tenToThePowerOfPositive(2)) |> toEqual(100)
+  );
+
+  test("tenToThePowerOfPositive 3 ", () =>
+    expect(Decimal.tenToThePowerOfPositive(3)) |> toEqual(1000)
   );
 
   test("normalize", () => {

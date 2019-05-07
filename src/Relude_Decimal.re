@@ -7,10 +7,14 @@ Represents an arbitrary precision number, backed by an integer mantissa, and int
 type t =
   | Decimal(mantissa, exponent);
 
+/**
+Represents a preference for rounding a `Decimal` value, when applicable.
+*/
 type rounding =
   | Truncate
   | RoundUp
-  | RoundDown;
+  | RoundDown
+  | RoundUpOrDown;
 
 /**
 Constructs a `Decimal` from a `mantissa` and `exponent`
@@ -55,13 +59,18 @@ let toString: t => string =
     };
 
 /**
+Rounds a `Decimal` using the given rounding strategy.
+*/
+let round: (rounding, t) => t = (_rounding, decimal) => decimal; // TODO
+
+/**
 Computes the value of `10^exponent`.
 
 This return value of this function is undefined for exponent values < 0
 
 E.g. `tenToThePowerOf(3) == 1000`
 */
-let tenToThePowerOf: int => int =
+let tenToThePowerOfPositive: int => int =
   exponent =>
     Relude_Int.rangeAsArray(1, exponent + 1)
     |> Relude_Array.foldLeft((acc, _) => 10 * acc, 1);
@@ -80,8 +89,8 @@ let res = Decimal.normalize(a, b);
 let normalize: (t, t) => (t, t, int) =
   (Decimal(mantissaA, exponentA), Decimal(mantissaB, exponentB)) => {
     let exponentMin = Relude_Int.min(exponentA, exponentB);
-    let newMantissaA = mantissaA * tenToThePowerOf(exponentA - exponentMin);
-    let newMantissaB = mantissaB * tenToThePowerOf(exponentB - exponentMin);
+    let newMantissaA = mantissaA * tenToThePowerOfPositive(exponentA - exponentMin);
+    let newMantissaB = mantissaB * tenToThePowerOfPositive(exponentB - exponentMin);
     (
       Decimal(newMantissaA, exponentMin),
       Decimal(newMantissaB, exponentMin),
@@ -90,17 +99,26 @@ let normalize: (t, t) => (t, t, int) =
   };
 
 /**
-Adds two `Decimal` values by first normalizing the exponent.
+Adds two `Decimal` values with no attempt at avoiding overflow.
+
+Note: the arguments are in order of `lhs`, `rhs`
 */
 let add: (t, t) => t =
   (lhs, rhs) => {
-    let (Decimal(mantissaRHS, _), Decimal(mantissaLHS, _), exponent) =
-      normalize(rhs, lhs);
+    let (Decimal(mantissaLHS, _), Decimal(mantissaRHS, _), exponent) =
+      normalize(lhs, rhs);
     Decimal(mantissaLHS + mantissaRHS, exponent);
   };
 
 /**
-Subtracts two `Decimal` values by first normalizing the exponent.
+Infix operator for `add`
+*/
+let (+..) = add;
+
+/**
+Subtracts two `Decimal` values with no attempt at avoiding overflow.
+
+Note: the arguments are in order of `lhs`, `rhs`
 */
 let subtract: (t, t) => t =
   (lhs, rhs) => {
@@ -109,14 +127,39 @@ let subtract: (t, t) => t =
     Decimal(mantissaLHS - mantissaRHS, exponent);
   };
 
+/**
+Infix operator for `subtract`
+*/
+let (-..) = subtract;
+
+/**
+Multiplies two `Decimal` values with no attempt at avoiding overflow.
+
+Note: the arguments are in order of `lhs`, `rhs`
+*/
 let multiply: (t, t) => t =
   (lhs, _rhs) => {
     // TODO
     lhs;
   };
 
+/**
+Infix operator for `multiply`
+*/
+let ( *.. ) = multiply;
+
+/**
+Divides two `Decimal` values using the given `rounding` preference.
+
+Note: the arguments are in order of `lhs`, `rhs`
+*/
 let divide: (t, t, rounding) => t =
   (lhs, _rhs, _rounding) => {
     // TODO
     lhs;
   };
+
+/**
+Infix operator for `divide`
+*/
+let (/..) = divide;
