@@ -678,7 +678,7 @@ let max:
   
   ### Example
   ```re
-  fromArray([100, 101, 102]) == [100, 101, 102];
+  fromArray([|100, 101, 102|]) == [100, 101, 102];
   ```
 */
 
@@ -689,7 +689,7 @@ let fromArray: array('a) => list('a);
   
   ### Example
   ```re
-  toArray([100, 101, 102]) == [100, 101, 102];
+  toArray([100, 101, 102]) == [|100, 101, 102|];
   ```
 */
 let toArray: list('a) => array('a);
@@ -1731,28 +1731,222 @@ module Int: {
   to work on arrays of floats.
 */
 module Float: {
+
+  /**
+    `Float.contains(value, xs)` returns `true` if `value` is one of the
+    elements of `xs`, `false` otherwise.
+    
+    ### Example
+    ```re
+    Float.contains(101.1, [100.0, 101.1, 102.2]) == true;
+    Float.contains(104.4, [100.0, 101.1, 102.2]) == false;
+    ```
+  */
   let contains: (float, list(float)) => bool;
+
+  /**
+    `Float.indexOf(value, xs)` returns `Some(index)` where `index`
+    is the zero-based position where `value` occurs within `xs`. If
+    `value` is not in `xs`, the function returns `None`.
+    
+    ### Example
+    ```re
+    Float.indexOf(101.1, [100.0, 101.1, 102.2]) == Some(1);
+    Float.indexOf(104.4, [100.0, 101.1, 102.2]) == None;
+    ```
+  */
   let indexOf: (float, list(float)) => option(int);
+  
+  /**
+    `Float.distinct(xs)` returns a list containing the unique
+    elements of `xs` in the same order that they occurred in that list.
+    
+    ### Example
+    ```re
+    Float.distinct([87.7, 99.9, 87.7, 65.5, 99.9]) == [87.7, 99.9, 65.5];
+    ```
+  */
   let distinct: list(float) => list(float);
+
+  /**
+    `Float.removeFirst(value, xs)` returns a list where the first occurrence
+    (if any) of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Float.removeFirst(99.9, [100.0, 99.9, 101.1, 99.9]) == [100.0, 101.1, 99.9];
+    Float.removeFirst(88.8, [100.0, 99.9, 101.1, 99.9]) == [100.0, 99.9, 101.1, 99.9];
+    ```
+  */
   let removeFirst: (float, list(float)) => list(float);
+
+  /**
+    `Float.removeEach(value, xs)` returns a list where every occurrence
+    of `value` has been removed from `xs`.
+    
+    ### Example
+    ```re
+    Float.removeEach(99.9, [100.0, 99.9, 101.1, 99.9]) == [100.0, 101.1];
+    Float.removeEach(88.8, [100.0, 99.9, 101.1, 99.9]) == [100.0, 99.9, 101.1, 99.9];
+    ```
+  */
   let removeEach: (float, list(float)) => list(float);
+
+  /**
+    `Float.eq(xs, ys)` returns `true` if the two lists are element-for-element
+    equal, `false` otherwise.
+    
+    ### Example
+    ```re
+    Float.eq([100.0, 101.1, 102.2], [100.0, 101.1, 102.2]) == true;
+    Float.eq([100.0, 101.1, 102.2], [100.0, 101.1]) == false;
+    Float.eq([100.0, 101.1, 102.2], [100.0, 101.1, 99.9]) == false;
+    Float.eq([100.0, 101.1, 102.2], [-100.0, -101.1, -102.2]) == false;
+    ```
+  */
   let eq: (list(float), list(float)) => bool;
+
+  /**
+    `Float.min(xs)` returns the element with the minimum
+    value as `Some(value)`; returns `None` if given an empty list.
+    
+    ### Example
+    ```re
+    Float.min([77.7, -99.9, 88.8, 66.6]) == Some(-99.9);
+    Float.min([ ]) == None;
+    ```
+  */
   let min: list(float) => option(float);
+
+  /**
+    `Float.max(xs)` returns the element with the maximum
+    value as `Some(value)`; returns `None` if given an empty list.
+    
+    ### Example
+    ```re
+    Float.max([77.7, -99.9, 88.8, 66.6]) == Some(88.8);
+    Float.max([ ]) == None;
+    ```
+  */
   let max: list(float) => option(float);
+
+  /**
+    `Float.sort(xs)` sorts the elements of `xs` floato ascending order.
+    
+    ### Example
+    ```re
+    Float.sort([77.7, -99.9, 88.8, 66.6]) == [-99.9, 66.6, 77.7, 88.8];
+    Float.sort([ ]) == [ ];
+    ```
+  */
   let sort: list(float) => list(float);
+
+  /**
+    `Float.sum(xs)` returns the sum of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Float.sum([3.0, 7.5, 5.5]) == 16.0;
+    Float.sum([ ]) == 0.0;
+    ```
+  */
   let sum: list(float) => float;
+  
+  /**
+    `Float.product(xs)` returns the product of the elements in `xs`.
+    
+    ### Example
+    ```re
+    Float.product([3.0, 7.5, 5.5]) == 123.75;
+    Float.product([ ]) == 1.0;
+    ```
+  */  
   let product: list(float) => float;
 };
 
 module Option: {
+  /**
+    `Option.traverse(f, xs)`, `f()` is a function that takes an item of the
+    same type as `xs` and returns an `option` value.
+    
+    If `f(x)` returns `Some(value)` for all elements in `xs`, the result is `Some(xs)`.
+    
+    If `f(x)` returns `None` for any element in `xs`, the result is `None`.
+    
+    ### Example
+    ```re
+    let evenValue = (x) => {(x mod 2 == 0) ? Some(x) : None};
+    Option.traverse(evenValue, [100, 102, 104, 106]) == Some([100, 102, 104, 106]);
+    Option.traverse(evenValue, [100, 101, 102, 103]) == None;
+    Option.traverse(evenValue, [ ]) == Some([ ]);
+    ```
+  */
   let traverse: ('a => option('a), list('a)) => option(list('a));
+
+  /**
+    `Option.sequence(opts)`, takes a list of `option` types as its argument.
+    If all the elements of `opts` are `Some(value)`, then the return value is
+    `Some(xs)`, where each element in `opts` has been unwrapped from its `Some()`.
+    
+    If any element of `opts` is `None`, then the return value is `None`.
+
+    
+    ### Example
+    ```re
+    Option.sequence([Some("a"), Some("b"), Some("c")]) == Some(["a", "b", "c"]);
+    Option.sequence([Some("a"), None, Some("c")]) == None;
+    Option.sequence([ ]) == Some([ ]);
+    ```
+  */
   let sequence: list(option('a)) => option(list('a));
 };
 
 module Result: {
+
+  /**
+    `Result.traverse(f, xs)`, `f()` is a function that takes an item of the
+    same type as `xs` and returns a `Belt.Result.t` value.
+    
+    If `f(x)` returns `Belt.Result.Ok(value)` for all elements in `xs`, the result is `Ok(xs)`.
+    
+    If `f(x)` returns `Belt.Result.Error(err)` for any element in `xs`, the result is the
+    first `Error(err)` that was encountered.
+    
+    ### Example
+    ```re
+    let evenValue = (x) => {
+      if (x mod 2 == 0) {
+        Belt.Result.Ok(x)
+      } else {
+        Belt.Result.Error(string_of_int(x) ++ " is odd")
+      }
+    };
+    Result.traverse(evenValue, [100, 102, 104, 106]) == Belt.Result.Ok([100, 102, 104, 106]);
+    Result.traverse(evenValue, [100, 101, 102, 103]) == Belt.Result.Error("101 is odd");
+    Result.traverse(evenValue, [ ]) == Belt.Result.Ok([ ]);
+    ```
+  */
   let traverse:
     ('a => Belt.Result.t('b, 'c), list('a)) => Belt.Result.t(list('b), 'c);
 
+  /**
+    `Result.sequence(results)`, takes a list of `Belt.Result.t` types as its argument.
+    If all the elements of `results` are `Ok(value)`, then the return value is
+    `Ok(xs)`, where each element in `results` has been unwrapped from its `Belt.Result.Ok()`.
+    
+    If any element of `results` is `Belt.Error(err)`, then the return value is the
+    first such value encountered.
+
+    
+    ### Example
+    ```re
+    Result.sequence([Belt.Result.Ok("a"), Belt.Result.Ok("b"), Belt.Result.Ok("c")]) ==
+      Belt.Result.Ok(["a", "b", "c"]);
+    Result.sequence([Belt.Result.Ok("a"), Belt.Result.Error(1),
+      Belt.Result.Ok("c"), Belt.Result.Error(2)]) == Belt.Result.Error(1);
+    Result.sequence([ ]) == Belt.Result.Ok([ ]);
+    ```
+  */
   let sequence: list(Belt.Result.t('a, 'c)) => Belt.Result.t(list('a), 'c);
 };
 
@@ -1858,14 +2052,132 @@ module Validation: {
     Relude_Validation.t(list('b), Relude_NonEmpty.List.t('e));
 };
 
+/**
+  This submodule provides infix operators for common array
+  operations. You can use these operators by opening the
+  module:
+  
+  ```re
+  open Relude.List.Infix;
+  ```
+*/
 module Infix: {
+
+  /**
+    In `xs >>= f`, `f` is a function that takes an element
+    of the type in `xs` and returns a list. The result of `>>=`
+    is the concatenation of all the lists produced by applying
+    `f()` to the elements of `xs`. (Same as `bind()`.)
+    
+    ### Example
+    ```re
+    let f = (x) => [ x - 5, x + 5 ];
+    [100, 101, 102] >>= f == [95, 105, 96, 106, 97, 107];
+    [ ] >>= f == [ ];
+  ```
+  */
   let (>>=): (list('a), 'a => list('b)) => list('b);
+
+  /**
+    In `f =<< xs`, `f` is a function that takes an element
+    of the type in `xs` and returns a list. The result of `=<<`
+    is the concatenation of all the lists produced by applying
+    `f()` to the elements of `xs`. (Same as `flatMap()`.)
+    
+    ### Example
+    ```re
+    let f = (x) => [ x - 5, x + 5 ];
+    f =<< [100, 101, 102] == [95, 105, 96, 106, 97, 107];
+    f =<< [ ] == [ ];
+    ```
+  */
   let (=<<): ('a => list('b), list('a)) => list('b);
+
+  /**
+    `f >=> g` takes two functions, each of which
+    takes a single item and returns a list. The `>=>` operator
+    returns a new function that takes a single item of the type
+    required for `f()` and returns a list of the type produced
+    by `g()`.
+    
+    ### Example:
+    ```re
+    let f = (s) => {[Js.String.length(s) - 1, Js.String.length(s) + 1]};
+    let g = (n) => {[float_of_int(n) -. 0.5, float_of_int(n) +. 0.5]};
+    let h = (f >=> g);
+    h("ReasonML") == [ 6.5, 7.5, 8.5, 9.5 ];
+    ```
+  */    
   let (>=>): ('a => list('b), 'b => list('c), 'a) => list('c);
+  
+  /**
+    `f <=< g` takes two functions, each of which
+    takes a single item and returns a list. The `<=<` operator
+    returns a new function that takes a single item of the type
+    required for `g()` and returns a list of the type produced
+    by `f()`.
+    
+    ### Example:
+    ```re
+    let f = (n) => {[float_of_int(n) -. 0.5, float_of_int(n) +. 0.5]};
+    let g = (s) => {[Js.String.length(s) - 1, Js.String.length(s) + 1]};
+    let h = (f <=< g);
+    h("ReasonML") == [ 6.5, 7.5, 8.5, 9.5 ];
+    ```
+  */
+
   let (<=<): ('a => list('b), 'c => list('a), 'c) => list('b);
-  let (<>): (list('a), list('a)) => list('a);
+
+  /**
+    `<|>` takes two lists with elements of the same type and concatenates them
+    in order.
+    
+    ### Example
+    ```re
+    ["a", "b"] <|> [ ] <|> ["c"] <|> ["d", "e", "f"] ==
+      ["a", "b", "c", "d", "e", "f"];
+    ```
+  */
+  let (<|>): (list('a), list('a)) => list('a);
+
+  /**
+    `f <$> xs` is a shorthand for `map(f, xs)`; it takes a function and a list
+    and returns a list with the function applied to each element of `xs`.
+    
+    ### Example
+    ```re
+    let f = (x) => {Js.String.length(x)};
+    f <$> ["ReasonML", "OCaml"] == [8, 5];
+    ```
+  */
   let (<$>): ('a => 'b, list('a)) => list('b);
+
+  /**
+    `xs <#> f` is a shorthand for `map(f, xs)`; it takes a function and a list
+    and returns a list with the function applied to each element of `xs`.
+    
+    ### Example
+    ```re
+    let f = (x) => {Js.String.length(x)};
+    ["ReasonML", "OCaml"] <#> f == [8, 5];
+    ```
+  */
   let (<#>): (list('a), 'a => 'b) => list('b);
+
+  /**
+    `fs <*> xs` takes a list of functions and a list of values and creates
+    a list whose contents are the result of applying the first function of `fs`
+    to all the elements of `xs`, the second function of
+    `fs` to all the elements of `xs`, and so on. All the functions in `fs` must
+    have the same result type.
+    
+    ### Example
+    ```re
+    let square = (x) => {x * x};
+    let cube = (x) => {x * x * x};
+    [square, cube] <*> [10, 11, 12] == [100, 121, 144, 1000, 1331, 1728];
+    ```
+  */
   let (<*>): (list('a => 'b), list('a)) => list('b);
   let ( <* ): (list('a), list('b)) => list('a);
   let ( *> ): (list('a), list('b)) => list('b);
