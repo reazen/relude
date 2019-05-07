@@ -30,7 +30,9 @@ let fromInt: int => t = intValue => Decimal(intValue, 0);
 /**
 Attempts to parse a `Decimal` from a `string`
 */
-let fromString: string => option(t) = _ => None; // TODO
+/*
+ let fromString: string => option(t) = _ => None; // TODO
+ */
 
 /**
 Renders the `Decimal` value to a string.
@@ -61,7 +63,9 @@ let toString: t => string =
 /**
 Rounds a `Decimal` using the given rounding strategy.
 */
-let round: (rounding, t) => t = (_rounding, decimal) => decimal; // TODO
+/*
+ let round: (rounding, t) => t = (_rounding, decimal) => decimal; // TODO
+ */
 
 /**
 Computes the value of `10^exponent`.
@@ -89,8 +93,10 @@ let res = Decimal.normalize(a, b);
 let normalize: (t, t) => (t, t, int) =
   (Decimal(mantissaA, exponentA), Decimal(mantissaB, exponentB)) => {
     let exponentMin = Relude_Int.min(exponentA, exponentB);
-    let newMantissaA = mantissaA * tenToThePowerOfPositive(exponentA - exponentMin);
-    let newMantissaB = mantissaB * tenToThePowerOfPositive(exponentB - exponentMin);
+    let newMantissaA =
+      mantissaA * tenToThePowerOfPositive(exponentA - exponentMin);
+    let newMantissaB =
+      mantissaB * tenToThePowerOfPositive(exponentB - exponentMin);
     (
       Decimal(newMantissaA, exponentMin),
       Decimal(newMantissaB, exponentMin),
@@ -136,30 +142,33 @@ let (-..) = subtract;
 Multiplies two `Decimal` values with no attempt at avoiding overflow.
 
 Note: the arguments are in order of `lhs`, `rhs`
-*/
-let multiply: (t, t) => t =
-  (lhs, _rhs) => {
-    // TODO
-    lhs;
-  };
+*/;
+/*
+ let multiply: (t, t) => t =
+   (lhs, _rhs) => {
+     // TODO
+     lhs;
+   };
+   */
 
 /**
 Infix operator for `multiply`
-*/
-let ( *.. ) = multiply;
+*/;
+//let ( *.. ) = multiply;
 
 /**
 Divides two `Decimal` values using the given `rounding` preference.
 
 Note: the arguments are in order of `lhs`, `rhs`
-*/
-let divide: (t, t, rounding) => t =
-  (lhs, _rhs, _rounding) => {
-    // TODO
-    lhs;
-  };
+*/;
+/*
+ let divide: (t, t, rounding) => t =
+   (lhs, _rhs, _rounding) => {
+     // TODO
+     lhs;
+   };
+   */
 
 /**
 Infix operator for `divide`
-*/
-let (/..) = divide;
+*/ /*let (/..) = divide*/;
