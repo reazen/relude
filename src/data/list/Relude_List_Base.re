@@ -162,7 +162,11 @@ let replicate: 'a. (int, list('a)) => list('a) =
   (i, xs) => {
     let rec go = (count, acc) =>
       count <= 1 ? acc : go(count - 1, Relude_List_Types.concat(xs, acc));
-    go(i, xs);
+    if (i <= 0) {
+      [ ]
+    } else {
+      go(i, xs);
+    }
   };
 
 let zip: 'a 'b. (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
