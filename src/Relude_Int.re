@@ -2,6 +2,22 @@ module Ordering = Relude_Ordering;
 
 type ordering = BsAbstract.Interface.ordering;
 
+let min: (int, int) => int =
+  (a, b) =>
+    if (a < b) {
+      a;
+    } else {
+      b;
+    };
+
+let max: (int, int) => int =
+  (a, b) =>
+    if (a > b) {
+      a;
+    } else {
+      b;
+    };
+
 let rec rangeAsList = (start: int, end_: int): list(int) =>
   if (start >= end_) {
     [];

@@ -200,12 +200,44 @@ describe("String", () => {
     expect(Str.sliceToEnd(2, "abcdefg")) |> toEqual("cdefg")
   );
 
-  test("splitArray", () =>
-    expect(Str.splitArray(",", "a,b,c")) |> toEqual([|"a", "b", "c"|])
+  test("splitOnAsArray", () =>
+    expect(Str.splitOnAsArray(",", "a,b,c")) |> toEqual([|"a", "b", "c"|])
   );
 
-  test("splitList", () =>
-    expect(Str.splitList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
+  test("splitOnAsList", () =>
+    expect(Str.splitOnAsList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
+  );
+
+  test("splitAt -7", () =>
+    expect(Str.splitAt(-7, "abcdef")) |> toEqual(("", "abcdef"))
+  );
+
+  test("splitAt -6", () =>
+    expect(Str.splitAt(-6, "abcdef")) |> toEqual(("", "abcdef"))
+  );
+
+  test("splitAt -4", () =>
+    expect(Str.splitAt(-4, "abcdef")) |> toEqual(("ab", "cdef"))
+  );
+
+  test("splitAt -1", () =>
+    expect(Str.splitAt(-1, "abcdef")) |> toEqual(("abcde", "f"))
+  );
+
+  test("splitAt 0", () =>
+    expect(Str.splitAt(0, "abcdef")) |> toEqual(("", "abcdef"))
+  );
+
+  test("splitAt 2", () =>
+    expect(Str.splitAt(2, "abcdef")) |> toEqual(("ab", "cdef"))
+  );
+
+  test("splitAt 6", () =>
+    expect(Str.splitAt(6, "abcdef")) |> toEqual(("abcdef", ""))
+  );
+
+  test("splitAt 7", () =>
+    expect(Str.splitAt(7, "abcdef")) |> toEqual(("abcdef", ""))
   );
 
   test("mapChars", () =>
