@@ -94,10 +94,40 @@ let tap: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
   ```
 */
 let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
-  (f, v) =>
-    switch (v) {
+  (f, fa) =>
+    switch (fa) {
     | VOk(a) => VOk(a)
     | VError(e) => VError(f(e))
+    };
+
+/**
+  `mapErrorsAsNea()` applies a function to each error in a `NonEmpty.Array` of errors in the
+  error channel of the `Validation`.
+*/
+let mapErrorsNea:
+  'a 'e1 'e2.
+  ('e1 => 'e2, t('a, Relude_NonEmpty.Array.t('e1))) =>
+  t('a, Relude_NonEmpty.Array.t('e2))
+ =
+  (f, fa) =>
+    switch (fa) {
+    | VOk(_) as ok => ok
+    | VError(nea) => VError(nea |> Relude_NonEmpty.Array.map(f))
+    };
+
+/**
+  `mapErrorsAsNel()` applies a function to each error in a `NonEmpty.List` of errors in the error
+  channel of the `Validation`.
+*/
+let mapErrorsNel:
+  'a 'e1 'e2.
+  ('e1 => 'e2, t('a, Relude_NonEmpty.List.t('e1))) =>
+  t('a, Relude_NonEmpty.List.t('e2))
+ =
+  (f, fa) =>
+    switch (fa) {
+    | VOk(_) as ok => ok
+    | VError(nea) => VError(nea |> Relude_NonEmpty.List.map(f))
     };
 
 /**

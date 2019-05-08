@@ -400,13 +400,11 @@ describe("Array", () => {
   );
 
   test("replicate zero", () =>
-    expect(Array.replicate(0, [|"a", "b", "c"|]))
-    |> toEqual([| |])
+    expect(Array.replicate(0, [|"a", "b", "c"|])) |> toEqual([||])
   );
 
   test("replicate negative", () =>
-    expect(Array.replicate(-3, [|"a", "b", "c"|]))
-    |> toEqual([| |])
+    expect(Array.replicate(-3, [|"a", "b", "c"|])) |> toEqual([||])
   );
 
   test("zip same length array", () =>
@@ -583,54 +581,54 @@ describe("Array", () => {
     |> toEqual([|0, 1|] <|> ([|2, 3|] <|> [|4, 5|]));
   });
 
-  /*
-   test("void", () =>
-     expect(Array.void([1, 2, 3])) |> toEqual([(), (), ()])
-   );
+  test("void", () =>
+    expect(Array.void([|1, 2, 3|])) |> toEqual([|(), (), ()|])
+  );
 
-   test("flap", () =>
-     expect(Array.flap([a => a + 1, a => a + 2, a => a + 3], 5))
-     |> toEqual([6, 7, 8])
-   );
+  test("flap", () =>
+    expect(Array.flap([|a => a + 1, a => a + 2, a => a + 3|], 5))
+    |> toEqual([|6, 7, 8|])
+  );
 
-   test("map2", () =>
-     expect(Array.map2((a, b) => a + b, [1, 2], [3, 4]))
-     |> toEqual([4, 5, 5, 6])
-   );
+  test("map2", () =>
+    expect(Array.map2((a, b) => a + b, [|1, 2|], [|3, 4|]))
+    |> toEqual([|4, 5, 5, 6|])
+  );
 
-   test("map3", () =>
-     expect(Array.map3((a, b, c) => a + b + c, [1, 2], [3, 4], [10, 20]))
-     |> toEqual([14, 24, 15, 25, 15, 25, 16, 26])
-   );
+  test("map3", () =>
+    expect(
+      Array.map3((a, b, c) => a + b + c, [|1, 2|], [|3, 4|], [|10, 20|]),
+    )
+    |> toEqual([|14, 24, 15, 25, 15, 25, 16, 26|])
+  );
 
-   test("map4", () =>
-     expect(
-       Array.map4(
-         (a, b, c, d) => a + b + c + d,
-         [1, 2],
-         [3, 4],
-         [10, 20],
-         [100, 200],
-       ),
-     )
-     |> toEqual([
-          114,
-          214,
-          124,
-          224,
-          115,
-          215,
-          125,
-          225,
-          115,
-          215,
-          125,
-          225,
-          116,
-          216,
-          126,
-          226,
-        ])
-   );
-   */
+  test("map4", () =>
+    expect(
+      Array.map4(
+        (a, b, c, d) => a + b + c + d,
+        [|1, 2|],
+        [|3, 4|],
+        [|10, 20|],
+        [|100, 200|],
+      ),
+    )
+    |> toEqual([|
+         114,
+         214,
+         124,
+         224,
+         115,
+         215,
+         125,
+         225,
+         115,
+         215,
+         125,
+         225,
+         116,
+         216,
+         126,
+         226,
+       |])
+  );
 });

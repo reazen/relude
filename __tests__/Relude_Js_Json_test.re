@@ -19,17 +19,17 @@ module MyType = {
   let make = (a, b, c, d) => {a, b, c, d};
 };
 
+open Json.DSL;
+
 describe("Json", () => {
   test("isNull", () =>
     expect(Json.null |> Json.isNull) |> toEqual(true)
   );
 
   test("decode array using applicative validation (success)", () => {
-    open Json.DSL;
-
     let actual: Validation.t(array(string), NonEmptyArray.t(string)) =
-      arr([|str("hi"), str("bye")|])
-      |> Json.validateArrayOfJson((_, json) => validateString(json));
+      E.array([|E.string("hi"), E.string("bye")|])
+      |> Json.validateArrayOfJson((_, json) => D.string(json));
 
     let expected = Validation.ok([|"hi", "bye"|]);
 
@@ -37,20 +37,18 @@ describe("Json", () => {
   });
 
   test("decode array using applicative validation (error)", () => {
-    open Json.DSL;
-
     let actual: Validation.t(array(string), NonEmptyArray.t(string)) =
-      arr([|
-        null,
-        bool(true),
-        str("hi"),
-        int(42),
-        num(42.1),
-        arr([|null, null|]),
-        list([null, null]),
-        dict(Js.Dict.fromList([("a", null)])),
+      E.array([|
+        E.null,
+        E.bool(true),
+        E.string("hi"),
+        E.int(42),
+        E.float(42.1),
+        E.array([|E.null, E.null|]),
+        E.list([E.null, E.null]),
+        E.dict(Js.Dict.fromList([("a", E.null)])),
       |])
-      |> Json.validateArrayOfJson((_, json) => validateString(json));
+      |> Json.validateArrayOfJson((_, json) => D.string(json));
 
     let expected =
       Validation.error(
@@ -71,8 +69,6 @@ describe("Json", () => {
   });
 
   test("decode object using applicative validation (success)", () => {
-    open Json.DSL;
-
     let json: Js.Json.t =
       Json.fromListOfKeyValueTuples([
         ("a", Json.fromString("hi")),
@@ -83,14 +79,10 @@ describe("Json", () => {
 
     let actual: Validation.t(MyType.t, NonEmptyArray.t(string)) =
       MyType.make
-      <$> validateStringForKey("a", json)
-      <*> validateIntForKey("b", json)
-      <*> validateBoolForKey("c", json)
-      <*> validateArrayForKey(
-            "d",
-            (_index, json) => validateString(json),
-            json,
-          );
+      <$> D.stringFor("a", json)
+      <*> D.intFor("b", json)
+      <*> D.boolFor("c", json)
+      <*> D.arrayFor("d", (_index, json) => D.string(json), json);
 
     let expectedData: MyType.t = {
       a: "hi",
@@ -105,8 +97,6 @@ describe("Json", () => {
   });
 
   test("decode object using applicative validation (error)", () => {
-    open Json.DSL;
-
     let json: Js.Json.t =
       Json.fromListOfKeyValueTuples([
         ("a", Json.fromFloat(42.1)),
@@ -117,14 +107,10 @@ describe("Json", () => {
 
     let result: Validation.t(MyType.t, NonEmptyArray.t(string)) =
       MyType.make
-      <$> validateStringForKey("a", json)
-      <*> validateIntForKey("b", json)
-      <*> validateBoolForKey("c", json)
-      <*> validateArrayForKey(
-            "d",
-            (_index, json) => validateString(json),
-            json,
-          );
+      <$> D.stringFor("a", json)
+      <*> D.intFor("b", json)
+      <*> D.boolFor("c", json)
+      <*> D.arrayFor("d", (_index, json) => D.string(json), json);
 
     let expected =
       Validation.error(
@@ -138,29 +124,23 @@ describe("Json", () => {
   });
 
   test("decode an array into an object (success)", () => {
-    open Json.DSL;
-
     let json =
       Json.fromArrayOfJson([|
-        str("hi"),
-        int(42),
-        bool(true),
-        list([str("one"), str("two")]),
+        E.string("hi"),
+        E.int(42),
+        E.bool(true),
+        E.list([E.string("one"), E.string("two")]),
       |]);
 
     let actual =
       MyType.make
-      <$> validateStringAtIndex(0, json)
-      <*> (validateIntAtIndex(1, json) <#> (a => a * 2))  // map a value here - <#> is flipMap - we need to flip it b/c the Validation comes first here
-      <*> validateBoolAtIndex(2, json)
-      <*> validateArrayAtIndex(
-            3,
-            (_index, json) => validateString(json),
-            json,
-          );
+      <$> (D.stringAt(0, json) >>= (a => VOk(a ++ a)))  // bind (flatMap) a value here just for fun
+      <*> (D.intAt(1, json) <#> (a => a * 2))  // map a value here - <#> is flipMap - we need to flip it b/c the Validation comes first here
+      <*> D.boolAt(2, json)
+      <*> D.arrayAt(3, (_index, json) => D.string(json), json);
 
     let expectedData: MyType.t = {
-      a: "hi",
+      a: "hihi",
       b: 84, // see map operation above
       c: true,
       d: [|"one", "two"|],

@@ -18,6 +18,9 @@ Type alias for Js.Dict.t(Js.Json.t)
 */
 type dict = Js.Dict.t(json);
 
+/**
+Shows a JSON value with optional space indentation
+ */
 let show = (~indentSpaces: int=2, json: json): string =>
   Js.Json.stringifyWithSpace(json, indentSpaces);
 
@@ -237,35 +240,73 @@ let toDictOfJsonOrEmpty: json => dict = toDictOfJsonOrElse(Js.Dict.empty());
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// Typeclass setup for validation code
+////////////////////////////////////////////////////////////////////////////////
+
+module Error = {
+  type t = string;
+
+  module Type: BsAbstract.Interface.TYPE with type t = t = {
+    type nonrec t = t;
+  };
+};
+
+module Errors = {
+  // I'm standardizing on NonEmptyArray as the error collector type... this was an arbitrary decision between List and Array
+  type t = NonEmptyArray.t(Error.t);
+
+  let pure = NonEmptyArray.pure;
+  let make = NonEmptyArray.make;
+  let map = Validation.mapErrorsNea;
+
+  module SemigroupAny = NonEmptyArray.SemigroupAny;
+};
+
+module Apply = Validation.Apply(Errors.SemigroupAny, Error.Type);
+
+module Traversable =
+  Array.Validation.Traversable(Errors.SemigroupAny, Error.Type);
+
+module Infix = Validation.Infix(Errors.SemigroupAny, Error.Type);
+
+////////////////////////////////////////////////////////////////////////////////
 // Basic value validation
 ////////////////////////////////////////////////////////////////////////////////
 
-let validateNull: json => Result.t(unit, string) =
+let validateNull: json => Validation.t(unit, Errors.t) =
   json =>
     toNull(json)
-    |> Result.fromOptionLazy(_ => "JSON value is not a null: " ++ show(json));
-
-let validateBool: json => Result.t(bool, string) =
-  json =>
-    toBool(json)
-    |> Result.fromOptionLazy(_ => "JSON value is not a bool: " ++ show(json));
-
-let validateString: json => Result.t(string, string) =
-  json =>
-    toString(json)
-    |> Result.fromOptionLazy(_ =>
-         "JSON value is not a string: " ++ show(json)
+    |> Validation.fromOptionLazy(_ =>
+         Errors.pure("JSON value is not a null: " ++ show(json))
        );
 
-let validateInt: json => Result.t(int, string) =
+let validateBool: json => Validation.t(bool, Errors.t) =
+  json =>
+    toBool(json)
+    |> Validation.fromOptionLazy(_ =>
+         Errors.pure("JSON value is not a bool: " ++ show(json))
+       );
+
+let validateString: json => Validation.t(string, Errors.t) =
+  json =>
+    toString(json)
+    |> Validation.fromOptionLazy(_ =>
+         Errors.pure("JSON value is not a string: " ++ show(json))
+       );
+
+let validateInt: json => Validation.t(int, Errors.t) =
   json =>
     toInt(json)
-    |> Result.fromOptionLazy(_ => "JSON value is not an int: " ++ show(json));
+    |> Validation.fromOptionLazy(_ =>
+         Errors.pure("JSON value is not an int: " ++ show(json))
+       );
 
-let validateFloat: json => Result.t(float, string) =
+let validateFloat: json => Validation.t(float, Errors.t) =
   json =>
     toFloat(json)
-    |> Result.fromOptionLazy(_ => "JSON value is not a float: " ++ show(json));
+    |> Validation.fromOptionLazy(_ =>
+         Errors.pure("JSON value is not a float: " ++ show(json))
+       );
 
 ////////////////////////////////////////////////////////////////////////////////
 // Array validation (at index and whole array)
@@ -277,79 +318,79 @@ let getJsonAtIndex: (int, json) => option(json) =
   };
 
 let validateJsonAtIndex:
-  (int, json => Result.t('a, string), json) =>
-  Validation.t('a, NonEmptyArray.t(string)) =
-  (index, validate, json) => {
+  (int, json => Validation.t('a, Errors.t), json) =>
+  Validation.t('a, Errors.t) =
+  (index, validateItem, json) => {
     getJsonAtIndex(index, json)
     |> Option.foldLazy(
          _ =>
-           Result.error(
-             string_of_int(index) ++ " was not found in JSON: " ++ show(json),
+           Validation.error(
+             Errors.pure(
+               string_of_int(index)
+               ++ " was not found in JSON: "
+               ++ show(json),
+             ),
            ),
-         json => validate(json),
-       )
-    |> Result.toValidationNea;
+         json => validateItem(json),
+       );
   };
 
-let validateNullAtIndex:
-  (int, json) => Validation.t(unit, NonEmptyArray.t(string)) =
+let validateNullAtIndex: (int, json) => Validation.t(unit, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateNull(json)
-        |> Result.mapError(e => string_of_int(index) ++ ": " ++ e),
+        |> Validation.mapErrorsNea(error =>
+             string_of_int(index) ++ ": " ++ error
+           ),
       json,
     );
 
-let validateBoolAtIndex:
-  (int, json) => Validation.t(bool, NonEmptyArray.t(string)) =
+let validateBoolAtIndex: (int, json) => Validation.t(bool, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateBool(json)
-        |> Result.mapError(e => string_of_int(index) ++ ": " ++ e),
+        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
-let validateIntAtIndex:
-  (int, json) => Validation.t(int, NonEmptyArray.t(string)) =
+let validateIntAtIndex: (int, json) => Validation.t(int, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateInt(json)
-        |> Result.mapError(e => string_of_int(index) ++ ": " ++ e),
+        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
-let validateFloatAtIndex:
-  (int, json) => Validation.t(float, NonEmptyArray.t(string)) =
+let validateFloatAtIndex: (int, json) => Validation.t(float, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateFloat(json)
-        |> Result.mapError(e => string_of_int(index) ++ ": " ++ e),
+        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
-let validateStringAtIndex:
-  (int, json) => Validation.t(string, NonEmptyArray.t(string)) =
+let validateStringAtIndex: (int, json) => Validation.t(string, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateString(json)
-        |> Result.mapError(e => string_of_int(index) ++ ": " ++ e),
+        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
 let validateArrayOfJson:
   'a 'e.
-  ((int, json) => Result.t('a, string), json) =>
-  Validation.t(array('a), NonEmptyArray.t(string))
+  ((int, json) => Validation.t('a, Errors.t), json) =>
+  Validation.t(array('a), Errors.t)
  =
   (validateItem, json) => {
     json
@@ -357,54 +398,57 @@ let validateArrayOfJson:
     |> Option.foldLazy(
          () =>
            Validation.error(
-             NonEmptyArray.pure(
-               "JSON value is not an array: " ++ show(json),
-             ),
+             Errors.pure("JSON value is not an array: " ++ show(json)),
            ),
          jsonValues =>
            jsonValues
            |> Array.zipWithIndex
-           |> Array.Validation.traverse(((json, index)) =>
+           |> Traversable.traverse(((json, index)) =>
                 validateItem(index, json)
-                |> Result.mapError(e => string_of_int(index) ++ ": " ++ e)
+                |> Validation.mapErrorsNea(e =>
+                     string_of_int(index) ++ ": " ++ e
+                   )
               ),
        );
   };
 
 let validateArrayOfJsonAsList:
   'a 'e.
-  ((int, json) => Result.t('a, string), json) =>
-  Validation.t(list('a), NonEmptyList.t(string))
+  ((int, json) => Validation.t('a, Errors.t), json) =>
+  Validation.t(list('a), Errors.t)
  =
   (validateItem, json) => {
     json
-    |> toListOfJson
+    |> toArrayOfJson
     |> Option.foldLazy(
          () =>
            Validation.error(
-             NonEmptyList.pure("JSON value is not an array: " ++ show(json)),
+             Errors.pure("JSON value is not an array: " ++ show(json)),
            ),
-         jsonValues =>
-           jsonValues
-           |> List.zipWithIndex
-           |> List.Validation.traverse(((json, index)) =>
+         arrayOfJson =>
+           arrayOfJson
+           |> Array.zipWithIndex
+           |> Traversable.traverse(((json, index)) =>
                 validateItem(index, json)
-                |> Result.mapError(e => string_of_int(index) ++ ": " ++ e)
+                |> Validation.mapErrorsNea(e =>
+                     string_of_int(index) ++ ": " ++ e
+                   )
               ),
-       );
+       )
+    |> Validation.map(Array.toList);
   };
 
 let validateArrayAtIndex:
   'a.
-  (int, (int, json) => Result.t('a, string), json) =>
-  Validation.t(array('a), NonEmptyArray.t(string))
+  (int, (int, json) => Validation.t('a, Errors.t), json) =>
+  Validation.t(array('a), Errors.t)
  =
   (index, validateItem, json) =>
     getJsonAtIndex(index, json)
     |> Option.foldLazy(
          _ =>
            Validation.error(
-             NonEmptyArray.pure(
+             Errors.pure(
                string_of_int(index)
                ++ " was not found in JSON: "
                ++ show(json),
@@ -415,22 +459,9 @@ let validateArrayAtIndex:
 
 let validateObjectAtIndex:
   'a.
-  (int, json => Result.t('a, string), json) =>
-  Validation.t('a, NonEmptyArray.t(string))
- =
-  (index, validateItem, json) =>
-    getJsonAtIndex(index, json)
-    |> Option.foldLazy(
-         _ =>
-           Validation.error(
-             NonEmptyArray.pure(
-               string_of_int(index)
-               ++ " was not found in JSON: "
-               ++ show(json),
-             ),
-           ),
-         json => validateItem(json) |> Result.toValidationNea,
-       );
+  (int, json => Validation.t('a, Errors.t), json) =>
+  Validation.t('a, Errors.t)
+ = validateJsonAtIndex;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Object validation for key and whole object
@@ -442,102 +473,91 @@ let getJsonForKey: (string, json) => option(json) =
   };
 
 let validateJsonForKey:
-  (string, json => Result.t('a, string), json) =>
-  Validation.t('a, NonEmptyArray.t(string)) =
-  (key, validate, json) => {
+  (string, json => Validation.t('a, Errors.t), json) =>
+  Validation.t('a, Errors.t) =
+  (key, validateItem, json) => {
     getJsonForKey(key, json)
     |> Option.foldLazy(
-         _ => Result.error(key ++ " was not found in JSON: " ++ show(json)),
-         json => validate(json),
-       )
-    |> Result.toValidationNea;
+         _ =>
+           Validation.error(
+             Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
+           ),
+         json => validateItem(json),
+       );
   };
 
-let validateNullForKey:
-  (string, json) => Validation.t(unit, NonEmptyArray.t(string)) =
+let validateNullForKey: (string, json) => Validation.t(unit, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
-      json => validateNull(json) |> Result.mapError(e => key ++ ": " ++ e),
+      json =>
+        validateNull(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
-let validateBoolForKey:
-  (string, json) => Validation.t(bool, NonEmptyArray.t(string)) =
+let validateBoolForKey: (string, json) => Validation.t(bool, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
-      json => validateBool(json) |> Result.mapError(e => key ++ ": " ++ e),
+      json =>
+        validateBool(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
-let validateIntForKey:
-  (string, json) => Validation.t(int, NonEmptyArray.t(string)) =
+let validateIntForKey: (string, json) => Validation.t(int, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
-      json => validateInt(json) |> Result.mapError(e => key ++ ": " ++ e),
+      json =>
+        validateInt(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
-let validateFloatForKey:
-  (string, json) => Validation.t(float, NonEmptyArray.t(string)) =
+let validateFloatForKey: (string, json) => Validation.t(float, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
-      json => validateFloat(json) |> Result.mapError(e => key ++ ": " ++ e),
+      json =>
+        validateFloat(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
-let validateStringForKey:
-  (string, json) => Validation.t(string, NonEmptyArray.t(string)) =
+let validateStringForKey: (string, json) => Validation.t(string, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
-      json => validateString(json) |> Result.mapError(e => key ++ ": " ++ e),
+      json =>
+        validateString(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
 let validateArrayForKey:
   'a.
-  (string, (int, json) => Result.t('a, string), json) =>
-  Validation.t(array('a), NonEmptyArray.t(string))
+  (string, (int, json) => Validation.t('a, Errors.t), json) =>
+  Validation.t(array('a), Errors.t)
  =
   (key, validateItem, json) =>
     getJsonForKey(key, json)
     |> Option.foldLazy(
          _ =>
            Validation.error(
-             NonEmptyArray.pure(
-               key ++ " was not found in JSON: " ++ show(json),
-             ),
+             Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
            ),
          json => validateArrayOfJson(validateItem, json),
        );
 
 let validateObjectForKey:
   'a.
-  (string, json => Result.t('a, string), json) =>
-  Validation.t('a, NonEmptyArray.t(string))
- =
-  (key, validateItem, json) =>
-    getJsonForKey(key, json)
-    |> Option.foldLazy(
-         _ =>
-           Validation.error(
-             NonEmptyArray.pure(
-               key ++ " was not found in JSON: " ++ show(json),
-             ),
-           ),
-         json => validateItem(json) |> Result.toValidationNea,
-       );
+  (string, json => Validation.t('a, Errors.t), json) =>
+  Validation.t('a, Errors.t)
+ = validateJsonForKey;
 
 ////////////////////////////////////////////////////////////////////////////////
 // JSON DSL
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
-Exposes a set of focused operations for use as a global or local open.
+Exposes a set of focused/abbreviated operations for use as a global or local open.
 
 The map/apply operators are provided for applicative style validation
 for decoding objects.
@@ -546,79 +566,77 @@ module DSL = {
   // Note: decoding an object can be done using the map-ap-ap-ap-... approach
   // with the <$> (map) and <*> (apply) operators for validation.
 
-  // Use a string as our error type to keep it simple
-  module ErrorAsString: BsAbstract.Interface.TYPE with type t = string = {
-    type t = string;
+  // Bring some infix operators into scope
+  let (<$>) = Infix.Functor.(<$>); // map
+  let (<#>) = Infix.Functor.(<#>); // flipMap - useful for mapping values after decoding them
+  let (<*>) = Infix.Apply.(<*>); // apply
+  let (>>=) = Infix.Monad.(>>=); // bind
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Encoding utilities for constructing Js.Json.t values
+  ////////////////////////////////////////////////////////////////////////////////
+
+  module E = {
+    let null = null;
+    let bool = fromBool;
+    let int = fromInt;
+    let float = fromFloat;
+    let num = fromFloat;
+    let string = fromString;
+    let array = fromArrayOfJson;
+    let arrayBy = fromArrayOfJsonBy;
+    let arrayOfDict = fromArrayOfDictOfJson;
+    let arrayOfTuples = fromArrayOfKeyValueTuples;
+    let list = fromListOfJson;
+    let listBy = fromListOfJsonBy;
+    let listOfDict = fromListOfDictOfJson;
+    let listOfTuples = fromListOfKeyValueTuples;
+    let dict = fromDictOfJson;
   };
 
-  // Create Apply and Infix modules assuming a NonEmptyArray as our semigroup for collecting errors
-  module ValidationApply =
-    Validation.Apply(NonEmptyArray.SemigroupAny, ErrorAsString);
-
-  module ValidationInfix =
-    Validation.Infix(NonEmptyArray.SemigroupAny, ErrorAsString);
-
-  // Bring some infix operators into scope
-  let (<$>) = ValidationInfix.Functor.(<$>); // map
-  let (<#>) = ValidationInfix.Functor.(<#>); // flipMap
-  let (<*>) = ValidationInfix.Apply.(<*>); // apply
-
   ////////////////////////////////////////////////////////////////////////////////
-  // Construct Js.Json.t values for encoding
+  // Decoding (validation) utilities
   ////////////////////////////////////////////////////////////////////////////////
 
-  let null = null;
-  let bool = fromBool;
-  let int = fromInt;
-  let num = fromFloat;
-  let str = fromString;
-  let arr = fromArrayOfJson;
-  let arrBy = fromArrayOfJsonBy;
-  let arrOfDict = fromArrayOfDictOfJson;
-  let arrOfKVP = fromArrayOfKeyValueTuples;
-  let list = fromListOfJson;
-  let listBy = fromListOfJsonBy;
-  let listOfDict = fromListOfDictOfJson;
-  let listOfKVP = fromListOfKeyValueTuples;
-  let dict = fromDictOfJson;
+  module D = {
+    ////////////////////////////////////////////////////////////////////////////////
+    // Plain value validation (decoding)
+    ////////////////////////////////////////////////////////////////////////////////
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // Plain value validation
-  ////////////////////////////////////////////////////////////////////////////////
+    let null = validateNull;
+    let bool = validateBool;
+    let int = validateInt;
+    let float = validateFloat;
+    let string = validateString;
 
-  let validateNull = validateNull;
-  let validateBool = validateBool;
-  let validateInt = validateInt;
-  let validateFloat = validateFloat;
-  let validateString = validateString;
+    ////////////////////////////////////////////////////////////////////////////////
+    // Array validation - validating items by array index (or whole array)
+    ////////////////////////////////////////////////////////////////////////////////
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // Array validation
-  ////////////////////////////////////////////////////////////////////////////////
+    let getAt = getJsonAtIndex;
+    let jsonAt = validateJsonAtIndex;
+    let nullAt = validateNullAtIndex;
+    let boolAt = validateBoolAtIndex;
+    let stringAt = validateStringAtIndex;
+    let intAt = validateIntAtIndex;
+    let floatAt = validateFloatAtIndex;
+    let arrayAt = validateArrayAtIndex;
+    let objectAt = validateObjectAtIndex;
+    let array = validateArrayOfJson;
+    let list = validateArrayOfJsonAsList;
 
-  let getJsonAtIndex = getJsonAtIndex;
-  let validateJsonAtIndex = validateJsonAtIndex;
-  let validateNullAtIndex = validateNullAtIndex;
-  let validateBoolAtIndex = validateBoolAtIndex;
-  let validateStringAtIndex = validateStringAtIndex;
-  let validateIntAtIndex = validateIntAtIndex;
-  let validateFloatAtIndex = validateFloatAtIndex;
-  let validateArrayAtIndex = validateArrayAtIndex;
-  let validateObjectAtIndex = validateObjectAtIndex;
-  let validateArrayOfJson = validateArrayOfJson;
-  let validateArrayOfJsonAsList = validateArrayOfJsonAsList;
+    ////////////////////////////////////////////////////////////////////////////////
+    // Object validation - validating items by object key
+    ////////////////////////////////////////////////////////////////////////////////
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // Object validation
-  ////////////////////////////////////////////////////////////////////////////////
-
-  let getJsonForKey = getJsonForKey;
-  let validateJsonForKey = validateJsonForKey;
-  let validateNullForKey = validateNullForKey;
-  let validateBoolForKey = validateBoolForKey;
-  let validateStringForKey = validateStringForKey;
-  let validateIntForKey = validateIntForKey;
-  let validateFloatForKey = validateFloatForKey;
-  let validateArrayForKey = validateArrayForKey;
-  let validateObjectForKey = validateObjectForKey;
+    let getFor = getJsonForKey;
+    let jsonFor = validateJsonForKey;
+    let nullFor = validateNullForKey;
+    let boolFor = validateBoolForKey;
+    let stringFor = validateStringForKey;
+    let intFor = validateIntForKey;
+    let floatFor = validateFloatForKey;
+    let arrayFor = validateArrayForKey;
+    let objectFor = validateObjectForKey;
+  };
 };
