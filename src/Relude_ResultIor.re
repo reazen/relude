@@ -5,7 +5,6 @@ during applicative validation.
 E.g. if you are doing applicative validation to construct a User model, you could parse a phone number and
 allow it, but collect a warning that certain phone number formats are deprecated.
 */
-
 type t('a, 'e) =
   | IOk('a)
   | IError('e)
@@ -18,6 +17,24 @@ let ok: 'a => t('a, 'e) = pure;
 let error: 'e => t('a, 'e) = e => IError(e);
 
 let both: ('a, 'e) => t('a, 'e) = (a, e) => IBoth(a, e);
+
+let isOk: 'a 'e. t('a, 'e) => bool =
+  fun
+  | IOk(_) => true
+  | IError(_) => false
+  | IBoth(_, _) => false;
+
+let isError: 'a 'e. t('a, 'e) => bool =
+  fun
+  | IOk(_) => false
+  | IError(_) => true
+  | IBoth(_, _) => false;
+
+let isBoth: 'a 'e. t('a, 'e) => bool =
+  fun
+  | IOk(_) => false
+  | IError(_) => false
+  | IBoth(_, _) => true;
 
 let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, fa) =>
@@ -49,7 +66,8 @@ let bind: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     | IBoth(a, _) => f(a)
     };
 
-let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) = (f, fa) => bind(fa, f);
+let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
+  (f, fa) => bind(fa, f);
 
 let map2:
   (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
@@ -89,41 +107,79 @@ let map5:
     apply(map4(f, fa, fb, fc, fd, appendErrors), fe, appendErrors);
 
 module type FUNCTOR_F =
-  (E: BsAbstract.Interface.TYPE) =>
-   BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+   BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Errors.t(Error.t));
 
 module Functor: FUNCTOR_F =
-  (E: BsAbstract.Interface.TYPE) => {
-    type nonrec t('a) = t('a, E.t);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
+    type nonrec t('a) = t('a, Errors.t(Error.t));
     let map = map;
   };
 
 module type APPLY_F =
-  (E: BsAbstract.Interface.SEMIGROUP) =>
-   BsAbstract.Interface.APPLY with type t('a) = t('a, E.t);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+   BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t));
 
 module Apply: APPLY_F =
-  (E: BsAbstract.Interface.SEMIGROUP) => {
-    include Functor(E);
-    let apply = (ff, fa) => apply(ff, fa, E.append);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
+    include Functor(Errors, Error);
+    let apply = (ff, fa) => apply(ff, fa, Errors.append);
   };
 
 module type APPLICATIVE_F =
-  (E: BsAbstract.Interface.SEMIGROUP) =>
-   BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+
+    BsAbstract.Interface.APPLICATIVE with
+      type t('a) = t('a, Errors.t(Error.t));
 
 module Applicative: APPLICATIVE_F =
-  (E: BsAbstract.Interface.SEMIGROUP) => {
-    include Apply(E);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
+    include Apply(Errors, Error);
     let pure = pure;
   };
 
 module type MONAD_F =
-  (E: BsAbstract.Interface.SEMIGROUP) =>
-   BsAbstract.Interface.MONAD with type t('a) = t('a, E.t);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+   BsAbstract.Interface.MONAD with type t('a) = t('a, Errors.t(Error.t));
 
 module Monad: MONAD_F =
-  (E: BsAbstract.Interface.SEMIGROUP) => {
-    include Applicative(E);
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
+    include Applicative(Errors, Error);
     let flat_map = bind;
   };
+
+module Infix =
+       (
+         Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+         Error: BsAbstract.Interface.TYPE,
+       ) => {
+  module Functor = BsAbstract.Infix.Functor((Functor(Errors, Error)));
+
+  module Apply = BsAbstract.Infix.Apply((Apply(Errors, Error)));
+
+  module Monad = BsAbstract.Infix.Monad((Monad(Errors, Error)));
+};

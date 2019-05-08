@@ -8,7 +8,7 @@ type t('a, 'e) =
 
 /**
   `pure(val)` wraps its argument in a `VOk()`.
-  
+
   ### Example
   ```re
   pure(3) == VOk(3);
@@ -23,7 +23,7 @@ let ok: 'a 'e. 'a => t('a, 'e) = pure;
 
 /**
   `error(val)` wraps the value in a `VError()`.
-  
+
   ### Example
   ```re
   error("Not even") == VError("Not even");
@@ -49,7 +49,7 @@ let isError: 'a 'e. t('a, 'e) => bool = a => !isOk(a);
 /**
   `map(f, x)` returns `VOk(f(x))` if `x` is of the form `VOK(v)`.
   It returns `VError(e)` if `x` is of the form `VError(e)`.
-  
+
   ### Example
   ```re
   map((x) => {sqrt(float_of_int(x))}, VOk(4)) == VOk(2.0);
@@ -68,7 +68,7 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   is used only for its side effects. If `x` is of the
   form `VOk(v)`, `tap()` calls `f(v)`. The `tap()` function returns
   the argument `x`.
-  
+
   ### Example
   ```re
   tap((x) => {Js.log(x)}, VOk(4)) == VOk(4); // prints 4
@@ -86,7 +86,7 @@ let tap: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
 /**
   `mapError(f, x)` returns `VOk(v)` if `x` is of the form `VOK(v)`.
   It returns `VError(f(e))` if `x` is of the form `VError(e)`.
-  
+
   ### Example
   ```re
   mapError((x) => {"Error: " ++ x}, VOk(4)) == VOk(4);
@@ -105,7 +105,7 @@ let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
   is used only for its side effects. If `x` is of the
   form `VError(v)`, `tap()` calls `f(v)`. The `tap()` function returns
   the argument `x`.
-  
+
   ### Example
   ```re
   tapError((x) => {Js.log(x)}, VOk(4)) == VOk(4); // prints nothing
@@ -123,7 +123,7 @@ let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
 /**
   `bimap(f, g, x)` returns `VOk(f(v))` if `x` is of the form `VOk(v)`;
   it returns `VError(g(e))` if `x` is of the form `VError(e)`.
-  
+
   ### Example
   ```re
   let cube = (x) => {x * x * x};
@@ -145,7 +145,7 @@ let bimap: 'a 'b 'e1 'e2. ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2) =
   is of the form `VOk(v)`, `bitap()` calls `f(v)`; if `x is
   of the form `VError(e), `bitap()` calls `g(e)`. In either case,
   `bitap()` returns `x`.
-  
+
   ### Example
   ```re
   let printCube = (x) => {Js.log(x * x * x)};
@@ -171,17 +171,17 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
 /**
   `apply(valFcn, x, appErrFcn)` provides a way of creating a
   chain of validation functions, accumulating errors along the way.
-  
+
   If `valFcn` is of the form `VOk(f)`, function `f` is applied to
   `x`. If `x` is `VOk(v)`, the result is `VOk(f(v))`. If `x` is
   `VError(err)`, the error is passed onwards.
-  
+
   If `valFcn` is itself of the form `VError(err)` and `x` is
   `VOk(v)`, `VError(err)` is passed on.
-  
+
   Finally, if both `valFcn` and `x` are `VError(e1)` and `VError(e2)`,
   the result is `VError(appendErrFcn(e1, e2))`.
-  
+
   Using `apply()` properly is somewhat complex. See the example
   in the `__tests__/Relude_Validation_test.re` file for more details.
 
@@ -201,7 +201,11 @@ let apply:
 /**
   `flatMapV(x, f)` returns `f(v)` when `x` is of the form `VOk(v)`,
   and returns `x` unchanged when it is of the form `VError(v)`.
-  
+
+  Note: `Validation` is not a traditional monad in that it's purpose is to collect errors
+  during applicative validation.  Using `flatMap` will cause all previous errors to be
+  discarded.
+
   ### Example
   ```re
   let mustBeEven = (x) => {
@@ -211,19 +215,19 @@ let apply:
   flatMapV(VOk(3), mustBeEven) == VError("not even");
   flatMapV(VError("not an int"), mustBeEven) == VError("not an int");
   ```
- * This function performs a flatMap-like operation, but if the `f` fails, all previous errors are discarded.
- *
- * The function is named flatMapV rather than flatMap to raise awareness of this difference in behavior from
- * what the caller might expect.
- *
- * Also, we do not expose a Monad module for this type for the same reason.
  */
-let flatMapV: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
-  (v, f) =>
-    switch (v) {
+let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
+  (f, fa) =>
+    switch (fa) {
     | VOk(a) => f(a)
     | VError(e) => VError(e)
     };
+
+/**
+  `bind` is the same as `flatMap` with the arguments flipped.
+ */
+let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+  (fa, f) => flatMap(f, fa);
 
 /**
   `fromResult` converts a variable of type `Belt.Result.t` to
@@ -253,7 +257,7 @@ let toResult: t('a, 'b) => Belt.Result.t('a, 'b) =
   `fold(errFcn, okFcn, x)` returns `okFcn(v)` when
   `x` is of the form `VOk(v)`; it returns `errFcn(e)` when
   `x` is of the form `VError(e)`.
-  
+
   ### Example
   ```re
   let errToInt = (_) => {-1};
@@ -271,7 +275,7 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
 
 /**
   `flip()` Flips the values between the success and error channels.
-  
+
   ### Example
   ```re
   flip(VOk(12)) == VError(12);
@@ -280,6 +284,43 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
 */
 let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   fa => fa |> fold(e => VOk(e), a => VError(a));
+
+let map2:
+  (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
+  (f, fa, fb, appendErrors) => apply(map(f, fa), fb, appendErrors);
+
+let map3:
+  (('a, 'b, 'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x), ('x, 'x) => 'x) =>
+  t('d, 'x) =
+  (f, fa, fb, fc, appendErrors) =>
+    apply(map2(f, fa, fb, appendErrors), fc, appendErrors);
+
+let map4:
+  (
+    ('a, 'b, 'c, 'd) => 'e,
+    t('a, 'x),
+    t('b, 'x),
+    t('c, 'x),
+    t('d, 'x),
+    ('x, 'x) => 'x
+  ) =>
+  t('e, 'x) =
+  (f, fa, fb, fc, fd, appendErrors) =>
+    apply(map3(f, fa, fb, fc, appendErrors), fd, appendErrors);
+
+let map5:
+  (
+    ('a, 'b, 'c, 'd, 'e) => 'f,
+    t('a, 'x),
+    t('b, 'x),
+    t('c, 'x),
+    t('d, 'x),
+    t('e, 'x),
+    ('x, 'x) => 'x
+  ) =>
+  t('f, 'x) =
+  (f, fa, fb, fc, fd, fe, appendErrors) =>
+    apply(map4(f, fa, fb, fc, fd, appendErrors), fe, appendErrors);
 
 module type FUNCTOR_F =
   (
@@ -331,6 +372,22 @@ module Applicative: APPLICATIVE_F =
     let pure = pure;
   };
 
+module type MONAD_F =
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) =>
+   BsAbstract.Interface.MONAD with type t('a) = t('a, Errors.t(Error.t));
+
+module Monad: MONAD_F =
+  (
+    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
+    Error: BsAbstract.Interface.TYPE,
+  ) => {
+    include Applicative(Errors, Error);
+    let flat_map = bind;
+  };
+
 module Infix =
        (
          Errors: BsAbstract.Interface.SEMIGROUP_ANY,
@@ -339,4 +396,6 @@ module Infix =
   module Functor = BsAbstract.Infix.Functor((Functor(Errors, Error)));
 
   module Apply = BsAbstract.Infix.Apply((Apply(Errors, Error)));
+
+  module Monad = BsAbstract.Infix.Monad((Monad(Errors, Error)));
 };
