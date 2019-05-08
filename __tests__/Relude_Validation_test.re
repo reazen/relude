@@ -22,13 +22,16 @@ type errors = NonEmptyList.t(Error.t);
 
 // Get the Infix operators for our Validation, using a NonEmptyList as our Semigroup for
 // collecting errors, and the Error.t type as our error type
-module Infix = Validation.Infix(NonEmptyList.SemigroupAny, Error.Type);
+module ValidationApply =
+  Validation.Apply(NonEmptyList.SemigroupAny, Error.Type);
+module ValidationInfix =
+  Validation.Infix(NonEmptyList.SemigroupAny, Error.Type);
 
 // map operator
-let (<$>) = Infix.Functor.(<$>);
+let (<$>) = ValidationInfix.Functor.(<$>);
 
 // apply operator
-let (<*>) = Infix.Apply.(<*>);
+let (<*>) = ValidationInfix.Apply.(<*>);
 
 module Person = {
   type t = {
@@ -90,6 +93,15 @@ module Person = {
       <*> validateLanguage(language); // apply
                                      // You can keep going with <*> if there are more values to validate to construct our `Person`
     };
+
+  let makeWithValidation2: (string, int, string) => Validation.t(t, errors) =
+    (name, age, language) => {
+      // This is an example that doesn't use the map <$> and apply <*> operators.
+      // This looks and is clunky, and that's the main reason the operator version is preferred!
+      ValidationApply.map(makeWithNoValidation, validateName(name))
+      ->ValidationApply.apply(validateAge(age))
+      ->ValidationApply.apply(validateLanguage(language));
+    };
 };
 
 describe("Validation", () => {
@@ -121,6 +133,38 @@ describe("Validation", () => {
 
   test("makeWithValidation all errors", () => {
     let validation = Person.makeWithValidation("", 200, "French");
+    let expected: errors =
+      NonEmptyList.make(
+        Error.InvalidName(""),
+        [Error.InvalidAge(200), Error.InvalidLanguage("French")],
+      );
+    expect(validation) |> toEqual(Validation.VError(expected));
+  });
+
+  test("makeWithValidation2 success", () => {
+    let validation = Person.makeWithValidation2("Andy", 55, "English");
+    let expected: Person.t = {name: "Andy", age: 55, language: "English"};
+    expect(validation) |> toEqual(Validation.VOk(expected));
+  });
+
+  test("makeWithValidation2 one error", () => {
+    let validation = Person.makeWithValidation2("Andy", 200, "English");
+    let expected: errors = NonEmptyList.pure(Error.InvalidAge(200));
+    expect(validation) |> toEqual(Validation.VError(expected));
+  });
+
+  test("makeWithValidation2 two errors", () => {
+    let validation = Person.makeWithValidation2("Andy", 200, "French");
+    let expected: errors =
+      NonEmptyList.make(
+        Error.InvalidAge(200),
+        [Error.InvalidLanguage("French")],
+      );
+    expect(validation) |> toEqual(Validation.VError(expected));
+  });
+
+  test("makeWithValidation2 all errors", () => {
+    let validation = Person.makeWithValidation2("", 200, "French");
     let expected: errors =
       NonEmptyList.make(
         Error.InvalidName(""),
