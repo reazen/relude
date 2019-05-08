@@ -79,8 +79,8 @@ describe("Json", () => {
 
     let actual: Validation.t(MyType.t, NonEmptyArray.t(string)) =
       MyType.make
-      <$> (JD.stringFor("a", json) >>= (a => VOk(a ++ a))) // flatMap a value
-      <*> (JD.intFor("b", json) <#> (a => a * 2)) // map a value
+      <$> (JD.stringFor("a", json) >>= (a => VOk(a ++ a)))  // flatMap a value
+      <*> (JD.intFor("b", json) <#> (a => a * 2))  // map a value
       <*> JD.boolFor("c", json)
       <*> JD.arrayFor("d", (_index, json) => JD.string(json), json);
 
