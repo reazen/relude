@@ -253,6 +253,20 @@ let toResult: t('a, 'b) => Belt.Result.t('a, 'b) =
     | VError(a) => Error(a)
     };
 
+let fromOption: 'a 'e. ('e, option('a)) => t('a, 'e) =
+  (defaultError, opt) =>
+    switch (opt) {
+    | Some(a) => ok(a)
+    | None => error(defaultError)
+    };
+
+let fromOptionLazy: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
+  (getDefaultError, opt) =>
+    switch (opt) {
+    | Some(a) => ok(a)
+    | None => error(getDefaultError())
+    };
+
 /**
   `fold(errFcn, okFcn, x)` returns `okFcn(v)` when
   `x` is of the form `VOk(v)`; it returns `errFcn(e)` when

@@ -123,7 +123,14 @@ let recover: 'a 'e. ('a, t('a, 'e)) => t('a, 'e) =
 let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
   (a, fa) => fold(_ => a, v => v, fa);
 
-let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
+let fromOption: 'a 'e. ('e, option('a)) => t('a, 'e) =
+  (defaultError, opt) =>
+    switch (opt) {
+    | Some(a) => Ok(a)
+    | None => Error(defaultError)
+    };
+
+let fromOptionLazy: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
   (getError, opt) =>
     switch (opt) {
     | Some(a) => Ok(a)
