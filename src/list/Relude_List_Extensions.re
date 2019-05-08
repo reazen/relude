@@ -17,27 +17,27 @@ open BsAbstract.Interface;
  * Helper modules for generating collections of functions depending on
  * properties of the inner type.
  */
-module OfEq = (E: EQ) => {
-  include Relude_List_Types.FoldableOfEq(E);
+module ListEqExtensions = (E: EQ) => {
+  include Relude_List_Instances.FoldableEqExtensions(E);
   let distinct = Relude_List_Base.distinctBy(E.eq);
   let removeFirst = Relude_List_Base.removeFirstBy(E.eq);
   let removeEach = Relude_List_Base.removeEachBy(E.eq);
-  let eq = Relude_List_Types.eqBy(E.eq);
+  let eq = Relude_List_Instances.eqBy(E.eq);
 };
 
-module OfOrd = (O: ORD) => {
-  include OfEq(O);
-  include Relude_List_Types.FoldableOfOrd(O);
+module ListOrdExtensions = (O: ORD) => {
+  include ListEqExtensions(O);
+  include Relude_List_Instances.FoldableOrdExtensions(O);
   let sort = Relude_List_Base.sortBy(O.compare);
 };
 
-module OfMonoid = (M: MONOID) => {
-  include Relude_List_Types.FoldableOfMonoid(M);
+module ListMonoidExtensions = (M: MONOID) => {
+  include Relude_List_Instances.FoldableMonoidExtensions(M);
 };
 
 module String = {
-  include OfOrd(Relude_String.Ord);
-  include OfMonoid(Relude_String.Monoid);
+  include ListOrdExtensions(Relude_String.Ord);
+  include ListMonoidExtensions(Relude_String.Monoid);
 
   let join = fold;
   let joinWith = intercalate;
@@ -50,7 +50,7 @@ module String = {
    */
   let distinct: list(string) => list(string) =
     xs =>
-      Relude_List_Types.foldLeft(
+      Relude_List_Instances.foldLeft(
         (acc, curr) => {
           Js.Dict.set(acc, curr, 0);
           acc;
@@ -59,27 +59,27 @@ module String = {
         xs,
       )
       |> Js.Dict.keys
-      |> Relude_List_Types.fromArray;
+      |> Relude_List_Instances.fromArray;
 };
 
 module Int = {
-  include OfOrd(Relude_Int.Ord);
+  include ListOrdExtensions(Relude_Int.Ord);
 
   let sum: list(int) => int =
-    Relude_List_Types.fold((module Relude_Int.Additive.Monoid));
+    Relude_List_Instances.fold((module Relude_Int.Additive.Monoid));
 
   let product: list(int) => int =
-    Relude_List_Types.fold((module Relude_Int.Multiplicative.Monoid));
+    Relude_List_Instances.fold((module Relude_Int.Multiplicative.Monoid));
 };
 
 module Float = {
-  include OfOrd(Relude_Float.Ord);
+  include ListOrdExtensions(Relude_Float.Ord);
 
   let sum: list(float) => float =
-    Relude_List_Types.fold((module Relude_Float.Additive.Monoid));
+    Relude_List_Instances.fold((module Relude_Float.Additive.Monoid));
 
   let product: list(float) => float =
-    Relude_List_Types.fold((module Relude_Float.Multiplicative.Monoid));
+    Relude_List_Instances.fold((module Relude_Float.Multiplicative.Monoid));
 };
 
 module Option = {
@@ -101,7 +101,7 @@ module Result = {
       Relude_Result.Applicative({
         type t = e;
       });
-    module TraverseResult = Relude_List_Types.Traversable(ResultFixedError);
+    module TraverseResult = Relude_List_Instances.Traversable(ResultFixedError);
     TraverseResult.traverse(f, list);
   };
 
@@ -110,7 +110,7 @@ module Result = {
       Relude_Result.Applicative({
         type t = e;
       });
-    module TraverseResult = Relude_List_Types.Traversable(ResultFixedError);
+    module TraverseResult = Relude_List_Instances.Traversable(ResultFixedError);
     TraverseResult.sequence(xs);
   };
 };
@@ -126,7 +126,7 @@ module Validation = {
     );
 
   module TraversableWithErrorsAsList = (Error: BsAbstract.Interface.TYPE) =>
-    Traversable(Relude_List_Types.SemigroupAny, Error);
+    Traversable(Relude_List_Instances.SemigroupAny, Error);
 
   module TraversableWithErrorsAsListOfStrings =
     TraversableWithErrorsAsList({

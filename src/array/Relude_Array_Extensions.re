@@ -1,26 +1,26 @@
 open BsAbstract.Interface;
 
-module OfEq = (E: EQ) => {
-  include Relude_Array_Types.FoldableOfEq(E);
+module ArrayEqExtensions = (E: EQ) => {
+  include Relude_Array_Instances.FoldableEqExtensions(E);
   let distinct = Relude_Array_Base.distinctBy(E.eq);
   let removeFirst = Relude_Array_Base.removeFirstBy(E.eq);
   let removeEach = Relude_Array_Base.removeEachBy(E.eq);
-  let eq = Relude_Array_Types.eqBy(E.eq);
+  let eq = Relude_Array_Instances.eqBy(E.eq);
 };
 
-module OfOrd = (O: ORD) => {
-  include OfEq(O);
-  include Relude_Array_Types.FoldableOfOrd(O);
+module ArrayOrdExtensions = (O: ORD) => {
+  include ArrayEqExtensions(O);
+  include Relude_Array_Instances.FoldableOrdExtensions(O);
   let sort = Relude_Array_Base.sortBy(O.compare);
 };
 
-module OfMonoid = (M: MONOID) => {
-  include Relude_Array_Types.FoldableOfMonoid(M);
+module ArrayMonoidExtensions = (M: MONOID) => {
+  include Relude_Array_Instances.FoldableMonoidExtensions(M);
 };
 
 module String = {
-  include OfOrd(Relude_String.Ord);
-  include OfMonoid(Relude_String.Monoid);
+  include ArrayOrdExtensions(Relude_String.Ord);
+  include ArrayMonoidExtensions(Relude_String.Monoid);
   let join = fold;
   let joinWith = intercalate;
 
@@ -29,7 +29,7 @@ module String = {
    * time by using `Js.Dict`.
    */
   let distinct = xs =>
-    Relude_Array_Types.foldLeft(
+    Relude_Array_Instances.foldLeft(
       (acc, curr) => {
         Js.Dict.set(acc, curr, 0);
         acc;
@@ -41,21 +41,21 @@ module String = {
 };
 
 module Int = {
-  include OfOrd(Relude_Int.Ord);
-  let sum = Relude_Array_Types.fold((module Relude_Int.Additive.Monoid));
+  include ArrayOrdExtensions(Relude_Int.Ord);
+  let sum = Relude_Array_Instances.fold((module Relude_Int.Additive.Monoid));
   let product =
-    Relude_Array_Types.fold((module Relude_Int.Multiplicative.Monoid));
+    Relude_Array_Instances.fold((module Relude_Int.Multiplicative.Monoid));
 };
 
 module Float = {
-  include OfOrd(Relude_Float.Ord);
-  let sum = Relude_Array_Types.fold((module Relude_Float.Additive.Monoid));
+  include ArrayOrdExtensions(Relude_Float.Ord);
+  let sum = Relude_Array_Instances.fold((module Relude_Float.Additive.Monoid));
   let product =
-    Relude_Array_Types.fold((module Relude_Float.Multiplicative.Monoid));
+    Relude_Array_Instances.fold((module Relude_Float.Multiplicative.Monoid));
 };
 
 module Option = {
-  include Relude_Array_Types.Traversable(Relude_Option.Applicative);
+  include Relude_Array_Instances.Traversable(Relude_Option.Applicative);
 };
 
 module Result = {
@@ -64,7 +64,7 @@ module Result = {
       Relude_Result.Applicative({
         type t = e;
       });
-    module TraverseResult = Relude_Array_Types.Traversable(ResultFixedError);
+    module TraverseResult = Relude_Array_Instances.Traversable(ResultFixedError);
     TraverseResult.traverse(f, xs);
   };
 
@@ -73,7 +73,7 @@ module Result = {
       Relude_Result.Applicative({
         type t = e;
       });
-    module TraverseResult = Relude_Array_Types.Traversable(ResultFixedError);
+    module TraverseResult = Relude_Array_Instances.Traversable(ResultFixedError);
     TraverseResult.sequence(xs);
   };
 };
@@ -89,7 +89,7 @@ module Validation = {
     );
 
   module TraversableWithErrorsAsArray = (Error: BsAbstract.Interface.TYPE) =>
-    Traversable(Relude_Array_Types.SemigroupAny, Error);
+    Traversable(Relude_Array_Instances.SemigroupAny, Error);
 
   module TraversableWithErrorsAsArrayOfStrings =
     TraversableWithErrorsAsArray({

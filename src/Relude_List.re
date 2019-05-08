@@ -8,11 +8,11 @@
  * - Functions and typeclasses that _do_ care about inner 'a
  ******************************************************************************/
 
-include Relude_List_Types;
+include Relude_List_Instances;
 include Relude_List_Base;
-include Relude_List_Submodules;
+include Relude_List_Extensions;
 
 module Infix = {
   include BsAbstract.List.Infix;
-  include MonadFunctions.ApplyFunctions.Infix;
+  include MonadExtensions.ApplyFunctions.Infix;
 };

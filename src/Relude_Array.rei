@@ -1997,7 +1997,7 @@ module Validation: {
         (P: BsAbstract.Interface.PLUS) =>
          {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
       type applicative_t('a) =
-        Relude_Validation.Applicative(Relude_Array_Types.SemigroupAny)(Error).t(
+        Relude_Validation.Applicative(Relude_Array_Instances.SemigroupAny)(Error).t(
           'a,
         );
       let traverse:
@@ -2020,7 +2020,7 @@ module Validation: {
       (P: BsAbstract.Interface.PLUS) =>
        {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
     type applicative_t('a) =
-      Relude_Validation.t('a, Relude_Array_Types.SemigroupAny.t(string));
+      Relude_Validation.t('a, Relude_Array_Instances.SemigroupAny.t(string));
     let traverse: ('a => applicative_t('b), t('a)) => applicative_t(t('b));
     let sequence: t(applicative_t('a)) => applicative_t(t('a));
   };

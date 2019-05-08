@@ -1,5 +1,8 @@
 open BsAbstract.Interface;
 
+/**
+Typeclass instances and related functions for Array
+ */
 module Foldable: FOLDABLE with type t('a) = array('a) = BsAbstract.Array.Foldable;
 
 module SemigroupAny:
@@ -14,15 +17,25 @@ module MonoidAny: MONOID_ANY with type t('a) = array('a) = {
 };
 
 module Functor: FUNCTOR with type t('a) = array('a) = BsAbstract.Array.Functor;
+
 module Apply: APPLY with type t('a) = array('a) = BsAbstract.Array.Apply;
+
 module Applicative: APPLICATIVE with type t('a) = array('a) = BsAbstract.Array.Applicative;
+
 module Monad: MONAD with type t('a) = array('a) = BsAbstract.Array.Monad;
+
 module Alt: ALT with type t('a) = array('a) = BsAbstract.Array.Alt;
+
 module Plus: PLUS with type t('a) = array('a) = BsAbstract.Array.Plus;
+
 module Alternative: ALTERNATIVE with type t('a) = array('a) = BsAbstract.Array.Alternative;
+
 module Invariant: INVARIANT with type t('a) = array('a) = BsAbstract.Array.Invariant;
+
 module MonadZero: MONAD_ZERO with type t('a) = array('a) = BsAbstract.Array.Monad_Zero;
+
 module MonadPlus: MONAD_PLUS with type t('a) = array('a) = BsAbstract.Array.Monad_Plus;
+
 module Extend: EXTEND with type t('a) = array('a) = BsAbstract.Array.Extend;
 
 module IsoList: Relude_IsoList.ISO_LIST with type t('a) = array('a) = {
@@ -39,23 +52,25 @@ let concat = SemigroupAny.append;
 let empty = MonoidAny.empty;
 
 // TODO: include instead of rename function
-module MonadFunctions = Relude_Monads.Functions(Monad);
+module MonadExtensions = Relude_Extensions_Monad.MonadExtensions(Monad);
 
-let map = MonadFunctions.map;
-let void = MonadFunctions.void;
-let apply = MonadFunctions.apply;
-let flap = MonadFunctions.flap;
-let map2 = MonadFunctions.lift2;
-let map3 = MonadFunctions.lift3;
-let map4 = MonadFunctions.lift4;
-let map5 = MonadFunctions.lift5;
+let map = MonadExtensions.map;
+let void = MonadExtensions.void;
+let apply = MonadExtensions.apply;
+let flap = MonadExtensions.flap;
+let map2 = MonadExtensions.lift2;
+let map3 = MonadExtensions.lift3;
+let map4 = MonadExtensions.lift4;
+let map5 = MonadExtensions.lift5;
 
-let pure = MonadFunctions.pure;
-let bind = MonadFunctions.bind;
-let flatMap = MonadFunctions.flatMap;
-let flatten = MonadFunctions.flatten;
+let pure = MonadExtensions.pure;
+let bind = MonadExtensions.bind;
+let flatMap = MonadExtensions.flatMap;
+let flatten = MonadExtensions.flatten;
 
-include Relude_Foldables.Functions(Foldable);
+module FoldableExtensions =
+  Relude_Extensions_Foldable.FoldableExtensions(Foldable);
+include FoldableExtensions;
 
 let fromList = IsoList.fromList;
 let toList = IsoList.toList;
@@ -97,7 +112,7 @@ module Show = (ShowA: SHOW) => {
   let show = showBy(ShowA.show);
 };
 
-let show = (type a, showA: (module SHOW with type t =a), xs) => {
+let show = (type a, showA: (module SHOW with type t = a), xs) => {
   module ShowA = (val showA);
   showBy(ShowA.show, xs);
 };

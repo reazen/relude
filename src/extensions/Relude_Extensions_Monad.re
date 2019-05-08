@@ -3,7 +3,7 @@
  * that you get for free if your outer type is a monad. This includes all free
  * functions from functor/apply/applicative as well.
  */
-module Functions = (M: BsAbstract.Interface.MONAD) => {
+module MonadExtensions = (M: BsAbstract.Interface.MONAD) => {
   module FunctorFunctions = BsAbstract.Functions.Functor(M);
   module ApplyFunctions = BsAbstract.Functions.Apply(M);
 
