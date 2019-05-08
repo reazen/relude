@@ -181,6 +181,9 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
   
   Finally, if both `valFcn` and `x` are `VError(e1)` and `VError(e2)`,
   the result is `VError(appendErrFcn(e1, e2))`.
+  
+  Using `apply()` properly is somewhat complex. See the example
+  in the `__tests__/Relude_Validation_test.re` file for more details.
 
 */
 let apply:
