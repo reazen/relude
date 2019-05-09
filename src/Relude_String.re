@@ -700,6 +700,7 @@ let fromFloat: float => string = Js.Float.toString;
   toFloat("four") == None;
   toFloat("") == None;
   ```
+*/
 let toFloat: string => option(float) =
   v =>
     try (Some(float_of_string(v))) {
