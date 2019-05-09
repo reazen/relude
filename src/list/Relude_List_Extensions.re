@@ -1,5 +1,3 @@
-open BsAbstract.Interface;
-
 /********************************************************************************
  This is intended to hold modules that are based on list-related module functors.
 
@@ -17,7 +15,7 @@ open BsAbstract.Interface;
  * Helper modules for generating collections of functions depending on
  * properties of the inner type.
  */
-module ListEqExtensions = (E: EQ) => {
+module ListEqExtensions = (E: BsAbstract.Interface.EQ) => {
   include Relude_List_Instances.FoldableEqExtensions(E);
   let distinct = Relude_List_Base.distinctBy(E.eq);
   let removeFirst = Relude_List_Base.removeFirstBy(E.eq);
@@ -25,13 +23,13 @@ module ListEqExtensions = (E: EQ) => {
   let eq = Relude_List_Instances.eqBy(E.eq);
 };
 
-module ListOrdExtensions = (O: ORD) => {
+module ListOrdExtensions = (O: BsAbstract.Interface.ORD) => {
   include ListEqExtensions(O);
   include Relude_List_Instances.FoldableOrdExtensions(O);
   let sort = Relude_List_Base.sortBy(O.compare);
 };
 
-module ListMonoidExtensions = (M: MONOID) => {
+module ListMonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
   include Relude_List_Instances.FoldableMonoidExtensions(M);
 };
 

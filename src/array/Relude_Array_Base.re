@@ -1,5 +1,3 @@
-open BsAbstract.Interface;
-
 /**
  * Relude.Array.Base includes array-specific functions that aren't derived from
  * typeclass membership.
@@ -37,12 +35,12 @@ let shuffleInPlace: array('a) => array('a) =
 
 let shuffle: array('a) => array('a) = Belt.Array.shuffle;
 
-/* Replace O(n) definition from Foldables with O(1) version */
 let length: array('a) => int = Belt.Array.length;
+
 let isEmpty: array('a) => bool = arr => length(arr) == 0;
+
 let isNotEmpty: array('a) => bool = arr => length(arr) > 0;
 
-// TODO: this could come from foldables (but would be less efficient)
 let at: (int, array('a)) => option('a) = (i, xs) => Belt.Array.get(xs, i);
 
 let setAt: (int, 'a, array('a)) => option(array('a)) =
@@ -198,11 +196,11 @@ let unzip: array(('a, 'b)) => (array('a), array('b)) = Belt.Array.unzip;
 let sortWithInt: (('a, 'a) => int, array('a)) => array('a) =
   (f, xs) => Belt.SortArray.stableSortBy(xs, f);
 
-let sortBy: (('a, 'a) => ordering, array('a)) => array('a) =
+let sortBy: (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => array('a) =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
 let sort =
-    (type a, ordA: (module ORD with type t = a), xs: array(a)): array(a) => {
+    (type a, ordA: (module BsAbstract.Interface.ORD with type t = a), xs: array(a)): array(a) => {
   module OrdA = (val ordA);
   sortBy(OrdA.compare, xs);
 };
@@ -238,17 +236,17 @@ let removeEachBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
       xs,
     );
 
-let distinct = (type a, eqA: (module EQ with type t = a), xs) => {
+let distinct = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), xs) => {
   module EqA = (val eqA);
   distinctBy(EqA.eq, xs);
 };
 
-let removeFirst = (type a, eqA: (module EQ with type t = a), x, xs) => {
+let removeFirst = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeFirstBy(EqA.eq, x, xs);
 };
 
-let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {
+let removeEach = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeEachBy(EqA.eq, x, xs);
 };

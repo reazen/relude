@@ -1,15 +1,13 @@
-open BsAbstract.Interface;
-
 /**
  * Relude.List.Base includes list-specific functions that aren't derived from
  * typeclass membership.
  */
 
-// TODO: PureScript has a `FunctorWithIndex` typeclass
 let mapWithIndex: 'a 'b. (('a, int) => 'b, list('a)) => list('b) =
   (f, xs) => Belt.List.mapWithIndex(xs, (i, x) => f(x, i));
 
 let cons: 'a. ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
+
 let prepend: 'a. ('a, list('a)) => list('a) = cons;
 
 let uncons: 'a. list('a) => option(('a, list('a))) =
@@ -21,9 +19,11 @@ let append: 'a. ('a, list('a)) => list('a) =
   (x, xs) => Relude_List_Instances.SemigroupAny.append(xs, [x]);
 
 let repeat: 'a. (int, 'a) => list('a) = (i, x) => Belt.List.make(i, x);
+
 let makeWithIndex: 'a. (int, int => 'a) => list('a) = Belt.List.makeBy;
 
 let reverse: 'a. list('a) => list('a) = Belt.List.reverse;
+
 let shuffle: 'a. list('a) => list('a) = Belt.List.shuffle;
 
 let isEmpty: 'a. list('a) => bool =
@@ -55,7 +55,6 @@ let rec init: 'a. list('a) => option(list('a)) =
   | [_] => Some([])
   | [x, ...xs] => Some(cons(x, Relude_Option.getOrElse([], init(xs))));
 
-// TODO: just `head << reverse` right?
 let rec last: 'a. list('a) => option('a) =
   fun
   | [] => None
@@ -123,9 +122,6 @@ let filter: 'a. ('a => bool, list('a)) => list('a) =
 let filterWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) =
   (f, xs) => Belt.List.keepWithIndex(xs, f);
 
-/**
- * Map all list values from 'a to option('b), filtering out the `None`s
- */
 let mapOption: 'a 'b. ('a => option('b), list('a)) => list('b) =
   (f, xs) =>
     Relude_List_Instances.foldLeft(
@@ -161,12 +157,13 @@ let intersperse: 'a. ('a, list('a)) => list('a) =
 let replicate: 'a. (int, list('a)) => list('a) =
   (i, xs) => {
     let rec go = (count, acc) =>
-      count <= 1 ? acc : go(count - 1, Relude_List_Instances.concat(xs, acc));
+      count <= 1
+        ? acc : go(count - 1, Relude_List_Instances.concat(xs, acc));
     if (i <= 0) {
-      [ ]
+      [];
     } else {
       go(i, xs);
-    }
+    };
   };
 
 let zip: 'a 'b. (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
@@ -174,7 +171,6 @@ let zip: 'a 'b. (list('a), list('b)) => list(('a, 'b)) = Belt.List.zip;
 let zipWith: 'a 'b 'c. (('a, 'b) => 'c, list('a), list('b)) => list('c) =
   (f, xs, ys) => Belt.List.zipBy(xs, ys, f);
 
-// TODO: for free with `FunctorWithIndex`?
 let zipWithIndex: 'a. list('a) => list(('a, int)) =
   xs => mapWithIndex((v, i) => (v, i), xs);
 
@@ -183,11 +179,11 @@ let unzip: 'a 'b. list(('a, 'b)) => (list('a), list('b)) = Belt.List.unzip;
 let sortWithInt: 'a. (('a, 'a) => int, list('a)) => list('a) =
   (f, xs) => Belt.List.sort(xs, f);
 
-let sortBy: 'a. (('a, 'a) => ordering, list('a)) => list('a) =
+let sortBy: 'a. (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a) =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
 let sort =
-    (type a, ordA: (module ORD with type t = a), xs: list(a)): list(a) => {
+    (type a, ordA: (module BsAbstract.Interface.ORD with type t = a), xs: list(a)): list(a) => {
   module OrdA = (val ordA);
   sortBy(OrdA.compare, xs);
 };
@@ -197,7 +193,8 @@ let sort =
 let distinctBy: 'a. (('a, 'a) => bool, list('a)) => list('a) =
   (eq, xs) =>
     Relude_List_Instances.foldLeft(
-      (ys, x) => Relude_List_Instances.containsBy(eq, x, ys) ? ys : [x, ...ys],
+      (ys, x) =>
+        Relude_List_Instances.containsBy(eq, x, ys) ? ys : [x, ...ys],
       [],
       xs,
     )
@@ -221,17 +218,17 @@ let removeEachBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
     )
     |> reverse;
 
-let distinct = (type a, eqA: (module EQ with type t = a), xs) => {
+let distinct = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), xs) => {
   module EqA = (val eqA);
   distinctBy(EqA.eq, xs);
 };
 
-let removeFirst = (type a, eqA: (module EQ with type t = a), x, xs) => {
+let removeFirst = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeFirstBy(EqA.eq, x, xs);
 };
 
-let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {
+let removeEach = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeEachBy(EqA.eq, x, xs);
 };
