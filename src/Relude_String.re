@@ -28,7 +28,8 @@ let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js
   ```
 */
 let concatArray: array(string) => string =
-  strs => Relude_Array_Types.foldLeft((acc, str) => acc ++ str, "", strs);
+  strs =>
+    Relude_Array_Instances.foldLeft((acc, str) => acc ++ str, "", strs);
 
 /**
   `length(str)` returns the length of the string. Since this function
@@ -347,7 +348,7 @@ let toArray: string => array(string) =
   ```
 */
 let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List_Types.foldLeft(f, init, toList(str));
+  (f, init, str) => Relude_List_Instances.foldLeft(f, init, toList(str));
 
 /**
   In `foldRight(f, init, str)`, `f()` is a function that takes a string and
@@ -365,7 +366,7 @@ let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
   ```
 */
 let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
-  (f, init, str) => Relude_List_Types.foldRight(f, init, toList(str));
+  (f, init, str) => Relude_List_Instances.foldRight(f, init, toList(str));
 
 /**
   `endsWith(test, str)` returns `true` if `str` ends with the characters in `test`;
@@ -535,7 +536,7 @@ let splitArray: (string, string) => array(string) =
 */
 let splitList: (string, string) => list(string) =
   (delimiter, str) =>
-    splitArray(delimiter, str) |> Relude_List_Types.fromArray;
+    splitArray(delimiter, str) |> Relude_List_Instances.fromArray;
 
 /**
   `splitAt(index, str)` splits the string at the given index,
@@ -571,8 +572,8 @@ let splitAt: (int, string) => (string, string) =
 let mapChars: (string => string, string) => string =
   (f, str) =>
     toList(str)
-    |> Relude_List_Types.map(f)
-    |> Relude_List_Types.fold((module Monoid));
+    |> Relude_List_Instances.map(f)
+    |> Relude_List_Instances.fold((module Monoid));
 
 /**
   `replaceFirst(target, newValue, str)` replaces the first occurrence of `target` with

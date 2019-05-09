@@ -18,7 +18,7 @@ let uncons: 'a. list('a) => option(('a, list('a))) =
   | [x, ...xs] => Some((x, xs));
 
 let append: 'a. ('a, list('a)) => list('a) =
-  (x, xs) => Relude_List_Types.SemigroupAny.append(xs, [x]);
+  (x, xs) => Relude_List_Instances.SemigroupAny.append(xs, [x]);
 
 let repeat: 'a. (int, 'a) => list('a) = (i, x) => Belt.List.make(i, x);
 let makeWithIndex: 'a. (int, int => 'a) => list('a) = Belt.List.makeBy;
@@ -128,7 +128,7 @@ let filterWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) =
  */
 let mapOption: 'a 'b. ('a => option('b), list('a)) => list('b) =
   (f, xs) =>
-    Relude_List_Types.foldLeft(
+    Relude_List_Instances.foldLeft(
       (acc, curr) => Relude_Option.fold(acc, v => [v, ...acc], f(curr)),
       [],
       xs,
@@ -161,7 +161,7 @@ let intersperse: 'a. ('a, list('a)) => list('a) =
 let replicate: 'a. (int, list('a)) => list('a) =
   (i, xs) => {
     let rec go = (count, acc) =>
-      count <= 1 ? acc : go(count - 1, Relude_List_Types.concat(xs, acc));
+      count <= 1 ? acc : go(count - 1, Relude_List_Instances.concat(xs, acc));
     if (i <= 0) {
       [ ]
     } else {
@@ -196,8 +196,8 @@ let sort =
 // we could sort the list first. Or maybe we should just use a Set type
 let distinctBy: 'a. (('a, 'a) => bool, list('a)) => list('a) =
   (eq, xs) =>
-    Relude_List_Types.foldLeft(
-      (ys, x) => Relude_List_Types.containsBy(eq, x, ys) ? ys : [x, ...ys],
+    Relude_List_Instances.foldLeft(
+      (ys, x) => Relude_List_Instances.containsBy(eq, x, ys) ? ys : [x, ...ys],
       [],
       xs,
     )
@@ -209,12 +209,12 @@ let removeFirstBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
       found
         ? (true, [x, ...ys])
         : innerEq(v, x) ? (true, ys) : (false, [x, ...ys]);
-    Relude_List_Types.foldLeft(go, (false, []), xs) |> snd |> reverse;
+    Relude_List_Instances.foldLeft(go, (false, []), xs) |> snd |> reverse;
   };
 
 let removeEachBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
   (innerEq, x, xs) =>
-    Relude_List_Types.foldLeft(
+    Relude_List_Instances.foldLeft(
       (ys, y) => innerEq(x, y) ? ys : [y, ...ys],
       [],
       xs,

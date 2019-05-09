@@ -9,7 +9,7 @@ let mapWithIndex: 'a 'b. (('a, int) => 'b, array('a)) => array('b) =
   (f, xs) => Belt.Array.mapWithIndex(xs, (i, x) => f(x, i));
 
 let cons: ('a, array('a)) => array('a) =
-  (x, xs) => Relude_Array_Types.concat([|x|], xs);
+  (x, xs) => Relude_Array_Instances.concat([|x|], xs);
 
 let prepend: ('a, array('a)) => array('a) = cons;
 
@@ -21,7 +21,7 @@ let uncons: array('a) => option(('a, array('a))) =
     };
 
 let append: ('a, array('a)) => array('a) =
-  (x, xs) => Relude_Array_Types.concat(xs, [|x|]);
+  (x, xs) => Relude_Array_Instances.concat(xs, [|x|]);
 
 let repeat: (int, 'a) => array('a) = (i, x) => Belt.Array.make(i, x);
 
@@ -164,7 +164,7 @@ let rec prependToAll: ('a, array('a)) => array('a) =
     switch (head(xs)) {
     | None => [||]
     | Some(x) =>
-      Relude_Array_Types.concat(
+      Relude_Array_Instances.concat(
         [|delim, x|],
         prependToAll(delim, tailOrEmpty(xs)),
       )
@@ -179,8 +179,8 @@ let intersperse: ('a, array('a)) => array('a) =
 
 let replicate: (int, array('a)) => array('a) =
   (i, xs) =>
-    Relude_Array_Types.foldLeft(
-      (acc, _i) => Relude_Array_Types.concat(acc, xs),
+    Relude_Array_Instances.foldLeft(
+      (acc, _i) => Relude_Array_Instances.concat(acc, xs),
       [||],
       Relude_Int.rangeAsArray(0, i),
     );
@@ -210,9 +210,9 @@ let sort =
 /* TODO: distinct function that uses ordering so we can use a faster Set (Belt.Set?) to check for uniqueness */
 let distinctBy: 'a. (('a, 'a) => bool, array('a)) => array('a) =
   (eq, xs) =>
-    Relude_Array_Types.foldLeft(
+    Relude_Array_Instances.foldLeft(
       (acc, curr) =>
-        Relude_Array_Types.containsBy(eq, curr, acc)
+        Relude_Array_Instances.containsBy(eq, curr, acc)
           ? acc : append(curr, acc),
       [||],
       xs,
@@ -220,7 +220,7 @@ let distinctBy: 'a. (('a, 'a) => bool, array('a)) => array('a) =
 
 let removeFirstBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
   (innerEq, v, xs) =>
-    Relude_Array_Types.foldLeft(
+    Relude_Array_Instances.foldLeft(
       ((found, ys), x) =>
         found
           ? (true, append(x, ys))
@@ -232,7 +232,7 @@ let removeFirstBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
 
 let removeEachBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
   (innerEq, x, xs) =>
-    Relude_Array_Types.foldLeft(
+    Relude_Array_Instances.foldLeft(
       (ys, y) => innerEq(x, y) ? ys : append(y, ys),
       [||],
       xs,
@@ -256,7 +256,7 @@ let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>
     snd(
-      Relude_Array_Types.foldLeft(
+      Relude_Array_Instances.foldLeft(
         ((acc, result), curr) => {
           let nextAcc = f(acc, curr);
           (nextAcc, append(nextAcc, result));
@@ -269,7 +269,7 @@ let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
 let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>
     snd(
-      Relude_Array_Types.foldRight(
+      Relude_Array_Instances.foldRight(
         (curr, (acc, result)) => {
           let nextAcc = f(curr, acc);
           (nextAcc, prepend(nextAcc, result));

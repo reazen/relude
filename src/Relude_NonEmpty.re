@@ -224,22 +224,22 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
 module List =
   NonEmptyF({
     type t('a) = list('a);
-    let length = Relude_List_Types.length;
+    let length = Relude_List_Instances.length;
     let isEmpty = Relude_List_Base.isEmpty;
     let isNotEmpty = Relude_List_Base.isNotEmpty;
     let head = Relude_List_Base.head;
     let tail = Relude_List_Base.tail;
     let tailOrEmpty = Relude_List_Base.tailOrEmpty;
     let mkString =
-      Relude_List_Types.intercalate((module BsAbstract.String.Monoid));
-    let eqBy = Relude_List_Types.eqBy;
-    let showBy = Relude_List_Types.showBy;
-    module MonoidAny = Relude_List_Types.MonoidAny;
-    module Monad = Relude_List_Types.Monad;
-    module Foldable = Relude_List_Types.Foldable;
-    module Traversable = Relude_List_Types.Traversable;
-    module Eq = Relude_List_Types.Eq;
-    module Show = Relude_List_Types.Show;
+      Relude_List_Instances.intercalate((module BsAbstract.String.Monoid));
+    let eqBy = Relude_List_Instances.eqBy;
+    let showBy = Relude_List_Instances.showBy;
+    module MonoidAny = Relude_List_Instances.MonoidAny;
+    module Monad = Relude_List_Instances.Monad;
+    module Foldable = Relude_List_Instances.Foldable;
+    module Traversable = Relude_List_Instances.Traversable;
+    module Eq = Relude_List_Instances.Eq;
+    module Show = Relude_List_Instances.Show;
   });
 
 /* NonEmpty.Array */
@@ -252,14 +252,14 @@ module Array =
     let head = Relude_Array_Base.head;
     let tail = Relude_Array_Base.tail;
     let tailOrEmpty = Relude_Array_Base.tailOrEmpty;
-    let eqBy = Relude_Array_Types.eqBy;
-    let showBy = Relude_Array_Types.showBy;
-    let mkString = Relude_Array_Types.intercalate((module BsAbstract.String.Monoid));
+    let eqBy = Relude_Array_Instances.eqBy;
+    let showBy = Relude_Array_Instances.showBy;
+    let mkString = Relude_Array_Instances.intercalate((module BsAbstract.String.Monoid));
 
-    module MonoidAny = Relude_Array_Types.MonoidAny;
-    module Monad = Relude_Array_Types.Monad;
-    module Foldable = Relude_Array_Types.Foldable;
-    module Traversable = Relude_Array_Types.Traversable;
-    module Eq = Relude_Array_Types.Eq;
-    module Show = Relude_Array_Types.Show;
+    module MonoidAny = Relude_Array_Instances.MonoidAny;
+    module Monad = Relude_Array_Instances.Monad;
+    module Foldable = Relude_Array_Instances.Foldable;
+    module Traversable = Relude_Array_Instances.Traversable;
+    module Eq = Relude_Array_Instances.Eq;
+    module Show = Relude_Array_Instances.Show;
   });

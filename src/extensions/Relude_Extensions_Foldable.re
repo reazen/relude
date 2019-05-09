@@ -1,14 +1,18 @@
-open BsAbstract.Interface;
+type ordering = BsAbstract.Interface.ordering;
 
 /**
  * This is a collection of functions (and more modules that produce functions)
  * that you get for free if your outer type is foldable.
  */
-module Functions = (F: FOLDABLE) => {
+module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
-   * Alias fold_left and _right
+   * Alias fold_left from Foldable
    */
   let foldLeft = F.fold_left;
+
+  /**
+   * Alias fold_right from Foldable
+   */
   let foldRight = F.fold_right;
 
   /**
@@ -99,10 +103,10 @@ module Functions = (F: FOLDABLE) => {
       |> snd;
 
   /**
-   * When the inner type is a Monoid, we can do some interesting things like
-   * collect all values into a single value.
-   */
-  module FoldableOfMonoid = (M: MONOID) => {
+     * When the inner type is a Monoid, we can do some interesting things like
+     * collect all values into a single value.
+     */
+  module FoldableMonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
     let fold: F.t(M.t) => M.t = foldLeft(M.append, M.empty);
 
     let intercalate: (M.t, F.t(M.t)) => M.t =
@@ -117,53 +121,67 @@ module Functions = (F: FOLDABLE) => {
   };
 
   /**
-   * When the inner type implements EQ, we can use that to find inner elements
-   */
-  module FoldableOfEq = (E: EQ) => {
+     * When the inner type implements EQ, we can use that to find inner elements
+     */
+  module FoldableEqExtensions = (E: BsAbstract.Interface.EQ) => {
     let contains: (E.t, F.t(E.t)) => bool = containsBy(E.eq);
     let indexOf: (E.t, F.t(E.t)) => option(int) = indexOfBy(E.eq);
   };
 
   /**
-   * When the inner type implements ORD, we can find min and max
-   */
-  module FoldableOfOrd = (O: ORD) => {
-    include FoldableOfEq(O);
+     * When the inner type implements ORD, we can find min and max
+     */
+  module FoldableOrdExtensions = (O: BsAbstract.Interface.ORD) => {
+    include FoldableEqExtensions(O);
     let min: F.t(O.t) => option(O.t) = minBy(O.compare);
     let max: F.t(O.t) => option(O.t) = maxBy(O.compare);
   };
 
   /**
-   * Accumulate all values in the Foldable into a single value that is the same
-   * type as the inner type.
-   */
-  let fold = (type a, monoidA: (module MONOID with type t = a), xs) => {
-    module FoldableMonoid = FoldableOfMonoid((val monoidA));
-    FoldableMonoid.fold(xs);
+     * Accumulate all values in the Foldable into a single value that is the same
+     * type as the inner type.
+     */
+  let fold =
+      (
+        type a,
+        monoidA: (module BsAbstract.Interface.MONOID with type t = a),
+        xs,
+      ) => {
+    module MonoidExtensions = FoldableMonoidExtensions((val monoidA));
+    MonoidExtensions.fold(xs);
   };
 
   let intercalate =
-      (type a, monoidA: (module MONOID with type t = a), sep, xs) => {
-    module FoldableMonoid = FoldableOfMonoid((val monoidA));
-    FoldableMonoid.intercalate(sep, xs);
+      (
+        type a,
+        monoidA: (module BsAbstract.Interface.MONOID with type t = a),
+        sep,
+        xs,
+      ) => {
+    module MonoidExtensions = FoldableMonoidExtensions((val monoidA));
+    MonoidExtensions.intercalate(sep, xs);
   };
 
-  let contains = (type a, eqA: (module EQ with type t = a), x, xs) => {
+  let contains =
+      (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
     module EqA = (val eqA);
     containsBy(EqA.eq, x, xs);
   };
 
-  let indexOf = (type a, eqA: (module EQ with type t = a), x, xs) => {
+  let indexOf =
+      (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
     module EqA = (val eqA);
     indexOfBy(EqA.eq, x, xs);
   };
 
-  let min = (type a, ordA: (module ORD with type t = a), xs) => {
+  let min =
+      (type a, ordA: (module BsAbstract.Interface.ORD with type t = a), xs) => {
     module OrdA = (val ordA);
     minBy(OrdA.compare, xs);
   };
 
-  let max = (type a, ordA: (module ORD with type t = a), xs) => {
+  let max =
+      (type a, ordA: (module BsAbstract.Interface.ORD with type t = a), xs) => {
     module OrdA = (val ordA);
     maxBy(OrdA.compare, xs);
   };
