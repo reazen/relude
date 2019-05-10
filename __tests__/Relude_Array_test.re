@@ -568,12 +568,10 @@ describe("Array", () => {
     |> toEqual("[1, 2, 3]")
   );
 
-  // TODO: this fails
-  // https://github.com/Risto-Stevcev/bs-abstract/issues/9
-  // test("alt", () =>
-  //   expect(Array.Alt.alt([|"a", "b"|], [|"c"|]))
-  //   |> toEqual([|"a", "b", "c"|])
-  // );
+  test("alt", () =>
+    expect(Array.Alt.alt([|"a", "b"|], [|"c"|]))
+    |> toEqual([|"a", "b", "c"|])
+  );
 
   test("<|> is associative", () => {
     let (<|>) = Array.Infix.(<|>);

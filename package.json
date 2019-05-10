@@ -29,10 +29,11 @@
   "license": "MIT",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.8",
+    "bs-abstract": "^0.17.0",
     "bs-platform": "^5.0.4"
   },
-  "dependencies": {
-    "bs-abstract": "^0.16.0"
+  "peerDependencies": {
+    "bs-abstract": "^0.17.0"
   },
   "jest": {
     "verbose": true,
