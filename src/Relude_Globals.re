@@ -49,3 +49,6 @@ module String = Relude_String;
 // not have ad-hoc polymorphism.
 let (>>) = Relude_Function.Infix.(>>);
 let (<<) = Relude_Function.Infix.(<<);
+let id = Relude_Function.id;
+let const = Relude_Function.const;
+let flip = Relude_Function.flip;
