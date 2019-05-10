@@ -1156,7 +1156,27 @@ let filterNot: ('a => bool, list('a)) => list('a);
 */
 let filterNotWithIndex: (('a, int) => bool, list('a)) => list('a);
 
+/**
+  `mapOption` allows you to map each value in a list to an `option`, then all
+  of the `None` values are filtered out.
+
+  ## Example
+  ```re
+  mapOption(Relude.String.toInt, ["1", "a", "2", "b"]) == [1, 2];
+  ```
+*/
 let mapOption: ('a => option('b), list('a)) => list('b);
+
+/**
+  Given a list of options, `catOptions` filters out all of the `None` values and
+  returns a list containing only the inner `Some` values.
+
+  ## Example
+  ```re
+  catOptions([Some(1), None, None, Some(2), None]) == [1, 2];
+  catOptions([None, None, None]) == [];
+  ```
+*/
 let catOptions: list(option('a)) => list('a);
 
 /**
