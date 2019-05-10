@@ -282,7 +282,7 @@ let alt: (option('a), option('a)) => option('a) =
     };
 
 /**
-  `empty(opt)` always returns `None`, no matter what `opt` is.
+  `empty` is the empty value (`None`)
 */
 let empty: option('a) = None;
 
@@ -295,13 +295,28 @@ let empty: option('a) = None;
 
   ### Example
   ```re
-  filter((x) => {x mod 2 == 0}, Some(2)) == Some(2);
-  filter((x) => {x mod 2 == 0}, Some(3)) == None;
-  filter((x) => {x mod 2 == 0}, None) == None;
+  let isEven = x => x mod 2 == 0;
+  filter(isEven, Some(2)) == Some(2);
+  filter(isEven, Some(3)) == None;
+  filter(isEven, None) == None;
   ```
 */
-let filter: ('a => bool, option('a)) => option('a) =
+let filter: 'a. ('a => bool, option('a)) => option('a) =
   fn => foldLeft((default, v) => fn(v) ? pure(v) : default, empty);
+
+/**
+  `filterNot` is the inverse of `filter`, meaning `Some` values are preserved
+  if the provided predicate function returns false.
+
+  ### Example
+  ```re
+  let isEven = x => x mod 2 == 0;
+  filterNot(isEven, Some(1)) == Some(1);
+  filterNot(isEven, Some(2)) == None;
+  ```
+*/
+let filterNot: 'a. ('a => bool, option('a)) => option('a) =
+  f => filter(a => !f(a));
 
 /**
   `flatten(optOpt)` takes a value of the form `Some(Some(v))` and

@@ -1,8 +1,8 @@
 open Jest;
 open Expect;
 
-module Int = Relude_Int;
-module Option = Relude_Option;
+module Int = Relude.Int;
+module Option = Relude.Option;
 
 describe("Option", () => {
   test("foldLazy maps value when option is Some", () =>
@@ -170,6 +170,11 @@ describe("Option", () => {
 
   test("filter is Some when value passes predicate", () =>
     expect(Option.filter(v => v == 0, Some(0))) |> toEqual(Some(0))
+  );
+
+  test("filterNot", () =>
+    expect(Option.filterNot(x => x mod 2 == 0, Some(1)))
+    |> toEqual(Some(1))
   );
 
   test("flatten is None when option is None", () =>
