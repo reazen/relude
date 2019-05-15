@@ -3,11 +3,11 @@
 [![CircleCI branch](https://img.shields.io/circleci/project/github/reazen/relude/master.svg)](https://circleci.com/gh/reazen/relude)
 [![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)
 
-Relude is a ReasonML/BuckleScript/OCaml standard library replacement ("prelude") written in [ReasonML](https://reasonml.github.io/), targeting compilation to JavaScript via the [BuckleScript](https://bucklescript.github.io/) compiler.
+Relude is a **ReasonML**/**BuckleScript**/**OCaml** standard library replacement ("prelude") written in [ReasonML](https://reasonml.github.io/), targeting compilation to **JavaScript** via the [BuckleScript](https://bucklescript.github.io/) compiler.
 
-Relude aims to provide a robust collection of modules, types, and functions built on top of reusable typeclass-style abstractions, with a focus on day-to-day practical use. While Relude has its foundation in category theory and abstract algebra concepts, our goal is to make the library as easy-to-use as a library like [Lodash](https://lodash.com/docs) for people who don't know or care about category theory. This is possible due to OCaml's powerful module system and the amazing work that has gone into [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract), on which much of Relude is based.
+Relude aims to provide a robust collection of modules, types, and functions built on top of reusable typeclass-style abstractions, with a focus on day-to-day practical use.  Relude has its foundation on the math concepts found in most modern pure functional languages, but our goal is to make the library as easy-to-use as a library like [Lodash](https://lodash.com/docs) for those who don't know or care about the underlying abstractions.  This is made possible by OCaml's module system and the foundational work that has gone into [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract), on which much of Relude is based.
 
-For example, the following functions all exist in Relude, and are all backed by the same underlying function (`fold` from `Foldable`, when the inner type implements `Monoid`):
+As an example, the following functions all exist in Relude, and are all backed by the same underlying function (`fold` from `Foldable`, where the inner type has a `Monoid` instance):
 
 ```reason
 open Relude.Globals;
@@ -17,16 +17,23 @@ Array.Float.sum([| 1.1, 2.2, 3.3 |]); // 6.6
 List.fold((module Int.Multiplicative.Monoid), [2, 2, 3]); // 12
 ```
 
-Relude is heavily inspired by [PureScript's Prelude](https://pursuit.purescript.org/packages/purescript-prelude), as well as other FP ecosystems including Scala, Haskell, and Elm. Many of the underlying functions live in either OCaml's stdlib or Bucklescript's Belt, but functionality is increasingly being replaced with custom implementations.
+The API of Relude is inspired by [PureScript's Prelude](https://pursuit.purescript.org/packages/purescript-prelude), as well as other FP ecosystems including Scala, Haskell, and Elm.
 
 ### Note About Piping (`->` vs `|>`)
 
-Unlike Belt, Relude prefers **significant-data-last** (i.e. **pipe last** or **thread last**) semantics. This means you'll tend to use `|>` with Relude functions, instead of `->`.  In specific situations, this style can lead to slightly worse type inference, but it has the benefit of improved composability (and no dependency on compiler magic).
+Unlike [Belt](https://bucklescript.github.io/bucklescript/api/Belt.html), Relude prefers **significant-data-last** (i.e. **pipe last** or **thread last**) semantics.  This means you'll tend to use the `|>` operator with Relude functions, instead of `->`.  This was a concious decision in favor of more natural (partial) application and composition of functions without the need for compiler magic, and is also more in line with the conventions of other FP languages.
+
+### Why do we need Relude if we already have bs-abstract?
+
+[bs-abstract](https://github.com/Risto-Stevcev/bs-abstract) provides many of the typeclasses (module types) and base typeclass instances and function implementations, but we wanted a more "batteries-included" style of prelude, where we could add additional modules and functions that are useful, but don't have an obvious place to live in the more abstract world of bs-abstract.  We also wanted a place where we could write the modules in the style that we wanted, and to have a place to experiment with new ideas.
+
+### Why don't you just use PureScript?
+
+[PureScript](http://www.purescript.org) has nailed a great many things, but ReasonML/BuckleScript/OCaml has recently swooped in and captured the hearts of many in both the JavaScript and FP communities, with its mix of functional programming capabilities, immutability, speed, pragmatism, and interop potential.  We wanted to have a way to write code in the style of PureScript, but with the pragmatic capabilities and speed of ReasonML/OCaml.
 
 ## Installation
 
-The library is published on [npm](https://www.npmjs.com/package/relude). We try to respect semantic versioning, but while Relude is at version 0.x, there will likely be major breaking changes without corresponding major version bumps.
-We will try to document migration paths in release notes when possible.
+The library is published on [npm](https://www.npmjs.com/package/relude). We try to respect semantic versioning, but while Relude is at version `0.x`, there will likely be breaking changes without corresponding major version bumps.  We will try to document migration paths in release notes when possible.
 
 ```
 > npm install --save relude
@@ -36,27 +43,23 @@ or point at a git ref (tag, commit has, etc.)
 > npm install --save "github:reazen/relude#someref"
 ```
 
-## Documentation (possibly out of date and subject to change)
+## Documentation
 
-* [API documentation](https://reazen.github.io/relude)
+* [Documentation site](https://reazen.github.io/relude)
 
 ## Project Status
 
-Relude has a fairly complete test suite, and is being used in production. However, it's still a relatively young project and subject to breaking changes and likely has some bugs.
-
-It's also true that many function implementations are not optimal (e.g. `List.distinct` is currently O(n<sup>2</sup>) because it depends only on equality of its inner elements, not ordering).  We hope to improve these types of things over time.
-
-We welcome all contributions!  This includes code fixes, help with documentation, or just using the library and providing feedback about anything that is unclear or not working the way you would expect.
+Relude has a fairly complete test suite, and is being used in production at at least one company.  However, it's still a relatively young project, is subject to breaking changes, and likely has some bugs.  Some of the function implementations are not optimized, as we have been more focused on the interfaces rather than the implementations initially.  We hope to improve implementations and performance over time.
 
 ## Documentation Status
 
-The documentation for Relude is a work in progress, and HTML generation is currently on-hold - waiting to see what shakes out as the preferred documentation extraction/rendering tool for the ReasonML/BuckleScript community.
-
-Documentation contributions are welcome, but all documentation may be subject to change in the future.
-
-There are some in-code documentation comments, and the type signatures alone are often sufficient documentation by themselves.
+The documentation for Relude is a work in progress.  We have started to document the code with inline documentation comments, but HTML generation for in-code documentation is currently on-hold.  We're waiting to see what shakes out as the preferred documentation extraction/rendering tool for the ReasonML/BuckleScript community.  We are also working on a separate [documentation site](https://reazen.github.io/relude) to act as more of a high-level guide for the modules defined in Relude.
 
 # Developer info
+
+## Contributions
+
+We welcome all contributions: bug fixes, features requests (or implementations), documentation, issues, discussions or feedback.
 
 ## Development scripts
 
