@@ -15,7 +15,7 @@
     "watch": "bsb -make-world -w",
     "test": "npm run build && jest",
     "cleantest": "npm run clean && npm run test",
-    "docs": "npm install jaredly/redoc#c5e746b && npm run cleanbuild && rm -rf docs && redoc --debug",
+    "docs": "docsify serve ./docs",
     "start": "npm run watch"
   },
   "keywords": [
@@ -30,7 +30,8 @@
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.8",
     "bs-abstract": "^0.17.0",
-    "bs-platform": "^5.0.4"
+    "bs-platform": "^5.0.4",
+    "docsify-cli": "~4.3.0"
   },
   "peerDependencies": {
     "bs-abstract": "^0.17.0"

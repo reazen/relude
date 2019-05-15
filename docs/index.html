@@ -1,138 +1,42 @@
-
-    
-<!doctype html>
-<meta charset=utf8>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel=stylesheet href='./styles.css'>
-<script defer src='./script.js'></script>
-<title>Home</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>relude - Alternative standard library (prelude) for ReasonML</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Alternative standard library (prelude) for ReasonML">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+</head>
 <body>
-<script>window.relativeToRoot="./"</script>
-<script defer src="./block-script.js"></script>
-<div id='error-message'>
-  ⚠️ Oops! This page doesn't appear to define a <span>type</span> called <code>_</code>.
-</div>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: 'Relude',
+      repo: 'https://github.com/reazen/relude',
 
-    
-    <div class='container'>
-    
-    <div class='sidebar-wrapper'>
-    <div class='sidebar-expander'>Show navigation</div>
-    <div class='sidebar'>
-      <a href="./search.html" style="display: block; padding: 0 8px;">Search</a>
-      
-      <div class='docs-listing'><a href="./index.html">Home</a></div>
-      <div class='toc-header'>Page Contents</div>
-      <div class='table-of-contents'>
-      <a href="#relude" class='level-1 header'>Relude</a>
-<a href="#warning--wip" class='level-1 header'>Warning: WIP</a>
-<a href="#overview" class='level-1 header'>Overview</a>
-<a href="#installation" class='level-1 header'>Installation</a>
-<a href="#documentation" class='level-1 header'>Documentation</a>
-<a href="#development-scripts" class='level-1 header'>Development scripts</a>
-<a href="#editor" class='level-1 header'>Editor</a>
-      </div>
-      <div class='project-title'>Package modules</div><div class='project-listing'><a href="./api/Relude.html">Relude</a>
-<a href="./api/Relude_Array.html">Relude_Array</a>
-<a href="./api/Relude_AsyncData.html">Relude_AsyncData</a>
-<a href="./api/Relude_AsyncResult.html">Relude_AsyncResult</a>
-<a href="./api/Relude_Bool.html">Relude_Bool</a>
-<a href="./api/Relude_Float.html">Relude_Float</a>
-<a href="./api/Relude_Function.html">Relude_Function</a>
-<a href="./api/Relude_IO.html">Relude_IO</a>
-<a href="./api/Relude_Identity.html">Relude_Identity</a>
-<a href="./api/Relude_Int.html">Relude_Int</a>
-<a href="./api/Relude_IsoArray.html">Relude_IsoArray</a>
-<a href="./api/Relude_IsoList.html">Relude_IsoList</a>
-<a href="./api/Relude_Js.html">Relude_Js</a>
-<a href="./api/Relude_JsConsole.html">Relude_JsConsole</a>
-<a href="./api/Relude_JsExn.html">Relude_JsExn</a>
-<a href="./api/Relude_JsPromise.html">Relude_JsPromise</a>
-<a href="./api/Relude_List.html">Relude_List</a>
-<a href="./api/Relude_ListF.html">Relude_ListF</a>
-<a href="./api/Relude_MonadError.html">Relude_MonadError</a>
-<a href="./api/Relude_NonEmpty.html">Relude_NonEmpty</a>
-<a href="./api/Relude_Option.html">Relude_Option</a>
-<a href="./api/Relude_Ordering.html">Relude_Ordering</a>
-<a href="./api/Relude_Result.html">Relude_Result</a>
-<a href="./api/Relude_ResultIor.html">Relude_ResultIor</a>
-<a href="./api/Relude_Sequence.html">Relude_Sequence</a>
-<a href="./api/Relude_String.html">Relude_String</a>
-<a href="./api/Relude_Validation.html">Relude_Validation</a>
-<a href="./api/Relude_Void.html">Relude_Void</a>
-<a href="./api/Relude_Foldables.html">Relude_Foldables</a>
-<a href="./api/Relude_Monads.html">Relude_Monads</a>
-<a href="./api/Relude.html">Relude</a>
-<a href="./api/Relude_Array.html">Relude_Array</a>
-<a href="./api/Relude_AsyncData.html">Relude_AsyncData</a>
-<a href="./api/Relude_AsyncResult.html">Relude_AsyncResult</a>
-<a href="./api/Relude_Bool.html">Relude_Bool</a>
-<a href="./api/Relude_Float.html">Relude_Float</a>
-<a href="./api/Relude_Function.html">Relude_Function</a>
-<a href="./api/Relude_IO.html">Relude_IO</a>
-<a href="./api/Relude_Identity.html">Relude_Identity</a>
-<a href="./api/Relude_Int.html">Relude_Int</a>
-<a href="./api/Relude_IsoArray.html">Relude_IsoArray</a>
-<a href="./api/Relude_IsoList.html">Relude_IsoList</a>
-<a href="./api/Relude_Js.html">Relude_Js</a>
-<a href="./api/Relude_JsConsole.html">Relude_JsConsole</a>
-<a href="./api/Relude_JsExn.html">Relude_JsExn</a>
-<a href="./api/Relude_JsPromise.html">Relude_JsPromise</a>
-<a href="./api/Relude_List.html">Relude_List</a>
-<a href="./api/Relude_ListF.html">Relude_ListF</a>
-<a href="./api/Relude_MonadError.html">Relude_MonadError</a>
-<a href="./api/Relude_NonEmpty.html">Relude_NonEmpty</a>
-<a href="./api/Relude_Option.html">Relude_Option</a>
-<a href="./api/Relude_Ordering.html">Relude_Ordering</a>
-<a href="./api/Relude_Result.html">Relude_Result</a>
-<a href="./api/Relude_ResultIor.html">Relude_ResultIor</a>
-<a href="./api/Relude_Sequence.html">Relude_Sequence</a>
-<a href="./api/Relude_String.html">Relude_String</a>
-<a href="./api/Relude_Validation.html">Relude_Validation</a>
-<a href="./api/Relude_Void.html">Relude_Void</a>
-<a href="./api/Relude_Foldables.html">Relude_Foldables</a>
-<a href="./api/Relude_Monads.html">Relude_Monads</a>
-<a href="./api/Relude_Foldables.html">Relude_Foldables</a>
-<a href="./api/Relude_Monads.html">Relude_Monads</a></div>
-    </div>
-    </div>
-  
-    <div class='main'>
-    
-    <a href="#relude" id="relude"><h1>Relude</h1></a>
+      // Cover page
+      //coverpage: true,
 
-<p><a href="https://circleci.com/gh/reazen/relude" target="_blank" rel="noopener nofollow" title="" class="external-link"><img src='https://circleci.com/gh/reazen/relude.svg?style=svg' alt='CircleCI' /></a></p>
-<p>A prelude for <code>Bucklescript</code> and <code>ReasonML</code> projects</p>
-<a href="#warning--wip" id="warning--wip"><h1>Warning: WIP</h1></a>
+      // Navbar
+      //loadNavbar: true,
 
-<p>This project is being actively developed, and is subject to major changes
-until we figure out all the conventions for APIs and project organization.
-Also, some of the function implementations are likely not ideal and need
-optimization.</p>
-<p>If you have trouble installing dependencies with <code>npm install</code>, try removing
-the <code>redoc</code> dependency in the package.json. Removing this will make the <code>npm
-run docs</code> command non-functional, but this command is not essential.</p>
-<a href="#overview" id="overview"><h1>Overview</h1></a>
+      // Search
+      search: 'auto',
 
-<ul><li>This goal of <code>Relude</code> is to be an alternative, somewhat-opinionated, and FP-inspired prelude for <code>Bucklescript</code> and <code>ReasonML</code> projects.</li><li>The types and functions in <code>Relude</code> are inspired by Haskell, Purescript, Scala, and other FP ecosystems.</li><li><code>Relude</code> is built on top of the amazing <a href="https://github.com/Risto-Stevcev/bs-abstract" target="_blank" rel="noopener nofollow" title="" class="external-link"><code>bs-abstract</code></a> library, to leverage its reusable category/abstract algebra interfaces and implementations.</li><li><code>Relude</code> also leverages many functions and types from the <code>OCaml</code> <code>Stdlib</code> and <code>Bucklescript</code> <code>Belt</code> library, though sometimes with function arguments switched around.</li><li>For functions, <code>Relude</code> prefers <code>thread-last</code> semantics, rather than <code>thread-first</code><ul><li>This means that the &quot;most significant&quot; data argument tends to be the last argument, rather than the first, which works nicely with the <code>|&gt;</code> operator.</li><li><code>Relude</code> differs from <code>Belt</code> in this regard - <code>Belt</code> prefers <code>thread-first</code> semantics (i.e. functions that work nicely with the fast pipe <code>-&gt;</code> operator)</li><li>When using <code>Relude</code>, you will likely tend use <code>|&gt;</code> more than <code>-&gt;</code> for most function chaining, but there are always cases where <code>-&gt;</code> might make sense too.</li></ul></li></ul>
+      // Sidebar
+      loadSidebar: true,
+      autoHeader: true,
+      subMaxLevel: 2,
 
-<a href="#installation" id="installation"><h1>Installation</h1></a>
-
-<p>The library is not published to npm yet, but you can install it via a GitHub reference:</p>
-<p><code>npm install --save reazen/relude</code></p>
-<a href="#documentation" id="documentation"><h1>Documentation</h1></a>
-
-<ul><li><a href="https://reazen.github.io/relude" target="_blank" rel="noopener nofollow" title="" class="external-link">API documentation</a></li></ul>
-
-<a href="#development-scripts" id="development-scripts"><h1>Development scripts</h1></a>
-
-<ul><li>Clean: <code>npm run clean</code></li><li>Build: <code>npm run build</code></li><li>Clean &amp; build: <code>npm run cleanbuild</code></li><li>Test: <code>npm run test</code></li><li>Clean &amp; test: <code>npm run cleantest</code></li><li>Gen docs: <code>npm run docs</code><ul><li>Note: this currently uses <code>jaredly/redoc</code> but this may change</li></ul></li><li>Start compiler watcher: <code>npm run start</code></li></ul>
-
-<a href="#editor" id="editor"><h1>Editor</h1></a>
-
-<p>If you use <code>vscode</code>, Press <code>Windows + Shift + B</code> it will build automatically</p>
-
-    </div>
-    <div class='right-blank'></div>
-    </div>
-  
+      // Plugins
+      plugins: [
+      ]
+    }
+  </script>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
+  <script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
+</body>
+</html>
