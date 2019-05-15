@@ -21,7 +21,7 @@ The API of Relude is inspired by [PureScript's Prelude](https://pursuit.purescri
 
 ### Note About Piping (`->` vs `|>`)
 
-Unlike [Belt](https://bucklescript.github.io/bucklescript/api/Belt.html), Relude prefers **significant-data-last** (i.e. **pipe last** or **thread last**) semantics.  This means you'll tend to use the `|>` operator with Relude functions, instead of `->`.  This was a concious decision in favor of more natural (partial) application and composition of functions without the need for compiler magic, and is also more in line with the conventions of other FP languages.
+Unlike [Belt](https://bucklescript.github.io/bucklescript/api/Belt.html), Relude prefers **significant-data-last** (i.e. **pipe last** or **thread last**) semantics.  This means you'll tend to use the `|>` operator with Relude functions, instead of `->`.  This was a conscious decision in favor of more natural (partial) application and composition of functions without the need for compiler magic, and is also more in line with the conventions of other FP languages.
 
 ### Why do we need Relude if we already have bs-abstract?
 
