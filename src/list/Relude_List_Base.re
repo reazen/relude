@@ -122,6 +122,12 @@ let filter: 'a. ('a => bool, list('a)) => list('a) =
 let filterWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) =
   (f, xs) => Belt.List.keepWithIndex(xs, f);
 
+let filterNot: 'a. ('a => bool, list('a)) => list('a) =
+  f => filter(a => !f(a));
+
+let filterNotWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) =
+  f => filterWithIndex((a, i) => !f(a, i));
+
 let mapOption: 'a 'b. ('a => option('b), list('a)) => list('b) =
   (f, xs) =>
     Relude_List_Instances.foldLeft(
@@ -179,11 +185,19 @@ let unzip: 'a 'b. list(('a, 'b)) => (list('a), list('b)) = Belt.List.unzip;
 let sortWithInt: 'a. (('a, 'a) => int, list('a)) => list('a) =
   (f, xs) => Belt.List.sort(xs, f);
 
-let sortBy: 'a. (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a) =
+let sortBy:
+  'a.
+  (('a, 'a) => BsAbstract.Interface.ordering, list('a)) => list('a)
+ =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
 let sort =
-    (type a, ordA: (module BsAbstract.Interface.ORD with type t = a), xs: list(a)): list(a) => {
+    (
+      type a,
+      ordA: (module BsAbstract.Interface.ORD with type t = a),
+      xs: list(a),
+    )
+    : list(a) => {
   module OrdA = (val ordA);
   sortBy(OrdA.compare, xs);
 };
@@ -218,17 +232,20 @@ let removeEachBy: 'a. (('a, 'a) => bool, 'a, list('a)) => list('a) =
     )
     |> reverse;
 
-let distinct = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), xs) => {
+let distinct =
+    (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), xs) => {
   module EqA = (val eqA);
   distinctBy(EqA.eq, xs);
 };
 
-let removeFirst = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
+let removeFirst =
+    (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeFirstBy(EqA.eq, x, xs);
 };
 
-let removeEach = (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
+let removeEach =
+    (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeEachBy(EqA.eq, x, xs);
 };

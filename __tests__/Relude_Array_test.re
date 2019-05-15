@@ -361,6 +361,16 @@ describe("Array", () => {
     |> toEqual([|1, 3, 3, 5|])
   );
 
+  test("filterNot", () =>
+    expect(Array.filterNot(x => x mod 2 == 0, [|1, 2, 3, 4|]))
+    |> toEqual([|1, 3|])
+  );
+
+  test("filterNotWithIndex", () =>
+    expect(Array.filterNotWithIndex((_, i) => i > 2, [|1, 2, 3, 4|]))
+    |> toEqual([|1, 2, 3|])
+  );
+
   test("find not found", () =>
     expect(Array.find(a => a == 3, [|0, 1, 2|])) |> toEqual(None)
   );
@@ -568,12 +578,10 @@ describe("Array", () => {
     |> toEqual("[1, 2, 3]")
   );
 
-  // TODO: this fails
-  // https://github.com/Risto-Stevcev/bs-abstract/issues/9
-  // test("alt", () =>
-  //   expect(Array.Alt.alt([|"a", "b"|], [|"c"|]))
-  //   |> toEqual([|"a", "b", "c"|])
-  // );
+  test("alt", () =>
+    expect(Array.Alt.alt([|"a", "b"|], [|"c"|]))
+    |> toEqual([|"a", "b", "c"|])
+  );
 
   test("<|> is associative", () => {
     let (<|>) = Array.Infix.(<|>);

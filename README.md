@@ -35,11 +35,15 @@ Unlike [Belt](https://bucklescript.github.io/bucklescript/api/Belt.html), Relude
 
 The library is published on [npm](https://www.npmjs.com/package/relude). We try to respect semantic versioning, but while Relude is at version `0.x`, there will likely be breaking changes without corresponding major version bumps.  We will try to document migration paths in release notes when possible.
 
+Note: we currently depend on [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract) as a `peerDependency` (and a `devDependency`).  We are trying this as an experiement to try to avoid duplicate package errors when you have multiple projects that depend on the same underlying library, like `bs-abstract`.
+
 ```
+# bs-abstract needed because it's a peer dependency in relude
+> npm install --save bs-abstract
 > npm install --save relude
 
-or point at a git ref (tag, commit has, etc.)
-
+# or point at a specific git ref (tag, commit hash, etc.)
+> npm install --save bs-abstract
 > npm install --save "github:reazen/relude#someref"
 ```
 

@@ -1115,7 +1115,7 @@ let dropWhile: ('a => bool, array('a)) => array('a);
 
   ## Example
   ```re
-  let even = (x) => {x mod 2 == 0};
+  let even = x => x mod 2 == 0};
   filter(even, [|2, 6, 5, 3, 4, 1|]) == [|2, 6, 4|];
   filter(even, [|5, 3, 1|]) == [| |];
   filter(even, [| |]) == [| |];
@@ -1138,6 +1138,28 @@ let filter: ('a => bool, array('a)) => array('a);
   ```
 */
 let filterWithIndex: (('a, int) => bool, array('a)) => array('a);
+
+/**
+  `filterNot` is the inverse of `filter`. Values are kept if your provided
+  predicate function returns `false`.
+
+  ## Example
+  ```re
+  let isEven = x => x mod 2 == 0;
+  filterNot(isEven, [|1, 2, 3, 4|]) == [|1, 3|]
+  ```
+*/
+let filterNot: ('a => bool, array('a)) => array('a);
+
+/**
+  `filterNotWithIndex` is the inverse of `filterWithIndex`.
+
+  ## Example
+  ```re
+  filterNotWithIndex((_, idx) => idx > 2, [|0, 1, 2, 3|]) == [|0, 1, 2|]
+  ```
+*/
+let filterNotWithIndex: (('a, int) => bool, array('a)) => array('a);
 
 /**
   `partition(f, xs)` takes as its first parameter a predicate function.

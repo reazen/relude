@@ -337,6 +337,16 @@ describe("List", () => {
     |> toEqual([1, 3, 3, 5])
   );
 
+  test("filterNot", () =>
+    expect(List.filterNot(x => x mod 2 == 0, [1, 2, 3, 4]))
+    |> toEqual([1, 3])
+  );
+
+  test("filterNotWithIndex", () =>
+    expect(List.filterNotWithIndex((_, idx) => idx > 2, [0, 0, 0, 0]))
+    |> toEqual([0, 0, 0])
+  );
+
   test("find not found", () =>
     expect(List.find(a => a == 3, [0, 1, 2])) |> toEqual(None)
   );
@@ -379,7 +389,7 @@ describe("List", () => {
   );
 
   test("replicate zero", () =>
-    expect(List.replicate(0, ["none"])) |> toEqual([ ])
+    expect(List.replicate(0, ["none"])) |> toEqual([])
   );
 
   test("replicate negative", () =>
@@ -548,7 +558,8 @@ describe("List", () => {
   );
 
   test("removeFirstBy many matches", () =>
-    expect(List.removeFirstBy(Int.eq, 0, [1, 0, 2, 0])) |> toEqual([1, 2, 0])
+    expect(List.removeFirstBy(Int.eq, 0, [1, 0, 2, 0]))
+    |> toEqual([1, 2, 0])
   );
 
   test("removeEachBy empty", () =>
