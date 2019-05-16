@@ -1,6 +1,4 @@
-# Js
-
-## Overview
+# Relude.Js
 
 `Relude.Js` is a namespace module exposing the following modules:
 

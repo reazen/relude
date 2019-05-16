@@ -1,4 +1,4 @@
-# Foldable (Extensions)
+# Relude.Extensions.Foldable
 
 ## Overview
 

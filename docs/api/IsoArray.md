@@ -1,4 +1,4 @@
-# IsoArray
+# Relude.IsoArray
 
 ## Overview
 

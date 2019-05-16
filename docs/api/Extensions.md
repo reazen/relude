@@ -1,6 +1,4 @@
-# Extensions
-
-## Overview
+# Relude.Extensions
 
 `Relude.Extensions` is a namespace module which provides access to the following types:
 

@@ -1,15 +1,28 @@
 - Getting started
-
   - [README](/)
-
-- API guides
-
+  - [Conventions](Conventions.md)
+- Typeclasses
+  - [Introduction](typeclasses/Introduction.md)
+  - [Show](typeclasses/Show.md)
+  - [Eq](typeclasses/Eq.md)
+  - [Ord](typeclasses/Ord.md)
+  - [Semigroup](typeclasses/Semigroup.md)
+  - [Monoid](typeclasses/Monoid.md)
+  - [Functor](typeclasses/Functor.md)
+  - [Apply](typeclasses/Apply.md)
+  - [Applicative](typeclasses/Applicative.md)
+  - [Monad](typeclasses/Monad.md)
+  - [Foldable](typeclasses/Foldable.md)
+  - [Traversable](typeclasses/Traversable.md)
+- Relude API Docs
   - [Array](api/Array.md)
   - [AsyncData](api/AsyncData.md)
   - [AsyncResult](api/AsyncResult.md)
   - [Bool](api/Bool.md)
   - [Decimal](api/Decimal.md)
   - [Extensions](api/Extensions.md)
+    - [Foldable](api/extensions/Foldable.md)
+    - [Monad](api/extensions/Monad.md)
   - [Float](api/Float.md)
   - [Function](api/Function.md)
   - [Globals](api/Globals.md)
@@ -20,6 +33,10 @@
   - [IsoArray](api/IsoArray.md)
   - [IsoList](api/IsoList.md)
   - [Js](api/Js.md)
+    - [Console](api/js/Console.md)
+    - [Exn](api/js/Exn.md)
+    - [Json](api/js/Json.md)
+    - [Promise](api/js/Promise.md)
   - [List](api/List.md)
   - [MonadError](api/MonadError.md)
   - [NonEmpty](api/NonEmpty.md)

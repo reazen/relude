@@ -1,1 +1,1 @@
-# Promise
+# Relude.Js.Promise

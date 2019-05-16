@@ -1,4 +1,4 @@
-# Decimal
+# Relude.Decimal
 
 ## Overview
 

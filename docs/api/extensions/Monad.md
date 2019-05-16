@@ -1,4 +1,4 @@
-# Monad (Extensions)
+# Relude.Extensions.Monad
 
 ## Overview
 
