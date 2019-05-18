@@ -22,16 +22,14 @@ type errors = NonEmptyList.t(Error.t);
 
 // Get the Infix operators for our Validation, using a NonEmptyList as our Semigroup for
 // collecting errors, and the Error.t type as our error type
-module ValidationApply =
-  Validation.Apply(NonEmptyList.SemigroupAny, Error.Type);
-module ValidationInfix =
-  Validation.Infix(NonEmptyList.SemigroupAny, Error.Type);
+module ValidationE =
+  Validation.WithErrors(NonEmptyList.SemigroupAny, Error.Type);
 
 // map operator
-let (<$>) = ValidationInfix.Functor.(<$>);
+let (<$>) = ValidationE.Infix.(<$>);
 
 // apply operator
-let (<*>) = ValidationInfix.Apply.(<*>);
+let (<*>) = ValidationE.Infix.(<*>);
 
 module Person = {
   type t = {
@@ -98,9 +96,9 @@ module Person = {
     (name, age, language) => {
       // This is an example that doesn't use the map <$> and apply <*> operators.
       // This looks and is clunky, and that's the main reason the operator version is preferred!
-      ValidationApply.map(makeWithNoValidation, validateName(name))
-      ->ValidationApply.apply(validateAge(age))
-      ->ValidationApply.apply(validateLanguage(language));
+      ValidationE.map(makeWithNoValidation, validateName(name))
+      ->ValidationE.apply(validateAge(age))
+      ->ValidationE.apply(validateLanguage(language));
     };
 };
 

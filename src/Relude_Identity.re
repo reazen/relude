@@ -1,48 +1,16 @@
-/* TODO: not sure if we should use this type with the constructor, or if `type t('a) = 'a` is sufficient. */
-/*
- type t('a) =
-   | Identity('a);
+type t('a) = 'a; // Or other implementation: type t('a) = | Identity('a);
 
- let pure: 'a => t('a) = a => Identity(a);
+let pure: 'a. 'a => t('a) = a => a;
 
- let wrap: 'a => t('a) = pure;
+let unwrap: 'a. t('a) => 'a = a => a;
 
- let unwrap: t('a) => 'a =
-   fun
-   | Identity(v) => v;
+let map: 'a 'b. ('a => 'b, t('a)) => t('b) = (f, fa) => f(fa);
 
- let map: ('a => 'b, t('a)) => t('b) =
-   (f, fa) =>
-     switch (fa) {
-     | Identity(a) => Identity(f(a))
-     };
+let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) = (ff, fa) => ff(fa);
 
- let apply: (t('a => 'b), t('a)) => t('b) =
-   (ff, fa) =>
-     switch (ff, fa) {
-     | (Identity(f), Identity(a)) => Identity(f(a))
-     };
+let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) = (fa, f) => f(fa);
 
- let flatMap: (t('a), 'a => t('b)) => t('b) =
-   (fa, f) =>
-     switch (fa) {
-     | Identity(a) => f(a)
-     };
- */
-
-type t('a) = 'a;
-
-let pure: 'a => t('a) = a => a;
-
-let unwrap: t('a) => 'a = a => a;
-
-let map: ('a => 'b, t('a)) => t('b) = (f, fa) => f(fa);
-
-let apply: (t('a => 'b), t('a)) => t('b) = (ff, fa) => ff(fa);
-
-let bind: (t('a), 'a => t('b)) => t('b) = (fa, f) => f(fa);
-
-let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
+//let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
 let eq =
     (
@@ -70,7 +38,7 @@ let show =
   AShow.show(unwrap(fa));
 };
 
-let showBy: ('a => string, t('a)) => string = (f, fa) => f(unwrap(fa));
+let showBy: 'a. ('a => string, t('a)) => string = (f, fa) => f(unwrap(fa));
 
 /* TODO: semigroup/monoid/plus/alt/etc. */
 
@@ -78,38 +46,42 @@ module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
   let map = map;
 };
+include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
 module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
   include Functor;
   let apply = apply;
 };
+include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
 module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
   include Apply;
   let pure = pure;
 };
+include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
 module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
   include Applicative;
   let flat_map = bind;
 };
+include Relude_Extensions_Monad.MonadExtensions(Monad);
 
 module type EQ_F =
-  (E: BsAbstract.Interface.EQ) =>
-   BsAbstract.Interface.EQ with type t = t(E.t);
+  (EQ: BsAbstract.Interface.EQ) =>
+   BsAbstract.Interface.EQ with type t = t(EQ.t);
 
 module Eq: EQ_F =
-  (E: BsAbstract.Interface.EQ) => {
-    type nonrec t = t(E.t);
-    let eq: (t, t) => bool = (fa, fb) => eqBy(E.eq, fa, fb);
+  (EQ: BsAbstract.Interface.EQ) => {
+    type nonrec t = t(EQ.t);
+    let eq: (t, t) => bool = (fa, fb) => eqBy(EQ.eq, fa, fb);
   };
 
 module type SHOW_F =
-  (E: BsAbstract.Interface.SHOW) =>
-   BsAbstract.Interface.SHOW with type t = t(E.t);
+  (S: BsAbstract.Interface.SHOW) =>
+   BsAbstract.Interface.SHOW with type t = t(S.t);
 
 module Show: SHOW_F =
-  (E: BsAbstract.Interface.SHOW) => {
-    type nonrec t = t(E.t);
-    let show: t => string = fa => showBy(E.show, fa);
+  (S: BsAbstract.Interface.SHOW) => {
+    type nonrec t = t(S.t);
+    let show: t => string = fa => showBy(S.show, fa);
   };

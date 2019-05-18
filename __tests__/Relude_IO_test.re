@@ -30,11 +30,10 @@ let ePrint = e => EPrint(e);
 module AppErrorType: BsAbstract.Interface.TYPE with type t = appError = {
   type t = appError;
 };
-module IOMonad = IO.Monad(AppErrorType);
-module IOInfix = IO.Infix.Monad(AppErrorType);
+module IOAppError = IO.WithError(AppErrorType);
 
-let (>>=) = IOInfix.(>>=);
-let (>=>) = IOInfix.(>=>);
+let (>>=) = IOAppError.Infix.(>>=);
+let (>=>) = IOAppError.Infix.(>=>);
 let (>>) = Relude_Function.Infix.(>>);
 let (<<) = Relude_Function.Infix.(<<);
 
@@ -550,11 +549,10 @@ let testFilePath = FS.testFilePath("Eff_test.txt");
 module JsExnType: BsAbstract.Interface.TYPE with type t = Js.Exn.t = {
   type t = Js.Exn.t;
 };
-module IOJsExnMonad = IO.Monad(JsExnType);
-module IOJsExnInfix = IO.Infix.Monad(JsExnType);
+module IOJsExn = IO.WithError(JsExnType);
 
-let (>>=) = IOJsExnInfix.(>>=);
-let (>=>) = IOJsExnInfix.(>=>);
+let (>>=) = IOJsExn.Infix.(>>=);
+let (>=>) = IOJsExn.Infix.(>=>);
 
 describe("IO FS examples", () => {
   beforeAll(() =>

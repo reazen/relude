@@ -27,7 +27,7 @@ let error: 'a 'e. 'e => t('a, 'e) = e => Error(e);
 
 /**
   `unit is a shortcut for `Ok(())`.
-  
+
   ### Example
   ```re
   unit == Ok(());
@@ -59,7 +59,7 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
   `merge(x)` “unwraps” its argument. If `x` is of the form
   `Ok(v)`, the result is `v`. If `x` is of the form Error(e),
   the result is `e`.
-  
+
   ### Example
   ```re
   merge(Ok(2)) == 2;
@@ -71,7 +71,7 @@ let merge: 'a. t('a, 'a) => 'a = fa => fold(a => a, a => a, fa);
 /**
   `flip(x)` flips the values between the `Ok` and `Error` variants.
   `Ok(val)`.
-  
+
   ### Example
   ```re
   flip(Ok(3)) == Error(3);
@@ -89,12 +89,12 @@ let flip: 'a 'e. t('a, 'e) => t('e, 'a) = fa => fa |> fold(ok, error);
   map((x) => {sqrt(float_of_int(x))}, Ok(4)) == Ok(2.0);
   map((x) => {sqrt(float_of_int(x))}, Error("bad")) == Error("bad");
   ```
-  
+
   One place you might use `map()` is in validating input to an “ordinary” function.
   Consider the (highly artificial) example where you have a function that
-  will cube a number, but you only want to do so if the number is even. 
+  will cube a number, but you only want to do so if the number is even.
   Here are the functions:
-  
+
   ```re
   type intResult = Relude.Result.t(int, string);
   let cube = (x) => {x * x * x};
@@ -103,14 +103,14 @@ let flip: 'a 'e. t('a, 'e) => t('e, 'a) = fa => fa |> fold(ok, error);
       Error(string_of_int(n) ++ " is not even.")
   };
   ```
-  
+
   We can now make calls like this:
-  
+
   ```re
   map(cube, testEven(12)) == Ok(1728);
   map(cube, testEven(5)) == Error("5 is not even.");
   ```
-  
+
   This is something we could have done with a simple `if`
   statement, but we will see `map()` become useful when we
   have several things to validate. (See `apply()` and
@@ -224,7 +224,7 @@ let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
   Using `apply()` properly is somewhat complex. See the example
   in the `__tests__/Relude_Validation_test.re` file for more details.
   (It uses `VOk` and `VError`, but the logic is identical.)
-  
+
 
 */
 let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
@@ -241,17 +241,17 @@ let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
   two values. If both of `x` and `y` are of the form
   `Ok(xv)` and `Ok(yv)`, `map2()` returns `Ok(f(xv, yv))`. Otherwise,
   it returns the last value of type `Error(e)` that it encounters.
-  
+
   Here is another artificial example that concatenates a string and
   integer, but only if the string is non-empty and the number is odd:
-  
+
   ```re
   let combine = (str, n) => {str ++ " " ++ string_of_int(n)};
-  
+
   type strResult = Relude.Result.t(string, string);
   let testStr = (s): strResult => (s == "") ? Error("empty string"): Ok(s);
   let testOdd = (n): intResult => (n mod 2 == 0) ? Error("not odd") : Ok(n);
-  
+
   map2(combine, testStr("cloud"), testOdd(9)) == Ok("cloud 9");
   map2(combine, testStr("cloud"), testOdd(10)) == Error("not odd");
   map2(combine, testStr(""), testOdd(9)) == Error("empty string");
@@ -267,15 +267,15 @@ let map2: 'a 'b 'c 'x. (('a, 'b) => 'c, t('a, 'x), t('b, 'x)) => t('c, 'x) =
   three values. If all of `x`, `y`, and `z` are of the form
   `Ok(xv)`, `Ok(yv)`, and `Ok(zv)`, `map3()` returns `Ok(f(xv, yv, zv))`. Otherwise,
   it returns the last value of type `Error(e)` that it encounters.
-  
+
   The following example builds on the example from `map2()` and does
   not show all the possible combinations.
-  
+
   ### Example
   ```re
   let combine = (str, n1, n2) => {str ++ " " ++ string_of_int(n1 * n2)};
   let testLimit = (n): intResult => {(n < 100) ? Ok(n) : Error("too big")};
-  
+
   map3(combine, testStr("cloud"), testOdd(3), testLimit(3)) == Ok("cloud 9");
   map3(combine, testStr("cloud"), testOdd(2), testLimit(3)) == Error("not odd");
   map3(combine, testStr(""), testOdd(3), testLimit(3)) == Error("empty string");
@@ -294,9 +294,9 @@ let map3:
   `Ok(xv)`, `Ok(yv)`, `Ok(zv)`, and `Ok(wv)`, `map4()` returns
   `Ok(f(xv, yv, zv, wv))`. Otherwise,
   it returns the last value of type `Error(e)` that it encounters.
-  
+
   This example uses validation functions defined in the example from `map3()`.
-  
+
   ### Example
   ```re
   let combine = (s1, n2, n3, n4) => {s1 ++ " " ++ string_of_int(n2 + n3 + n4)};
@@ -321,9 +321,9 @@ let map4:
   `Ok(xv)`, `Ok(yv)`, `Ok(zv)`, `Ok(wv)`, and `Ok(qv)`, `map5()` returns
   `Ok(f(xv, yv, zv, wv, qv))`. Otherwise,
   it returns the last value of type `Error(e)` that it encounters.
-  
+
   The following examples do not show all the possible combinations.
-  
+
   ### Example
   ```re
   let combine = (s1, n2, n3, n4, n5) => {s1 ++ " " ++ string_of_int(n2 + n3 + n4 + n5)};
@@ -358,7 +358,7 @@ let map5:
   argument and returns a `Result` value. If `r` is of the form
   `Ok(val)`, then `bind()` returns `f(val)`. Otherwise, it
   returns `r`, which will be an `Error(err)`.
-  
+
   ### Example
   ```re
   let safeSqrt = (x): Relude.Result.t(float, string) => {
@@ -367,7 +367,7 @@ let map5:
   bind(Ok(4.0), safeSqrt) == Ok(2.0);
   bind(Error("invalid float"), safeSqrt) == Error("invalid float");
   ```
-  
+
   Note: `bind()` is the same as `flatMap()`, except with the arguments
   in reverse order.
 */
@@ -383,7 +383,7 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   argument and returns a `Result` value. If `r` is of the form
   `Ok(val)`, then `flatMap()` returns `f(val)`. Otherwise, it
   returns `r`, which will be an `Error(err)`.
-  
+
   ### Example
   ```re
   let safeSqrt = (x): Relude.Result.t(float, string) => {
@@ -392,7 +392,7 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   flatMap(safeSqrt, Ok(4.0)) == Ok(2.0);
   flatMap(safeSqrt, Error("invalid float")) == Error("invalid float");
   ```
-  
+
   Note: `flatMap()` is the same as `bind()`, except with the arguments
   in reverse order.
 */
@@ -403,7 +403,7 @@ let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   `alt(r1, r2)` takes two `Result` arguments. If both are `Ok(..)`,
   the first one is returned. If only one is `Ok(..)`, it is returned.
   If both are `Error(..)`, the last one is returned.
-  
+
   ### Example
   ```re
   alt(Ok(2), Ok(3)) == Ok(2);
@@ -418,11 +418,11 @@ let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
 /**
   `catchError(f, r)` returns `f(e)` when `r` is of the form
   `Error(e)`; otherwise it returns `r` (an `Ok` value) unchanged.
-  
+
   ### Example
   ```
   let labelMessage = (s) => {"Attn: " ++ s};
-  
+
   catchError(labelMessage, Ok(2)) == Ok(2);
   catchError(labelMessage, Error("not even")) == Error("Attn: not even");
   ```
@@ -438,7 +438,7 @@ let catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
   `recover(goodValue, result)` returns `result` if it is
   of the form `Ok(..)`. If `result` is of the form `Error(..)`,
   `recover` returns `Ok(goodValue)`.
-  
+
   ### Example
   ```re
   let safeAvg = (total, n): Relude.Result.t(float, string) => {
@@ -448,7 +448,7 @@ let catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
       Error("Cannot calcuate average");
     };
   };
-  
+
   recover(0.0, safeAvg(32.0, 4)) == Ok(8.0);
   recover(0.0, safeAvg(0.0, 0)) == Ok(0.0);
   ```
@@ -460,7 +460,7 @@ let recover: 'a 'e. ('a, t('a, 'e)) => t('a, 'e) =
   `getOrElse(default, result)` returns `v` when
   `result` is of the form `Ok(v)`; otherwise, it
   returns `default`.
-  
+
   ### Example
   ```re
   let safeAvg = (total, n): Relude.Result.t(float, string) => {
@@ -470,7 +470,7 @@ let recover: 'a 'e. ('a, t('a, 'e)) => t('a, 'e) =
       Error("Cannot calcuate average");
     };
   };
-  
+
   getOrElse(0.0, safeAvg(32.0, 4)) == 8.0;
   getOrElse(0.0, safeAvg(0.0, 0)) == 0.0;
   ```
@@ -482,7 +482,7 @@ let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
   `fromOption(defaultError, opt)` converts a value
   of the form `Some(v)` to `Ok(v)`, and converts
   `None` to `Error(defaultError)`.
-  
+
   ### Example
   ```re
   fromOption("bad value", Some(3)) == Ok(3);
@@ -500,10 +500,10 @@ let fromOption: 'a 'e. ('e, option('a)) => t('a, 'e) =
   `fromOptionLazy(defaultFcn, opt)` converts a value
   of the form `Some(v)` to `Ok(v)`, and converts
   `None` to `Error(defaultFcn())`, which takes no arguments.
-  
+
   This is called a *lazy* function because the default
   value is not calculated unless it is required.
-  
+
   ### Example
   ```re
   let defaultErr = () => "bad value";
@@ -521,7 +521,7 @@ let fromOptionLazy: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
 /**
   `getOk(result)` returns `Some(v)` when `result` is
   of the form `Ok(v)`; otherwise it returns `None`.
-  
+
   ### Example
   ```re
   getOk(Ok(1066)) == Some(1066);
@@ -534,7 +534,7 @@ let getOk: 'a 'e. t('a, 'e) => option('a) =
 /**
   `getError(result)` returns `Some(e)` when `result` is
   of the form `Error(e)`; otherwise it returns `None`.
-  
+
   ### Example
   ```re
   getError(Ok(1066)) == None;
@@ -558,20 +558,20 @@ let isError: 'a 'e. t('a, 'e) => bool = r => fold(_ => true, _ => false, r);
 
 /**
   `eqBy(errorEq, okEq, a, b)` compares `a` and  `b` for equality as follows:
-  
+
   If both are of the form `Ok(..)` and `Ok(..)`, `eqBy` calls `okEq()` with their
   values and returns a boolean depending on whether they are equal or not.
-  
+
   If both are of the form `Error(..)`, `eqBy` calls `errorEq()` with their values
   and returns a boolean depending on whether they are equal or not.
-  
+
   In all other cases, `eqBy()` returns `false`.
-  
+
   ### Example
   ```re
   let clockEqual = (c1, c2) => {c1 mod 12 == c2 mod 12};
   let strEqual = (c1, c2) => {c1 == c2};
-  
+
   eqBy(strEqual, clockEqual, Ok(14), Ok(2)) == true;
   eqBy(strEqual, clockEqual, Ok(14), Ok(3)) == false;
   eqBy(strEqual, clockEqual, Error("not an integer"), Error("not an integer")) == true;
@@ -597,7 +597,7 @@ let eqBy:
   and returns some value `retVal`. If the call succeeds, the
   result of `tries()` is `Ok(retVal)`. If it generates an exception,
   the value is `Error(exception)`.
-  
+
   ### Example
   ```re
   tries(() => {int_of_string("37")}) == Ok(37);
@@ -616,7 +616,7 @@ let tries: 'a. (unit => 'a) => t('a, exn) =
   result of `tries()` is `Ok(retVal)`. If it generates an exception,
   the value is `Error(exceptionStr)`, where `exceptionStr` is the
   string representation of the exception.
-  
+
   ### Example
   ```re
   triesAsString(() => {int_of_string("37")}) == Ok(37);
@@ -643,14 +643,14 @@ let fromValidation = Relude_Validation.toResult;
   `toValidationNel(vResult)` converts `Ok(val)` to `VOk(val)`
   and `Error(err)` to `VError([err])`, where the list is of
   type `Relude.NonEmpty.List`.
-  
+
   ### Example
   ```re
   toValidationNel(Ok(1066)) == Relude.Validation.VOk(1066);
   toValidationNel(Error("not odd")) == Relude.Validation.VError(
     Relude.NonEmpty.List.pure("not odd"));
   ```
-  
+
   You use this function when you have a `Result` type that you
   wish to use with `Validation` in order to accumulate a list
   of errors.
@@ -666,7 +666,7 @@ let toValidationNel:
   `toValidationNea(vResult)` converts `Ok(val)` to `VOk(val)`
   and `Error(err)` to `VError([|err|])`, where the array is of
   type `Relude.NonEmpty.Array`.
-  
+
   ### Example
   ```re
   toValidationNea(Ok(1066)) == Relude.Validation.VOk(1066);
@@ -674,7 +674,7 @@ let toValidationNel:
     Relude.NonEmpty.Array.pure("not odd"));
   toValidationNea(Error("not odd"));
   ```
-  
+
   You use this function when you have a `Result` type that you
   wish to use with `Validation` in order to accumulate an array
   of errors.
@@ -686,37 +686,69 @@ let toValidationNea:
   | Error(error) =>
     Relude_Validation.VError(Relude_NonEmpty.Array.pure(error));
 
-module Functor = BsAbstract.Result.Functor;
+/**
+Because Result is a bi-functor, we need to capture the error type in order
+to implement many of the single-type-parameter typeclasses.  Doing it like this
+allows us to unlock a bunch of stuff at once using a single module functor.
+ */
+module WithError = (E: BsAbstract.Interface.TYPE) => {
+  module Functor = BsAbstract.Result.Functor(E);
+  include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-module Alt = BsAbstract.Result.Alt;
+  module Bifunctor = BsAbstract.Result.Bifunctor;
+  include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 
-module Apply = BsAbstract.Result.Apply;
+  module Alt = BsAbstract.Result.Alt(E);
+  include Relude_Extensions_Alt.AltExtensions(Alt);
 
-module Applicative = BsAbstract.Result.Applicative;
+  module Apply = BsAbstract.Result.Apply(E);
+  include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-module Monad = BsAbstract.Result.Monad;
+  module Applicative = BsAbstract.Result.Applicative(E);
+  include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-module MonadThrow: Relude_MonadError.MONAD_THROW =
-  (E: BsAbstract.Interface.TYPE) => {
-    include Monad(E);
+  module Monad = BsAbstract.Result.Monad(E);
+  include Relude_Extensions_Monad.MonadExtensions(Monad);
+
+  module MonadThrow:
+    Relude_MonadError.MONAD_THROW with
+      type t('a) = t('a, E.t) and type e = E.t = {
+    include Monad;
+    type e = E.t;
     let throwError = error;
   };
 
-module MonadError: Relude_MonadError.MONAD_ERROR =
-  (E: BsAbstract.Interface.TYPE) => {
-    include Monad(E);
-    let throwError = error;
+  module MonadError:
+    Relude_MonadError.MONAD_ERROR with
+      type t('a) = t('a, E.t) and type e = E.t = {
+    include MonadThrow;
     let catchError = catchError;
   };
 
-module Foldable = BsAbstract.Result.Foldable;
+  module Foldable = BsAbstract.Result.Foldable(E);
+  include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-module Traversable = BsAbstract.Result.Traversable;
+  module Bifoldable = BsAbstract.Result.Bifoldable;
+  include Relude_Extensions_Bifoldable.BifoldableExtensions(Bifoldable);
 
-module Eq = BsAbstract.Result.Eq;
+  module Traversable = BsAbstract.Result.Traversable(E, Applicative);
+  include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
 
-module Show = BsAbstract.Result.Show;
+  module Bitraversable = BsAbstract.Result.Bitraversable(Applicative);
+  include Relude_Extensions_Bitraversable.BitraversableExtensions(
+            Bitraversable,
+          );
 
-module Ord = BsAbstract.Result.Ord;
+  module Eq = BsAbstract.Result.Eq;
 
-module Infix = BsAbstract.Result.Infix;
+  module Ord = BsAbstract.Result.Ord;
+
+  module Show = BsAbstract.Result.Show;
+
+  module Infix = {
+    include Relude_Extensions_Functor.FunctorInfix(Functor);
+    include Relude_Extensions_Bifunctor.BifunctorInfix(Bifunctor);
+    include Relude_Extensions_Apply.ApplyInfix(Apply);
+    include Relude_Extensions_Monad.MonadInfix(Monad);
+  };
+};

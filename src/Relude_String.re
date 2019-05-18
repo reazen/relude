@@ -6,7 +6,7 @@ module Ord = BsAbstract.String.Ord;
 /**
   `concat(str1, str2)` concatenate the two strings, returning
   a new string.
-  
+
   ### Example
   ```re
   concat("door", "bell") == "doorbell";
@@ -19,7 +19,7 @@ let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js
 /**
   `concatArray(xs)` returns a new string that is the result
   of concatenating all the strings in `xs`
-  
+
   ### Example
   ```re
   concatArray([|"cat", "en", "ate"|]) == "catenate";
@@ -35,7 +35,7 @@ let concatArray: array(string) => string =
   `length(str)` returns the length of the string. Since this function
   calls the JavaScript `String.length` function, it works properly with
   Unicode characters.
-  
+
   ### Example
   ```re
   length("example") == 7;
@@ -74,7 +74,7 @@ let isNotEmpty: string => bool = s => !isEmpty(s);
 /**
   `toNonEmpty(str)` returns `Some(str)` if `str` is not the empty string `""`.
   It returns `None` if `str` is the empty string.
-  
+
   ### Example
   ```re
   toNonEmpty("abc") == Some("abc");
@@ -98,7 +98,7 @@ let eq: (string, string) => bool = (==);
   `isWhitespace(str)` returns true if the string consists
   entirely of whitespace characters as described
   in <https://www.ecma-international.org/ecma-262/5.1/#sec-7.2>
-  
+
   ### Example
   ```re
   isWhitespace(" \n \t \r  ") == true;
@@ -111,7 +111,7 @@ let isWhitespace: string => bool = s => s |> trim |> isEmpty;
   `toNonWhiteSpace(str)` returns `Some(str)` if `str` has any non-whitespace
   characters in it. The function returns `None` if `str` consists entirely
   of whitespace.
-  
+
   ### Example
   ```re
   toNonWhitespace("\n\t abc \t\r") == Some("\n\t abc \t\r");
@@ -131,7 +131,7 @@ let toNonWhitespace: string => option(string) =
   primitive type such as integer, float, string, or boolean,
   the result will reflect ReasonML’s internal format for
   that data type.
-  
+
   ### Example
   ```re
   make(32.5) == "32.5";
@@ -145,14 +145,14 @@ let toNonWhitespace: string => option(string) =
 let make: 'a => string = Js.String.make;
 
 /**
-  
+
   `fromCharCode(n)` creates a string containing the character
   corresponding to that number; n ranges from 0 to 65535.
   If out of range, the lower 16 bits of the value are used.
   Thus, `fromCharCode(0x1F63A)` gives the same result as
   `fromCharCode(0xF63A)`.
 
-  
+
   ### Example
   ```re
   fromCharCode(65) == "A";
@@ -167,7 +167,7 @@ let fromCharCode: int => string = Js.String.fromCharCode;
   `makeWithIndex(n, f)` returns a string that is the result
   of concatenating `f(0)`, `f(1)`, ... `f(n - 1)`, where
   function `f()` takes an integer argument and returns a string.
-  
+
   ### Example
   ```re
   let squareChar = (n) => {fromCharCode(97 + n * n)};
@@ -183,8 +183,8 @@ let makeWithIndex: (int, int => string) => string =
 
 /**
   `repeat(n, str)` returns a string consisting of `n` repetitions
-  of `str`. 
-  
+  of `str`.
+
   ### Example
   ```re
   repeat(3, "ha") == "hahaha";
@@ -199,7 +199,6 @@ let repeat: (int, string) => string =
     go("", i);
   };
 
-  
 /**
   `toUpperCase(str)` converts `str` to upper case using
   the locale-insensitive case mappings in the Unicode
@@ -240,9 +239,9 @@ let toLowerCase: string => string = Js.String.toLowerCase;
   `charAt(n, str)` returns `Some(chStr)`, where `chStr` is a string
   consisting of the character at location `n` in the string. The
   first character in a string has position zero.
-  
+
   If `n` is out of bounds, `charAt()` returns `None`.
-  
+
   ### Example
   ```re
   charAt(0, "abc") == Some("a");
@@ -260,9 +259,9 @@ let charAt: (int, string) => option(string) =
   `charAtNullable(n, str)` returns `Js.Nullable.return(chStr)`,
   where `chStr` is a string consisting of the character at
   location `n` in the string. The first character in a string has position zero.
-  
+
   If `n` is out of bounds, `charAtNullable()` returns `Js.Nullable.undefined`.
-  
+
   ### Example
   ```re
   charAtNullable(0, "abc") == Js.Nullable.return("a");
@@ -278,9 +277,9 @@ let charAtNullable: (int, string) => Js.Nullable.t(string) =
 /**
   `charAtOrThrow(n, str)` returns a string consisting of the character at
   location `n` in the string. The first character in a string has position zero.
-  
+
   If `n` is out of bounds, `charAtOrThrow()` throws a `RangeError`.
-  
+
   ### Example
   ```re
   charAtOrThrow(0, "abc") == "a";
@@ -306,7 +305,7 @@ let charAtOrThrow: (int, string) => string =
 
 /**
   `toList(str)` creates a list with one character of `str` per element.
-  
+
   ### Example
   ```re
   toList("abc") == ["a", "b", "c"];
@@ -320,7 +319,7 @@ let toList: string => list(string) =
 
 /**
   `toArray(str)` creates an array with one character of `str` per element.
-  
+
   ### Example
   ```re
   toArray("abc") == [|"a", "b", "c"|];
@@ -339,7 +338,7 @@ let toArray: string => array(string) =
   in the string, moving from left to right, with the result `f(accumulator, chStr)`
   becoming the new value of the accumulator.  When all characters have been processed,
   the return value is the value of the accumulator.
-  
+
   ### Example
   ```re
   let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(0, chStr))};
@@ -357,7 +356,7 @@ let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
   in the string, moving from right to left, with the result `f(chStr, accumulator)`
   becoming the new value of the accumulator.  When all characters have been processed,
   the return value is the value of the accumulator.
-  
+
   ### Example
   ```re
   let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(0, chStr))};
@@ -371,7 +370,7 @@ let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
 /**
   `endsWith(test, str)` returns `true` if `str` ends with the characters in `test`;
   `false` otherwise.
-  
+
   ### Example
   ```re
   endsWith("ing", "programming") == true;
@@ -386,7 +385,7 @@ let endsWith: (string, string) => bool =
 /**
   `startsWith(test, str)` returns `true` if `str` starts with the characters in `test`;
   `false` otherwise.
-  
+
   ### Example
   ```re
   startsWith("pro", "programming") == true;
@@ -401,7 +400,7 @@ let startsWith: (string, string) => bool =
 /**
   `contains(test, str)` returns `true` if the characters in `test`
   are anywhere in `str` (consecutively); `false` otherwise.
-  
+
   ### Example
   ```re
   contains("cat", "catalog") == true;
@@ -418,7 +417,7 @@ let contains: (string, string) => bool =
   is the starting position of the first occurrence of `test`
   within `str`. If `test` is not in `str`, the return value
   is `false`.
-  
+
   ### Example
   ```re
   indexOf("cat", "catalog") == Some(0);
@@ -442,7 +441,7 @@ let indexOf: (string, string) => option(int) =
   is the starting position of the last occurrence of `test`
   within `str`. If `test` is not in `str`, the return value
   is `false`.
-  
+
   ### Example
   ```re
   lastIndexOf("cat", "catalog") == Some(0);
@@ -460,7 +459,6 @@ let lastIndexOf: (string, string) => option(int) =
       Some(index);
     };
   };
-
 
 /**
   `slice(n1, n2, str)` returns the substring of `str` starting at
@@ -504,7 +502,6 @@ let slice: (int, int, string) => string =
 let sliceToEnd: (int, string) => string =
   (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
 
-
 /**
   `splitArray(delimiter, str)` splits the given `str`
   at every occurrence of `delimiter` and returns an array
@@ -542,7 +539,7 @@ let splitList: (string, string) => list(string) =
   `splitAt(index, str)` splits the string at the given index,
   returning a tuple of the parts. If `index` is negative,
   it is evaluated as `length(str) - index`.
-  
+
   ### Example
   ```re
   splitAt(4, "abcdefg") == ("abcd", "efg");
@@ -556,11 +553,10 @@ let splitList: (string, string) => list(string) =
 let splitAt: (int, string) => (string, string) =
   (index, input) => (slice(0, index, input), sliceToEnd(index, input));
 
-
 /**
   `mapChars(f, str)` applies the function `f()` to each character of the string,
   returning a new string.
-  
+
   ### Example
   ```re
   let duplicate = (ch) => {ch ++ ch};
@@ -571,14 +567,12 @@ let splitAt: (int, string) => (string, string) =
 */
 let mapChars: (string => string, string) => string =
   (f, str) =>
-    toList(str)
-    |> Relude_List_Instances.map(f)
-    |> Relude_List_Instances.fold((module Monoid));
+    toList(str) |> Relude_List_Instances.foldMap((module Monoid), f);
 
 /**
   `replaceFirst(target, newValue, str)` replaces the first occurrence of `target` with
   `newValue` in `str`, returning a new string.
-  
+
   ### Example
   ```re
   replaceFirst("in", "t", "the rain in spain") == "the rat in spain";
@@ -591,7 +585,7 @@ let replaceFirst: (string, string, string) => string =
 /**
   `replaceEach(target, newValue, str)`replaces each occurrence of
   `target` with `newValue` in `str`, returning a new string.
-  
+
   ### Example
   ```re
   replaceEach("in", "t", "the rain in spain") == "the rat t spat";
@@ -605,11 +599,11 @@ let replaceEach: (string, string, string) => string =
 /**
   `replaceRegex(targetRe, newValue, str)` replaces the matched
   regular expression `targetRe` with `newValue` in `str`, returning a new string.
-  
+
   If you use parentheses to store matching substrings in your pattern (as in the
   last two examples), you may refer to them as `$1`, `$2` etc. in your replacement
   pattern.
-  
+
   ### Example
   ```re
   replaceRegex([%re"/b[aeiou]g/"], "---", "The big bog bug") == "The --- bog bug";
@@ -625,7 +619,7 @@ let replaceRegex: (Js.Re.t, string, string) => string =
 /**
   `removeFirst(target, str)` returns a new string with the first occurrence of `target`
   removed from `str`.
-  
+
   ### Example
   ```re
   removeFirst("the ", "Paris in the the spring") == "Paris in the spring";
@@ -638,7 +632,7 @@ let removeFirst: (string, string) => string =
 /**
   `removeEach(target, str)` returns a new string with every occurrence of `target`
   removed from `str`.
-  
+
   ### Example
   ```re
   removeEach("the ", "Paris in the the spring") == "Paris in spring";
@@ -678,7 +672,7 @@ let toInt: string => option(int) =
   Note that, as in the last examples, it may not be
   exactly the same as the representation you used
   when specifying `x`.
-  
+
   ### Example
   ```re
   fromFloat(-3.5) == "-3.5";
