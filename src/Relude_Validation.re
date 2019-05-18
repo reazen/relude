@@ -329,6 +329,8 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
 let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   fa => fa |> fold(e => VOk(e), a => VError(a));
 
+// TODO: map2/etc. could probably come from ApplicativeSemigroupExtensions or something
+
 let map2:
   (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
   (f, fa, fb, appendErrors) => apply(map(f, fa), fb, appendErrors);

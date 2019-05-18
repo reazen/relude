@@ -2,7 +2,7 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
   type t('a) =
     | NonEmpty('a, TailSequence.t('a));
 
-  /*
+  /* comes in via extensions
   let length: t('a) => int =
     fun
     | NonEmpty(_, t) => 1 + TailSequence.length(t);
@@ -72,6 +72,7 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
   let bind: (t('a), 'a => t('b)) => t('b) =
     (nonEmpty, f) => map(f, nonEmpty) |> flatten;
 
+  // Comes in via extensions
   //let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
   let mkString: (string, t(string)) => string =

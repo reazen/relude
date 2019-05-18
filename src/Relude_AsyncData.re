@@ -90,7 +90,7 @@ let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
     | Complete(a) => f(a)
     };
 
-/* TODO: remove flatMap from MonadExtensions (once Array/List refactor)
+/* TODO: flatMap comes in via Extensions now - need to make sure that's what we want
 let flatMap: 'a 'b. ('a => t('b), t('a)) => t('b) =
   (f, fa) => bind(fa, f);
 */
@@ -278,7 +278,7 @@ module Infix = {
   include Relude_Extensions_Monad.MonadInfix(Monad);
 };
 
-/*
+/* This stuff comes in via extensions now
 module ApplyFunctions = BsAbstract.Functions.Apply(Apply);
 
 /* These can be derived from BsAbstract.Functions.Apply, but because we have an error type, it becomes a module functor with an error type */

@@ -10,6 +10,7 @@ let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) = (ff, fa) => ff(fa);
 
 let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) = (fa, f) => f(fa);
 
+// flatMap comes in via extenions now
 //let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
 let eq =

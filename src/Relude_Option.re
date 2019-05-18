@@ -56,7 +56,7 @@ let fold: ('b, 'a => 'b, option('a)) => 'b =
   forEach(Js.log, None) == (); // does not print anything
   ```
 */
-/*
+/* Comes in via extensions now
  let forEach: 'a. ('a => unit, option('a)) => unit =
    (f, opt) => fold((), f, opt);
    */
@@ -109,6 +109,7 @@ let getOrElse: ('a, option('a)) => 'a = default => fold(default, a => a);
   toList(None) == [];
   ```
 */
+// Extensions
 //let toList: option('a) => list('a) = t => fold([], v => [v], t);
 
 /**
@@ -121,6 +122,7 @@ let getOrElse: ('a, option('a)) => 'a = default => fold(default, a => a);
   toArray(None) == [| |];
   ```
 */
+// Extensions
 //let toArray: option('a) => array('a) = t => fold([||], v => [|v|], t);
 
 /**
@@ -145,6 +147,7 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   map((x) => {x * x}, None) == None;
   ```
 */
+// Extensions
 /*
  let map: ('a => 'b, option('a)) => option('b) =
    (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
@@ -158,6 +161,7 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   Some(42) |> Option.void;
   ```
  */
+// Extensions
 //let void: 'a. option('a) => option(unit) = opt => opt |> map(_ => ());
 
 /**
@@ -174,6 +178,7 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   apply(None, None) == None;
   ```
 */
+// Extensions
 /*
  let apply: (option('a => 'b), option('a)) => option('b) =
    (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
@@ -227,6 +232,7 @@ let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
   `flatMap()` is the same as `bind()`, but with the arguments in
   the reverse order.
 */
+// Extensions
 /*
  let flatMap: ('a => option('b), option('a)) => option('b) =
    (f, fa) => bind(fa, f);
@@ -269,6 +275,7 @@ let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   foldRight(addLength, 0, None) == 0;
   ```
 */
+// Extensions
 /*
  let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
    (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
@@ -342,6 +349,7 @@ let filterNot: 'a. ('a => bool, option('a)) => option('a) =
   flatten(Some(None)) == None;
   ```
 */
+// Extensions
 //let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
 
 /**
