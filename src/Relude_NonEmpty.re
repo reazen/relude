@@ -1,10 +1,12 @@
-module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
+module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
   type t('a) =
     | NonEmpty('a, TailSequence.t('a));
 
+  /* comes in via extensions
   let length: t('a) => int =
     fun
     | NonEmpty(_, t) => 1 + TailSequence.length(t);
+    */
 
   let pure: 'a => t('a) =
     head => NonEmpty(head, TailSequence.MonoidAny.empty);
@@ -70,7 +72,8 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
   let bind: (t('a), 'a => t('b)) => t('b) =
     (nonEmpty, f) => map(f, nonEmpty) |> flatten;
 
-  let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
+  // Comes in via extensions
+  //let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
   let mkString: (string, t(string)) => string =
     (delim, xs) =>
@@ -129,22 +132,26 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
     type nonrec t('a) = t('a);
     let map = map;
   };
+  include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
   module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
+  include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
     BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
+  include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };
+  include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
@@ -176,15 +183,12 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
           FoldMapAny.append(f(x), SequenceFoldMapAny.fold_map(f, xs));
     };
   };
+  include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-  module type TRAVERSABLE_F =
-    (A: BsAbstract.Interface.APPLICATIVE) =>
-
+  module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
+    module Traversable:
       BsAbstract.Interface.TRAVERSABLE with
-        type t('a) = t('a) and type applicative_t('a) = A.t('a);
-
-  module Traversable: TRAVERSABLE_F =
-    (A: BsAbstract.Interface.APPLICATIVE) => {
+        type t('a) = t('a) and type applicative_t('a) = A.t('a) = {
       type nonrec t('a) = t('a);
       type applicative_t('a) = A.t('a);
       include (
@@ -208,6 +212,8 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
       let sequence: t(applicative_t('a)) => applicative_t(t('a)) =
         fa => traverse(x => x, fa);
     };
+    include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
+  };
 
   module type EQ_F =
     (EqA: BsAbstract.Interface.EQ) =>
@@ -218,11 +224,20 @@ module NonEmptyF = (TailSequence: Relude_Sequence.SEQUENCE) => {
       type nonrec t = t(EqA.t);
       let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
     };
+
+  module type SHOW_F =
+    (S: BsAbstract.Interface.SHOW) =>
+     BsAbstract.Interface.SHOW with type t = t(S.t);
+
+  module Show: SHOW_F =
+    (S: BsAbstract.Interface.SHOW) => {
+      type nonrec t = t(S.t);
+      let show = showBy(S.show);
+    };
 };
 
-/* NonEmpty.List */
 module List =
-  NonEmptyF({
+  WithSequence({
     type t('a) = list('a);
     let length = Relude_List_Instances.length;
     let isEmpty = Relude_List_Base.isEmpty;
@@ -230,10 +245,10 @@ module List =
     let head = Relude_List_Base.head;
     let tail = Relude_List_Base.tail;
     let tailOrEmpty = Relude_List_Base.tailOrEmpty;
-    let mkString =
-      Relude_List_Instances.intercalate((module BsAbstract.String.Monoid));
     let eqBy = Relude_List_Instances.eqBy;
     let showBy = Relude_List_Instances.showBy;
+    let mkString =
+      Relude_List_Instances.intercalate((module BsAbstract.String.Monoid));
     module MonoidAny = Relude_List_Instances.MonoidAny;
     module Monad = Relude_List_Instances.Monad;
     module Foldable = Relude_List_Instances.Foldable;
@@ -242,9 +257,8 @@ module List =
     module Show = Relude_List_Instances.Show;
   });
 
-/* NonEmpty.Array */
 module Array =
-  NonEmptyF({
+  WithSequence({
     type t('a) = array('a);
     let length = Relude_Array_Base.length;
     let isEmpty = Relude_Array_Base.isEmpty;
@@ -254,8 +268,8 @@ module Array =
     let tailOrEmpty = Relude_Array_Base.tailOrEmpty;
     let eqBy = Relude_Array_Instances.eqBy;
     let showBy = Relude_Array_Instances.showBy;
-    let mkString = Relude_Array_Instances.intercalate((module BsAbstract.String.Monoid));
-
+    let mkString =
+      Relude_Array_Instances.intercalate((module BsAbstract.String.Monoid));
     module MonoidAny = Relude_Array_Instances.MonoidAny;
     module Monad = Relude_Array_Instances.Monad;
     module Foldable = Relude_Array_Instances.Foldable;

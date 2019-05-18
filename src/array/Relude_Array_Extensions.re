@@ -40,17 +40,22 @@ module String = {
 
 module Int = {
   include ArrayOrdExtensions(Relude_Int.Ord);
-  let sum = Relude_Array_Instances.fold((module Relude_Int.Additive.Monoid));
+  let sum =
+    Relude_Array_Instances.foldMonoid((module Relude_Int.Additive.Monoid));
   let product =
-    Relude_Array_Instances.fold((module Relude_Int.Multiplicative.Monoid));
+    Relude_Array_Instances.foldMonoid(
+      (module Relude_Int.Multiplicative.Monoid),
+    );
 };
 
 module Float = {
   include ArrayOrdExtensions(Relude_Float.Ord);
   let sum =
-    Relude_Array_Instances.fold((module Relude_Float.Additive.Monoid));
+    Relude_Array_Instances.foldMonoid((module Relude_Float.Additive.Monoid));
   let product =
-    Relude_Array_Instances.fold((module Relude_Float.Multiplicative.Monoid));
+    Relude_Array_Instances.foldMonoid(
+      (module Relude_Float.Multiplicative.Monoid),
+    );
 };
 
 module Option = {
@@ -59,47 +64,58 @@ module Option = {
 
 module Result = {
   let traverse = (type e, f, xs) => {
-    module ResultFixedError =
-      Relude_Result.Applicative({
+    module ResultE =
+      Relude_Result.WithError({
         type t = e;
       });
     module TraverseResult =
-      Relude_Array_Instances.Traversable(ResultFixedError);
+      Relude_Array_Instances.Traversable(ResultE.Applicative);
     TraverseResult.traverse(f, xs);
   };
 
   let sequence = (type e, xs) => {
-    module ResultFixedError =
-      Relude_Result.Applicative({
+    module ResultE =
+      Relude_Result.WithError({
         type t = e;
       });
     module TraverseResult =
-      Relude_Array_Instances.Traversable(ResultFixedError);
+      Relude_Array_Instances.Traversable(ResultE.Applicative);
     TraverseResult.sequence(xs);
   };
 };
 
 module Validation = {
-  module Traversable =
+  module WithErrors =
          (
            Errors: BsAbstract.Interface.SEMIGROUP_ANY,
            Error: BsAbstract.Interface.TYPE,
-         ) =>
-    BsAbstract.Array.Traversable(
-      (Relude_Validation.Applicative(Errors, Error)),
-    );
+         ) => {
+    module ValidationE = Relude_Validation.WithErrors(Errors, Error);
+    module Traversable =
+      Relude_Array_Instances.Traversable(ValidationE.Applicative);
+  };
 
-  module TraversableWithErrorsAsArray = (Error: BsAbstract.Interface.TYPE) =>
-    Traversable(Relude_Array_Instances.SemigroupAny, Error);
+  module WithErrorsAsArray = (Error: BsAbstract.Interface.TYPE) => {
+    module ValidationE =
+      Relude_Validation.WithErrors(
+        Relude_Array_Instances.SemigroupAny,
+        Error,
+      );
+    module Traversable =
+      Relude_Array_Instances.Traversable(ValidationE.Applicative);
+  };
 
-  module TraversableWithErrorsAsArrayOfStrings =
-    TraversableWithErrorsAsArray({
+  module WithErrorsAsArrayOfStrings =
+    WithErrorsAsArray({
       type t = string;
     });
 
-  module TraversableWithErrorsAsNonEmptyArray =
-         (Error: BsAbstract.Interface.TYPE) =>
-    Traversable(Relude_NonEmpty.Array.SemigroupAny, Error);
+  module WithErrorsAsNonEmptyArray = (Error: BsAbstract.Interface.TYPE) => {
+    module ValidationE =
+      Relude_Validation.WithErrors(Relude_NonEmpty.Array.SemigroupAny, Error);
+    module Traversable =
+      Relude_Array_Instances.Traversable(ValidationE.Applicative);
+  };
 
   let traverse =
       (type a, type b, type e, f: a => Belt.Result.t(b, e), array: array(a))
@@ -107,8 +123,8 @@ module Validation = {
     module Error = {
       type t = e;
     };
-    module Traversable =
-      Traversable(Relude_NonEmpty.Array.SemigroupAny, Error);
+    module ValidationE = WithErrorsAsNonEmptyArray(Error);
+    module Traversable = ValidationE.Traversable;
     Traversable.traverse(a => f(a)->Relude_Result.toValidationNea, array);
   };
 };

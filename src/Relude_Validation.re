@@ -329,6 +329,8 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
 let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   fa => fa |> fold(e => VOk(e), a => VError(a));
 
+// TODO: map2/etc. could probably come from ApplicativeSemigroupExtensions or something
+
 let map2:
   (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
   (f, fa, fb, appendErrors) => apply(map(f, fa), fb, appendErrors);
@@ -366,80 +368,43 @@ let map5:
   (f, fa, fb, fc, fd, fe, appendErrors) =>
     apply(map4(f, fa, fb, fc, fd, appendErrors), fe, appendErrors);
 
-module type FUNCTOR_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) =>
-   BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Errors.t(Error.t));
-
-module Functor: FUNCTOR_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) => {
-    type nonrec t('a) = t('a, Errors.t(Error.t));
-    let map = map;
-  };
-
-module type APPLY_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) =>
-   BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t));
-
-module Apply: APPLY_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) => {
-    include Functor(Errors, Error);
-    let apply = (f, v) => apply(f, v, Errors.append);
-  };
-
-module type APPLICATIVE_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) =>
-
-    BsAbstract.Interface.APPLICATIVE with
-      type t('a) = t('a, Errors.t(Error.t));
-
-module Applicative: APPLICATIVE_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) => {
-    include Apply(Errors, Error);
-    let pure = pure;
-  };
-
-module type MONAD_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) =>
-   BsAbstract.Interface.MONAD with type t('a) = t('a, Errors.t(Error.t));
-
-module Monad: MONAD_F =
-  (
-    Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-    Error: BsAbstract.Interface.TYPE,
-  ) => {
-    include Applicative(Errors, Error);
-    let flat_map = bind;
-  };
-
-module Infix =
+module WithErrors =
        (
          Errors: BsAbstract.Interface.SEMIGROUP_ANY,
          Error: BsAbstract.Interface.TYPE,
        ) => {
-  module Functor = BsAbstract.Infix.Functor((Functor(Errors, Error)));
+  module Functor:
+    BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Errors.t(Error.t)) = {
+    type nonrec t('a) = t('a, Errors.t(Error.t));
+    let map = map;
+  };
+  include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Apply = BsAbstract.Infix.Apply((Apply(Errors, Error)));
+  module Apply:
+    BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t)) = {
+    include Functor;
+    let apply = (ff, fa) => apply(ff, fa, Errors.append);
+  };
+  include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Monad = BsAbstract.Infix.Monad((Monad(Errors, Error)));
+  module Applicative:
+    BsAbstract.Interface.APPLICATIVE with
+      type t('a) = t('a, Errors.t(Error.t)) = {
+    include Apply;
+    let pure = pure;
+  };
+  include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+
+  module Monad:
+    BsAbstract.Interface.MONAD with type t('a) = t('a, Errors.t(Error.t)) = {
+    include Applicative;
+    let flat_map = bind;
+  };
+  include Relude_Extensions_Monad.MonadExtensions(Monad);
+
+  module Infix = {
+    include Relude_Extensions_Functor.FunctorInfix(Functor);
+    include Relude_Extensions_Apply.ApplyInfix(Apply);
+    include Relude_Extensions_Monad.MonadInfix(Monad);
+  };
 };

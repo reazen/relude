@@ -64,20 +64,24 @@ module Int = {
   include ListOrdExtensions(Relude_Int.Ord);
 
   let sum: list(int) => int =
-    Relude_List_Instances.fold((module Relude_Int.Additive.Monoid));
+    Relude_List_Instances.foldMonoid((module Relude_Int.Additive.Monoid));
 
   let product: list(int) => int =
-    Relude_List_Instances.fold((module Relude_Int.Multiplicative.Monoid));
+    Relude_List_Instances.foldMonoid(
+      (module Relude_Int.Multiplicative.Monoid),
+    );
 };
 
 module Float = {
   include ListOrdExtensions(Relude_Float.Ord);
 
   let sum: list(float) => float =
-    Relude_List_Instances.fold((module Relude_Float.Additive.Monoid));
+    Relude_List_Instances.foldMonoid((module Relude_Float.Additive.Monoid));
 
   let product: list(float) => float =
-    Relude_List_Instances.fold((module Relude_Float.Multiplicative.Monoid));
+    Relude_List_Instances.foldMonoid(
+      (module Relude_Float.Multiplicative.Monoid),
+    );
 };
 
 module Option = {
@@ -95,20 +99,22 @@ module Result = {
   let traverse =
       (type e, f: 'a => Belt.Result.t('b, e), list: list('a))
       : Belt.Result.t(list('b), e) => {
-    module ResultFixedError =
-      Relude_Result.Applicative({
+    module ResultE =
+      Relude_Result.WithError({
         type t = e;
       });
-    module TraverseResult = Relude_List_Instances.Traversable(ResultFixedError);
+    module TraverseResult =
+      Relude_List_Instances.Traversable(ResultE.Applicative);
     TraverseResult.traverse(f, list);
   };
 
   let sequence = (type e, xs): Belt.Result.t(list('a), e) => {
-    module ResultFixedError =
-      Relude_Result.Applicative({
+    module ResultE =
+      Relude_Result.WithError({
         type t = e;
       });
-    module TraverseResult = Relude_List_Instances.Traversable(ResultFixedError);
+    module TraverseResult =
+      Relude_List_Instances.Traversable(ResultE.Applicative);
     TraverseResult.sequence(xs);
   };
 };
@@ -118,10 +124,11 @@ module Validation = {
          (
            Errors: BsAbstract.Interface.SEMIGROUP_ANY,
            Error: BsAbstract.Interface.TYPE,
-         ) =>
-    BsAbstract.List.Traversable(
-      (Relude_Validation.Applicative(Errors, Error)),
-    );
+         ) => {
+    module ValidationE = Relude_Validation.WithErrors(Errors, Error);
+    module ValidationEApplicative = ValidationE.Applicative;
+    include BsAbstract.List.Traversable(ValidationEApplicative);
+  };
 
   module TraversableWithErrorsAsList = (Error: BsAbstract.Interface.TYPE) =>
     Traversable(Relude_List_Instances.SemigroupAny, Error);

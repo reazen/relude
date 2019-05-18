@@ -56,8 +56,10 @@ let fold: ('b, 'a => 'b, option('a)) => 'b =
   forEach(Js.log, None) == (); // does not print anything
   ```
 */
-let forEach: 'a. ('a => unit, option('a)) => unit =
-  (f, opt) => fold((), f, opt);
+/* Comes in via extensions now
+ let forEach: 'a. ('a => unit, option('a)) => unit =
+   (f, opt) => fold((), f, opt);
+   */
 
 /**
   `getOrElseLazy(defaultFcn, opt)` returns `v` when `opt` is
@@ -107,7 +109,8 @@ let getOrElse: ('a, option('a)) => 'a = default => fold(default, a => a);
   toList(None) == [];
   ```
 */
-let toList: option('a) => list('a) = t => fold([], v => [v], t);
+// Extensions
+//let toList: option('a) => list('a) = t => fold([], v => [v], t);
 
 /**
   `toArray(opt)` returns the array `[|v|]` if `opt` is of the form
@@ -119,7 +122,8 @@ let toList: option('a) => list('a) = t => fold([], v => [v], t);
   toArray(None) == [| |];
   ```
 */
-let toArray: option('a) => array('a) = t => fold([||], v => [|v|], t);
+// Extensions
+//let toArray: option('a) => array('a) = t => fold([||], v => [|v|], t);
 
 /**
   `isSome(opt)` returns `true` if `opt` is of the form `Some(v)`;
@@ -143,8 +147,11 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   map((x) => {x * x}, None) == None;
   ```
 */
-let map: ('a => 'b, option('a)) => option('b) =
-  (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
+// Extensions
+/*
+ let map: ('a => 'b, option('a)) => option('b) =
+   (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
+   */
 
 /**
   `void` discards the optional value and makes it `unit`.
@@ -154,7 +161,8 @@ let map: ('a => 'b, option('a)) => option('b) =
   Some(42) |> Option.void;
   ```
  */
-let void: 'a. option('a) => option(unit) = opt => opt |> map(_ => ());
+// Extensions
+//let void: 'a. option('a) => option(unit) = opt => opt |> map(_ => ());
 
 /**
   `apply(optFcn, optVal)` returns `Some(f(v))` if `optFcn`
@@ -170,8 +178,11 @@ let void: 'a. option('a) => option(unit) = opt => opt |> map(_ => ());
   apply(None, None) == None;
   ```
 */
-let apply: (option('a => 'b), option('a)) => option('b) =
-  (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
+// Extensions
+/*
+ let apply: (option('a => 'b), option('a)) => option('b) =
+   (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
+   */
 
 /**
   `pure(v)` returns `Some(v)`.
@@ -200,8 +211,10 @@ let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
   the reverse order.
 
 */
-let bind: (option('a), 'a => option('b)) => option('b) =
-  (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
+/*
+ let bind: (option('a), 'a => option('b)) => option('b) =
+   (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
+   */
 
 /**
   `flatMap(f, opt)` returns `f(v)` if `opt` is `Some(v)`,
@@ -219,8 +232,11 @@ let bind: (option('a), 'a => option('b)) => option('b) =
   `flatMap()` is the same as `bind()`, but with the arguments in
   the reverse order.
 */
-let flatMap: ('a => option('b), option('a)) => option('b) =
-  (f, fa) => bind(fa, f);
+// Extensions
+/*
+ let flatMap: ('a => option('b), option('a)) => option('b) =
+   (f, fa) => bind(fa, f);
+   */
 
 /**
   `foldLeft(f, init, opt)` takes as its first argument a function `f`
@@ -259,8 +275,11 @@ let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   foldRight(addLength, 0, None) == 0;
   ```
 */
-let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
-  (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
+// Extensions
+/*
+ let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
+   (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
+   */
 
 /**
   `alt(opt1, opt2)` returns `opt1` if it is of the form `Some(v)`;
@@ -330,7 +349,8 @@ let filterNot: 'a. ('a => bool, option('a)) => option('a) =
   flatten(Some(None)) == None;
   ```
 */
-let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
+// Extensions
+//let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
 
 /**
   In `eqBy(f, opt1, opt2)`, `f` is a function that compares two arguments
@@ -395,12 +415,15 @@ let eq =
   OptEq.eq(a, b);
 };
 
-module Semigroup = BsAbstract.Option.Semigroup; /* Option Semigroup requires semigroup for inner type */
+module WithSemigroup = (S: BsAbstract.Interface.SEMIGROUP) => {
+  module Semigroup = BsAbstract.Option.Semigroup(S);
+  include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 
-module Monoid = BsAbstract.Option.Monoid;
+  module Monoid = BsAbstract.Option.Monoid(S);
+  include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
+};
 
 module Semigroup_Any: BsAbstract.Interface.SEMIGROUP_ANY = {
-  /* Option Semigroup_Any behaves like Alt (no Semigroup required for inner type */
   type t('a) = option('a);
   let append = alt;
 };
@@ -411,127 +434,44 @@ module Monoid_Any = {
 };
 
 module Alt = BsAbstract.Option.Alt;
+include Relude_Extensions_Alt.AltExtensions(Alt);
 
 module Plus = BsAbstract.Option.Plus;
+//include Relude_Extensions_Plus.PlusExtensions(Plus);
 
 module Alternative = BsAbstract.Option.Alternative;
+//include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
 
 module Functor = BsAbstract.Option.Functor;
+include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
 module Apply = BsAbstract.Option.Apply;
+include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
 module Applicative = BsAbstract.Option.Applicative;
+include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
 module Monad = BsAbstract.Option.Monad;
+include Relude_Extensions_Monad.MonadExtensions(Monad);
 
 module Foldable = BsAbstract.Option.Foldable;
+include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-module Traversable = BsAbstract.Option.Traversable;
+module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
+  module Traversable = BsAbstract.Option.Traversable(A);
+  include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
+};
 
 module Eq = BsAbstract.Option.Eq;
 
 module Show = BsAbstract.Option.Show;
 
-module ApplyFunctions = BsAbstract.Functions.Apply(BsAbstract.Option.Apply);
-
-/**
-  `map2(f, opt1, opt2)` returns `Some(f(v1, v2))` if `opt1` and `opt2`
-  are `Some(v1)` and `Some(v2)`. It returns `None` in all other cases.
-
-  ### Example
-  ```re
-  let combine = (s, n) => {s ++ " " ++ string_of_int(n)};
-  map2(combine, Some("cloud"), Some(9)) == Some("cloud 9");
-  map2(combine, Some("cloud"), None) == None;
-  map2(combine, None, Some(9)) == None;
-  map2(combine, None, None) == None;
-  ```
-*/
-let map2: (('a, 'b) => 'c, option('a), option('b)) => option('c) =
-  (fn, a, b) => ApplyFunctions.lift2(fn, a, b);
-
-/**
-  `map3(f, opt1, opt2, opt3)` returns `Some(f(v1, v2, v3))` if `opt1`, `opt2`,
-  and `opt3` are `Some(v1)`, `Some(v2)`, and `Some(v3)`. It returns `None` in all other cases.
-
-  We are not showing all the possible combinations in the following example.
-
-  ### Example
-  ```re
-  let combine = (s1, s2, s3) => {s1 ++ s2 ++ s3};
-  map3(combine, Some("a"), Some("b"), Some("c")) == Some("abc");
-  map3(combine, Some("a"), None, Some("c")) == None;
-  map3(combine, Some("a"), None, None) == None;
-  map3(combine, None, None, None) == None;
-  ```
-*/
-let map3:
-  (('a, 'b, 'c) => 'd, option('a), option('b), option('c)) => option('d) =
-  (fn, a, b, c) => ApplyFunctions.lift3(fn, a, b, c);
-
-/**
-  `map4(f, opt1, opt2, opt3, opt4)` returns `Some(f(v1, v2, v3, v4))` if `opt1`, `opt2`,
-  `opt3` and `opt4` are `Some(v1)`, `Some(v2)`, `Some(v3)`, and `Some(v4)`.
-  It returns `None` in all other cases.
-
-  We are not showing all the possible combinations in the following example.
-
-  ### Example
-  ```re
-  let combine = (s1, s2, s3, s4) => {s1 ++ s2 ++ s3 ++ s4};
-  map4(combine, Some("a"), Some("b"), Some("c"), Some("d")) == Some("abcd");
-  map4(combine, Some("a"), None, Some("c"), None) == None;
-  map4(combine, None, Some("b"), Some("c"), Some("d")) == None;
-  ```
-*/
-let map4:
-  (
-    ('a, 'b, 'c, 'd) => 'e,
-    option('a),
-    option('b),
-    option('c),
-    option('d)
-  ) =>
-  option('e) =
-  (fn, a, b, c, d) => ApplyFunctions.lift4(fn, a, b, c, d);
-
-/**
-  `map4(f, opt1, opt2, opt3, opt4)` returns `Some(f(v1, v2, v3, v4, v5))`
-  if `opt1`, `opt2`, `opt3`, `opt4`, and `opt5` are `Some(v1)`, `Some(v2)`,
-  `Some(v3)`, `Some(v4)`, and `Some(v5)`.
-  It returns `None` in all other cases.
-
-  We are not showing all the possible combinations in the following example.
-
-  ### Example
-  ```re
-  let combine = (s1, s2, s3, s4, s5) => {s1 ++ s2 ++ s3 ++ s4 ++ s5};
-  map5(combine, Some("a"), Some("b"), Some("c"), Some("d"), Some("e")) == Some("abcde");
-  map5(combine, Some("a"), None, Some("c"), None, Some("e")) == None;
-  map5(combine, None, Some("b"), Some("c"), Some("d"), None) == None;
-  ```
-*/
-let map5:
-  (
-    ('a, 'b, 'c, 'd, 'e) => 'f,
-    option('a),
-    option('b),
-    option('c),
-    option('d),
-    option('e)
-  ) =>
-  option('f) =
-  (fn, a, b, c, d, e) => ApplyFunctions.lift5(fn, a, b, c, d, e);
-
-/**
-  The following submodule defines infix operators that you can
-  use as shortcuts for function calls. To use them, you should:
-
-  ```re
-  open Relude.Option.Infix;
-  ```
-*/
 module Infix = {
+  include Relude_Extensions_Functor.FunctorInfix(Functor);
+  include Relude_Extensions_Alt.AltInfix(Alt);
+  include Relude_Extensions_Apply.ApplyInfix(Apply);
+  include Relude_Extensions_Monad.MonadInfix(Monad);
+
   /**
     `opt |? default` yields `v` if `opt` is `Some(v)`; otherwise
     it yields `default`. (Same as `getOrElse(default, opt)`.)
@@ -543,63 +483,4 @@ module Infix = {
     ```
   */
   let (|?) = (opt, default) => getOrElse(default, opt);
-
-  /**
-    `opt1 <|> opt2` yields `opt1` if it is `Some(v)`, otherwise
-    it yields `opt2`. (Same as `alt(opt1, opt2)`.)
-
-    ### Example
-    ```re
-    Some(2) <|> Some(3) == Some(2);
-    Some(2) <|> None == None;
-    None <|> Some(3) == Some(3);
-    None <|> None == None;
-    ```
-  */
-  let (<|>) = alt;
-
-  /**
-    `f <$> opt` yields Some(f(v)) if `opt` is `Some(v)`, otherwise `None`.
-    (Same as `map(f, opt)`.)
-
-    ### Example
-    ```re
-    let square = (x) => {x * x};
-    square <$> Some(12) == Some(144);
-    square <$> None == None;
-    ```
-  */
-  let (<$>) = map;
-
-  /**
-    `optFcn <*> optVal` yields `Some(f(v))` when `optFcn`
-    is `Some(f)` and optVal is `Some(v)`. In all other ases,
-    `<*>` yields `None`.  (Same as `apply(optFcn, optVal)`.)
-
-     ### Example
-    ```re
-    let square = (x) => {x * x};
-    Some(square) <*> Some(12) == Some(144);
-    Some(square) <*> None == None;
-    None <*> Some(12) == None;
-    None <*> None == None;
-    ```
-  */
-  let (<*>) = apply;
-
-  /**
-    `opt >>= f` yields `f(v)` if `opt` is `Some(v)`,
-  `None` otherwise. In this case, `f` is a function that
-  takes a non-`option` argument and returns an `option` result.
-  (Same as `bind(opt, f)`.)
-
-  ### Example
-  ```re
-  let reciprocalOpt = (x) => { x == 0.0 ? None : Some(1.0 /. x) };
-  Some(2.0) >>= reciprocalOpt == Some(0.5);
-  Some(0.0) >>= reciprocalOpt == None;
-  None >>= reciprocalOpt == None;
-  ```
-  */
-  let (>>=) = bind;
 };

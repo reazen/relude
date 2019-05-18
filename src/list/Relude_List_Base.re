@@ -1,11 +1,3 @@
-/**
- * Relude.List.Base includes list-specific functions that aren't derived from
- * typeclass membership.
- */
-
-let mapWithIndex: 'a 'b. (('a, int) => 'b, list('a)) => list('b) =
-  (f, xs) => Belt.List.mapWithIndex(xs, (i, x) => f(x, i));
-
 let cons: 'a. ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
 
 let prepend: 'a. ('a, list('a)) => list('a) = cons;
@@ -21,6 +13,9 @@ let append: 'a. ('a, list('a)) => list('a) =
 let repeat: 'a. (int, 'a) => list('a) = (i, x) => Belt.List.make(i, x);
 
 let makeWithIndex: 'a. (int, int => 'a) => list('a) = Belt.List.makeBy;
+
+let mapWithIndex: 'a 'b. (('a, int) => 'b, list('a)) => list('b) =
+  (f, xs) => Belt.List.mapWithIndex(xs, (i, x) => f(x, i));
 
 let reverse: 'a. list('a) => list('a) = Belt.List.reverse;
 
@@ -249,3 +244,29 @@ let removeEach =
   module EqA = (val eqA);
   removeEachBy(EqA.eq, x, xs);
 };
+
+// TODO: scans come from TraversableExtensions
+let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b) =
+  (f, init, xs) =>
+    Relude_List_Instances.foldLeft(
+      ((acc, result), curr) => {
+        let nextAcc = f(acc, curr);
+        (nextAcc, [nextAcc, ...result]);
+      },
+      (init, []),
+      xs,
+    )
+    |> snd
+    |> Belt.List.reverse; // TODO use our own implementation
+
+let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
+  (f, init, xs) =>
+    Relude_List_Instances.foldRight(
+      (curr, (acc, result)) => {
+        let nextAcc = f(curr, acc);
+        (nextAcc, [nextAcc, ...result]);
+      },
+      (init, []),
+      xs,
+    )
+    |> snd;

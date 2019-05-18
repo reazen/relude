@@ -262,12 +262,9 @@ module Errors = {
   module SemigroupAny = NonEmptyArray.SemigroupAny;
 };
 
-module Apply = Validation.Apply(Errors.SemigroupAny, Error.Type);
-
-module Traversable =
-  Array.Validation.Traversable(Errors.SemigroupAny, Error.Type);
-
-module Infix = Validation.Infix(Errors.SemigroupAny, Error.Type);
+module ValidationE = Validation.WithErrors(Errors.SemigroupAny, Error.Type);
+module ArrayValidationE = Array.Validation.WithErrors(Errors.SemigroupAny, Error.Type);
+module TraversableE = ArrayValidationE.Traversable;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Basic value validation
@@ -403,7 +400,7 @@ let validateArrayOfJson:
          jsonValues =>
            jsonValues
            |> Array.zipWithIndex
-           |> Traversable.traverse(((json, index)) =>
+           |> TraversableE.traverse(((json, index)) =>
                 validateItem(index, json)
                 |> Validation.mapErrorsNea(e =>
                      string_of_int(index) ++ ": " ++ e
@@ -428,7 +425,7 @@ let validateArrayOfJsonAsList:
          arrayOfJson =>
            arrayOfJson
            |> Array.zipWithIndex
-           |> Traversable.traverse(((json, index)) =>
+           |> TraversableE.traverse(((json, index)) =>
                 validateItem(index, json)
                 |> Validation.mapErrorsNea(e =>
                      string_of_int(index) ++ ": " ++ e
@@ -567,10 +564,10 @@ module DSL = {
   // with the <$> (map) and <*> (apply) operators for validation.
 
   // Bring some infix operators into scope
-  let (<$>) = Infix.Functor.(<$>); // map
-  let (<#>) = Infix.Functor.(<#>); // flipMap - useful for mapping values after decoding them
-  let (<*>) = Infix.Apply.(<*>); // apply
-  let (>>=) = Infix.Monad.(>>=); // bind
+  let (<$>) = ValidationE.Infix.(<$>); // map
+  let (<#>) = ValidationE.Infix.(<#>); // flipMap - useful for mapping values after decoding them
+  let (<*>) = ValidationE.Infix.(<*>); // apply
+  let (>>=) = ValidationE.Infix.(>>=); // bind
 
   /**
   JSON encode utilities

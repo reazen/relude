@@ -649,69 +649,61 @@ IO.pure(4) |> IO.withDelay(2000) |> ...
 let withDelay: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
   (millis, io) => delay(millis) |> flatMap(_ => io);
 
-module type FUNCTOR_F =
-  (E: BsAbstract.Interface.TYPE) =>
-   BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t);
-
-module Functor: FUNCTOR_F =
-  (E: BsAbstract.Interface.TYPE) => {
+/**
+Because this is a bifunctor, we need to use a module functor to lock in the error type,
+so we can implement many of the single-type parameter typeclasses.
+*/
+module WithError = (E: BsAbstract.Interface.TYPE) => {
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
     type nonrec t('a) = t('a, E.t);
     let map = map;
   };
+  include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-module Bifunctor: BsAbstract.Interface.BIFUNCTOR = {
-  type nonrec t('a, 'e) = t('a, 'e);
-  let bimap = bimap;
-};
+  module Bifunctor: BsAbstract.Interface.BIFUNCTOR = {
+    type nonrec t('a, 'e) = t('a, 'e);
+    let bimap = bimap;
+  };
+  include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 
-module type APPLY_F =
-  (E: BsAbstract.Interface.TYPE) =>
-   BsAbstract.Interface.APPLY with type t('a) = t('a, E.t);
-
-module Apply: APPLY_F =
-  (E: BsAbstract.Interface.TYPE) => {
-    include Functor(E);
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, E.t) = {
+    include Functor;
     let apply = apply;
   };
+  include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-module type APPLICATIVE_F =
-  (E: BsAbstract.Interface.TYPE) =>
-   BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t);
-
-module Applicative: APPLICATIVE_F =
-  (E: BsAbstract.Interface.TYPE) => {
-    include Apply(E);
+  module Applicative:
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t) = {
+    include Apply;
     let pure = pure;
   };
+  include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-module type MONAD_F =
-  (E: BsAbstract.Interface.TYPE) =>
-   BsAbstract.Interface.MONAD with type t('a) = t('a, E.t);
-
-module Monad: MONAD_F =
-  (E: BsAbstract.Interface.TYPE) => {
-    include Applicative(E);
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, E.t) = {
+    include Applicative;
     let flat_map = bind;
   };
+  include Relude_Extensions_Monad.MonadExtensions(Monad);
 
-module MonadThrow: Relude_MonadError.MONAD_THROW =
-  (E: BsAbstract.Interface.TYPE) => {
-    include Monad(E);
+  module MonadThrow:
+    Relude_MonadError.MONAD_THROW with
+      type t('a) = t('a, E.t) and type e = E.t = {
+    include Monad;
+    type e = E.t;
     let throwError = throw;
   };
 
-module MonadError: Relude_MonadError.MONAD_ERROR =
-  (E: BsAbstract.Interface.TYPE) => {
-    include Monad(E);
-    let throwError = throw;
+  module MonadError:
+    Relude_MonadError.MONAD_ERROR with
+      type t('a) = t('a, E.t) and type e = E.t = {
+    include MonadThrow;
     let catchError = catchError;
   };
 
-module Infix = {
-  module Functor = (E: BsAbstract.Interface.TYPE) =>
-    BsAbstract.Infix.Functor((Functor(E)));
-  module Apply = (E: BsAbstract.Interface.TYPE) =>
-    BsAbstract.Infix.Apply((Apply(E)));
-  module Monad = (E: BsAbstract.Interface.TYPE) =>
-    BsAbstract.Infix.Monad((Monad(E)));
+  module Infix = {
+    include Relude_Extensions_Functor.FunctorInfix(Functor);
+    include Relude_Extensions_Bifunctor.BifunctorInfix(Bifunctor);
+    include Relude_Extensions_Apply.ApplyInfix(Apply);
+    include Relude_Extensions_Monad.MonadInfix(Monad);
+  };
 };

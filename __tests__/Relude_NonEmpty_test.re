@@ -55,15 +55,12 @@ describe("NonEmpty.List", () => {
     |> toEqual("[!1, 2, 3!]");
   });
 
-  module NonEmptyListTraversableOption =
-    NonEmpty.List.Traversable(Relude_Option.Applicative);
+  module NonEmptyListWithOption =
+    NonEmpty.List.WithApplicative(Relude_Option.Applicative);
 
   test("traverse option", () =>
     expect(
-      NonEmptyListTraversableOption.traverse(
-        a => Some(a),
-        NonEmpty(1, [2, 3]),
-      ),
+      NonEmptyListWithOption.traverse(a => Some(a), NonEmpty(1, [2, 3])),
     )
     |> toEqual(Some(NonEmpty.List.NonEmpty(1, [2, 3])))
   );
@@ -77,12 +74,12 @@ describe("NonEmpty.Array", () => {
     |> toEqual(NonEmpty.Array.make(1, [|2, 3, 4, 5|]));
   });
 
-  module NonEmptyArrayTraversableOption =
-    NonEmpty.Array.Traversable(Relude_Option.Applicative);
+  module NonEmptyArrayWithOption =
+    NonEmpty.Array.WithApplicative(Relude_Option.Applicative);
 
   test("traverse option", () =>
     expect(
-      NonEmptyArrayTraversableOption.traverse(
+      NonEmptyArrayWithOption.traverse(
         a => Some(a),
         NonEmpty(1, [|2, 3|]),
       ),

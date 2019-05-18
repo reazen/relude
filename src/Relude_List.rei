@@ -588,7 +588,7 @@ let findWithIndex: (('a, int) => bool, list('a)) => option('a);
   fold((module DurationAppend), [(3, 25), (7, 45)]) == (11, 10);
   ```
 */
-let fold:
+let foldMonoid:
   ((module BsAbstract.Interface.MONOID with type t = 'a), list('a)) => 'a;
 
 /**
@@ -2011,7 +2011,7 @@ module Validation: {
         (P: BsAbstract.Interface.PLUS) =>
          {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
       type applicative_t('a) =
-        Relude_Validation.Applicative(Errors)(Error).t('a);
+        Relude_Validation.WithErrors(Errors)(Error).Applicative.t('a);
       let traverse:
         ('a => applicative_t('b), t('a)) => applicative_t(t('b));
       let sequence: t(applicative_t('a)) => applicative_t(t('a));
@@ -2034,7 +2034,7 @@ module Validation: {
         (P: BsAbstract.Interface.PLUS) =>
          {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
       type applicative_t('a) =
-        Relude_Validation.Applicative(Relude_List_Instances.SemigroupAny)(Error).t(
+        Relude_Validation.WithErrors(Relude_List_Instances.SemigroupAny)(Error).Applicative.t(
           'a,
         );
       let traverse:
@@ -2079,7 +2079,7 @@ module Validation: {
         (P: BsAbstract.Interface.PLUS) =>
          {let fold_map: ('a => P.t('a), t('a)) => P.t('a);};
       type applicative_t('a) =
-        Relude_Validation.Applicative(Relude_NonEmpty.List.SemigroupAny)(Error).t(
+        Relude_Validation.WithErrors(Relude_NonEmpty.List.SemigroupAny)(Error).Applicative.t(
           'a,
         );
       let traverse:

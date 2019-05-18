@@ -1,18 +1,13 @@
-/*
- AsyncData represents the state of data that is being loaded asynchronously.
+/**
+AsyncData represents the state of data that is being loaded asynchronously.
 
- This type does not represent failures by default, but it can by using Belt.Result.t as your 'a type.
+This type does not represent failures by default, but it can by using Belt.Result.t as your 'a type.
 
- The reason for this is that not all async data loading mechanisms will necessarily fail.
+The reason for this is that not all async data loading mechanisms will necessarily fail.
 
- The other interesting bit is that `Reloading` can be used if you already have data (e.g. an Ok or Error Result),
- but you need to reload the data to get a new Result.
- */
-
-/*******************************************************************************
- * Type definition and constructors
- ******************************************************************************/
-
+The other interesting bit is that `Reloading` can be used if you already have data (e.g. an Ok or Error Result),
+but you need to reload the data to get a new Result.
+*/
 type t('a) =
   | Init
   | Loading
@@ -20,13 +15,12 @@ type t('a) =
   | Complete('a);
 
 let init: t('a) = Init;
-let loading: t('a) = Loading;
-let reloading: 'a => t('a) = a => Reloading(a);
-let complete: 'a => t('a) = a => Complete(a);
 
-/*******************************************************************************
- * Needed by typeclasses
- ******************************************************************************/
+let loading: t('a) = Loading;
+
+let reloading: 'a => t('a) = a => Reloading(a);
+
+let complete: 'a => t('a) = a => Complete(a);
 
 let pure: 'a. 'a => t('a) = a => Complete(a);
 
@@ -96,8 +90,10 @@ let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
     | Complete(a) => f(a)
     };
 
+/* TODO: flatMap comes in via Extensions now - need to make sure that's what we want
 let flatMap: 'a 'b. ('a => t('b), t('a)) => t('b) =
   (f, fa) => bind(fa, f);
+*/
 
 let eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
   (innerEq, a, b) =>
@@ -111,10 +107,6 @@ let eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
     | (Reloading(_), _)
     | (Complete(_), _) => false
     };
-
-/*******************************************************************************
- * Utilities specific to this type
- ******************************************************************************/
 
 let isInit: 'a. t('a) => bool =
   fun
@@ -244,34 +236,35 @@ let foldByValueLazy: 'a 'b. (unit => 'b, 'a => 'b, t('a)) => 'b =
   (onNoValue, onValue, fa) =>
     foldLazy(onNoValue, onNoValue, onValue, onValue, fa);
 
-/*******************************************************************************
- * Typeclass implementations
- ******************************************************************************/
-
 module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
   let map = map;
 };
+include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
 module Alt: BsAbstract.Interface.ALT with type t('a) = t('a) = {
   include Functor;
   let alt = alt;
 };
+include Relude_Extensions_Alt.AltExtensions(Alt);
 
 module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
   include Functor;
   let apply = apply;
 };
+include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
 module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
   include Apply;
   let pure = pure;
 };
+include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
 module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
   include Applicative;
   let flat_map = bind;
 };
+include Relude_Extensions_Monad.MonadExtensions(Monad);
 
 module Eq = (E: BsAbstract.Interface.EQ) : BsAbstract.Interface.EQ => {
   type nonrec t = t(E.t);
@@ -279,15 +272,13 @@ module Eq = (E: BsAbstract.Interface.EQ) : BsAbstract.Interface.EQ => {
 };
 
 module Infix = {
-  include BsAbstract.Infix.Functor(Functor);
-  include BsAbstract.Infix.Apply(Apply);
-  include BsAbstract.Infix.Monad(Monad);
+  include Relude_Extensions_Functor.FunctorInfix(Functor);
+  include Relude_Extensions_Alt.AltInfix(Alt);
+  include Relude_Extensions_Apply.ApplyInfix(Apply);
+  include Relude_Extensions_Monad.MonadInfix(Monad);
 };
 
-/*******************************************************************************
- * Free utilities from typeclasses
- ******************************************************************************/
-
+/* This stuff comes in via extensions now
 module ApplyFunctions = BsAbstract.Functions.Apply(Apply);
 
 /* These can be derived from BsAbstract.Functions.Apply, but because we have an error type, it becomes a module functor with an error type */
@@ -305,3 +296,4 @@ let map5:
   (('a, 'b, 'c, 'd, 'e) => 'f, t('a), t('b), t('c), t('d), t('e)) =>
   t('f)
  = ApplyFunctions.lift5;
+ */
