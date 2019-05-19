@@ -11,13 +11,13 @@
   "scripts": {
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
-    "test": "npm run build && jest",
-    "cleanbuild": "npm run clean && npm run build",
-    "cleantest": "npm run clean && npm run test",
-    "releasebuild": "npm run cleanbuild && ./generate_rei_files && npm run build",
-    "docs": "docsify serve ./docs",
     "watch": "bsb -make-world -w",
-    "start": "npm run start"
+    "test": "npm run build && jest",
+    "docs": "docsify serve ./docs",
+    "cleanbuild": "npm run clean && npm run build",
+    "cleanwatch": "npm run clean && npm run watch",
+    "cleantest": "npm run clean && npm run test",
+    "releasebuild": "npm run cleanbuild && ./generate_rei_files && npm run cleantest"
   },
   "keywords": [
     "ReasonML",
