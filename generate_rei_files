@@ -1,0 +1,13 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+for cmi_file_path in $(find ./lib/bs/src -name '*.cmi')
+do
+  #echo $cmi_file_path
+  rei_file_path=$(echo $cmi_file_path | sed 's/lib\/bs\///' | sed 's/\.cmi$/.rei/')
+  #echo $rei_file_path
+
+  command="./node_modules/.bin/bsc -bs-re-out ${cmi_file_path} > ${rei_file_path}"
+  echo $command
+  eval $command
+done

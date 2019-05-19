@@ -111,15 +111,16 @@ module WithErrors =
          Errors: BsAbstract.Interface.SEMIGROUP_ANY,
          Error: BsAbstract.Interface.TYPE,
        ) => {
+  type ior('a, 'e) = t('a, 'e); // alias to avoid issue with .rei gen
   module Functor:
-    BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Errors.t(Error.t)) = {
-    type nonrec t('a) = t('a, Errors.t(Error.t));
+    BsAbstract.Interface.FUNCTOR with type t('a) = ior('a, Errors.t(Error.t)) = {
+    type t('a) = ior('a, Errors.t(Error.t));
     let map = map;
   };
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
   module Apply:
-    BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t)) = {
+    BsAbstract.Interface.APPLY with type t('a) = ior('a, Errors.t(Error.t)) = {
     include Functor;
     let apply = (ff, fa) => apply(ff, fa, Errors.append);
   };
@@ -127,14 +128,14 @@ module WithErrors =
 
   module Applicative:
     BsAbstract.Interface.APPLICATIVE with
-      type t('a) = t('a, Errors.t(Error.t)) = {
+      type t('a) = ior('a, Errors.t(Error.t)) = {
     include Apply;
     let pure = pure;
   };
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   module Monad:
-    BsAbstract.Interface.MONAD with type t('a) = t('a, Errors.t(Error.t)) = {
+    BsAbstract.Interface.MONAD with type t('a) = ior('a, Errors.t(Error.t)) = {
     include Applicative;
     let flat_map = bind;
   };

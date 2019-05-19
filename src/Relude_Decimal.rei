@@ -1,0 +1,13 @@
+type mantissa = int;
+type exponent = int;
+type t = Decimal(mantissa, exponent);
+type rounding = Truncate | RoundUp | RoundDown | RoundUpOrDown;
+let make: (int, int) => t;
+let fromInt: int => t;
+let toString: t => string;
+let tenToThePowerOfPositive: int => int;
+let normalize: (t, t) => (t, t, int);
+let add: (t, t) => t;
+let ( +.. ): (t, t) => t;
+let subtract: (t, t) => t;
+let ( -.. ): (t, t) => t;
