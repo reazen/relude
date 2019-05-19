@@ -21,9 +21,9 @@ let completeOk: 'a 'e. 'a => t('a, 'e) =
 let completeError: 'a 'e. 'e => t('a, 'e) =
   e => Relude_AsyncData.complete(Belt.Result.Error(e));
 
-let ok = completeOk;
+let ok: 'a 'e. 'a => t('a, 'e) = completeOk;
 
-let error = completeError;
+let error: 'a 'e. 'e => t('a, 'e) = completeError;
 
 let pure: 'a 'e. 'a => t('a, 'e) = completeOk;
 
@@ -106,6 +106,9 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
 
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
+
+let flatten: 'a 'e. t(t('a, 'e), 'e) => t('a, 'e) =
+  mma => flatMap(a => a, mma);
 
 let eqBy:
   'a 'e.
@@ -327,12 +330,14 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     type nonrec t('a) = t('a, E.t);
     let map = map;
   };
+  let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
   module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, E.t) = {
     include Functor;
     let apply = apply;
   };
+  let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
@@ -340,12 +345,14 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     include Apply;
     let pure = pure;
   };
+  let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, E.t) = {
     include Applicative;
     let flat_map = bind;
   };
+  let bind = Monad.flat_map;
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module Infix = {

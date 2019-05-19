@@ -19,7 +19,7 @@ module ArrayMonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
 module String = {
   include ArrayOrdExtensions(Relude_String.Ord);
   include ArrayMonoidExtensions(Relude_String.Monoid);
-  let join = fold;
+  let join = foldWithMonoid;
   let joinWith = intercalate;
 
   /**
@@ -41,9 +41,9 @@ module String = {
 module Int = {
   include ArrayOrdExtensions(Relude_Int.Ord);
   let sum =
-    Relude_Array_Instances.foldMonoid((module Relude_Int.Additive.Monoid));
+    Relude_Array_Instances.foldWithMonoid((module Relude_Int.Additive.Monoid));
   let product =
-    Relude_Array_Instances.foldMonoid(
+    Relude_Array_Instances.foldWithMonoid(
       (module Relude_Int.Multiplicative.Monoid),
     );
 };
@@ -51,9 +51,9 @@ module Int = {
 module Float = {
   include ArrayOrdExtensions(Relude_Float.Ord);
   let sum =
-    Relude_Array_Instances.foldMonoid((module Relude_Float.Additive.Monoid));
+    Relude_Array_Instances.foldWithMonoid((module Relude_Float.Additive.Monoid));
   let product =
-    Relude_Array_Instances.foldMonoid(
+    Relude_Array_Instances.foldWithMonoid(
       (module Relude_Float.Multiplicative.Monoid),
     );
 };

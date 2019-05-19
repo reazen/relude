@@ -1,7 +1,7 @@
 module ApplicativeExtensions = (A: BsAbstract.Interface.APPLICATIVE) => {
   module BsApplicativeExtensions = BsAbstract.Functions.Applicative(A);
 
-  let pure = A.pure;
+  //let pure = A.pure;
 
   let liftA1 = BsApplicativeExtensions.liftA1;
 

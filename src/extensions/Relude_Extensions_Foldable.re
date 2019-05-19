@@ -11,15 +11,15 @@ let optionAlt: (option('a), option('a)) => option('a) =
 module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   module BsFoldableExtensions = BsAbstract.Functions.Foldable(F);
 
-  let foldLeft = F.fold_left;
+  //let foldLeft = F.fold_left;
 
-  let foldRight = F.fold_right;
+  //let foldRight = F.fold_right;
 
   let any: 'a. ('a => bool, F.t('a)) => bool =
-    (f, xs) => foldLeft((v, x) => v || f(x), false, xs);
+    (f, xs) => F.fold_left((v, x) => v || f(x), false, xs);
 
   let all: 'a. ('a => bool, F.t('a)) => bool =
-    (f, xs) => foldLeft((v, x) => v && f(x), true, xs);
+    (f, xs) => F.fold_left((v, x) => v && f(x), true, xs);
 
   let containsBy: 'a. (('a, 'a) => bool, 'a, F.t('a)) => bool =
     (f, x, xs) => any(f(x), xs);
@@ -32,7 +32,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
 
   let indexOfBy: 'a. (('a, 'a) => bool, 'a, F.t('a)) => option(int) =
     (f, x, xs) =>
-      foldLeft(
+      F.fold_left(
         ((i, v), y) =>
           (i + 1, optionAlt(v, f(x, y) ? Some(i) : None)),
         (0, None),
@@ -48,7 +48,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
 
   let minBy: 'a. (('a, 'a) => ordering, F.t('a)) => option('a) =
     (f, xs) =>
-      foldLeft(
+      F.fold_left(
         (min, x) =>
           switch (min) {
           | None => Some(x)
@@ -66,7 +66,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
 
   let maxBy: 'a. (('a, 'a) => ordering, F.t('a)) => option('a) =
     (f, xs) =>
-      foldLeft(
+      F.fold_left(
         (min, x) =>
           switch (min) {
           | None => Some(x)
@@ -83,16 +83,16 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   };
 
   let countBy: 'a. ('a => bool, F.t('a)) => int =
-    (f, xs) => foldLeft((count, x) => f(x) ? count + 1 : count, 0, xs);
+    (f, xs) => F.fold_left((count, x) => f(x) ? count + 1 : count, 0, xs);
 
   let length: 'a. F.t('a) => int = xs => countBy(_ => true, xs);
 
   let forEach: 'a. ('a => unit, F.t('a)) => unit =
-    (f, xs) => foldLeft((_, x) => f(x), (), xs);
+    (f, xs) => F.fold_left((_, x) => f(x), (), xs);
 
   let forEachWithIndex: 'a. (('a, int) => unit, F.t('a)) => unit =
     (f, xs) =>
-      foldLeft(
+      F.fold_left(
         (i, x) => {
           f(x, i);
           i + 1;
@@ -104,14 +104,14 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
 
   let find: 'a. ('a => bool, F.t('a)) => option('a) =
     f =>
-      foldLeft(
+      F.fold_left(
         (v, x) => optionAlt(v, f(x) ? Some(x) : None),
         None,
       );
 
   let findWithIndex: 'a. (('a, int) => bool, F.t('a)) => option('a) =
     (f, xs) =>
-      foldLeft(
+      F.fold_left(
         ((i, v), x) =>
           (i + 1, optionAlt(v, f(x, i) ? Some(x) : None)),
         (0, None),
@@ -120,10 +120,10 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
       |> snd;
 
   let toList: F.t('a) => list('a) =
-    fa => foldRight((a, acc) => [a, ...acc], [], fa);
+    fa => F.fold_right((a, acc) => [a, ...acc], [], fa);
 
   let toArray: F.t('a) => array('a) =
-    fa => foldLeft((acc, a) => Belt.Array.concat(acc, [|a|]), [||], fa);
+    fa => F.fold_left((acc, a) => Belt.Array.concat(acc, [|a|]), [||], fa);
 
   module FoldableSemigroupExtensions = (S: BsAbstract.Interface.SEMIGROUP) => {
     module BsFoldableSemigroupExtensions = BsFoldableExtensions.Semigroup(S);
@@ -140,11 +140,11 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
 
     let foldMap: 'a. ('a => M.t, F.t('a)) => M.t = BsFoldableMonoidExtensions.FM.fold_map;
 
-    let fold: F.t(M.t) => M.t = BsFoldableMonoidExtensions.fold;
+    let foldWithMonoid: F.t(M.t) => M.t = BsFoldableMonoidExtensions.fold;
 
     let intercalate: (M.t, F.t(M.t)) => M.t =
       (sep, xs) =>
-        foldLeft(
+        F.fold_left(
           ((init, acc), x) =>
             init ? (false, x) : (false, M.append(acc, M.append(sep, x))),
           (true, M.empty),
@@ -165,14 +165,14 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   };
 
   // Name this foldMonoid to avoid conflicting with things like Option.fold and Result.fold, which have a different purpose
-  let foldMonoid =
+  let foldWithMonoid =
       (
         type a,
         monoidA: (module BsAbstract.Interface.MONOID with type t = a),
         xs: F.t(a),
       ) => {
     module FoldableMonoidExtensions = FoldableMonoidExtensions((val monoidA));
-    FoldableMonoidExtensions.fold(xs);
+    FoldableMonoidExtensions.foldWithMonoid(xs);
   };
 
   let intercalate =
@@ -198,7 +198,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   module FoldableMonadExtensions = (M: BsAbstract.Interface.MONAD) => {
     module BsFoldableMonadExtensions = BsFoldableExtensions.Monad(M);
 
-    let foldM:
+    let foldWithMonad:
       'a 'acc.
       (('acc, 'a) => M.t('acc), 'acc, F.t('a)) => M.t('acc)
      = BsFoldableMonadExtensions.fold_monad;

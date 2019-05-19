@@ -147,11 +147,8 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   map((x) => {x * x}, None) == None;
   ```
 */
-// Extensions
-/*
  let map: ('a => 'b, option('a)) => option('b) =
    (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
-   */
 
 /**
   `void` discards the optional value and makes it `unit`.
@@ -179,10 +176,8 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   ```
 */
 // Extensions
-/*
  let apply: (option('a => 'b), option('a)) => option('b) =
    (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
-   */
 
 /**
   `pure(v)` returns `Some(v)`.
@@ -211,10 +206,8 @@ let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
   the reverse order.
 
 */
-/*
  let bind: (option('a), 'a => option('b)) => option('b) =
    (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
-   */
 
 /**
   `flatMap(f, opt)` returns `f(v)` if `opt` is `Some(v)`,
@@ -275,11 +268,8 @@ let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   foldRight(addLength, 0, None) == 0;
   ```
 */
-// Extensions
-/*
  let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
    (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
-   */
 
 /**
   `alt(opt1, opt2)` returns `opt1` if it is of the form `Some(v)`;
@@ -437,10 +427,10 @@ module Alt = BsAbstract.Option.Alt;
 include Relude_Extensions_Alt.AltExtensions(Alt);
 
 module Plus = BsAbstract.Option.Plus;
-//include Relude_Extensions_Plus.PlusExtensions(Plus);
+include Relude_Extensions_Plus.PlusExtensions(Plus);
 
 module Alternative = BsAbstract.Option.Alternative;
-//include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
+include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
 
 module Functor = BsAbstract.Option.Functor;
 include Relude_Extensions_Functor.FunctorExtensions(Functor);

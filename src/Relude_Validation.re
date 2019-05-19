@@ -7,6 +7,11 @@ type t('a, 'e) =
   | VError('e);
 
 /**
+ `ok()` is a synonym for `pure()`.
+*/
+let ok: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
+
+/**
   `pure(val)` wraps its argument in a `VOk()`.
 
   ### Example
@@ -15,11 +20,6 @@ type t('a, 'e) =
   ```
 */
 let pure: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
-
-/**
- `ok()` is a synonym for `pure()`.
-*/
-let ok: 'a 'e. 'a => t('a, 'e) = pure;
 
 /**
   `error(val)` wraps the value in a `VError()`.
@@ -216,7 +216,7 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
   in the `__tests__/Relude_Validation_test.re` file for more details.
 
 */
-let apply:
+let applyWithAppendErrors:
   'a 'b 'e.
   (t('a => 'b, 'e), t('a, 'e), ('e, 'e) => 'e) => t('b, 'e)
  =
@@ -333,13 +333,14 @@ let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
 
 let map2:
   (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
-  (f, fa, fb, appendErrors) => apply(map(f, fa), fb, appendErrors);
+  (f, fa, fb, appendErrors) =>
+    applyWithAppendErrors(map(f, fa), fb, appendErrors);
 
 let map3:
   (('a, 'b, 'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x), ('x, 'x) => 'x) =>
   t('d, 'x) =
   (f, fa, fb, fc, appendErrors) =>
-    apply(map2(f, fa, fb, appendErrors), fc, appendErrors);
+    applyWithAppendErrors(map2(f, fa, fb, appendErrors), fc, appendErrors);
 
 let map4:
   (
@@ -352,7 +353,11 @@ let map4:
   ) =>
   t('e, 'x) =
   (f, fa, fb, fc, fd, appendErrors) =>
-    apply(map3(f, fa, fb, fc, appendErrors), fd, appendErrors);
+    applyWithAppendErrors(
+      map3(f, fa, fb, fc, appendErrors),
+      fd,
+      appendErrors,
+    );
 
 let map5:
   (
@@ -366,7 +371,11 @@ let map5:
   ) =>
   t('f, 'x) =
   (f, fa, fb, fc, fd, fe, appendErrors) =>
-    apply(map4(f, fa, fb, fc, fd, appendErrors), fe, appendErrors);
+    applyWithAppendErrors(
+      map4(f, fa, fb, fc, fd, appendErrors),
+      fe,
+      appendErrors,
+    );
 
 module WithErrors =
        (
@@ -378,13 +387,15 @@ module WithErrors =
     type nonrec t('a) = t('a, Errors.t(Error.t));
     let map = map;
   };
+  let map = map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
   module Apply:
     BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t)) = {
     include Functor;
-    let apply = (ff, fa) => apply(ff, fa, Errors.append);
+    let apply = (ff, fa) => applyWithAppendErrors(ff, fa, Errors.append);
   };
+  let apply = (ff, fa) => applyWithAppendErrors(ff, fa, Errors.append);
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
@@ -393,6 +404,7 @@ module WithErrors =
     include Apply;
     let pure = pure;
   };
+  let pure = pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   module Monad:
@@ -400,6 +412,7 @@ module WithErrors =
     include Applicative;
     let flat_map = bind;
   };
+  let bind = bind;
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module Infix = {

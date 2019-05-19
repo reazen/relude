@@ -1,7 +1,7 @@
 module ApplyExtensions = (A: BsAbstract.Interface.APPLY) => {
   module BsApplyExtensions = BsAbstract.Functions.Apply(A);
 
-  let apply: 'a 'b. (A.t('a => 'b), A.t('a)) => A.t('b) = A.apply;
+  //let apply: 'a 'b. (A.t('a => 'b), A.t('a)) => A.t('b) = A.apply;
 
   let applyFirst: 'a 'b. (A.t('a), A.t('b)) => A.t('a) = BsApplyExtensions.apply_first;
 
@@ -41,7 +41,7 @@ module ApplyExtensions = (A: BsAbstract.Interface.APPLY) => {
 module ApplyInfix = (A: BsAbstract.Interface.APPLY) => {
   module ApplyExtensions = ApplyExtensions(A);
 
-  let (<*>) = ApplyExtensions.apply;
+  let (<*>) = A.apply;
 
   let ( <* ) = ApplyExtensions.applyFirst;
 

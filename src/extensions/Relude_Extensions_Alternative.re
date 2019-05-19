@@ -1,0 +1,1 @@
+module AlternativeExtensions = (A: BsAbstract.Interface.ALTERNATIVE) => {};

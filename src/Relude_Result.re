@@ -1,6 +1,11 @@
 type t('a, 'e) = Belt.Result.t('a, 'e);
 
 /**
+ `ok()` is a synonym for `pure()`.
+*/
+let ok: 'a 'e. 'a => t('a, 'e) = a => Ok(a);
+
+/**
   `pure(x)` wraps its argument in `Ok()`.
 
   ### Example
@@ -8,12 +13,7 @@ type t('a, 'e) = Belt.Result.t('a, 'e);
   pure(3) == Ok(3);
   ```
 */
-let pure: 'a 'e. 'a => t('a, 'e) = a => Ok(a);
-
-/**
- `ok()` is a synonym for `pure()`.
-*/
-let ok: 'a 'e. 'a => t('a, 'e) = pure;
+let pure = ok;
 
 /**
   `error(x)` wraps its argument in `Error()`.
@@ -224,8 +224,6 @@ let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
   Using `apply()` properly is somewhat complex. See the example
   in the `__tests__/Relude_Validation_test.re` file for more details.
   (It uses `VOk` and `VError`, but the logic is identical.)
-
-
 */
 let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
   (rf, ra) =>
@@ -398,6 +396,8 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
 */
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
+
+let flatten: 'a. t(t('a, 'e), 'e) => t('a, 'e) = mma => bind(mma, a => a);
 
 /**
   `alt(r1, r2)` takes two `Result` arguments. If both are `Ok(..)`,
@@ -692,22 +692,48 @@ to implement many of the single-type-parameter typeclasses.  Doing it like this
 allows us to unlock a bunch of stuff at once using a single module functor.
  */
 module WithError = (E: BsAbstract.Interface.TYPE) => {
-  module Functor = BsAbstract.Result.Functor(E);
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
+    type nonrec t('a) = t('a, E.t);
+    let map = map;
+  };
+  let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Bifunctor = BsAbstract.Result.Bifunctor;
+  module Bifunctor:
+    BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
+    type nonrec t('a, 'e) = t('a, 'e);
+    let bimap = bimap;
+  };
+  let bimap = Bifunctor.bimap;
   include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 
-  module Alt = BsAbstract.Result.Alt(E);
+  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a, E.t) = {
+    include Functor;
+    let alt = alt;
+  };
+  let alt = Alt.alt;
   include Relude_Extensions_Alt.AltExtensions(Alt);
 
-  module Apply = BsAbstract.Result.Apply(E);
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, E.t) = {
+    include Functor;
+    let apply = apply;
+  };
+  let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Applicative = BsAbstract.Result.Applicative(E);
+  module Applicative:
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t) = {
+    include Apply;
+    let pure = pure;
+  };
+  let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad = BsAbstract.Result.Monad(E);
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, E.t) = {
+    include Applicative;
+    let flat_map = bind;
+  };
+  let bind = Monad.flat_map;
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module MonadThrow:
@@ -717,6 +743,8 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     type e = E.t;
     let throwError = error;
   };
+  let throwError = MonadThrow.throwError;
+  include Relude_Extensions_MonadThrow.MonadThrowExtensions(MonadThrow);
 
   module MonadError:
     Relude_MonadError.MONAD_ERROR with
@@ -724,20 +752,41 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     include MonadThrow;
     let catchError = catchError;
   };
+  let catchError = MonadError.catchError;
+  include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
-  module Foldable = BsAbstract.Result.Foldable(E);
+  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a, E.t) = {
+    include BsAbstract.Result.Foldable(E);
+  };
+  let foldLeft = Foldable.fold_left;
+  let foldRight = Foldable.fold_right;
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-  module Bifoldable = BsAbstract.Result.Bifoldable;
+  module Bifoldable:
+    BsAbstract.Interface.BIFOLDABLE with type t('a, 'e) = t('a, 'e) = {
+    include BsAbstract.Result.Bifoldable;
+  };
+  let bifoldLeft = Bifoldable.bifold_left;
+  let bifoldRight = Bifoldable.bifold_right;
   include Relude_Extensions_Bifoldable.BifoldableExtensions(Bifoldable);
 
-  module Traversable = BsAbstract.Result.Traversable(E, Applicative);
-  include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
+  module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
+    module Traversable: BsAbstract.Interface.TRAVERSABLE = {
+      include BsAbstract.Result.Traversable(E, A);
+    };
+    let traverse = Traversable.traverse;
+    let sequence = Traversable.sequence;
+    include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
 
-  module Bitraversable = BsAbstract.Result.Bitraversable(Applicative);
-  include Relude_Extensions_Bitraversable.BitraversableExtensions(
-            Bitraversable,
-          );
+    module Bitraversable: BsAbstract.Interface.BITRAVERSABLE = {
+      include BsAbstract.Result.Bitraversable(A);
+    };
+    let bitraverse = Bitraversable.bitraverse;
+    let bisequence = Bitraversable.bisequence;
+    include Relude_Extensions_Bitraversable.BitraversableExtensions(
+              Bitraversable,
+            );
+  };
 
   module Eq = BsAbstract.Result.Eq;
 

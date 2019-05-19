@@ -1,7 +1,7 @@
 module MonadExtensions = (M: BsAbstract.Interface.MONAD) => {
   module BsMonadExtensions = BsAbstract.Functions.Monad(M);
 
-  let bind: 'a 'b. (M.t('a), 'a => M.t('b)) => M.t('b) = M.flat_map;
+  //let bind: 'a 'b. (M.t('a), 'a => M.t('b)) => M.t('b) = M.flat_map;
 
   let flatMap: 'a 'b. ('a => M.t('b), M.t('a)) => M.t('b) =
     (f, ma) => M.flat_map(ma, f);
@@ -28,7 +28,7 @@ module MonadExtensions = (M: BsAbstract.Interface.MONAD) => {
 module MonadInfix = (M: BsAbstract.Interface.MONAD) => {
   module MonadExtensions = MonadExtensions(M);
 
-  let (>>=) = MonadExtensions.bind;
+  let (>>=) = M.flat_map;
 
   let (=<<) = MonadExtensions.flatMap;
 

@@ -2,13 +2,7 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
   type t('a) =
     | NonEmpty('a, TailSequence.t('a));
 
-  /* comes in via extensions
-  let length: t('a) => int =
-    fun
-    | NonEmpty(_, t) => 1 + TailSequence.length(t);
-    */
-
-  let pure: 'a => t('a) =
+  let one: 'a => t('a) =
     head => NonEmpty(head, TailSequence.MonoidAny.empty);
 
   let make: ('a, TailSequence.t('a)) => t('a) =
@@ -58,22 +52,19 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
     (f, init, NonEmpty(x, xs)) =>
       f(x, TailSequence.Foldable.fold_right(f, init, xs));
 
-  let flatten: t(t('a)) => t('a) =
-    nonEmpty => reduceLeft(concat, nonEmpty);
-
-  let join = flatten;
-
   let map: ('a => 'b, t('a)) => t('b) =
     (f, NonEmpty(x, xs)) => NonEmpty(f(x), TailSequence.Monad.map(f, xs));
+
+  let flatten: t(t('a)) => t('a) =
+    nonEmpty => reduceLeft(concat, nonEmpty);
 
   let apply: (t('a => 'b), t('a)) => t('b) =
     (ff, fa) => map(f => map(f, fa), ff) |> flatten;
 
+  let pure = one;
+
   let bind: (t('a), 'a => t('b)) => t('b) =
     (nonEmpty, f) => map(f, nonEmpty) |> flatten;
-
-  // Comes in via extensions
-  //let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
 
   let mkString: (string, t(string)) => string =
     (delim, xs) =>
@@ -212,6 +203,8 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
       let sequence: t(applicative_t('a)) => applicative_t(t('a)) =
         fa => traverse(x => x, fa);
     };
+    let traverse = Traversable.traverse;
+    let sequence = Traversable.sequence;
     include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
   };
 
