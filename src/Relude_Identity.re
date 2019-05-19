@@ -1,5 +1,4 @@
 type t('a) = 'a; // Or other implementation: type t('a) = | Identity('a);
-type t_('a) = t('a); // alias to fix .rei generation
 
 let pure: 'a. 'a => t('a) = a => a;
 
@@ -45,7 +44,7 @@ let showBy: 'a. ('a => string, t('a)) => string = (f, fa) => f(unwrap(fa));
 /* TODO: semigroup/monoid/plus/alt/etc. */
 
 module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
-  type t('a) = t_('a);
+  type nonrec t('a) = t('a);
   let map = map;
 };
 include Relude_Extensions_Functor.FunctorExtensions(Functor);
