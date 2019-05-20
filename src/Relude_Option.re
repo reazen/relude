@@ -133,8 +133,7 @@ let getOrElseLazy: (unit => 'a, option('a)) => 'a =
   map((x) => {x * x}, None) == None;
   ```
 */
-let map: ('a => 'b, option('a)) => option('b) =
-  (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
+let map: ('a => 'b, option('a)) => option('b) = BsAbstract.Option.Functor.map;
 
 module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = option('a) = {
   type nonrec t('a) = option('a);
@@ -156,10 +155,12 @@ include Relude_Extensions_Functor.FunctorExtensions(Functor);
   apply(None, None) == None;
   ```
 */
-let apply: (option('a => 'b), option('a)) => option('b) =
-  (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
+let apply: (option('a => 'b), option('a)) => option('b) = BsAbstract.Option.Apply.apply;
 
-module Apply = BsAbstract.Option.Apply;
+module Apply: BsAbstract.Interface.APPLY with type t('a) = option('a) = {
+  include Functor;
+  let apply = apply;
+};
 include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
 /**
@@ -172,7 +173,10 @@ include Relude_Extensions_Apply.ApplyExtensions(Apply);
 */
 let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
 
-module Applicative = BsAbstract.Option.Applicative;
+module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = option('a) = {
+  include Apply;
+  let pure = pure;
+};
 include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
 /**
@@ -195,7 +199,10 @@ include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 let bind: (option('a), 'a => option('b)) => option('b) =
   (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
 
-module Monad = BsAbstract.Option.Monad;
+module Monad: BsAbstract.Interface.MONAD with type t('a) = option('a) = {
+  include Applicative;
+  let flat_map = bind;
+};
 include Relude_Extensions_Monad.MonadExtensions(Monad);
 
 /**
