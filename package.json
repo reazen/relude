@@ -12,7 +12,7 @@
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
     "watch": "bsb -make-world -w",
-    "test": "npm run build && jest",
+    "test": "npm run build && jest --coverage",
     "docs": "docsify serve ./docs",
     "cleanbuild": "npm run clean && npm run build",
     "cleanwatch": "npm run clean && npm run watch",
