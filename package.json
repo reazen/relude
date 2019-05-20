@@ -12,12 +12,14 @@
     "clean": "bsb -clean-world",
     "build": "bsb -make-world",
     "watch": "bsb -make-world -w",
-    "test": "npm run build && jest --coverage --coverage-directory ./docs/coverage",
+    "test": "jest",
+    "coverage": "jest --coverage --coverage-directory ./docs/coverage",
     "docs": "docsify serve ./docs",
     "cleanbuild": "npm run clean && npm run build",
     "cleanwatch": "npm run clean && npm run watch",
-    "cleantest": "npm run clean && npm run test",
-    "releasebuild": "./tools/remove_rei_files && npm run cleanbuild && ./tools/generate_rei_files && npm run cleantest"
+    "cleantest": "npm run cleanbuild && npm run test",
+    "cleancoverage": "npm run cleanbuild && npm run coverage",
+    "releasebuild": "./tools/remove_rei_files && npm run cleanbuild && ./tools/generate_rei_files && npm run cleancoverage"
   },
   "keywords": [
     "ReasonML",

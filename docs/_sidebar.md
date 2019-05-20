@@ -1,6 +1,7 @@
 - Getting started
   - [README](/)
   - [Conventions](Conventions.md)
+  - [Test Coverage](https://reazen.github.io/relude/coverage/lcov-report/index.html)
 - Typeclasses
   - [Introduction](typeclasses/Introduction.md)
   - [Show](typeclasses/Show.md)
@@ -49,5 +50,3 @@
   - [Unsafe](api/Unsafe.md)
   - [Validation](api/Validation.md)
   - [Void](api/Void.md)
-- Testing
-  - [Coverage](coverage/lcov-report/index.html)
