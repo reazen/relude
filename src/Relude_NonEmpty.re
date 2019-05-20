@@ -2,13 +2,7 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
   type t('a) =
     | NonEmpty('a, TailSequence.t('a));
 
-  /* comes in via extensions
-  let length: t('a) => int =
-    fun
-    | NonEmpty(_, t) => 1 + TailSequence.length(t);
-    */
-
-  let pure: 'a => t('a) =
+  let one: 'a => t('a) =
     head => NonEmpty(head, TailSequence.MonoidAny.empty);
 
   let make: ('a, TailSequence.t('a)) => t('a) =
@@ -47,76 +41,6 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
         ),
       );
 
-  let reduceLeft: (('a, 'a) => 'a, t('a)) => 'a =
-    (f, NonEmpty(x, xs)) => TailSequence.Foldable.fold_left(f, x, xs);
-
-  let foldLeft: (('b, 'a) => 'b, 'b, t('a)) => 'b =
-    (f, init, NonEmpty(x, xs)) =>
-      TailSequence.Foldable.fold_left(f, f(init, x), xs);
-
-  let foldRight: (('a, 'b) => 'b, 'b, t('a)) => 'b =
-    (f, init, NonEmpty(x, xs)) =>
-      f(x, TailSequence.Foldable.fold_right(f, init, xs));
-
-  let flatten: t(t('a)) => t('a) =
-    nonEmpty => reduceLeft(concat, nonEmpty);
-
-  let join = flatten;
-
-  let map: ('a => 'b, t('a)) => t('b) =
-    (f, NonEmpty(x, xs)) => NonEmpty(f(x), TailSequence.Monad.map(f, xs));
-
-  let apply: (t('a => 'b), t('a)) => t('b) =
-    (ff, fa) => map(f => map(f, fa), ff) |> flatten;
-
-  let bind: (t('a), 'a => t('b)) => t('b) =
-    (nonEmpty, f) => map(f, nonEmpty) |> flatten;
-
-  // Comes in via extensions
-  //let flatMap: ('a => t('b), t('a)) => t('b) = (f, fa) => bind(fa, f);
-
-  let mkString: (string, t(string)) => string =
-    (delim, xs) =>
-      switch (xs) {
-      | NonEmpty(y, ys) => y ++ delim ++ TailSequence.mkString(delim, ys)
-      };
-
-  let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool =
-    (eqA, xs, ys) =>
-      switch (xs, ys) {
-      | (NonEmpty(x, xs), NonEmpty(y, ys)) =>
-        eqA(x, y) && TailSequence.eqBy(eqA, xs, ys)
-      };
-
-  let eq =
-      (
-        type a,
-        eqA: (module BsAbstract.Interface.EQ with type t = a),
-        xs: t(a),
-        ys: t(a),
-      )
-      : bool => {
-    module EqA = (val eqA);
-    eqBy(EqA.eq, xs, ys);
-  };
-
-  let showBy: ('a => string, t('a)) => string =
-    (showX, xs) => {
-      let strings = map(showX, xs);
-      "[!" ++ mkString(", ", strings) ++ "!]";
-    };
-
-  let show =
-      (
-        type a,
-        showA: (module BsAbstract.Interface.SHOW with type t = a),
-        xs: t(a),
-      )
-      : string => {
-    module ShowA = (val showA);
-    showBy(ShowA.show, xs);
-  };
-
   module SemigroupAny:
     BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
@@ -128,30 +52,16 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
     let append = concat;
   };
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
-    type nonrec t('a) = t('a);
-    let map = map;
-  };
-  include Relude_Extensions_Functor.FunctorExtensions(Functor);
+  let reduceLeft: (('a, 'a) => 'a, t('a)) => 'a =
+    (f, NonEmpty(x, xs)) => TailSequence.Foldable.fold_left(f, x, xs);
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
-    include Functor;
-    let apply = apply;
-  };
-  include Relude_Extensions_Apply.ApplyExtensions(Apply);
+  let foldLeft: (('b, 'a) => 'b, 'b, t('a)) => 'b =
+    (f, init, NonEmpty(x, xs)) =>
+      TailSequence.Foldable.fold_left(f, f(init, x), xs);
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
-    include Apply;
-    let pure = pure;
-  };
-  include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
-
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
-    include Applicative;
-    let flat_map = bind;
-  };
-  include Relude_Extensions_Monad.MonadExtensions(Monad);
+  let foldRight: (('a, 'b) => 'b, 'b, t('a)) => 'b =
+    (f, init, NonEmpty(x, xs)) =>
+      f(x, TailSequence.Foldable.fold_right(f, init, xs));
 
   module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
@@ -185,6 +95,107 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
   };
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
+  let map: ('a => 'b, t('a)) => t('b) =
+    (f, NonEmpty(x, xs)) => NonEmpty(f(x), TailSequence.Monad.map(f, xs));
+
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
+    let map = map;
+  };
+  include Relude_Extensions_Functor.FunctorExtensions(Functor);
+
+  let flatten: t(t('a)) => t('a) =
+    nonEmpty => reduceLeft(concat, nonEmpty);
+
+  let apply: (t('a => 'b), t('a)) => t('b) =
+    (ff, fa) => map(f => map(f, fa), ff) |> flatten;
+
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+    include Functor;
+    let apply = apply;
+  };
+  include Relude_Extensions_Apply.ApplyExtensions(Apply);
+
+  let pure = one;
+
+  module Applicative:
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+    include Apply;
+    let pure = pure;
+  };
+  include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+
+  let bind: (t('a), 'a => t('b)) => t('b) =
+    (nonEmpty, f) => map(f, nonEmpty) |> flatten;
+
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+    include Applicative;
+    let flat_map = bind;
+  };
+  include Relude_Extensions_Monad.MonadExtensions(Monad);
+
+  let mkString: (string, t(string)) => string =
+    (delim, xs) =>
+      switch (xs) {
+      | NonEmpty(y, ys) => y ++ delim ++ TailSequence.mkString(delim, ys)
+      };
+
+  let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool =
+    (eqA, xs, ys) =>
+      switch (xs, ys) {
+      | (NonEmpty(x, xs), NonEmpty(y, ys)) =>
+        eqA(x, y) && TailSequence.eqBy(eqA, xs, ys)
+      };
+
+  let eq =
+      (
+        type a,
+        eqA: (module BsAbstract.Interface.EQ with type t = a),
+        xs: t(a),
+        ys: t(a),
+      )
+      : bool => {
+    module EqA = (val eqA);
+    eqBy(EqA.eq, xs, ys);
+  };
+
+  module type EQ_F =
+    (EqA: BsAbstract.Interface.EQ) =>
+     BsAbstract.Interface.EQ with type t = t(EqA.t);
+
+  module Eq: EQ_F =
+    (EqA: BsAbstract.Interface.EQ) => {
+      type nonrec t = t(EqA.t);
+      let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
+    };
+
+  let showBy: ('a => string, t('a)) => string =
+    (showX, xs) => {
+      let strings = map(showX, xs);
+      "[!" ++ mkString(", ", strings) ++ "!]";
+    };
+
+  let show =
+      (
+        type a,
+        showA: (module BsAbstract.Interface.SHOW with type t = a),
+        xs: t(a),
+      )
+      : string => {
+    module ShowA = (val showA);
+    showBy(ShowA.show, xs);
+  };
+
+  module type SHOW_F =
+    (S: BsAbstract.Interface.SHOW) =>
+     BsAbstract.Interface.SHOW with type t = t(S.t);
+
+  module Show: SHOW_F =
+    (S: BsAbstract.Interface.SHOW) => {
+      type nonrec t = t(S.t);
+      let show = showBy(S.show);
+    };
+
   module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
     module Traversable:
       BsAbstract.Interface.TRAVERSABLE with
@@ -212,28 +223,11 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
       let sequence: t(applicative_t('a)) => applicative_t(t('a)) =
         fa => traverse(x => x, fa);
     };
+    let traverse = Traversable.traverse;
+    let sequence = Traversable.sequence;
     include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
   };
 
-  module type EQ_F =
-    (EqA: BsAbstract.Interface.EQ) =>
-     BsAbstract.Interface.EQ with type t = t(EqA.t);
-
-  module Eq: EQ_F =
-    (EqA: BsAbstract.Interface.EQ) => {
-      type nonrec t = t(EqA.t);
-      let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
-    };
-
-  module type SHOW_F =
-    (S: BsAbstract.Interface.SHOW) =>
-     BsAbstract.Interface.SHOW with type t = t(S.t);
-
-  module Show: SHOW_F =
-    (S: BsAbstract.Interface.SHOW) => {
-      type nonrec t = t(S.t);
-      let show = showBy(S.show);
-    };
 };
 
 module List =

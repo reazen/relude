@@ -1,0 +1,1 @@
+module MonadErrorExtensions = (M: Relude_MonadError.MONAD_ERROR) => {};

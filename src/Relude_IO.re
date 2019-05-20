@@ -658,18 +658,21 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     type nonrec t('a) = t('a, E.t);
     let map = map;
   };
+  let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Bifunctor: BsAbstract.Interface.BIFUNCTOR = {
+  module Bifunctor: BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
     type nonrec t('a, 'e) = t('a, 'e);
     let bimap = bimap;
   };
+  let bimap = Bifunctor.bimap;
   include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 
   module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, E.t) = {
     include Functor;
     let apply = apply;
   };
+  let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
@@ -677,12 +680,14 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     include Apply;
     let pure = pure;
   };
+  let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, E.t) = {
     include Applicative;
     let flat_map = bind;
   };
+  let bind = Monad.flat_map;
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module MonadThrow:
@@ -692,6 +697,8 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     type e = E.t;
     let throwError = throw;
   };
+  let throwError = MonadThrow.throwError;
+  include Relude_Extensions_MonadThrow.MonadThrowExtensions(MonadThrow);
 
   module MonadError:
     Relude_MonadError.MONAD_ERROR with
@@ -699,6 +706,8 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     include MonadThrow;
     let catchError = catchError;
   };
+  let catchError = MonadError.catchError;
+  include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
   module Infix = {
     include Relude_Extensions_Functor.FunctorInfix(Functor);

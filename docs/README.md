@@ -69,12 +69,14 @@ We welcome all contributions: bug fixes, features requests (or implementations),
 
 * Clean: `npm run clean`
 * Build: `npm run build`
-* Clean & build: `npm run cleanbuild`
+* Watch: `npm run watch`
 * Test: `npm run test`
+* Docs: `npm run docs` (run the docs server)
+* Clean & build: `npm run cleanbuild`
+* Clean & watch: `npm run cleanwatch`
 * Clean & test: `npm run cleantest`
-* Gen docs: `npm run docs`
-  * Note: this currently uses `jaredly/redoc` but this may change. If you have any trouble running `npm install`, you may want to try removing `redoc` as a dependency
-* Start compiler watcher: `npm run start`
+* Release build: `npm run releasebuild`
+    * This does not publish the release, it just makes sure various build artifacts (.js, .rei, etc.) are built or re-generated
 
 ## Publishing to npm
 

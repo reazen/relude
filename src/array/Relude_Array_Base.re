@@ -1,11 +1,3 @@
-/**
- * Relude.Array.Base includes array-specific functions that aren't derived from
- * typeclass membership.
- */
-
-let mapWithIndex: 'a 'b. (('a, int) => 'b, array('a)) => array('b) =
-  (f, xs) => Belt.Array.mapWithIndex(xs, (i, x) => f(x, i));
-
 let cons: ('a, array('a)) => array('a) =
   (x, xs) => Relude_Array_Instances.concat([|x|], xs);
 
@@ -24,6 +16,9 @@ let append: ('a, array('a)) => array('a) =
 let repeat: (int, 'a) => array('a) = (i, x) => Belt.Array.make(i, x);
 
 let makeWithIndex: (int, int => 'a) => array('a) = Belt.Array.makeBy;
+
+let mapWithIndex: 'a 'b. (('a, int) => 'b, array('a)) => array('b) =
+  (f, xs) => Belt.Array.mapWithIndex(xs, (i, x) => f(x, i));
 
 let reverse: array('a) => array('a) = Belt.Array.reverse;
 
@@ -266,6 +261,7 @@ let removeEach =
   removeEachBy(EqA.eq, x, xs);
 };
 
+// TODO: scans should come from a typeclass/extension
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>
     snd(

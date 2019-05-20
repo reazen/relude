@@ -1,63 +1,21 @@
-module Monoid = BsAbstract.String.Monoid;
-module Semigroup = BsAbstract.String.Semigroup;
-module Eq = BsAbstract.String.Eq;
-module Ord = BsAbstract.String.Ord;
-
 /**
-  `concat(str1, str2)` concatenate the two strings, returning
-  a new string.
-
-  ### Example
-  ```re
-  concat("door", "bell") == "doorbell";
-  concat("", "next") == "next";
-  concat("first", "") == "first";
-  ```
+Returns the empty string
 */
-let concat: (string, string) => string = (a, b) => Js.String.concat(b, a); /* Js.String.concat has unexpected argument order */
+let empty: string = "";
 
 /**
-  `concatArray(xs)` returns a new string that is the result
-  of concatenating all the strings in `xs`
+`length(str)` returns the length of the string. Since this function
+calls the JavaScript `String.length` function, it works properly with
+Unicode characters.
 
-  ### Example
-  ```re
-  concatArray([|"cat", "en", "ate"|]) == "catenate";
-  concatArray([|"chair", "", "person"|]) == "chairperson";
-  concatArray([| |]) == "";
-  ```
-*/
-let concatArray: array(string) => string =
-  strs =>
-    Relude_Array_Instances.foldLeft((acc, str) => acc ++ str, "", strs);
-
-/**
-  `length(str)` returns the length of the string. Since this function
-  calls the JavaScript `String.length` function, it works properly with
-  Unicode characters.
-
-  ### Example
-  ```re
-  length("example") == 7;
-  length({js|Glück|js}) == 5;
-  length({js|대한민국|js}) == 4;
-  ```
+### Example
+```re
+length("example") == 7;
+length({js|Glück|js}) == 5;
+length({js|대한민국|js}) == 4;
+```
 */
 let length: string => int = Js.String.length;
-
-/**
-  `trim(str)` returns a new string with leading and trailing whitespace
-  (blank, tab, newline, non-breaking space and others as described
-  in <https://www.ecma-international.org/ecma-262/5.1/#sec-7.2>) removed from `s`.
-
-  ### Example
-  ```re
-  trim("  abc  ") == "abc";
-  trim("  abc def  ") == "abc def";
-  trim({js|\n\u00a0 \t abc \f\r \t|js}) == "abc";
-  ```
-*/
-let trim: string => string = Js.String.trim;
 
 /**
   `isEmpty(str)` returns `true` if `str` is the empty string `""`;
@@ -69,7 +27,12 @@ let isEmpty: string => bool = s => length(s) == 0;
   `isNotEmpty(str)` returns `true` if `str` is not the empty string `""`;
   `false` if it is empty.
 */
-let isNotEmpty: string => bool = s => !isEmpty(s);
+let isNonEmpty: string => bool = s => !isEmpty(s);
+
+/**
+Alias for isNonEmpty
+*/
+let isNotEmpty = isNonEmpty;
 
 /**
   `toNonEmpty(str)` returns `Some(str)` if `str` is not the empty string `""`.
@@ -90,9 +53,24 @@ let toNonEmpty: string => option(string) =
     };
 
 /**
-  `eq(s1, s2)` is a synonym for `s1 == s2`
+  `trim(str)` returns a new string with leading and trailing whitespace
+  (blank, tab, newline, non-breaking space and others as described
+  in <https://www.ecma-international.org/ecma-262/5.1/#sec-7.2>) removed from `s`.
+
+  ### Example
+  ```re
+  trim("  abc  ") == "abc";
+  trim("  abc def  ") == "abc def";
+  trim({js|\n\u00a0 \t abc \f\r \t|js}) == "abc";
+  ```
 */
-let eq: (string, string) => bool = (==);
+let trim: string => string = Js.String.trim;
+
+// TODO
+//let trimLeft: string => string = ???
+
+// TODO
+//let trimRight: string => string = ???
 
 /**
   `isWhitespace(str)` returns true if the string consists
@@ -106,6 +84,8 @@ let eq: (string, string) => bool = (==);
   ```
 */
 let isWhitespace: string => bool = s => s |> trim |> isEmpty;
+
+let isNonWhiteapce: string => bool = s => !isWhitespace(s);
 
 /**
   `toNonWhiteSpace(str)` returns `Some(str)` if `str` has any non-whitespace
@@ -127,6 +107,50 @@ let toNonWhitespace: string => option(string) =
     };
 
 /**
+  `concat(str1, str2)` concatenate the two strings, returning
+  a new string.
+
+  ### Example
+  ```re
+  concat("door", "bell") == "doorbell";
+  concat("", "next") == "next";
+  concat("first", "") == "first";
+  ```
+*/
+let concat: (string, string) => string = (a, b) => a ++ b;
+
+module Semigroup: BsAbstract.Interface.SEMIGROUP with type t = string = {
+  type t = string;
+  let append = concat;
+};
+
+module Monoid: BsAbstract.Interface.MONOID with type t = string = {
+  include Semigroup;
+  let empty = empty;
+};
+
+/**
+  `concatArray(xs)` returns a new string that is the result
+  of concatenating all the strings in `xs`
+
+  ### Example
+  ```re
+  concatArray([|"cat", "en", "ate"|]) == "catenate";
+  concatArray([|"chair", "", "person"|]) == "chairperson";
+  concatArray([| |]) == "";
+  ```
+*/
+let concatArray: array(string) => string =
+  array =>
+    Relude_Array_Instances.foldLeft((acc, str) => acc ++ str, "", array);
+
+/**
+Like `concatArray`, but for `list`
+*/
+let concatList: list(string) => string =
+  list => Relude_List_Instances.foldLeft((acc, str) => acc ++ str, "", list);
+
+/**
   `make(x)` converts `x` to a string. If `x` is not a
   primitive type such as integer, float, string, or boolean,
   the result will reflect ReasonML’s internal format for
@@ -143,25 +167,6 @@ let toNonWhitespace: string => option(string) =
   ```
 */
 let make: 'a => string = Js.String.make;
-
-/**
-
-  `fromCharCode(n)` creates a string containing the character
-  corresponding to that number; n ranges from 0 to 65535.
-  If out of range, the lower 16 bits of the value are used.
-  Thus, `fromCharCode(0x1F63A)` gives the same result as
-  `fromCharCode(0xF63A)`.
-
-
-  ### Example
-  ```re
-  fromCharCode(65) == "A";
-  fromCharCode(0x0920) == {js|ठ|js};
-  fromCharCode(0x3c8) == {js|ψ|js};
-  fromCharCode(-64568) == {js|ψ|js};
-  ```
-*/
-let fromCharCode: int => string = Js.String.fromCharCode;
 
 /**
   `makeWithIndex(n, f)` returns a string that is the result
@@ -234,6 +239,25 @@ let toUpperCase: string => string = Js.String.toUpperCase;
   ```
 */
 let toLowerCase: string => string = Js.String.toLowerCase;
+
+/**
+
+  `fromCharCode(n)` creates a string containing the character
+  corresponding to that number; n ranges from 0 to 65535.
+  If out of range, the lower 16 bits of the value are used.
+  Thus, `fromCharCode(0x1F63A)` gives the same result as
+  `fromCharCode(0xF63A)`.
+
+
+  ### Example
+  ```re
+  fromCharCode(65) == "A";
+  fromCharCode(0x0920) == {js|ठ|js};
+  fromCharCode(0x3c8) == {js|ψ|js};
+  fromCharCode(-64568) == {js|ψ|js};
+  ```
+*/
+let fromCharCode: int => string = Js.String.fromCharCode;
 
 /**
   `charAt(n, str)` returns `Some(chStr)`, where `chStr` is a string
@@ -366,6 +390,23 @@ let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
 */
 let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List_Instances.foldRight(f, init, toList(str));
+
+/**
+  `eq(s1, s2)` is a synonym for `s1 == s2`
+*/
+let eq: (string, string) => bool = (==);
+
+module Eq: BsAbstract.Interface.EQ with type t = string = {
+  type t = string;
+  let eq = eq;
+};
+
+let compare = BsAbstract.String.Ord.compare;
+
+module Ord: BsAbstract.Interface.ORD with type t = string = {
+  include Eq;
+  let compare = compare;
+};
 
 /**
   `endsWith(test, str)` returns `true` if `str` ends with the characters in `test`;

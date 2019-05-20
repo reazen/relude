@@ -1,6 +1,6 @@
 include Relude_Array_Instances;
 include Relude_Array_Base;
-include Relude_Array_Extensions;
+include Relude_Extensions_Array;
 
 module Infix = {
   include Relude_Extensions_Functor.FunctorInfix(

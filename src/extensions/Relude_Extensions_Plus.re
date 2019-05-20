@@ -1,0 +1,1 @@
+module PlusExtensions = (P: BsAbstract.Interface.PLUS) => {};

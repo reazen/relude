@@ -32,9 +32,9 @@ affecting other people who have globally opened this module, so only expose
 very core/common things, and be careful about accidental shadowing of module
 names or functions.
 */
+module Array = Relude_Array;
 module AsyncData = Relude_AsyncData;
 module AsyncResult = Relude_AsyncResult;
-module Array = Relude_Array;
 module IO = Relude_IO;
 module List = Relude_List;
 module NonEmpty = Relude_NonEmpty;

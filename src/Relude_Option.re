@@ -1,26 +1,35 @@
 /**
-  `foldLazy(defaultFcn, f, opt)` returns `f(v)` when `opt` is
-  `Some(v)`. If `opt` is `None`, `foldLazy()` returns `default()`.
-
-  The `default()` function must have no parameters and must return
-  a value of the same type that `f()` returns.
-
-  This is a *lazy* function because the default value is not evaluated
-  unless `opt` is `None`.
-
-  ### Example
-  ```re
-  let zero = () => 0.0;
-  foldLazy(zero, (x) => {1.0 /. x}, Some(2.0)) == 0.5;
-  foldLazy(zero, (x) => {1.0 /. x}, None) == 0.0;
-  ```
+Lifts a pure value into an option
 */
-let foldLazy: (unit => 'b, 'a => 'b, option('a)) => 'b =
-  (default, f, opt) =>
-    switch (opt) {
-    | Some(v) => f(v)
-    | None => default()
-    };
+let some: 'a. 'a => option('a) = a => Some(a);
+
+/**
+Returns a `None` value
+*/
+let none: 'a. option('a) = None;
+
+/**
+Alias for `none`
+ */
+let empty: option('a) = None;
+
+/**
+  `isSome(opt)` returns `true` if `opt` is of the form `Some(v)`;
+  `false` otherwise.
+*/
+let isSome: option('a) => bool =
+  fun
+  | Some(_) => true
+  | None => false;
+
+/**
+  `isNone(opt)` returns `true` if `opt` is `None`;
+  `false` otherwise.
+*/
+let isNone: option('a) => bool =
+  fun
+  | Some(_) => false
+  | None => true;
 
 /**
   `fold(default, f, opt)` returns `f(v)` when `opt` is `Some(v)`.
@@ -44,22 +53,51 @@ let fold: ('b, 'a => 'b, option('a)) => 'b =
     };
 
 /**
-  In `forEach(f, opt)`, `f()` is a function with one parameter
-  that returns unit. If `opt` is `Some(v)`, `forEach()` calls
-  `f(v)`. If `opt` is `None`, `forEach()` returns unit.
+  `foldLazy(defaultFcn, f, opt)` returns `f(v)` when `opt` is
+  `Some(v)`. If `opt` is `None`, `foldLazy()` returns `default()`.
 
-  You use `forEach()` to produce side effects on option values.
+  The `default()` function must have no parameters and must return
+  a value of the same type that `f()` returns.
+
+  This is a *lazy* function because the default value is not evaluated
+  unless `opt` is `None`.
 
   ### Example
   ```re
-  forEach(Js.log, Some(2)) == (); // prints 2
-  forEach(Js.log, None) == (); // does not print anything
+  let zero = () => 0.0;
+  foldLazy(zero, (x) => {1.0 /. x}, Some(2.0)) == 0.5;
+  foldLazy(zero, (x) => {1.0 /. x}, None) == 0.0;
   ```
 */
-/* Comes in via extensions now
- let forEach: 'a. ('a => unit, option('a)) => unit =
-   (f, opt) => fold((), f, opt);
-   */
+let foldLazy: (unit => 'b, 'a => 'b, option('a)) => 'b =
+  (getDefault, f, fa) =>
+    switch (fa) {
+    | Some(v) => f(v)
+    | None => getDefault()
+    };
+
+/**
+  `getOrElse(default, opt)` returns `v` when `opt` is
+  `Some(v)`. If `opt` is `None`, `getOrelse()` returns `default`.
+
+  If `opt` is `None`, `getOrElse()` returns `default`, which must be of
+  the same type that as `v`.
+
+  This is not a lazy function, as the `default` value is always
+  evaluated, no matter what `opt`’s value is.
+
+  ### Example
+  ```re
+  getOrElse(0, Some(3)) == 3;
+  getOrElse(0, None) == 0;
+  ```
+*/
+let getOrElse: ('a, option('a)) => 'a =
+  (default, fa) =>
+    switch (fa) {
+    | Some(a) => a
+    | None => default
+    };
 
 /**
   `getOrElseLazy(defaultFcn, opt)` returns `v` when `opt` is
@@ -79,63 +117,11 @@ let fold: ('b, 'a => 'b, option('a)) => 'b =
   ```
 */
 let getOrElseLazy: (unit => 'a, option('a)) => 'a =
-  default => foldLazy(default, a => a);
-
-/**
-  `getOrElse(default, opt)` returns `v` when `opt` is
-  `Some(v)`. If `opt` is `None`, `getOrelse()` returns `default`.
-
-  If `opt` is `None`, `getOrElse()` returns `default`, which must be of
-  the same type that as `v`.
-
-  This is not a lazy function, as the `default` value is always
-  evaluated, no matter what `opt`’s value is.
-
-  ### Example
-  ```re
-  getOrElse(0, Some(3)) == 3;
-  getOrElse(0, None) == 0;
-  ```
-*/
-let getOrElse: ('a, option('a)) => 'a = default => fold(default, a => a);
-
-/**
-  `toList(opt)` returns the list `[v]` if `opt` is of the form
-  `Some(v)`, or the empty list if `opt` is `None`.
-
-  ### Example
-  ```re
-  toList(Some(5)) == [5];
-  toList(None) == [];
-  ```
-*/
-// Extensions
-//let toList: option('a) => list('a) = t => fold([], v => [v], t);
-
-/**
-  `toArray(opt)` returns the array `[|v|]` if `opt` is of the form
-  `Some(v)`, or the empty array if `opt` is `None`.
-
-  ### Example
-  ```re
-  toArray(Some(5)) == [|5|];
-  toArray(None) == [| |];
-  ```
-*/
-// Extensions
-//let toArray: option('a) => array('a) = t => fold([||], v => [|v|], t);
-
-/**
-  `isSome(opt)` returns `true` if `opt` is of the form `Some(v)`;
-  `false` otherwise.
-*/
-let isSome: option('a) => bool = t => fold(false, _ => true, t);
-
-/**
-  `isNone(opt)` returns `true` if `opt` is `None`;
-  `false` otherwise.
-*/
-let isNone: option('a) => bool = t => fold(true, _ => false, t);
+  (getDefault, fa) =>
+    switch (fa) {
+    | Some(a) => a
+    | None => getDefault()
+    };
 
 /**
   `map(f, opt)`, when `opt` is `Some(v)`, returns `Some(f(v))`.
@@ -147,22 +133,14 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   map((x) => {x * x}, None) == None;
   ```
 */
-// Extensions
-/*
- let map: ('a => 'b, option('a)) => option('b) =
-   (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
-   */
+let map: ('a => 'b, option('a)) => option('b) =
+  (fn, opt) => BsAbstract.Option.Functor.map(fn, opt);
 
-/**
-  `void` discards the optional value and makes it `unit`.
-
-  ### Example
-  ```re
-  Some(42) |> Option.void;
-  ```
- */
-// Extensions
-//let void: 'a. option('a) => option(unit) = opt => opt |> map(_ => ());
+module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = option('a) = {
+  type nonrec t('a) = option('a);
+  let map = map;
+};
+include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
 /**
   `apply(optFcn, optVal)` returns `Some(f(v))` if `optFcn`
@@ -178,11 +156,11 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   apply(None, None) == None;
   ```
 */
-// Extensions
-/*
- let apply: (option('a => 'b), option('a)) => option('b) =
-   (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
-   */
+let apply: (option('a => 'b), option('a)) => option('b) =
+  (fn, opt) => BsAbstract.Option.Apply.apply(fn, opt);
+
+module Apply = BsAbstract.Option.Apply;
+include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
 /**
   `pure(v)` returns `Some(v)`.
@@ -193,6 +171,9 @@ let isNone: option('a) => bool = t => fold(true, _ => false, t);
   ```
 */
 let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
+
+module Applicative = BsAbstract.Option.Applicative;
+include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
 /**
   `bind(opt, f)` returns `f(v)` if `opt` is `Some(v)`,
@@ -211,32 +192,11 @@ let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
   the reverse order.
 
 */
-/*
- let bind: (option('a), 'a => option('b)) => option('b) =
-   (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
-   */
+let bind: (option('a), 'a => option('b)) => option('b) =
+  (opt, fn) => BsAbstract.Option.Monad.flat_map(opt, fn);
 
-/**
-  `flatMap(f, opt)` returns `f(v)` if `opt` is `Some(v)`,
-  `None` otherwise. In this case, `f` is a function that
-  takes a non-`option` argument and returns an `option` result.
-
-  ### Example
-  ```re
-  let reciprocalOpt = (x) => { x == 0.0 ? None : Some(1.0 /. x) };
-  flatMap(reciprocalOpt, Some(2.0)) == Some(0.5);
-  flatMap(reciprocalOpt, Some(0.0)) == None;
-  flatMap(reciprocalOpt, None) == None;
-  ```
-
-  `flatMap()` is the same as `bind()`, but with the arguments in
-  the reverse order.
-*/
-// Extensions
-/*
- let flatMap: ('a => option('b), option('a)) => option('b) =
-   (f, fa) => bind(fa, f);
-   */
+module Monad = BsAbstract.Option.Monad;
+include Relude_Extensions_Monad.MonadExtensions(Monad);
 
 /**
   `foldLeft(f, init, opt)` takes as its first argument a function `f`
@@ -275,11 +235,11 @@ let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   foldRight(addLength, 0, None) == 0;
   ```
 */
-// Extensions
-/*
- let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
-   (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
-   */
+let foldRight: (('a, 'b) => 'b, 'b, option('a)) => 'b =
+  (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
+
+module Foldable = BsAbstract.Option.Foldable;
+include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
 /**
   `alt(opt1, opt2)` returns `opt1` if it is of the form `Some(v)`;
@@ -294,16 +254,40 @@ let foldLeft: (('b, 'a) => 'b, 'b, option('a)) => 'b =
   ```
 */
 let alt: (option('a), option('a)) => option('a) =
-  (a, b) =>
-    switch (a) {
-    | Some(_) as v => v
-    | None => b
+  (fa1, fa2) =>
+    switch (fa1) {
+    | Some(_) => fa1
+    | None => fa2
     };
 
 /**
-  `empty` is the empty value (`None`)
+Lazy version of `alt()` (doesn't evaluate the second argument unless needed
 */
-let empty: option('a) = None;
+let altLazy: 'a. (option('a), unit => option('a)) => option('a) =
+  (fa1, getFA2) =>
+    switch (fa1) {
+    | Some(_) => fa1
+    | None => getFA2()
+    };
+
+module Semigroup_Any: BsAbstract.Interface.SEMIGROUP_ANY = {
+  type t('a) = option('a);
+  let append = alt;
+};
+
+module Monoid_Any = {
+  include Semigroup_Any;
+  let empty = empty;
+};
+
+module Alt = BsAbstract.Option.Alt;
+include Relude_Extensions_Alt.AltExtensions(Alt);
+
+module Plus = BsAbstract.Option.Plus;
+include Relude_Extensions_Plus.PlusExtensions(Plus);
+
+module Alternative = BsAbstract.Option.Alternative;
+include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
 
 /**
   `filter(f, opt)` works as follows:
@@ -336,21 +320,6 @@ let filter: 'a. ('a => bool, option('a)) => option('a) =
 */
 let filterNot: 'a. ('a => bool, option('a)) => option('a) =
   f => filter(a => !f(a));
-
-/**
-  `flatten(optOpt)` takes a value of the form `Some(Some(v))` and
-  returns `Some(v)`.  If `optOpt` is `Some(None)`, the result is `None`.
-
-  In other words, `flatten` “unwraps” one level of `Some(...)`.
-
-  ### Example
-  ```re
-  flatten(Some(Some(1066))) == Some(1066);
-  flatten(Some(None)) == None;
-  ```
-*/
-// Extensions
-//let flatten: option(option('a)) => option('a) = opt => bind(opt, a => a);
 
 /**
   In `eqBy(f, opt1, opt2)`, `f` is a function that compares two arguments
@@ -405,15 +374,37 @@ let eqBy: (('a, 'a) => bool, option('a), option('a)) => bool =
 */
 let eq =
     (
-      type t,
-      innerEq: (module BsAbstract.Interface.EQ with type t = t),
-      a: option(t),
-      b: option(t),
+      type a,
+      showA: (module BsAbstract.Interface.EQ with type t = a),
+      fa1: option(a),
+      fa2: option(a),
     )
     : bool => {
-  module OptEq = BsAbstract.Option.Eq((val innerEq));
-  OptEq.eq(a, b);
+  module Eq = BsAbstract.Option.Eq((val showA));
+  Eq.eq(fa1, fa2);
 };
+
+module Eq = BsAbstract.Option.Eq;
+
+let showBy: 'a. ('a => string, option('a)) => string =
+  (showA, fa) =>
+    switch (fa) {
+    | Some(a) => "Some(" ++ showA(a) ++ ")"
+    | None => "None"
+    };
+
+let show =
+    (
+      type a,
+      showA: (module BsAbstract.Interface.SHOW with type t = a),
+      fa: option(a),
+    )
+    : string => {
+  module Show = BsAbstract.Option.Show((val showA));
+  Show.show(fa);
+};
+
+module Show = BsAbstract.Option.Show;
 
 module WithSemigroup = (S: BsAbstract.Interface.SEMIGROUP) => {
   module Semigroup = BsAbstract.Option.Semigroup(S);
@@ -423,48 +414,10 @@ module WithSemigroup = (S: BsAbstract.Interface.SEMIGROUP) => {
   include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
 };
 
-module Semigroup_Any: BsAbstract.Interface.SEMIGROUP_ANY = {
-  type t('a) = option('a);
-  let append = alt;
-};
-
-module Monoid_Any = {
-  include Semigroup_Any;
-  let empty = None;
-};
-
-module Alt = BsAbstract.Option.Alt;
-include Relude_Extensions_Alt.AltExtensions(Alt);
-
-module Plus = BsAbstract.Option.Plus;
-//include Relude_Extensions_Plus.PlusExtensions(Plus);
-
-module Alternative = BsAbstract.Option.Alternative;
-//include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
-
-module Functor = BsAbstract.Option.Functor;
-include Relude_Extensions_Functor.FunctorExtensions(Functor);
-
-module Apply = BsAbstract.Option.Apply;
-include Relude_Extensions_Apply.ApplyExtensions(Apply);
-
-module Applicative = BsAbstract.Option.Applicative;
-include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
-
-module Monad = BsAbstract.Option.Monad;
-include Relude_Extensions_Monad.MonadExtensions(Monad);
-
-module Foldable = BsAbstract.Option.Foldable;
-include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
-
 module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
   module Traversable = BsAbstract.Option.Traversable(A);
   include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
 };
-
-module Eq = BsAbstract.Option.Eq;
-
-module Show = BsAbstract.Option.Show;
 
 module Infix = {
   include Relude_Extensions_Functor.FunctorInfix(Functor);
@@ -473,8 +426,7 @@ module Infix = {
   include Relude_Extensions_Monad.MonadInfix(Monad);
 
   /**
-    `opt |? default` yields `v` if `opt` is `Some(v)`; otherwise
-    it yields `default`. (Same as `getOrElse(default, opt)`.)
+    Infix operator for `getOrElse()`
 
     ### Example
     ```re

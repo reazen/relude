@@ -37,7 +37,7 @@ module String = {
   include ListOrdExtensions(Relude_String.Ord);
   include ListMonoidExtensions(Relude_String.Monoid);
 
-  let join = fold;
+  let join = foldWithMonoid;
   let joinWith = intercalate;
   /**
    * Remove all duplicate entries from a list of strings.
@@ -64,10 +64,10 @@ module Int = {
   include ListOrdExtensions(Relude_Int.Ord);
 
   let sum: list(int) => int =
-    Relude_List_Instances.foldMonoid((module Relude_Int.Additive.Monoid));
+    Relude_List_Instances.foldWithMonoid((module Relude_Int.Additive.Monoid));
 
   let product: list(int) => int =
-    Relude_List_Instances.foldMonoid(
+    Relude_List_Instances.foldWithMonoid(
       (module Relude_Int.Multiplicative.Monoid),
     );
 };
@@ -76,10 +76,10 @@ module Float = {
   include ListOrdExtensions(Relude_Float.Ord);
 
   let sum: list(float) => float =
-    Relude_List_Instances.foldMonoid((module Relude_Float.Additive.Monoid));
+    Relude_List_Instances.foldWithMonoid((module Relude_Float.Additive.Monoid));
 
   let product: list(float) => float =
-    Relude_List_Instances.foldMonoid(
+    Relude_List_Instances.foldWithMonoid(
       (module Relude_Float.Multiplicative.Monoid),
     );
 };
