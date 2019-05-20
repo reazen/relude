@@ -1,7 +1,10 @@
 #! /usr/bin/env bash
 set -euo pipefail
 
-for cmi_file_path in $(find ./lib/bs/src -name '*.cmi')
+script_dir="$(dirname "${BASH_SOURCE[0]}")"
+cd $script_dir/..
+
+for cmi_file_path in $(find ./lib/bs/src -name '*.cmi' | grep 'Relude_Array.cmi\|Relude_List.cmi')
 do
   #echo $cmi_file_path
   rei_file_path=$(echo $cmi_file_path | sed 's/lib\/bs\///' | sed 's/\.cmi$/.rei/')

@@ -111,7 +111,6 @@ module Traversable = BsAbstract.Array.Traversable;
 
 let rec eqBy: 'a. (('a, 'a) => bool, array('a), array('a)) => bool =
   (innerEq, xs, ys) => {
-    // TODO: this is awkward because these fns live in Relude_Array_Base
     let head = Belt.Array.get(_, 0);
     let tailOrEmpty = Belt.Array.sliceToEnd(_, 1);
     switch (head(xs), head(ys)) {

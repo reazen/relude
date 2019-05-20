@@ -7,19 +7,9 @@ type t('a, 'e) =
   | VError('e);
 
 /**
- `ok()` is a synonym for `pure()`.
+ `ok()` wraps a value in `VOk`
 */
 let ok: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
-
-/**
-  `pure(val)` wraps its argument in a `VOk()`.
-
-  ### Example
-  ```re
-  pure(3) == VOk(3);
-  ```
-*/
-let pure: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
 
 /**
   `error(val)` wraps the value in a `VError()`.
@@ -229,6 +219,16 @@ let applyWithAppendErrors:
     };
 
 /**
+  `pure(val)` wraps its argument in a `VOk()`.
+
+  ### Example
+  ```re
+  pure(3) == VOk(3);
+  ```
+*/
+let pure: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
+
+/**
   `flatMapV(x, f)` returns `f(v)` when `x` is of the form `VOk(v)`,
   and returns `x` unchanged when it is of the form `VError(v)`.
 
@@ -246,8 +246,8 @@ let applyWithAppendErrors:
   flatMapV(VError("not an int"), mustBeEven) == VError("not an int");
   ```
  */
-let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
-  (f, fa) =>
+let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+  (fa, f) =>
     switch (fa) {
     | VOk(a) => f(a)
     | VError(e) => VError(e)
@@ -256,8 +256,8 @@ let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
 /**
   `bind` is the same as `flatMap` with the arguments flipped.
  */
-let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
-  (fa, f) => flatMap(f, fa);
+let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
+  (f, fa) => bind(fa, f);
 
 /**
   `fromResult` converts a variable of type `Belt.Result.t` to

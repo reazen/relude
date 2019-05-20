@@ -6,16 +6,6 @@ type t('a, 'e) = Belt.Result.t('a, 'e);
 let ok: 'a 'e. 'a => t('a, 'e) = a => Ok(a);
 
 /**
-  `pure(x)` wraps its argument in `Ok()`.
-
-  ### Example
-  ```re
-  pure(3) == Ok(3);
-  ```
-*/
-let pure = ok;
-
-/**
   `error(x)` wraps its argument in `Error()`.
 
   ### Example
@@ -33,7 +23,55 @@ let error: 'a 'e. 'e => t('a, 'e) = e => Error(e);
   unit == Ok(());
   ```
 */
-let unit: 'e. t(unit, 'e) = pure();
+let unit: 'e. t(unit, 'e) = Ok();
+
+/**
+  `getOk(result)` returns `Some(v)` when `result` is
+  of the form `Ok(v)`; otherwise it returns `None`.
+
+  ### Example
+  ```re
+  getOk(Ok(1066)) == Some(1066);
+  getOk(Error("bad value")) == None;
+  ```
+*/
+let getOk: 'a 'e. t('a, 'e) => option('a) =
+  fun
+  | Ok(a) => Some(a)
+  | Error(_) => None;
+
+/**
+  `getError(result)` returns `Some(e)` when `result` is
+  of the form `Error(e)`; otherwise it returns `None`.
+
+  ### Example
+  ```re
+  getError(Ok(1066)) == None;
+  getError(Error("bad value")) == Some("bad value");
+  ```
+*/
+let getError: 'a 'e. t('a, 'e) => option('e) =
+  fun
+  | Ok(_) => None
+  | Error(e) => Some(e);
+
+/**
+  `isOK(result)` returns `true` if `result` is of the form `Ok(val)`,
+  `false` otherwise.
+*/
+let isOk: 'a 'e. t('a, 'e) => bool =
+  fun
+  | Ok(_) => true
+  | Error(_) => false;
+
+/**
+  `isError(result)` returns `true` if `result` is of the form `Error(err)`,
+  `false` otherwise.
+*/
+let isError: 'a 'e. t('a, 'e) => bool =
+  fun
+  | Ok(_) => false
+  | Error(_) => true;
 
 /**
   `fold(errFcn, okFcn, x)` returns `okFcn(v)` when
@@ -56,6 +94,39 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
     };
 
 /**
+  `getOrElse(default, result)` returns `v` when
+  `result` is of the form `Ok(v)`; otherwise, it
+  returns `default`.
+
+  ### Example
+  ```re
+  let safeAvg = (total, n): Relude.Result.t(float, string) => {
+    if (n > 0) {
+      Ok(total /. float_of_int(n));
+    } else {
+      Error("Cannot calcuate average");
+    };
+  };
+
+  getOrElse(0.0, safeAvg(32.0, 4)) == 8.0;
+  getOrElse(0.0, safeAvg(0.0, 0)) == 0.0;
+  ```
+*/
+let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
+  (default, fa) =>
+    switch (fa) {
+    | Ok(a) => a
+    | Error(_) => default
+    };
+
+let getOrElseLazy: 'a 'e. (unit => 'a, t('a, 'e)) => 'a =
+  (getDefault, fa) =>
+    switch (fa) {
+    | Ok(a) => a
+    | Error(_) => getDefault()
+    };
+
+/**
   `merge(x)` “unwraps” its argument. If `x` is of the form
   `Ok(v)`, the result is `v`. If `x` is of the form Error(e),
   the result is `e`.
@@ -66,7 +137,10 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
   merge(Error("message")) == "message";
   ```
 */
-let merge: 'a. t('a, 'a) => 'a = fa => fold(a => a, a => a, fa);
+let merge: 'a. t('a, 'a) => 'a =
+  fun
+  | Ok(a) => a
+  | Error(a) => a;
 
 /**
   `flip(x)` flips the values between the `Ok` and `Error` variants.
@@ -78,7 +152,10 @@ let merge: 'a. t('a, 'a) => 'a = fa => fold(a => a, a => a, fa);
   flip(Error(-1)) == Ok(-1);
   ```
 */
-let flip: 'a 'e. t('a, 'e) => t('e, 'a) = fa => fa |> fold(ok, error);
+let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
+  fun
+  | Ok(a) => Error(a)
+  | Error(e) => Ok(e);
 
 /**
   `map(f, x)` returns `Ok(f(x))` if `x` is of the form `OK(v)`.
@@ -117,7 +194,11 @@ let flip: 'a 'e. t('a, 'e) => t('e, 'a) = fa => fa |> fold(ok, error);
   `map2()`, `map3()`, etc.)
 */
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
-  (f, ra) => Belt.Result.map(ra, f);
+  (f, fa) =>
+    switch (fa) {
+    | Ok(a) => Ok(f(a))
+    | Error(_) as e => e
+    };
 
 /**
   `mapOk` is a synonym for `map`
@@ -352,6 +433,16 @@ let map5:
   (f, fa, fb, fc, fd, fe) => apply(map4(f, fa, fb, fc, fd), fe);
 
 /**
+  `pure(x)` wraps its argument in `Ok()`.
+
+  ### Example
+  ```re
+  pure(3) == Ok(3);
+  ```
+*/
+let pure: 'a 'e. 'a => t('a, 'e) = a => Ok(a);
+
+/**
   In `bind(r, f)`, `f()` is a function that takes a non-`Result`
   argument and returns a `Result` value. If `r` is of the form
   `Ok(val)`, then `bind()` returns `f(val)`. Otherwise, it
@@ -370,10 +461,10 @@ let map5:
   in reverse order.
 */
 let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
-  (ra, aToRB) =>
-    switch (ra) {
-    | Ok(a) => aToRB(a)
-    | Error(_) as err => err
+  (fa, f) =>
+    switch (fa) {
+    | Ok(a) => f(a)
+    | Error(_) as fa => fa
     };
 
 /**
@@ -413,7 +504,11 @@ let flatten: 'a. t(t('a, 'e), 'e) => t('a, 'e) = mma => bind(mma, a => a);
   ```
 */
 let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
-  (fa1, fa2) => fold(_ => fa2, pure, fa1);
+  (fa1, fa2) =>
+    switch (fa1) {
+    | Ok(_) => fa1
+    | Error(_) => fa2
+    };
 
 /**
   `catchError(f, r)` returns `f(e)` when `r` is of the form
@@ -457,28 +552,6 @@ let recover: 'a 'e. ('a, t('a, 'e)) => t('a, 'e) =
   (a, fa) => fa |> catchError(_ => Ok(a));
 
 /**
-  `getOrElse(default, result)` returns `v` when
-  `result` is of the form `Ok(v)`; otherwise, it
-  returns `default`.
-
-  ### Example
-  ```re
-  let safeAvg = (total, n): Relude.Result.t(float, string) => {
-    if (n > 0) {
-      Ok(total /. float_of_int(n));
-    } else {
-      Error("Cannot calcuate average");
-    };
-  };
-
-  getOrElse(0.0, safeAvg(32.0, 4)) == 8.0;
-  getOrElse(0.0, safeAvg(0.0, 0)) == 0.0;
-  ```
-*/
-let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
-  (a, fa) => fold(_ => a, v => v, fa);
-
-/**
   `fromOption(defaultError, opt)` converts a value
   of the form `Some(v)` to `Ok(v)`, and converts
   `None` to `Error(defaultError)`.
@@ -517,44 +590,6 @@ let fromOptionLazy: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
     | Some(a) => Ok(a)
     | None => Error(getError())
     };
-
-/**
-  `getOk(result)` returns `Some(v)` when `result` is
-  of the form `Ok(v)`; otherwise it returns `None`.
-
-  ### Example
-  ```re
-  getOk(Ok(1066)) == Some(1066);
-  getOk(Error("bad value")) == None;
-  ```
-*/
-let getOk: 'a 'e. t('a, 'e) => option('a) =
-  r => fold(_ => None, v => Some(v), r);
-
-/**
-  `getError(result)` returns `Some(e)` when `result` is
-  of the form `Error(e)`; otherwise it returns `None`.
-
-  ### Example
-  ```re
-  getError(Ok(1066)) == None;
-  getError(Error("bad value")) == Some("bad value");
-  ```
-*/
-let getError: 'a 'e. t('a, 'e) => option('e) =
-  r => fold(v => Some(v), _ => None, r);
-
-/**
-  `isOK(result)` returns `true` if `result` is of the form `Ok(val)`,
-  `false` otherwise.
-*/
-let isOk: 'a 'e. t('a, 'e) => bool = r => fold(_ => false, _ => true, r);
-
-/**
-  `isError(result)` returns `true` if `result` is of the form `Error(err)`,
-  `false` otherwise.
-*/
-let isError: 'a 'e. t('a, 'e) => bool = r => fold(_ => true, _ => false, r);
 
 /**
   `eqBy(errorEq, okEq, a, b)` compares `a` and  `b` for equality as follows:

@@ -82,11 +82,6 @@ let flipCompose: ('a => 'b, 'b => 'c, 'a) => 'c = (f, g, a) => g(f(a));
 let andThen: ('a => 'b, 'b => 'c, 'a) => 'c = flipCompose;
 
 /**
-  `pure` is a synonym for `const`
-*/
-let pure: ('a, 'r) => 'a = (a, _) => a;
-
-/**
   `map` is a synonym for `compose` and is the equivalent of `f(g(a))`.
 
   ### Example
@@ -97,7 +92,6 @@ let pure: ('a, 'r) => 'a = (a, _) => a;
   map(double, square, 3) == 18;
   ```
 */
-
 let map: ('a => 'b, 'r => 'a, 'r) => 'b = (aToB, rToA, r) => aToB(rToA(r)); /* Same as compose */
 
 /**
@@ -129,6 +123,11 @@ let apply: (('r, 'a) => 'b, 'r => 'a, 'r) => 'b =
   (rToAToB, rToA, r) => rToAToB(r, rToA(r));
 
 /**
+  `pure` is a synonym for `const`
+*/
+let pure: ('a, 'r) => 'a = (a, _) => a;
+
+/**
   In `bind(f, hof, a)`, `hof` is a higher-order function that takes one argument
   and returns a new function that also takes one argument.
 
@@ -153,7 +152,7 @@ let apply: (('r, 'a) => 'b, 'r => 'a, 'r) => 'b =
   bind(cube, showResult, 5) == "input 5 yields 125";
   ```
 */
-let bind: ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
+let bind: 'r 'a 'b. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   (rToA, arToB, r) => arToB(rToA(r), r);
 
 /**
@@ -183,10 +182,6 @@ let bind: ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   ```
 */
 let flatMap: (('a, 'r) => 'b, 'r => 'a, 'r) => 'b = (f, fa) => bind(fa, f);
-
-module Functor = BsAbstract.Function.Functor;
-
-module Apply = BsAbstract.Function.Apply;
 
 /**
   The `Infix` submodule provides two infix operators
@@ -224,4 +219,42 @@ module Infix = {
     ```
   */
   let (>>) = flipCompose;
+};
+
+module WithArgument = (R: BsAbstract.Interface.TYPE) => {
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = R.t => 'a = {
+    type t('a) = R.t => 'a;
+    let map = map;
+  };
+  let map = Functor.map;
+  include Relude_Extensions_Functor.FunctorExtensions(Functor);
+
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = R.t => 'a = {
+    include Functor;
+    let apply = apply;
+  };
+  let apply = Apply.apply;
+  include Relude_Extensions_Apply.ApplyExtensions(Apply);
+
+  module Applicative:
+    BsAbstract.Interface.APPLICATIVE with type t('a) = R.t => 'a = {
+    include Apply;
+    let pure = pure;
+  };
+  let pure = Applicative.pure;
+  include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = R.t => 'a = {
+    include Applicative;
+    let flat_map = bind;
+  };
+  let bind = Monad.flat_map;
+  include Relude_Extensions_Monad.MonadExtensions(Monad);
+
+  module Infix = {
+    include Relude_Extensions_Functor.FunctorInfix(Functor);
+    include Relude_Extensions_Apply.ApplyInfix(Apply);
+    include Relude_Extensions_Monad.MonadInfix(Monad);
+    include Infix;
+  };
 };

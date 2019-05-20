@@ -25,97 +25,6 @@ let ok: 'a 'e. 'a => t('a, 'e) = completeOk;
 
 let error: 'a 'e. 'e => t('a, 'e) = completeError;
 
-let pure: 'a 'e. 'a => t('a, 'e) = completeOk;
-
-let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
-  (f, fa) =>
-    switch (fa) {
-    | Init => Init
-    | Loading => Loading
-    | Reloading(Belt.Result.Ok(a)) => reloadingOk(f(a))
-    | Reloading(Belt.Result.Error(_)) as r => r
-    | Complete(Belt.Result.Ok(a)) => completeOk(f(a))
-    | Complete(Belt.Result.Error(_)) as r => r
-    };
-
-let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
-  (f, fa) =>
-    switch (fa) {
-    | Init => Init
-    | Loading => Loading
-    | Reloading(Belt.Result.Ok(_)) as r => r
-    | Reloading(Belt.Result.Error(e)) => reloadingError(f(e))
-    | Complete(Belt.Result.Ok(_)) as c => c
-    | Complete(Belt.Result.Error(e)) => completeError(f(e))
-    };
-
-let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
-  (ff, fa) =>
-    switch (ff, fa) {
-    | (Init, Init) => Init
-    | (Init, Loading) => Loading
-    | (Init, Reloading(Ok(_))) => Init
-    | (Init, Reloading(Error(_)) as r) => r
-    | (Init, Complete(Ok(_))) => Init
-    | (Init, Complete(Error(_)) as r) => r
-
-    | (Loading, Init) => Loading
-    | (Loading, Loading) => Loading
-    | (Loading, Reloading(Ok(_))) => Init
-    | (Loading, Reloading(Error(_)) as r) => r
-    | (Loading, Complete(Ok(_))) => Init
-    | (Loading, Complete(Error(_)) as r) => r
-
-    | (Reloading(Ok(_)), Init) => Init
-    | (Reloading(Error(_)) as r, Init) => r
-    | (Reloading(Ok(_)), Loading) => Loading
-    | (Reloading(Error(_)) as r, Loading) => r
-    | (Reloading(Ok(f)), Reloading(Ok(a))) => reloadingOk(f(a))
-    | (Reloading(Ok(_)), Reloading(Error(_)) as r) => r
-    | (Reloading(Error(_)) as r, Reloading(Ok(_))) => r
-    | (Reloading(Error(_)) as r, Reloading(Error(_))) => r
-    | (Reloading(Ok(f)), Complete(Ok(a))) => reloadingOk(f(a))
-    | (Reloading(Ok(_)), Complete(Error(_)) as r) => r
-    | (Reloading(Error(_)) as r, Complete(Ok(_))) => r
-    | (Reloading(Error(_)) as r, Complete(Error(_))) => r
-
-    | (Complete(Ok(_)), Init) => Init
-    | (Complete(Error(_)) as r, Init) => r
-    | (Complete(Ok(_)), Loading) => Loading
-    | (Complete(Error(_)) as r, Loading) => r
-    | (Complete(Ok(f)), Reloading(Ok(a))) => reloadingOk(f(a))
-    | (Complete(Ok(_)), Reloading(Error(_)) as r) => r
-    | (Complete(Error(_)) as r, Reloading(Ok(_))) => r
-    | (Complete(Error(_)) as r, Reloading(Error(_))) => r
-    | (Complete(Ok(f)), Complete(Ok(a))) => completeOk(f(a))
-    | (Complete(Ok(_)), Complete(Error(_)) as r) => r
-    | (Complete(Error(_)) as r, Complete(Ok(_))) => r
-    | (Complete(Error(_)) as r, Complete(Error(_))) => r
-    };
-
-let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
-  (fa, f) =>
-    switch (fa) {
-    | Init => Init
-    | Loading => Loading
-    | Reloading(Ok(a)) => f(a)
-    | Reloading(Error(_)) as r => r
-    | Complete(Ok(a)) => f(a)
-    | Complete(Error(_)) as r => r
-    };
-
-let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
-  (f, fa) => bind(fa, f);
-
-let flatten: 'a 'e. t(t('a, 'e), 'e) => t('a, 'e) =
-  mma => flatMap(a => a, mma);
-
-let eqBy:
-  'a 'e.
-  (('e, 'e) => bool, ('a, 'a) => bool, t('a, 'e), t('a, 'e)) => bool
- =
-  (errEq, okEq) => Relude_AsyncData.eqBy(Relude_Result.eqBy(errEq, okEq));
-
 let isInit = Relude_AsyncData.isInit;
 
 let isLoading = Relude_AsyncData.isLoading;
@@ -240,6 +149,91 @@ let toBusy = Relude_AsyncData.toBusy;
 
 let toIdle = Relude_AsyncData.toBusy;
 
+let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
+  (f, fa) =>
+    switch (fa) {
+    | Init => Init
+    | Loading => Loading
+    | Reloading(Belt.Result.Ok(a)) => reloadingOk(f(a))
+    | Reloading(Belt.Result.Error(_)) as r => r
+    | Complete(Belt.Result.Ok(a)) => completeOk(f(a))
+    | Complete(Belt.Result.Error(_)) as r => r
+    };
+
+let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
+  (f, fa) =>
+    switch (fa) {
+    | Init => Init
+    | Loading => Loading
+    | Reloading(Belt.Result.Ok(_)) as r => r
+    | Reloading(Belt.Result.Error(e)) => reloadingError(f(e))
+    | Complete(Belt.Result.Ok(_)) as c => c
+    | Complete(Belt.Result.Error(e)) => completeError(f(e))
+    };
+
+let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
+  (ff, fa) =>
+    switch (ff, fa) {
+    | (Init, Init) => Init
+    | (Init, Loading) => Loading
+    | (Init, Reloading(Ok(_))) => Init
+    | (Init, Reloading(Error(_)) as r) => r
+    | (Init, Complete(Ok(_))) => Init
+    | (Init, Complete(Error(_)) as r) => r
+
+    | (Loading, Init) => Loading
+    | (Loading, Loading) => Loading
+    | (Loading, Reloading(Ok(_))) => Init
+    | (Loading, Reloading(Error(_)) as r) => r
+    | (Loading, Complete(Ok(_))) => Init
+    | (Loading, Complete(Error(_)) as r) => r
+
+    | (Reloading(Ok(_)), Init) => Init
+    | (Reloading(Error(_)) as r, Init) => r
+    | (Reloading(Ok(_)), Loading) => Loading
+    | (Reloading(Error(_)) as r, Loading) => r
+    | (Reloading(Ok(f)), Reloading(Ok(a))) => reloadingOk(f(a))
+    | (Reloading(Ok(_)), Reloading(Error(_)) as r) => r
+    | (Reloading(Error(_)) as r, Reloading(Ok(_))) => r
+    | (Reloading(Error(_)) as r, Reloading(Error(_))) => r
+    | (Reloading(Ok(f)), Complete(Ok(a))) => reloadingOk(f(a))
+    | (Reloading(Ok(_)), Complete(Error(_)) as r) => r
+    | (Reloading(Error(_)) as r, Complete(Ok(_))) => r
+    | (Reloading(Error(_)) as r, Complete(Error(_))) => r
+
+    | (Complete(Ok(_)), Init) => Init
+    | (Complete(Error(_)) as r, Init) => r
+    | (Complete(Ok(_)), Loading) => Loading
+    | (Complete(Error(_)) as r, Loading) => r
+    | (Complete(Ok(f)), Reloading(Ok(a))) => reloadingOk(f(a))
+    | (Complete(Ok(_)), Reloading(Error(_)) as r) => r
+    | (Complete(Error(_)) as r, Reloading(Ok(_))) => r
+    | (Complete(Error(_)) as r, Reloading(Error(_))) => r
+    | (Complete(Ok(f)), Complete(Ok(a))) => completeOk(f(a))
+    | (Complete(Ok(_)), Complete(Error(_)) as r) => r
+    | (Complete(Error(_)) as r, Complete(Ok(_))) => r
+    | (Complete(Error(_)) as r, Complete(Error(_))) => r
+    };
+
+let pure: 'a 'e. 'a => t('a, 'e) = completeOk;
+
+let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+  (fa, f) =>
+    switch (fa) {
+    | Init => Init
+    | Loading => Loading
+    | Reloading(Ok(a)) => f(a)
+    | Reloading(Error(_)) as r => r
+    | Complete(Ok(a)) => f(a)
+    | Complete(Error(_)) as r => r
+    };
+
+let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
+  (f, fa) => bind(fa, f);
+
+let flatten: 'a 'e. t(t('a, 'e), 'e) => t('a, 'e) =
+  mma => flatMap(a => a, mma);
+
 let fold:
   'a 'e 'b.
   (
@@ -324,6 +318,12 @@ let toAsyncData: 'a. t('a, 'a) => Relude_AsyncData.t('a) =
   | Reloading(Ok(a)) => Reloading(a)
   | Complete(Error(a)) => Complete(a)
   | Complete(Ok(a)) => Complete(a);
+
+let eqBy:
+  'a 'e.
+  (('e, 'e) => bool, ('a, 'a) => bool, t('a, 'e), t('a, 'e)) => bool
+ =
+  (errEq, okEq) => Relude_AsyncData.eqBy(Relude_Result.eqBy(errEq, okEq));
 
 module WithError = (E: BsAbstract.Interface.TYPE) => {
   module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {

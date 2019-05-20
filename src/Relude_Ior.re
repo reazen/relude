@@ -42,7 +42,8 @@ let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
     | IBoth(a, e) => IBoth(f(a), e)
     };
 
-let applyWithAppendErrors: (t('a => 'b, 'e), t('a, 'e), ('e, 'e) => 'e) => t('b, 'e) =
+let applyWithAppendErrors:
+  (t('a => 'b, 'e), t('a, 'e), ('e, 'e) => 'e) => t('b, 'e) =
   (ff, fa, appendErrors) =>
     switch (ff, fa) {
     | (IOk(f), IOk(a)) => IOk(f(a))
@@ -71,7 +72,8 @@ let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
 
 let map2:
   (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
-  (f, fa, fb, appendErrors) => applyWithAppendErrors(map(f, fa), fb, appendErrors);
+  (f, fa, fb, appendErrors) =>
+    applyWithAppendErrors(map(f, fa), fb, appendErrors);
 
 let map3:
   (('a, 'b, 'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x), ('x, 'x) => 'x) =>
@@ -90,7 +92,11 @@ let map4:
   ) =>
   t('e, 'x) =
   (f, fa, fb, fc, fd, appendErrors) =>
-    applyWithAppendErrors(map3(f, fa, fb, fc, appendErrors), fd, appendErrors);
+    applyWithAppendErrors(
+      map3(f, fa, fb, fc, appendErrors),
+      fd,
+      appendErrors,
+    );
 
 let map5:
   (
@@ -104,7 +110,11 @@ let map5:
   ) =>
   t('f, 'x) =
   (f, fa, fb, fc, fd, fe, appendErrors) =>
-    applyWithAppendErrors(map4(f, fa, fb, fc, fd, appendErrors), fe, appendErrors);
+    applyWithAppendErrors(
+      map4(f, fa, fb, fc, fd, appendErrors),
+      fe,
+      appendErrors,
+    );
 
 module WithErrors =
        (

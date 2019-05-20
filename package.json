@@ -17,7 +17,7 @@
     "cleanbuild": "npm run clean && npm run build",
     "cleanwatch": "npm run clean && npm run watch",
     "cleantest": "npm run clean && npm run test",
-    "releasebuild": "npm run cleanbuild && ./generate_rei_files && npm run cleantest"
+    "releasebuild": "./tools/remove_rei_files && npm run cleanbuild && ./tools/generate_rei_files && npm run cleantest"
   },
   "keywords": [
     "ReasonML",

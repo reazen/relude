@@ -1,4 +1,5 @@
 type mantissa = int;
+
 type exponent = int;
 
 /**
