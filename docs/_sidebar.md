@@ -49,3 +49,5 @@
   - [Unsafe](api/Unsafe.md)
   - [Validation](api/Validation.md)
   - [Void](api/Void.md)
+- Testing
+  - [Coverage](coverage/lcov-report/index.html)
