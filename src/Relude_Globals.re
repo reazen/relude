@@ -35,13 +35,17 @@ names or functions.
 module Array = Relude_Array;
 module AsyncData = Relude_AsyncData;
 module AsyncResult = Relude_AsyncResult;
+module Float = Relude_Float;
+module Int = Relude_Int;
 module IO = Relude_IO;
+module Ior = Relude_Ior;
 module List = Relude_List;
 module NonEmpty = Relude_NonEmpty;
 module Option = Relude_Option;
 module RJs = Relude_Js;
 module Result = Relude_Result;
 module String = Relude_String;
+module Validation = Relude_Validation;
 
 // Bring in some common operators
 // Note: we can't bring in certain types of operators like <$>, >>=, etc.
