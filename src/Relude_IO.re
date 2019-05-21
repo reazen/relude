@@ -691,7 +691,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module MonadThrow:
-    Relude_MonadError.MONAD_THROW with
+    Relude_Interface.MONAD_THROW with
       type t('a) = t('a, E.t) and type e = E.t = {
     include Monad;
     type e = E.t;
@@ -701,7 +701,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_MonadThrow.MonadThrowExtensions(MonadThrow);
 
   module MonadError:
-    Relude_MonadError.MONAD_ERROR with
+    Relude_Interface.MONAD_ERROR with
       type t('a) = t('a, E.t) and type e = E.t = {
     include MonadThrow;
     let catchError = catchError;

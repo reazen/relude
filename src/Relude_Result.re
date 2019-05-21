@@ -200,6 +200,12 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     | Error(_) as e => e
     };
 
+module Functor2: Relude_Interface.FUNCTOR2 with type t('a, 'e) = t('a, 'e) = {
+  type nonrec t('a, 'e) = t('a, 'e);
+  let map = map;
+};
+include Relude_Extensions_Functor.Functor2Extensions(Functor2);
+
 /**
   `mapOk` is a synonym for `map`
 */
@@ -314,6 +320,12 @@ let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
     | (Error(e), Ok(_)) => Error(e)
     | (Error(_), Error(e)) => Error(e)
     };
+
+module Apply2: Relude_Interface.APPLY2 with type t('a, 'e) = t('a, 'e) = {
+  include Functor2;
+  let apply = apply;
+};
+include Relude_Extensions_Apply.Apply2Extensions(Apply2);
 
 /**
   `map2(f, x, y)` has as its first argument a function that takes
@@ -772,7 +784,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module MonadThrow:
-    Relude_MonadError.MONAD_THROW with
+    Relude_Interface.MONAD_THROW with
       type t('a) = t('a, E.t) and type e = E.t = {
     include Monad;
     type e = E.t;
@@ -782,7 +794,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_MonadThrow.MonadThrowExtensions(MonadThrow);
 
   module MonadError:
-    Relude_MonadError.MONAD_ERROR with
+    Relude_Interface.MONAD_ERROR with
       type t('a) = t('a, E.t) and type e = E.t = {
     include MonadThrow;
     let catchError = catchError;

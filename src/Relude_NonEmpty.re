@@ -1,4 +1,4 @@
-module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
+module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   type t('a) =
     | NonEmpty('a, TailSequence.t('a));
 

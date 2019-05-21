@@ -1,3 +1,4 @@
+/*
 module type SEQUENCE = {
   type t('a);
 
@@ -18,3 +19,4 @@ module type SEQUENCE = {
   module Eq: (EqA: BsAbstract.Interface.EQ) => BsAbstract.Interface.EQ with type t = t(EqA.t);
   module Show: (ShowA: BsAbstract.Interface.SHOW) => BsAbstract.Interface.SHOW with type t = t(ShowA.t);
 }
+*/

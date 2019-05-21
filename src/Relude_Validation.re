@@ -53,6 +53,12 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     | VError(e) => VError(e)
     };
 
+module Functor2: Relude_Interface.FUNCTOR2 with type t('a, 'e) = t('a, 'e) = {
+  type nonrec t('a, 'e) = t('a, 'e);
+  let map = map;
+};
+include Relude_Extensions_Functor.Functor2Extensions(Functor2);
+
 /**
   In `tap(f, x)`, function `f()` returns `unit`. Thus, `f()`
   is used only for its side effects. If `x` is of the
@@ -217,6 +223,16 @@ let applyWithAppendErrors:
     | (VError(e), VOk(_)) => VError(e)
     | (VError(e1), VError(e2)) => VError(appendErrors(e1, e2))
     };
+
+/* doesn't compile - our apply function for Validation needs the extra fucntion that knows how to combine errors, but that is
+not accepted by the APPLY2 interface.  Maybe it could work with APPLY2_APPEND?  This would result in yet another bizarre hierarchy like APPLICATIVE2_APPEND, MONAD2_APPEND, etc. */
+/*
+module Apply2: Relude_Interface.APPLY2 with type t('a, 'e) = t('a, 'e) = {
+  type nonrec t('a, 'e) = t('a, 'e);
+  let apply = applyWithAppendErrors;
+};
+include Relude_Extensions_Apply.Apply2Extensions(Apply2);
+*/
 
 /**
   `pure(val)` wraps its argument in a `VOk()`.
