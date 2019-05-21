@@ -142,6 +142,7 @@ let head: array('a) => option('a);
 let tail: array('a) => option(array('a));
 let tailOrEmpty: array('a) => array('a);
 let init: array('a) => option(array('a));
+let initOrEmpty: array('a) => array('a);
 let last: array('a) => option('a);
 let take: (int, array('a)) => array('a);
 let takeExactly: (int, array('a)) => option(array('a));

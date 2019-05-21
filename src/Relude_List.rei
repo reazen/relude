@@ -140,6 +140,7 @@ let head: list('a) => option('a);
 let tail: list('a) => option(list('a));
 let tailOrEmpty: list('a) => list('a);
 let init: list('a) => option(list('a));
+let initOrEmpty: list('a) => list('a);
 let last: list('a) => option('a);
 let take: (int, list('a)) => list('a);
 let takeExactly: (int, list('a)) => option(list('a));

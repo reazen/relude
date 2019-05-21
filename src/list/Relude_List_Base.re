@@ -50,6 +50,13 @@ let rec init: 'a. list('a) => option(list('a)) =
   | [_] => Some([])
   | [x, ...xs] => Some(cons(x, Relude_Option.getOrElse([], init(xs))));
 
+let initOrEmpty: list('a) => list('a) =
+  xs =>
+    switch (init(xs)) {
+    | Some(ys) => ys
+    | None => []
+    };
+
 let rec last: 'a. list('a) => option('a) =
   fun
   | [] => None

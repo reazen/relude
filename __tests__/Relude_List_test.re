@@ -177,6 +177,18 @@ describe("List", () => {
     expect(List.init([1, 2, 3, 4])) |> toEqual(Some([1, 2, 3]))
   );
 
+  test("initOrEmpty empty list", () =>
+    expect(List.initOrEmpty([])) |> toEqual([])
+  );
+
+  test("initOrEmpty single item list", () =>
+    expect(List.initOrEmpty([1])) |> toEqual([])
+  );
+
+  test("initOrEmpty multi item list", () =>
+    expect(List.initOrEmpty([1, 2, 3, 4])) |> toEqual([1, 2, 3])
+  );
+
   test("last empty list", () =>
     expect(List.last([])) |> toEqual(None)
   );

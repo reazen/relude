@@ -78,6 +78,13 @@ let init: array('a) => option(array('a)) =
     };
   };
 
+let initOrEmpty: array('a) => array('a) =
+  xs =>
+    switch (init(xs)) {
+    | Some(arr) => arr
+    | None => [||]
+    };
+
 let last: array('a) => option('a) =
   xs => {
     let l = length(xs);

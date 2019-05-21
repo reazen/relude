@@ -212,6 +212,18 @@ describe("Array", () => {
     expect(Array.init([|1, 2, 3, 4|])) |> toEqual(Some([|1, 2, 3|]))
   );
 
+  test("initOrEmpty empty array", () =>
+    expect(Array.initOrEmpty([||])) |> toEqual([||])
+  );
+
+  test("initOrEmpty single item array", () =>
+    expect(Array.initOrEmpty([|1|])) |> toEqual([||])
+  );
+
+  test("initOrEmpty multi item array", () =>
+    expect(Array.initOrEmpty([|1, 2, 3, 4|])) |> toEqual([|1, 2, 3|])
+  );
+
   test("last empty array", () =>
     expect(Array.last([||])) |> toEqual(None)
   );
