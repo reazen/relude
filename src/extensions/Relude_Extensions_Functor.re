@@ -1,8 +1,6 @@
 module FunctorExtensions = (F: BsAbstract.Interface.FUNCTOR) => {
   module BsFunctorExtensions = BsAbstract.Functions.Functor(F);
 
-  //let map: 'a 'b. ('a => 'b, F.t('a)) => F.t('b) = F.map;
-
   let flipMap: 'a 'b. (F.t('a), 'a => 'b) => F.t('b) =
     (fa, f) => F.map(f, fa);
 

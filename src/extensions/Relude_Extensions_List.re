@@ -1,20 +1,3 @@
-/********************************************************************************
- This is intended to hold modules that are based on list-related module functors.
-
- These are here to avoid circular dependencies between the base modules like List and Option, etc.
-
- E.g.
- List.String.eq
- List.Float.min
- List.Option.traverse
- List.Result.traverse
- List.Validation.traverse
- ********************************************************************************/
-
-/**
- * Helper modules for generating collections of functions depending on
- * properties of the inner type.
- */
 module ListEqExtensions = (E: BsAbstract.Interface.EQ) => {
   include Relude_List_Instances.FoldableEqExtensions(E);
   let distinct = Relude_List_Base.distinctBy(E.eq);

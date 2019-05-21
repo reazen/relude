@@ -1,8 +1,6 @@
 module ApplyExtensions = (A: BsAbstract.Interface.APPLY) => {
   module BsApplyExtensions = BsAbstract.Functions.Apply(A);
 
-  //let apply: 'a 'b. (A.t('a => 'b), A.t('a)) => A.t('b) = A.apply;
-
   let applyFirst: 'a 'b. (A.t('a), A.t('b)) => A.t('a) = BsApplyExtensions.apply_first;
 
   let applySecond: 'a 'b. (A.t('a), A.t('b)) => A.t('b) = BsApplyExtensions.apply_second;
