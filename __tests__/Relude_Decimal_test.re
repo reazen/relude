@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Decimal = Relude_Decimal;
+module Decimal = Relude.Decimal;
 open Decimal;
 
 describe("Decimal", () => {

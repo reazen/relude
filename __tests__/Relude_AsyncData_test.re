@@ -1,7 +1,9 @@
 open Jest;
 open Expect;
 
-module AsyncData = Relude_AsyncData;
+module AsyncData = Relude.AsyncData;
+module Int = Relude.Int;
+module String = Relude.String;
 
 describe("AsyncData state checks", () => {
   test("isInit when Init", () =>
@@ -293,12 +295,12 @@ describe("AsyncData state checks", () => {
   );
 
   test("eqBy true for both Complete", () =>
-    expect(AsyncData.eqBy(Relude_String.eq, Complete("a"), Complete("a")))
+    expect(AsyncData.eqBy(String.eq, Complete("a"), Complete("a")))
     |> toEqual(true)
   );
 
   test("eqBy false for both Complete, different values", () =>
-    expect(AsyncData.eqBy(Relude_Int.eq, Complete(0), Complete(1)))
+    expect(AsyncData.eqBy(Int.eq, Complete(0), Complete(1)))
     |> toEqual(false)
   );
 });

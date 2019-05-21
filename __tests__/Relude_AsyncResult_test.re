@@ -1,7 +1,8 @@
 open Jest;
 open Expect;
-module AsyncData = Relude_AsyncData;
-module AsyncResult = Relude_AsyncResult;
+
+module AsyncData = Relude.AsyncData;
+module AsyncResult = Relude.AsyncResult;
 
 describe("AsyncResult constructors", () => {
   test("Init", () =>
@@ -139,8 +140,8 @@ describe("AsyncResult state checks", () => {
   test("eqBy same success value", () =>
     expect(
       AsyncResult.eqBy(
-        Relude_String.eq,
-        Relude_Int.eq,
+        Relude.String.eq,
+        Relude.Int.eq,
         AsyncResult.ok(1),
         AsyncResult.ok(1),
       ),

@@ -1,8 +1,8 @@
 open Jest;
 open Expect;
 
-module Array = Relude_Array;
-module Int = Relude_Int;
+module Array = Relude.Array;
+module Int = Relude.Int;
 
 describe("Array", () => {
   test("length empty array", () =>

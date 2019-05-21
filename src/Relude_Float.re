@@ -1,8 +1,22 @@
+let eq: (float, float) => bool = BsAbstract.Float.Eq.eq;
+
+module Eq: BsAbstract.Interface.EQ with type t = float = {
+  type t = float;
+  let eq = eq;
+};
+
+let compare: (float, float) => BsAbstract.Interface.ordering = BsAbstract.Float.Ord.compare;
+
+module Ord: BsAbstract.Interface.ORD with type t = float = {
+  include Eq;
+  let compare = compare;
+};
+
 /**
   `approximatelyEqual(~tolerance=t, x, y)` returns `true` if `x` and `y`
   are within `t` of one another, `false` otherwise. The `~tolerance`
   must be non-negative.
-  
+
   ### Example
   ```re
   approximatelyEqual(~tolerance=0.01, 1.500, 1.495) == true;
@@ -16,7 +30,7 @@ let approximatelyEqual: (~tolerance: float, float, float) => bool =
   `toString(x)` returns the string representation of `x`. Note
   that this may not be in the same form as you wrote it in the
   source code.
-  
+
   ### Example
   ```re
   toString(3.49) == "3.49";
@@ -24,12 +38,18 @@ let approximatelyEqual: (~tolerance: float, float, float) => bool =
   toString(1.0e+03) == "1000";
   ```
 */
-let toString: float => string = Js.Float.toString;
+let show: float => string = Js.Float.toString;
+let toString = show;
+
+module Show: BsAbstract.Interface.SHOW with type t = float = {
+  type t = float;
+  let show = show;
+};
 
 /**
   `fromString(s)` returns `Some(x)` if the given string represents
   a valid floating point number, `None` otherwise.
-  
+
   ### Example
   ```re
   fromString("1000.0") == Some(1000.0);
@@ -50,11 +70,5 @@ module Multiplicative = BsAbstract.Float.Multiplicative;
 module Subtractive = BsAbstract.Float.Subtractive;
 
 module Divisive = BsAbstract.Float.Divisive;
-
-module Eq = BsAbstract.Float.Eq;
-
-module Ord = BsAbstract.Float.Ord;
-
-module Show = BsAbstract.Float.Show;
 
 module Infix = BsAbstract.Float.Infix;

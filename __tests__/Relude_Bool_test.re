@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Bool = Relude_Bool;
+module Bool = Relude.Bool;
 
 describe("Bool", () => {
   test("ifElse true", () =>
