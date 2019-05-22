@@ -40,7 +40,7 @@
     "bs-abstract": "^0.17.0"
   },
   "jest": {
-    "verbose": true,
+    "verbose": false,
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/testUtils/"
