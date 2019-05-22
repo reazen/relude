@@ -14,6 +14,7 @@
     "watch": "bsb -make-world -w",
     "test": "npm run build && jest",
     "coverage": "npm run build && jest --coverage --coverage-directory ./docs/coverage",
+    "coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "docs": "docsify serve ./docs",
     "cleanbuild": "npm run clean && npm run build",
     "cleanwatch": "npm run clean && npm run watch",
@@ -34,6 +35,7 @@
     "@glennsl/bs-jest": "^0.4.8",
     "bs-abstract": "^0.17.0",
     "bs-platform": "^5.0.4",
+    "coveralls": "^3.0.3",
     "docsify-cli": "~4.3.0"
   },
   "peerDependencies": {
