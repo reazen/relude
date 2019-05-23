@@ -26,15 +26,29 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: npm install
+      - run:
+        name: "npm install"
+        command: |
+          npm install
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
-      - run: npm run cleanbuild
-      - run: npm run coveralls
+      - run:
+        name: Build & test
+        command: |
+          npm run cleantest
+
+      - run:
+        name: Coveralls
+        command: |
+          if [[ $CIRCLE_BRANCH == master ]]; then
+            npm run coveralls
+          else
+            echo "Not running coveralls (not master branch)"
+          fi
+
       - store_artifacts:
-          path: coverage
+        path: coverage
