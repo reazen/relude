@@ -156,7 +156,7 @@ let fromList: 'a. list('a) => array('a) = Belt.List.toArray;
 
 let toList: 'a. array('a) => list('a) = Belt.List.fromArray;
 
-module IsoList: Relude_IsoList.ISO_LIST with type t('a) = array('a) = {
+module IsoList: Relude_Interface.ISO_LIST with type t('a) = array('a) = {
   type t('a) = array('a);
   let fromList = fromList;
   let toList = toList;

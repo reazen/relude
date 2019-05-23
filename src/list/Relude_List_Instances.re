@@ -120,7 +120,7 @@ let fromArray = Belt.List.fromArray;
 
 let toArray = Belt.List.toArray;
 
-module IsoArray: Relude_IsoArray.ISO_ARRAY with type t('a) = list('a) = {
+module IsoArray: Relude_Interface.ISO_ARRAY with type t('a) = list('a) = {
   type t('a) = list('a);
   let fromArray = fromArray;
   let toArray = toArray;

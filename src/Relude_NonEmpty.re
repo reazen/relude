@@ -1,4 +1,4 @@
-module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
+module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   type t('a) =
     | NonEmpty('a, TailSequence.t('a));
 
@@ -227,7 +227,6 @@ module WithSequence = (TailSequence: Relude_Sequence.SEQUENCE) => {
     let sequence = Traversable.sequence;
     include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
   };
-
 };
 
 module List =

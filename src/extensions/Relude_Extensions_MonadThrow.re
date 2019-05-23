@@ -1,1 +1,1 @@
-module MonadThrowExtensions = (M: Relude_MonadError.MONAD_THROW) => {};
+module MonadThrowExtensions = (M: Relude_Interface.MONAD_THROW) => {};
