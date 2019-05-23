@@ -25,7 +25,7 @@ describe("Reader", () => {
 
   test("ask", () =>
     expect(
-      Reader.ask |> Reader.map(r => r.intValue) |> Reader.runReader(testEnv),
+      Reader.ask |> Reader.map(a => a.intValue) |> Reader.runReader(testEnv),
     )
     |> toEqual(42)
   );
@@ -33,7 +33,7 @@ describe("Reader", () => {
   test("asks", () =>
     expect(
       Reader.asks(r => r.intValue * 2)
-      |> Reader.map(r => r * 10)
+      |> Reader.map(a => a * 10)
       |> Reader.runReader(testEnv),
     )
     |> toEqual(840)

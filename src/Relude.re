@@ -22,6 +22,7 @@ module Nea = NonEmptyArray;
 module NonEmptyList = Relude_NonEmpty.List;
 module Nel = NonEmptyList;
 module Option = Relude_Option;
+module OptionT = Relude_OptionT;
 module Ordering = Relude_Ordering;
 module Reader = Relude_ReaderT.Reader;
 module ReaderT = Relude_ReaderT;
