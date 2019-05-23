@@ -27,9 +27,9 @@ jobs:
             - v1-dependencies-
 
       - run:
-        name: "npm install"
-        command: |
-          npm install
+          name: "npm install"
+          command: |
+            npm install
 
       - save_cache:
           paths:
@@ -37,18 +37,18 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
-        name: Build & test
-        command: |
-          npm run cleantest
+          name: Build & test
+          command: |
+            npm run cleantest
 
       - run:
-        name: Coveralls
-        command: |
-          if [[ $CIRCLE_BRANCH == master ]]; then
-            npm run coveralls
-          else
-            echo "Not running coveralls (not master branch)"
-          fi
+          name: Coveralls
+          command: |
+            if [[ $CIRCLE_BRANCH == master ]]; then
+              npm run coveralls
+            else
+              echo "Not running coveralls (not master branch)"
+            fi
 
       - store_artifacts:
-        path: coverage
+          path: coverage
