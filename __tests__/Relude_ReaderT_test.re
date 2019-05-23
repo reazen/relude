@@ -19,13 +19,13 @@ module Reader =
 
 describe("Reader", () => {
   test("make", () =>
-    expect(Reader.make(r => r.intValue * 2) |> Reader.runReader(testEnv))
+    expect(Reader.make(r => r.intValue * 2) |> Reader.runReaderT(testEnv))
     |> toEqual(84)
   );
 
   test("ask", () =>
     expect(
-      Reader.ask |> Reader.map(a => a.intValue) |> Reader.runReader(testEnv),
+      Reader.ask |> Reader.map(a => a.intValue) |> Reader.runReaderT(testEnv),
     )
     |> toEqual(42)
   );
@@ -34,7 +34,7 @@ describe("Reader", () => {
     expect(
       Reader.asks(r => r.intValue * 2)
       |> Reader.map(a => a * 10)
-      |> Reader.runReader(testEnv),
+      |> Reader.runReaderT(testEnv),
     )
     |> toEqual(840)
   );
@@ -46,14 +46,14 @@ describe("Reader", () => {
         Reader.ask
         |> Reader.map(a => string_of_int(a.intValue) ++ a.stringValue),
       )
-      |> Reader.runReader(testEnv),
+      |> Reader.runReaderT(testEnv),
     )
     |> toEqual("84abc!")
   );
 
   test("map", () =>
     expect(
-      Reader.pure(42) |> Reader.map(a => a * 2) |> Reader.runReader(testEnv),
+      Reader.pure(42) |> Reader.map(a => a * 2) |> Reader.runReaderT(testEnv),
     )
     |> toEqual(84)
   );
@@ -62,20 +62,20 @@ describe("Reader", () => {
     expect(
       Reader.pure(42)
       |> Reader.apply(Reader.make((r, a) => a * r.intValue * 2))
-      |> Reader.runReader(testEnv),
+      |> Reader.runReaderT(testEnv),
     )
     |> toEqual(3528)
   );
 
   test("pure", () =>
-    expect(Reader.pure(42) |> Reader.runReader(testEnv)) |> toEqual(42)
+    expect(Reader.pure(42) |> Reader.runReaderT(testEnv)) |> toEqual(42)
   );
 
   test("flatMap", () =>
     expect(
       Reader.pure(42)
       |> Reader.flatMap(a => Reader.make(r => r.intValue * a))
-      |> Reader.runReader(testEnv),
+      |> Reader.runReaderT(testEnv),
     )
     |> toEqual(42 * 42)
   );
@@ -108,7 +108,7 @@ describe("Reader IO", () =>
         <#> (a => a ++ env.stringValue);
       }
     )
-    |> ReaderIOE.runReader(testEnv)
+    |> ReaderIOE.runReaderT(testEnv)
     |> IOE.map(a => expect(a) |> toEqual("-42abc"))
     |> IO.unsafeRunAsync(
          fun

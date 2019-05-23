@@ -27,6 +27,7 @@ module Ordering = Relude_Ordering;
 module Reader = Relude_ReaderT.Reader;
 module ReaderT = Relude_ReaderT;
 module Result = Relude_Result;
+module ResultT = Relude_ResultT;
 module Sequence = Relude_Sequence;
 module String = Relude_String;
 module Unsafe = Relude_Unsafe;
