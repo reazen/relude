@@ -47,6 +47,7 @@ module RJs = Relude_Js;
 module ReaderT = Relude_ReaderT;
 module Reader = Relude_ReaderT.Reader;
 module Result = Relude_Result;
+module ResultT = Relude_ResultT;
 module String = Relude_String;
 module Validation = Relude_Validation;
 

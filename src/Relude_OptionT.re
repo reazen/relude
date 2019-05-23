@@ -14,6 +14,11 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     (mOptionAToMOptionB, OptionT(mOptionA)) =>
       OptionT(mOptionAToMOptionB(mOptionA));
 
+  let fromOption: 'a. option('a) => t('a) =
+    optionA => OptionT(M.pure(optionA));
+
+  let liftF: 'a. M.t('a) => t('a) = mA => OptionT(M.map(a => Some(a), mA));
+
   let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
     (aToB, OptionT(mOptionA)) =>
       OptionT(M.map(optionA => Relude_Option.map(aToB, optionA), mOptionA));

@@ -54,9 +54,9 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     type nonrec t('a) = t(R.t, 'a);
 
     let make = make;
-    let runReader = runReaderT;
-    let mapReader = mapReaderT;
-    let withReader = withReaderT;
+    let runReaderT = runReaderT;
+    let mapReaderT = mapReaderT;
+    let withReaderT = withReaderT;
     let ask = ask;
     let asks = asks;
     let local = local;
@@ -101,8 +101,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
 module WithMonadAndEnv =
        (M: BsAbstract.Interface.MONAD, E: BsAbstract.Interface.TYPE) => {
   module WithMonad = WithMonad(M);
-  module WithMonadAndEnv = WithMonad.WithEnv(E);
-  include WithMonadAndEnv;
+  include WithMonad.WithEnv(E);
 };
 
 module Reader = WithMonad(Relude_Identity.Monad);
