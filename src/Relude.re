@@ -30,3 +30,4 @@ module String = Relude_String;
 module Unsafe = Relude_Unsafe;
 module Validation = Relude_Validation;
 module Void = Relude_Void;
+module WriterT = Relude_WriterT;

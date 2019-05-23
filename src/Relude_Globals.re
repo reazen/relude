@@ -50,6 +50,8 @@ module Result = Relude_Result;
 module ResultT = Relude_ResultT;
 module String = Relude_String;
 module Validation = Relude_Validation;
+module WriterT = Relude_WriterT;
+module Writer = Relude_WriterT.Writer;
 
 // Bring in some common operators
 // Note: we can't bring in certain types of operators like <$>, >>=, etc.
