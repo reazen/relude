@@ -43,8 +43,8 @@ let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
     };
 
 let applyWithAppendErrors:
-  (t('a => 'b, 'e), t('a, 'e), ('e, 'e) => 'e) => t('b, 'e) =
-  (ff, fa, appendErrors) =>
+  (('e, 'e) => 'e, t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
+  (appendErrors, ff, fa) =>
     switch (ff, fa) {
     | (IOk(f), IOk(a)) => IOk(f(a))
     | (IOk(_), IError(e)) => IError(e)
@@ -71,49 +71,49 @@ let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
 let map2:
-  (('a, 'b) => 'c, t('a, 'x), t('b, 'x), ('x, 'x) => 'x) => t('c, 'x) =
-  (f, fa, fb, appendErrors) =>
-    applyWithAppendErrors(map(f, fa), fb, appendErrors);
+  (('x, 'x) => 'x, ('a, 'b) => 'c, t('a, 'x), t('b, 'x)) => t('c, 'x) =
+  (appendErrors, f, fa, fb) =>
+    applyWithAppendErrors(appendErrors, map(f, fa), fb);
 
 let map3:
-  (('a, 'b, 'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x), ('x, 'x) => 'x) =>
+  (('x, 'x) => 'x, ('a, 'b, 'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x)) =>
   t('d, 'x) =
-  (f, fa, fb, fc, appendErrors) =>
-    applyWithAppendErrors(map2(f, fa, fb, appendErrors), fc, appendErrors);
+  (appendErrors, f, fa, fb, fc) =>
+    applyWithAppendErrors(appendErrors, map2(appendErrors, f, fa, fb), fc);
 
 let map4:
   (
+    ('x, 'x) => 'x,
     ('a, 'b, 'c, 'd) => 'e,
     t('a, 'x),
     t('b, 'x),
     t('c, 'x),
-    t('d, 'x),
-    ('x, 'x) => 'x
+    t('d, 'x)
   ) =>
   t('e, 'x) =
-  (f, fa, fb, fc, fd, appendErrors) =>
+  (appendErrors, f, fa, fb, fc, fd) =>
     applyWithAppendErrors(
-      map3(f, fa, fb, fc, appendErrors),
-      fd,
       appendErrors,
+      map3(appendErrors, f, fa, fb, fc),
+      fd,
     );
 
 let map5:
   (
+    ('x, 'x) => 'x,
     ('a, 'b, 'c, 'd, 'e) => 'f,
     t('a, 'x),
     t('b, 'x),
     t('c, 'x),
     t('d, 'x),
-    t('e, 'x),
-    ('x, 'x) => 'x
+    t('e, 'x)
   ) =>
   t('f, 'x) =
-  (f, fa, fb, fc, fd, fe, appendErrors) =>
+  (appendErrors, f, fa, fb, fc, fd, fe) =>
     applyWithAppendErrors(
-      map4(f, fa, fb, fc, fd, appendErrors),
-      fe,
       appendErrors,
+      map4(appendErrors, f, fa, fb, fc, fd),
+      fe,
     );
 
 module WithErrors =
@@ -132,7 +132,7 @@ module WithErrors =
   module Apply:
     BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t)) = {
     include Functor;
-    let apply = (ff, fa) => applyWithAppendErrors(ff, fa, Errors.append);
+    let apply = (ff, fa) => applyWithAppendErrors(Errors.append, ff, fa);
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);

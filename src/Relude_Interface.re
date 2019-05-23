@@ -1,3 +1,7 @@
+module type TYPE_ANY = {
+  type t('a);
+};
+
 module type SEQUENCE = {
   type t('a);
 

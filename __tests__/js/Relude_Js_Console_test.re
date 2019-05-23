@@ -1,10 +1,10 @@
 open Jest;
-//open Expect;
 
-module Console = Relude_Js_Console;
-module IO = Relude_IO;
+module Console = Relude.Js.Console;
+module IO = Relude.IO;
 
-describe("Js.Console", () => {
+// Skip these b/c they just write log messages, and don't actually assert anything.
+Skip.describe("Js.Console", () => {
   testAsync("log should work", onDone =>
     Console.IO.log("log test")
     |> IO.unsafeRunAsync(

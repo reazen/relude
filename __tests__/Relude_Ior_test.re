@@ -36,48 +36,48 @@ describe("Ior", () => {
   );
 
   test("map2 IOk IOk", () =>
-    expect(Ior.map2((a, b) => a + b, IOk(1), IOk(2), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IOk(1), IOk(2)))
     |> toEqual(IOk(3))
   );
 
   test("map2 IOk IError", () =>
-    expect(Ior.map2((a, b) => a + b, IOk(1), IError("W2"), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IOk(1), IError("W2")))
     |> toEqual(IError("W2"))
   );
 
   test("map2 IOk IBoth", () =>
-    expect(Ior.map2((a, b) => a + b, IOk(1), IBoth(2, "W2"), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IOk(1), IBoth(2, "W2")))
     |> toEqual(IBoth(3, "W2"))
   );
 
   test("map2 IError IOk", () =>
-    expect(Ior.map2((a, b) => a + b, IError("W1"), IOk(1), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IError("W1"), IOk(1)))
     |> toEqual(IError("W1"))
   );
 
   test("map2 IError IError", () =>
-    expect(Ior.map2((a, b) => a + b, IError("W1"), IError("W2"), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IError("W1"), IError("W2")))
     |> toEqual(IError("W1W2"))
   );
 
   test("map2 IError IBoth", () =>
-    expect(Ior.map2((a, b) => a + b, IError("W1"), IBoth(1, "W2"), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IError("W1"), IBoth(1, "W2")))
     |> toEqual(IError("W1W2"))
   );
 
   test("map2 IBoth IOk", () =>
-    expect(Ior.map2((a, b) => a + b, IBoth(1, "W1"), IOk(2), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IBoth(1, "W1"), IOk(2)))
     |> toEqual(IBoth(3, "W1"))
   );
 
   test("map2 IBoth IError", () =>
-    expect(Ior.map2((a, b) => a + b, IBoth(1, "W1"), IError("W2"), (++)))
+    expect(Ior.map2((++), (a, b) => a + b, IBoth(1, "W1"), IError("W2")))
     |> toEqual(IError("W1W2"))
   );
 
   test("map2 IBoth IBoth", () =>
     expect(
-      Ior.map2((a, b) => a + b, IBoth(1, "W1"), IBoth(2, "W2"), (++)),
+      Ior.map2((++), (a, b) => a + b, IBoth(1, "W1"), IBoth(2, "W2")),
     )
     |> toEqual(IBoth(3, "W1W2"))
   );
