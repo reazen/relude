@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for src/Relude_ReaderT.bs.js</title>
+    <title>Code coverage report for src/Relude_WriterT.bs.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -16,13 +16,13 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../index.html">All files</a> / <a href="index.html">src</a> Relude_ReaderT.bs.js
+      <a href="../index.html">All files</a> / <a href="index.html">src</a> Relude_WriterT.bs.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">56.88% </span>
+        <span class="strong">19.55% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>157/276</span>
+        <span class='fraction'>61/312</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,21 +30,21 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">42.42% </span>
+        <span class="strong">13.95% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>28/66</span>
+        <span class='fraction'>12/86</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">56.88% </span>
+        <span class="strong">19.55% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>157/276</span>
+        <span class='fraction'>61/312</span>
       </div>
     </div>
     <p class="quiet">
       Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
     </p>
   </div>
-  <div class='status-line medium'></div>
+  <div class='status-line low'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -750,7 +750,204 @@
 <a name='L702'></a><a href='#L702'>702</a>
 <a name='L703'></a><a href='#L703'>703</a>
 <a name='L704'></a><a href='#L704'>704</a>
-<a name='L705'></a><a href='#L705'>705</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L705'></a><a href='#L705'>705</a>
+<a name='L706'></a><a href='#L706'>706</a>
+<a name='L707'></a><a href='#L707'>707</a>
+<a name='L708'></a><a href='#L708'>708</a>
+<a name='L709'></a><a href='#L709'>709</a>
+<a name='L710'></a><a href='#L710'>710</a>
+<a name='L711'></a><a href='#L711'>711</a>
+<a name='L712'></a><a href='#L712'>712</a>
+<a name='L713'></a><a href='#L713'>713</a>
+<a name='L714'></a><a href='#L714'>714</a>
+<a name='L715'></a><a href='#L715'>715</a>
+<a name='L716'></a><a href='#L716'>716</a>
+<a name='L717'></a><a href='#L717'>717</a>
+<a name='L718'></a><a href='#L718'>718</a>
+<a name='L719'></a><a href='#L719'>719</a>
+<a name='L720'></a><a href='#L720'>720</a>
+<a name='L721'></a><a href='#L721'>721</a>
+<a name='L722'></a><a href='#L722'>722</a>
+<a name='L723'></a><a href='#L723'>723</a>
+<a name='L724'></a><a href='#L724'>724</a>
+<a name='L725'></a><a href='#L725'>725</a>
+<a name='L726'></a><a href='#L726'>726</a>
+<a name='L727'></a><a href='#L727'>727</a>
+<a name='L728'></a><a href='#L728'>728</a>
+<a name='L729'></a><a href='#L729'>729</a>
+<a name='L730'></a><a href='#L730'>730</a>
+<a name='L731'></a><a href='#L731'>731</a>
+<a name='L732'></a><a href='#L732'>732</a>
+<a name='L733'></a><a href='#L733'>733</a>
+<a name='L734'></a><a href='#L734'>734</a>
+<a name='L735'></a><a href='#L735'>735</a>
+<a name='L736'></a><a href='#L736'>736</a>
+<a name='L737'></a><a href='#L737'>737</a>
+<a name='L738'></a><a href='#L738'>738</a>
+<a name='L739'></a><a href='#L739'>739</a>
+<a name='L740'></a><a href='#L740'>740</a>
+<a name='L741'></a><a href='#L741'>741</a>
+<a name='L742'></a><a href='#L742'>742</a>
+<a name='L743'></a><a href='#L743'>743</a>
+<a name='L744'></a><a href='#L744'>744</a>
+<a name='L745'></a><a href='#L745'>745</a>
+<a name='L746'></a><a href='#L746'>746</a>
+<a name='L747'></a><a href='#L747'>747</a>
+<a name='L748'></a><a href='#L748'>748</a>
+<a name='L749'></a><a href='#L749'>749</a>
+<a name='L750'></a><a href='#L750'>750</a>
+<a name='L751'></a><a href='#L751'>751</a>
+<a name='L752'></a><a href='#L752'>752</a>
+<a name='L753'></a><a href='#L753'>753</a>
+<a name='L754'></a><a href='#L754'>754</a>
+<a name='L755'></a><a href='#L755'>755</a>
+<a name='L756'></a><a href='#L756'>756</a>
+<a name='L757'></a><a href='#L757'>757</a>
+<a name='L758'></a><a href='#L758'>758</a>
+<a name='L759'></a><a href='#L759'>759</a>
+<a name='L760'></a><a href='#L760'>760</a>
+<a name='L761'></a><a href='#L761'>761</a>
+<a name='L762'></a><a href='#L762'>762</a>
+<a name='L763'></a><a href='#L763'>763</a>
+<a name='L764'></a><a href='#L764'>764</a>
+<a name='L765'></a><a href='#L765'>765</a>
+<a name='L766'></a><a href='#L766'>766</a>
+<a name='L767'></a><a href='#L767'>767</a>
+<a name='L768'></a><a href='#L768'>768</a>
+<a name='L769'></a><a href='#L769'>769</a>
+<a name='L770'></a><a href='#L770'>770</a>
+<a name='L771'></a><a href='#L771'>771</a>
+<a name='L772'></a><a href='#L772'>772</a>
+<a name='L773'></a><a href='#L773'>773</a>
+<a name='L774'></a><a href='#L774'>774</a>
+<a name='L775'></a><a href='#L775'>775</a>
+<a name='L776'></a><a href='#L776'>776</a>
+<a name='L777'></a><a href='#L777'>777</a>
+<a name='L778'></a><a href='#L778'>778</a>
+<a name='L779'></a><a href='#L779'>779</a>
+<a name='L780'></a><a href='#L780'>780</a>
+<a name='L781'></a><a href='#L781'>781</a>
+<a name='L782'></a><a href='#L782'>782</a>
+<a name='L783'></a><a href='#L783'>783</a>
+<a name='L784'></a><a href='#L784'>784</a>
+<a name='L785'></a><a href='#L785'>785</a>
+<a name='L786'></a><a href='#L786'>786</a>
+<a name='L787'></a><a href='#L787'>787</a>
+<a name='L788'></a><a href='#L788'>788</a>
+<a name='L789'></a><a href='#L789'>789</a>
+<a name='L790'></a><a href='#L790'>790</a>
+<a name='L791'></a><a href='#L791'>791</a>
+<a name='L792'></a><a href='#L792'>792</a>
+<a name='L793'></a><a href='#L793'>793</a>
+<a name='L794'></a><a href='#L794'>794</a>
+<a name='L795'></a><a href='#L795'>795</a>
+<a name='L796'></a><a href='#L796'>796</a>
+<a name='L797'></a><a href='#L797'>797</a>
+<a name='L798'></a><a href='#L798'>798</a>
+<a name='L799'></a><a href='#L799'>799</a>
+<a name='L800'></a><a href='#L800'>800</a>
+<a name='L801'></a><a href='#L801'>801</a>
+<a name='L802'></a><a href='#L802'>802</a>
+<a name='L803'></a><a href='#L803'>803</a>
+<a name='L804'></a><a href='#L804'>804</a>
+<a name='L805'></a><a href='#L805'>805</a>
+<a name='L806'></a><a href='#L806'>806</a>
+<a name='L807'></a><a href='#L807'>807</a>
+<a name='L808'></a><a href='#L808'>808</a>
+<a name='L809'></a><a href='#L809'>809</a>
+<a name='L810'></a><a href='#L810'>810</a>
+<a name='L811'></a><a href='#L811'>811</a>
+<a name='L812'></a><a href='#L812'>812</a>
+<a name='L813'></a><a href='#L813'>813</a>
+<a name='L814'></a><a href='#L814'>814</a>
+<a name='L815'></a><a href='#L815'>815</a>
+<a name='L816'></a><a href='#L816'>816</a>
+<a name='L817'></a><a href='#L817'>817</a>
+<a name='L818'></a><a href='#L818'>818</a>
+<a name='L819'></a><a href='#L819'>819</a>
+<a name='L820'></a><a href='#L820'>820</a>
+<a name='L821'></a><a href='#L821'>821</a>
+<a name='L822'></a><a href='#L822'>822</a>
+<a name='L823'></a><a href='#L823'>823</a>
+<a name='L824'></a><a href='#L824'>824</a>
+<a name='L825'></a><a href='#L825'>825</a>
+<a name='L826'></a><a href='#L826'>826</a>
+<a name='L827'></a><a href='#L827'>827</a>
+<a name='L828'></a><a href='#L828'>828</a>
+<a name='L829'></a><a href='#L829'>829</a>
+<a name='L830'></a><a href='#L830'>830</a>
+<a name='L831'></a><a href='#L831'>831</a>
+<a name='L832'></a><a href='#L832'>832</a>
+<a name='L833'></a><a href='#L833'>833</a>
+<a name='L834'></a><a href='#L834'>834</a>
+<a name='L835'></a><a href='#L835'>835</a>
+<a name='L836'></a><a href='#L836'>836</a>
+<a name='L837'></a><a href='#L837'>837</a>
+<a name='L838'></a><a href='#L838'>838</a>
+<a name='L839'></a><a href='#L839'>839</a>
+<a name='L840'></a><a href='#L840'>840</a>
+<a name='L841'></a><a href='#L841'>841</a>
+<a name='L842'></a><a href='#L842'>842</a>
+<a name='L843'></a><a href='#L843'>843</a>
+<a name='L844'></a><a href='#L844'>844</a>
+<a name='L845'></a><a href='#L845'>845</a>
+<a name='L846'></a><a href='#L846'>846</a>
+<a name='L847'></a><a href='#L847'>847</a>
+<a name='L848'></a><a href='#L848'>848</a>
+<a name='L849'></a><a href='#L849'>849</a>
+<a name='L850'></a><a href='#L850'>850</a>
+<a name='L851'></a><a href='#L851'>851</a>
+<a name='L852'></a><a href='#L852'>852</a>
+<a name='L853'></a><a href='#L853'>853</a>
+<a name='L854'></a><a href='#L854'>854</a>
+<a name='L855'></a><a href='#L855'>855</a>
+<a name='L856'></a><a href='#L856'>856</a>
+<a name='L857'></a><a href='#L857'>857</a>
+<a name='L858'></a><a href='#L858'>858</a>
+<a name='L859'></a><a href='#L859'>859</a>
+<a name='L860'></a><a href='#L860'>860</a>
+<a name='L861'></a><a href='#L861'>861</a>
+<a name='L862'></a><a href='#L862'>862</a>
+<a name='L863'></a><a href='#L863'>863</a>
+<a name='L864'></a><a href='#L864'>864</a>
+<a name='L865'></a><a href='#L865'>865</a>
+<a name='L866'></a><a href='#L866'>866</a>
+<a name='L867'></a><a href='#L867'>867</a>
+<a name='L868'></a><a href='#L868'>868</a>
+<a name='L869'></a><a href='#L869'>869</a>
+<a name='L870'></a><a href='#L870'>870</a>
+<a name='L871'></a><a href='#L871'>871</a>
+<a name='L872'></a><a href='#L872'>872</a>
+<a name='L873'></a><a href='#L873'>873</a>
+<a name='L874'></a><a href='#L874'>874</a>
+<a name='L875'></a><a href='#L875'>875</a>
+<a name='L876'></a><a href='#L876'>876</a>
+<a name='L877'></a><a href='#L877'>877</a>
+<a name='L878'></a><a href='#L878'>878</a>
+<a name='L879'></a><a href='#L879'>879</a>
+<a name='L880'></a><a href='#L880'>880</a>
+<a name='L881'></a><a href='#L881'>881</a>
+<a name='L882'></a><a href='#L882'>882</a>
+<a name='L883'></a><a href='#L883'>883</a>
+<a name='L884'></a><a href='#L884'>884</a>
+<a name='L885'></a><a href='#L885'>885</a>
+<a name='L886'></a><a href='#L886'>886</a>
+<a name='L887'></a><a href='#L887'>887</a>
+<a name='L888'></a><a href='#L888'>888</a>
+<a name='L889'></a><a href='#L889'>889</a>
+<a name='L890'></a><a href='#L890'>890</a>
+<a name='L891'></a><a href='#L891'>891</a>
+<a name='L892'></a><a href='#L892'>892</a>
+<a name='L893'></a><a href='#L893'>893</a>
+<a name='L894'></a><a href='#L894'>894</a>
+<a name='L895'></a><a href='#L895'>895</a>
+<a name='L896'></a><a href='#L896'>896</a>
+<a name='L897'></a><a href='#L897'>897</a>
+<a name='L898'></a><a href='#L898'>898</a>
+<a name='L899'></a><a href='#L899'>899</a>
+<a name='L900'></a><a href='#L900'>900</a>
+<a name='L901'></a><a href='#L901'>901</a>
+<a name='L902'></a><a href='#L902'>902</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -759,19 +956,41 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -779,59 +998,107 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -839,6 +1106,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -926,6 +1196,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -943,86 +1215,138 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1105,9 +1429,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1119,55 +1443,68 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1184,46 +1521,113 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1234,6 +1638,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1241,6 +1648,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1251,6 +1663,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1262,34 +1676,49 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1297,53 +1726,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1433,22 +1824,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1457,96 +1851,169 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
 var Curry = require("bs-platform/lib/js/curry.js");
-var Relude_Function = require("./Relude_Function.bs.js");
+var Relude_List = require("./Relude_List.bs.js");
+var Relude_Array = require("./Relude_Array.bs.js");
 var Relude_Identity = require("./Relude_Identity.bs.js");
 var Relude_Extensions_Apply = require("./extensions/Relude_Extensions_Apply.bs.js");
 var Relude_Extensions_Monad = require("./extensions/Relude_Extensions_Monad.bs.js");
 var Relude_Extensions_Functor = require("./extensions/Relude_Extensions_Functor.bs.js");
 var Relude_Extensions_Applicative = require("./extensions/Relude_Extensions_Applicative.bs.js");
 &nbsp;
-var $great$great = Relude_Function.Infix[/* &gt;&gt; */1];
+function WithEntry(Entry) {
+  var Monoid = /* module */[
+    /* append */Relude_List.concat,
+    /* empty : [] */0
+  ];
+  return /* module */[/* Monoid */Monoid];
+}
 &nbsp;
-var $less$less = Relude_Function.Infix[/* &lt;&lt; */0];
+var List = /* module */[/* WithEntry */WithEntry];
 &nbsp;
-function <span class="fstat-no" title="function not covered" >WithMonad(</span>M) {
-  var make = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (rToMA) {</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[rToMA];</span>
+function <span class="fstat-no" title="function not covered" >WithEntry$1(</span>Entry) {
+  var empty = /* array */<span class="cstat-no" title="statement not covered" >[];</span>
+  var Monoid = /* module */<span class="cstat-no" title="statement not covered" >[</span>
+    /* append */Relude_Array.concat,
+    /* empty */empty
+  ];
+<span class="cstat-no" title="statement not covered" >  return /* module */[/* Monoid */Monoid];</span>
+}
+&nbsp;
+var $$Array = /* module */[/* WithEntry */WithEntry$1];
+&nbsp;
+var WriterLog = /* module */[
+  /* List */List,
+  /* Array */$$Array
+];
+&nbsp;
+function <span class="fstat-no" title="function not covered" >WithMonad(</span>Monad) {
+  var make = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (mWriter) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[mWriter];</span>
   };
-  var runReaderT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (r, param) {</span>
-<span class="cstat-no" title="statement not covered" >    return Curry._1(param[0], r);</span>
+  var runWriterT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >    return param[0];</span>
   };
-  var mapReaderT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (maToMB, param) {</span>
-    var rToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >                return $less$less(maToMB, rToMA, param);</span>
-              })];
+  var execWriterT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >    return Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (prim) {</span>
+<span class="cstat-no" title="statement not covered" >                  return prim[1];</span>
+                }), param[0]);
   };
-  var withReaderT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (r2ToR1, param) {</span>
-    var r1ToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >                return $less$less(r1ToMA, r2ToR1, param);</span>
-              })];
+  var mapWriterT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (mAToMB, param) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._1(mAToMB, param[0])];</span>
   };
-  var ask = /* ReaderT */<span class="cstat-no" title="statement not covered" >[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >        return Curry._1(M[/* pure */2], r);</span>
-      })];
-  var asks = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (rToA) {</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                return Curry._1(M[/* pure */2], Curry._1(rToA, r));</span>
-              })];
+  var tell = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (w) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._1(Monad[/* pure */2], /* tuple */[</span>
+                  /* () */0,
+                  w
+                ])];
   };
-  var local = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (rToR, param) {</span>
-    var rToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                return Curry._1(rToMA, Curry._1(rToR, r));</span>
-              })];
+  var listen = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                    var w = <span class="cstat-no" title="statement not covered" >param[1];</span>
+<span class="cstat-no" title="statement not covered" >                    return /* tuple */[</span>
+                            /* tuple */[
+                              param[0],
+                              w
+                            ],
+                            w
+                          ];
+                  }), param[0])];
+  };
+  var pass = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                    var match = <span class="cstat-no" title="statement not covered" >param[0];</span>
+<span class="cstat-no" title="statement not covered" >                    return /* tuple */[</span>
+                            match[0],
+                            Curry._1(match[1], param[1])
+                          ];
+                  }), param[0])];
+  };
+  var listens = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (w1ToW2, writerTMAW1) {</span>
+    var match = <span class="cstat-no" title="statement not covered" >listen(writerTMAW1);</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                    var match = <span class="cstat-no" title="statement not covered" >param[0];</span>
+                    var w1 = <span class="cstat-no" title="statement not covered" >match[1];</span>
+<span class="cstat-no" title="statement not covered" >                    return /* tuple */[</span>
+                            /* tuple */[
+                              match[0],
+                              Curry._1(w1ToW2, w1)
+                            ],
+                            w1
+                          ];
+                  }), match[0])];
+  };
+  var censor = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (wToW, param) {</span>
+<span class="cstat-no" title="statement not covered" >    return pass(/* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >                        return /* tuple */[</span>
+                                /* tuple */[
+                                  param[0],
+                                  wToW
+                                ],
+                                param[1]
+                              ];
+                      }), param[0])]);
   };
   var map = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (aToB, param) {</span>
-    var rToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                return Curry._2(M[/* map */0], aToB, Curry._1(rToMA, r));</span>
-              })];
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >                    return /* tuple */[</span>
+                            Curry._1(aToB, param[0]),
+                            param[1]
+                          ];
+                  }), param[0])];
   };
-  var apply = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param, param$1) {</span>
-    var rToMA = <span class="cstat-no" title="statement not covered" >param$1[0];</span>
-    var rToMAToB = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                return Curry._2(M[/* apply */1], Curry._1(rToMAToB, r), Curry._1(rToMA, r));</span>
-              })];
+  var applyWithAppendLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (appendLog, param, param$1) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._2(Monad[/* apply */1], Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param, param$1) {</span>
+<span class="cstat-no" title="statement not covered" >                        return /* tuple */[</span>
+                                Curry._1(param[0], param$1[0]),
+                                Curry._2(appendLog, param[1], param$1[1])
+                              ];
+                      }), param[0]), param$1[0])];
   };
-  var pure = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (a) {</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >                return Curry._1(M[/* pure */2], a);</span>
-              })];
+  var pureWithEmptyLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (empty, a) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._1(Monad[/* pure */2], /* tuple */[</span>
+                  a,
+                  empty
+                ])];
   };
-  var bind = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param, aToReaderB) {</span>
-    var rToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >    return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                return Curry._2(M[/* flat_map */3], Curry._1(rToMA, r), (<span class="fstat-no" title="function not covered" >fu</span>nction (a) {</span>
-                              var match = <span class="cstat-no" title="statement not covered" >Curry._1(aToReaderB, a);</span>
-<span class="cstat-no" title="statement not covered" >                              return Curry._1(match[0], r);</span>
-                            }));
-              })];
+  var bindWithAppendLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (appendLog, param, aToWriterTBW) {</span>
+<span class="cstat-no" title="statement not covered" >    return /* WriterT */[Curry._2(Monad[/* flat_map */3], param[0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                    var w1 = <span class="cstat-no" title="statement not covered" >param[1];</span>
+                    var match = <span class="cstat-no" title="statement not covered" >Curry._1(aToWriterTBW, param[0]);</span>
+<span class="cstat-no" title="statement not covered" >                    return Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >                                  return /* tuple */[</span>
+                                          param[0],
+                                          Curry._2(appendLog, w1, param[1])
+                                        ];
+                                }), match[0]);
+                  }))];
   };
-  var WithEnv = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (R) {</span>
+  var WithLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (Log) {</span>
     var Functor = /* module */<span class="cstat-no" title="statement not covered" >[/* map */map];</span>
     var include = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorExtensions(Functor);</span>
+    var apply = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (ff, fa) {</span>
+<span class="cstat-no" title="statement not covered" >      return applyWithAppendLog(Log[/* Monoid */0][/* append */0], ff, fa);</span>
+    };
     var Apply = /* module */<span class="cstat-no" title="statement not covered" >[</span>
       /* map */map,
       /* apply */apply
     ];
     var include$1 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyExtensions(Apply);</span>
+    var pure = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (a) {</span>
+<span class="cstat-no" title="statement not covered" >      return pureWithEmptyLog(Log[/* Monoid */0][/* empty */1], a);</span>
+    };
     var Applicative = /* module */<span class="cstat-no" title="statement not covered" >[</span>
       /* map */map,
       /* apply */apply,
       /* pure */pure
     ];
     var include$2 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);</span>
+    var flat_map = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (fa, f) {</span>
+<span class="cstat-no" title="statement not covered" >      return bindWithAppendLog(Log[/* Monoid */0][/* append */0], fa, f);</span>
+    };
     var Monad = /* module */<span class="cstat-no" title="statement not covered" >[</span>
       /* map */map,
       /* apply */apply,
       /* pure */pure,
-      /* flat_map */bind
+      /* flat_map */flat_map
     ];
     var include$3 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadExtensions(Monad);</span>
     var include$4 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorInfix(Functor);</span>
@@ -1586,12 +2053,14 @@ function <span class="fstat-no" title="function not covered" >WithMonad(</span>M
     ];
 <span class="cstat-no" title="statement not covered" >    return /* module */[</span>
             /* make */make,
-            /* runReaderT */runReaderT,
-            /* mapReaderT */mapReaderT,
-            /* withReaderT */withReaderT,
-            /* ask */ask,
-            /* asks */asks,
-            /* local */local,
+            /* runWriterT */runWriterT,
+            /* execWriterT */execWriterT,
+            /* mapWriterT */mapWriterT,
+            /* tell */tell,
+            /* listen */listen,
+            /* listens */listens,
+            /* pass */pass,
+            /* censor */censor,
             /* Functor */Functor,
             /* map */map,
             /* BsFunctorExtensions */include[0],
@@ -1618,7 +2087,7 @@ function <span class="fstat-no" title="function not covered" >WithMonad(</span>M
             /* BsApplicativeExtensions */include$2[0],
             /* liftA1 */include$2[1],
             /* Monad */Monad,
-            /* bind */bind,
+            /* bind */flat_map,
             /* BsMonadExtensions */include$3[0],
             /* flatMap */include$3[1],
             /* flatten */include$3[2],
@@ -1632,100 +2101,152 @@ function <span class="fstat-no" title="function not covered" >WithMonad(</span>M
   };
 <span class="cstat-no" title="statement not covered" >  return /* module */[</span>
           /* make */make,
-          /* runReaderT */runReaderT,
-          /* mapReaderT */mapReaderT,
-          /* withReaderT */withReaderT,
-          /* ask */ask,
-          /* asks */asks,
-          /* local */local,
+          /* runWriterT */runWriterT,
+          /* execWriterT */execWriterT,
+          /* mapWriterT */mapWriterT,
+          /* tell */tell,
+          /* listen */listen,
+          /* pass */pass,
+          /* listens */listens,
+          /* censor */censor,
           /* map */map,
-          /* apply */apply,
-          /* pure */pure,
-          /* bind */bind,
-          /* WithEnv */WithEnv
+          /* applyWithAppendLog */applyWithAppendLog,
+          /* pureWithEmptyLog */pureWithEmptyLog,
+          /* bindWithAppendLog */bindWithAppendLog,
+          /* WithLog */WithLog
         ];
 }
 &nbsp;
-function WithMonadAndEnv(M) {
-  return (function (E) {
-      var make = <span class="fstat-no" title="function not covered" >fu</span>nction (rToMA) {
-<span class="cstat-no" title="statement not covered" >        return /* ReaderT */[rToMA];</span>
+function <span class="fstat-no" title="function not covered" >WithMonadAndLog(</span>Monad) {
+<span class="cstat-no" title="statement not covered" >  return (<span class="fstat-no" title="function not covered" >fu</span>nction (Log) {</span>
+      var make = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (mWriter) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[mWriter];</span>
       };
-      var runReaderT = function (r, param) {
-        return Curry._1(param[0], r);
+      var runWriterT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >        return param[0];</span>
       };
-      var mapReaderT = <span class="fstat-no" title="function not covered" >fu</span>nction (maToMB, param) {
-        var rToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >        return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >                    return $less$less(maToMB, rToMA, param);</span>
-                  })];
+      var execWriterT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >        return Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (prim) {</span>
+<span class="cstat-no" title="statement not covered" >                      return prim[1];</span>
+                    }), param[0]);
       };
-      var withReaderT = <span class="fstat-no" title="function not covered" >fu</span>nction (r2ToR1, param) {
-        var r1ToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >        return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >                    return $less$less(r1ToMA, r2ToR1, param);</span>
-                  })];
+      var mapWriterT = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (mAToMB, param) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._1(mAToMB, param[0])];</span>
       };
-      var ask = /* ReaderT */[(function (r) {
-            return Curry._1(M[/* pure */2], r);
-          })];
-      var asks = <span class="fstat-no" title="function not covered" >fu</span>nction (rToA) {
-<span class="cstat-no" title="statement not covered" >        return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                    return Curry._1(M[/* pure */2], Curry._1(rToA, r));</span>
-                  })];
+      var tell = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (w) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._1(Monad[/* pure */2], /* tuple */[</span>
+                      /* () */0,
+                      w
+                    ])];
       };
-      var local = <span class="fstat-no" title="function not covered" >fu</span>nction (rToR, param) {
-        var rToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >        return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                    return Curry._1(rToMA, Curry._1(rToR, r));</span>
-                  })];
+      var listen = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                        var w = <span class="cstat-no" title="statement not covered" >param[1];</span>
+<span class="cstat-no" title="statement not covered" >                        return /* tuple */[</span>
+                                /* tuple */[
+                                  param[0],
+                                  w
+                                ],
+                                w
+                              ];
+                      }), param[0])];
       };
-      var map = function (aToB, param) {
-        var rToMA = param[0];
-        return /* ReaderT */[(function (r) {
-                    return Curry._2(M[/* map */0], aToB, Curry._1(rToMA, r));
-                  })];
+      var pass = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                        var match = <span class="cstat-no" title="statement not covered" >param[0];</span>
+<span class="cstat-no" title="statement not covered" >                        return /* tuple */[</span>
+                                match[0],
+                                Curry._1(match[1], param[1])
+                              ];
+                      }), param[0])];
       };
-      var apply = <span class="fstat-no" title="function not covered" >fu</span>nction (param, param$1) {
-        var rToMA = <span class="cstat-no" title="statement not covered" >param$1[0];</span>
-        var rToMAToB = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >        return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (r) {</span>
-<span class="cstat-no" title="statement not covered" >                    return Curry._2(M[/* apply */1], Curry._1(rToMAToB, r), Curry._1(rToMA, r));</span>
-                  })];
+      var listens = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (w1ToW2, writerTMAW1) {</span>
+        var match = <span class="cstat-no" title="statement not covered" >listen(writerTMAW1);</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                        var match = <span class="cstat-no" title="statement not covered" >param[0];</span>
+                        var w1 = <span class="cstat-no" title="statement not covered" >match[1];</span>
+<span class="cstat-no" title="statement not covered" >                        return /* tuple */[</span>
+                                /* tuple */[
+                                  match[0],
+                                  Curry._1(w1ToW2, w1)
+                                ],
+                                w1
+                              ];
+                      }), match[0])];
       };
-      var pure = function (a) {
-        return /* ReaderT */[(function (param) {
-                    return Curry._1(M[/* pure */2], a);
-                  })];
+      var censor = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (wToW, param) {</span>
+<span class="cstat-no" title="statement not covered" >        return pass(/* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >                            return /* tuple */[</span>
+                                    /* tuple */[
+                                      param[0],
+                                      wToW
+                                    ],
+                                    param[1]
+                                  ];
+                          }), param[0])]);
       };
-      var bind = function (param, aToReaderB) {
-        var rToMA = param[0];
-        return /* ReaderT */[(function (r) {
-                    return Curry._2(M[/* flat_map */3], Curry._1(rToMA, r), (function (a) {
-                                  var match = Curry._1(aToReaderB, a);
-                                  return Curry._1(match[0], r);
-                                }));
-                  })];
+      var map = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (aToB, param) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >                        return /* tuple */[</span>
+                                Curry._1(aToB, param[0]),
+                                param[1]
+                              ];
+                      }), param[0])];
       };
-      var WithEnv = <span class="fstat-no" title="function not covered" >fu</span>nction (R) {
+      var applyWithAppendLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (appendLog, param, param$1) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._2(Monad[/* apply */1], Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param, param$1) {</span>
+<span class="cstat-no" title="statement not covered" >                            return /* tuple */[</span>
+                                    Curry._1(param[0], param$1[0]),
+                                    Curry._2(appendLog, param[1], param$1[1])
+                                  ];
+                          }), param[0]), param$1[0])];
+      };
+      var pureWithEmptyLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (empty, a) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._1(Monad[/* pure */2], /* tuple */[</span>
+                      a,
+                      empty
+                    ])];
+      };
+      var bindWithAppendLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (appendLog, param, aToWriterTBW) {</span>
+<span class="cstat-no" title="statement not covered" >        return /* WriterT */[Curry._2(Monad[/* flat_map */3], param[0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                        var w1 = <span class="cstat-no" title="statement not covered" >param[1];</span>
+                        var match = <span class="cstat-no" title="statement not covered" >Curry._1(aToWriterTBW, param[0]);</span>
+<span class="cstat-no" title="statement not covered" >                        return Curry._2(Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >                                      return /* tuple */[</span>
+                                              param[0],
+                                              Curry._2(appendLog, w1, param[1])
+                                            ];
+                                    }), match[0]);
+                      }))];
+      };
+      var WithLog = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (Log) {</span>
         var Functor = /* module */<span class="cstat-no" title="statement not covered" >[/* map */map];</span>
         var include = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorExtensions(Functor);</span>
+        var apply = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (ff, fa) {</span>
+<span class="cstat-no" title="statement not covered" >          return applyWithAppendLog(Log[/* Monoid */0][/* append */0], ff, fa);</span>
+        };
         var Apply = /* module */<span class="cstat-no" title="statement not covered" >[</span>
           /* map */map,
           /* apply */apply
         ];
         var include$1 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyExtensions(Apply);</span>
+        var pure = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (a) {</span>
+<span class="cstat-no" title="statement not covered" >          return pureWithEmptyLog(Log[/* Monoid */0][/* empty */1], a);</span>
+        };
         var Applicative = /* module */<span class="cstat-no" title="statement not covered" >[</span>
           /* map */map,
           /* apply */apply,
           /* pure */pure
         ];
         var include$2 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);</span>
+        var flat_map = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (fa, f) {</span>
+<span class="cstat-no" title="statement not covered" >          return bindWithAppendLog(Log[/* Monoid */0][/* append */0], fa, f);</span>
+        };
         var Monad = /* module */<span class="cstat-no" title="statement not covered" >[</span>
           /* map */map,
           /* apply */apply,
           /* pure */pure,
-          /* flat_map */bind
+          /* flat_map */flat_map
         ];
         var include$3 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadExtensions(Monad);</span>
         var include$4 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorInfix(Functor);</span>
@@ -1765,12 +2286,14 @@ function WithMonadAndEnv(M) {
         ];
 <span class="cstat-no" title="statement not covered" >        return /* module */[</span>
                 /* make */make,
-                /* runReaderT */runReaderT,
-                /* mapReaderT */mapReaderT,
-                /* withReaderT */withReaderT,
-                /* ask */ask,
-                /* asks */asks,
-                /* local */local,
+                /* runWriterT */runWriterT,
+                /* execWriterT */execWriterT,
+                /* mapWriterT */mapWriterT,
+                /* tell */tell,
+                /* listen */listen,
+                /* listens */listens,
+                /* pass */pass,
+                /* censor */censor,
                 /* Functor */Functor,
                 /* map */map,
                 /* BsFunctorExtensions */include[0],
@@ -1797,7 +2320,7 @@ function WithMonadAndEnv(M) {
                 /* BsApplicativeExtensions */include$2[0],
                 /* liftA1 */include$2[1],
                 /* Monad */Monad,
-                /* bind */bind,
+                /* bind */flat_map,
                 /* BsMonadExtensions */include$3[0],
                 /* flatMap */include$3[1],
                 /* flatten */include$3[2],
@@ -1809,69 +2332,80 @@ function WithMonadAndEnv(M) {
                 /* Infix */Infix
               ];
       };
-      var WithMonad = /* module */[
+      var WithMonad = /* module */<span class="cstat-no" title="statement not covered" >[</span>
         /* make */make,
-        /* runReaderT */runReaderT,
-        /* mapReaderT */mapReaderT,
-        /* withReaderT */withReaderT,
-        /* ask */ask,
-        /* asks */asks,
-        /* local */local,
+        /* runWriterT */runWriterT,
+        /* execWriterT */execWriterT,
+        /* mapWriterT */mapWriterT,
+        /* tell */tell,
+        /* listen */listen,
+        /* pass */pass,
+        /* listens */listens,
+        /* censor */censor,
         /* map */map,
-        /* apply */apply,
-        /* pure */pure,
-        /* bind */bind,
-        /* WithEnv */WithEnv
+        /* applyWithAppendLog */applyWithAppendLog,
+        /* pureWithEmptyLog */pureWithEmptyLog,
+        /* bindWithAppendLog */bindWithAppendLog,
+        /* WithLog */WithLog
       ];
-      var Functor = /* module */[/* map */map];
-      var map$1 = Functor[/* map */0];
-      var include = Relude_Extensions_Functor.FunctorExtensions(Functor);
-      var Apply_000 = /* map */Functor[0];
-      var Apply = /* module */[
+      var Functor = /* module */<span class="cstat-no" title="statement not covered" >[/* map */map];</span>
+      var map$1 = <span class="cstat-no" title="statement not covered" >Functor[/* map */0];</span>
+      var include = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorExtensions(Functor);</span>
+      var apply = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (ff, fa) {</span>
+<span class="cstat-no" title="statement not covered" >        return applyWithAppendLog(Log[/* Monoid */0][/* append */0], ff, fa);</span>
+      };
+      var Apply_000 = /* map */<span class="cstat-no" title="statement not covered" >Functor[0];</span>
+      var Apply = /* module */<span class="cstat-no" title="statement not covered" >[</span>
         Apply_000,
         /* apply */apply
       ];
-      var apply$1 = /* apply */apply;
-      var include$1 = Relude_Extensions_Apply.ApplyExtensions(Apply);
-      var Applicative_000 = Apply_000;
-      var Applicative_001 = /* apply */apply;
-      var Applicative = /* module */[
+      var apply$1 = /* apply */<span class="cstat-no" title="statement not covered" >apply;</span>
+      var include$1 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyExtensions(Apply);</span>
+      var pure = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (a) {</span>
+<span class="cstat-no" title="statement not covered" >        return pureWithEmptyLog(Log[/* Monoid */0][/* empty */1], a);</span>
+      };
+      var Applicative_000 = <span class="cstat-no" title="statement not covered" >Apply_000;</span>
+      var Applicative_001 = /* apply */<span class="cstat-no" title="statement not covered" >apply;</span>
+      var Applicative = /* module */<span class="cstat-no" title="statement not covered" >[</span>
         Applicative_000,
         Applicative_001,
         /* pure */pure
       ];
-      var pure$1 = /* pure */pure;
-      var include$2 = Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
-      var Monad_000 = Applicative_000;
-      var Monad_001 = Applicative_001;
-      var Monad_002 = /* pure */pure;
-      var Monad = /* module */[
+      var pure$1 = /* pure */<span class="cstat-no" title="statement not covered" >pure;</span>
+      var include$2 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);</span>
+      var flat_map = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (fa, f) {</span>
+<span class="cstat-no" title="statement not covered" >        return bindWithAppendLog(Log[/* Monoid */0][/* append */0], fa, f);</span>
+      };
+      var Monad_000 = <span class="cstat-no" title="statement not covered" >Applicative_000;</span>
+      var Monad_001 = <span class="cstat-no" title="statement not covered" >Applicative_001;</span>
+      var Monad_002 = /* pure */<span class="cstat-no" title="statement not covered" >pure;</span>
+      var Monad$1 = /* module */<span class="cstat-no" title="statement not covered" >[</span>
         Monad_000,
         Monad_001,
         Monad_002,
-        /* flat_map */bind
+        /* flat_map */flat_map
       ];
-      var bind$1 = /* flat_map */bind;
-      var include$3 = Relude_Extensions_Monad.MonadExtensions(Monad);
-      var include$4 = Relude_Extensions_Functor.FunctorInfix(Functor);
-      var include$5 = Relude_Extensions_Apply.ApplyInfix(Apply);
-      var include$6 = Relude_Extensions_Monad.MonadInfix(Monad);
-      var Infix_000 = /* FunctorExtensions */include$4[0];
-      var Infix_001 = /* &lt;$&gt; */include$4[1];
-      var Infix_002 = /* &lt;#&gt; */include$4[2];
-      var Infix_003 = /* &lt;$ */include$4[3];
-      var Infix_004 = /* $&gt; */include$4[4];
-      var Infix_005 = /* &lt;@&gt; */include$4[5];
-      var Infix_006 = /* ApplyExtensions */include$5[0];
-      var Infix_007 = /* &lt;*&gt; */include$5[1];
-      var Infix_008 = /* &lt;* */include$5[2];
-      var Infix_009 = /* *&gt; */include$5[3];
-      var Infix_010 = /* MonadExtensions */include$6[0];
-      var Infix_011 = /* &gt;&gt;= */include$6[1];
-      var Infix_012 = /* =&lt;&lt; */include$6[2];
-      var Infix_013 = /* &gt;=&gt; */include$6[3];
-      var Infix_014 = /* &lt;=&lt; */include$6[4];
-      var Infix = /* module */[
+      var bind = /* flat_map */<span class="cstat-no" title="statement not covered" >flat_map;</span>
+      var include$3 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadExtensions(Monad$1);</span>
+      var include$4 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorInfix(Functor);</span>
+      var include$5 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyInfix(Apply);</span>
+      var include$6 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadInfix(Monad$1);</span>
+      var Infix_000 = /* FunctorExtensions */<span class="cstat-no" title="statement not covered" >include$4[0];</span>
+      var Infix_001 = /* &lt;$&gt; */<span class="cstat-no" title="statement not covered" >include$4[1];</span>
+      var Infix_002 = /* &lt;#&gt; */<span class="cstat-no" title="statement not covered" >include$4[2];</span>
+      var Infix_003 = /* &lt;$ */<span class="cstat-no" title="statement not covered" >include$4[3];</span>
+      var Infix_004 = /* $&gt; */<span class="cstat-no" title="statement not covered" >include$4[4];</span>
+      var Infix_005 = /* &lt;@&gt; */<span class="cstat-no" title="statement not covered" >include$4[5];</span>
+      var Infix_006 = /* ApplyExtensions */<span class="cstat-no" title="statement not covered" >include$5[0];</span>
+      var Infix_007 = /* &lt;*&gt; */<span class="cstat-no" title="statement not covered" >include$5[1];</span>
+      var Infix_008 = /* &lt;* */<span class="cstat-no" title="statement not covered" >include$5[2];</span>
+      var Infix_009 = /* *&gt; */<span class="cstat-no" title="statement not covered" >include$5[3];</span>
+      var Infix_010 = /* MonadExtensions */<span class="cstat-no" title="statement not covered" >include$6[0];</span>
+      var Infix_011 = /* &gt;&gt;= */<span class="cstat-no" title="statement not covered" >include$6[1];</span>
+      var Infix_012 = /* =&lt;&lt; */<span class="cstat-no" title="statement not covered" >include$6[2];</span>
+      var Infix_013 = /* &gt;=&gt; */<span class="cstat-no" title="statement not covered" >include$6[3];</span>
+      var Infix_014 = /* &lt;=&lt; */<span class="cstat-no" title="statement not covered" >include$6[4];</span>
+      var Infix = /* module */<span class="cstat-no" title="statement not covered" >[</span>
         Infix_000,
         Infix_001,
         Infix_002,
@@ -1888,54 +2422,54 @@ function WithMonadAndEnv(M) {
         Infix_013,
         Infix_014
       ];
-      var include_009 = /* BsFunctorExtensions */include[0];
-      var include_010 = /* flipMap */include[1];
-      var include_011 = /* void */include[2];
-      var include_012 = /* voidRight */include[3];
-      var include_013 = /* voidLeft */include[4];
-      var include_014 = /* flap */include[5];
-      var include_017 = /* BsApplyExtensions */include$1[0];
-      var include_018 = /* applyFirst */include$1[1];
-      var include_019 = /* applySecond */include$1[2];
-      var include_020 = /* map2 */include$1[3];
-      var include_021 = /* map3 */include$1[4];
-      var include_022 = /* map4 */include$1[5];
-      var include_023 = /* map5 */include$1[6];
-      var include_024 = /* tuple2 */include$1[7];
-      var include_025 = /* tuple3 */include$1[8];
-      var include_026 = /* tuple4 */include$1[9];
-      var include_027 = /* tuple5 */include$1[10];
-      var include_030 = /* BsApplicativeExtensions */include$2[0];
-      var include_031 = /* liftA1 */include$2[1];
-      var include_034 = /* BsMonadExtensions */include$3[0];
-      var include_035 = /* flatMap */include$3[1];
-      var include_036 = /* flatten */include$3[2];
-      var include_037 = /* composeKleisli */include$3[3];
-      var include_038 = /* flipComposeKleisli */include$3[4];
-      var include_039 = /* liftM1 */include$3[5];
-      var include_040 = /* when_ */include$3[6];
-      var include_041 = /* unless */include$3[7];
-      return /* module */[
+      var include_011 = /* BsFunctorExtensions */<span class="cstat-no" title="statement not covered" >include[0];</span>
+      var include_012 = /* flipMap */<span class="cstat-no" title="statement not covered" >include[1];</span>
+      var include_013 = /* void */<span class="cstat-no" title="statement not covered" >include[2];</span>
+      var include_014 = /* voidRight */<span class="cstat-no" title="statement not covered" >include[3];</span>
+      var include_015 = /* voidLeft */<span class="cstat-no" title="statement not covered" >include[4];</span>
+      var include_016 = /* flap */<span class="cstat-no" title="statement not covered" >include[5];</span>
+      var include_019 = /* BsApplyExtensions */<span class="cstat-no" title="statement not covered" >include$1[0];</span>
+      var include_020 = /* applyFirst */<span class="cstat-no" title="statement not covered" >include$1[1];</span>
+      var include_021 = /* applySecond */<span class="cstat-no" title="statement not covered" >include$1[2];</span>
+      var include_022 = /* map2 */<span class="cstat-no" title="statement not covered" >include$1[3];</span>
+      var include_023 = /* map3 */<span class="cstat-no" title="statement not covered" >include$1[4];</span>
+      var include_024 = /* map4 */<span class="cstat-no" title="statement not covered" >include$1[5];</span>
+      var include_025 = /* map5 */<span class="cstat-no" title="statement not covered" >include$1[6];</span>
+      var include_026 = /* tuple2 */<span class="cstat-no" title="statement not covered" >include$1[7];</span>
+      var include_027 = /* tuple3 */<span class="cstat-no" title="statement not covered" >include$1[8];</span>
+      var include_028 = /* tuple4 */<span class="cstat-no" title="statement not covered" >include$1[9];</span>
+      var include_029 = /* tuple5 */<span class="cstat-no" title="statement not covered" >include$1[10];</span>
+      var include_032 = /* BsApplicativeExtensions */<span class="cstat-no" title="statement not covered" >include$2[0];</span>
+      var include_033 = /* liftA1 */<span class="cstat-no" title="statement not covered" >include$2[1];</span>
+      var include_036 = /* BsMonadExtensions */<span class="cstat-no" title="statement not covered" >include$3[0];</span>
+      var include_037 = /* flatMap */<span class="cstat-no" title="statement not covered" >include$3[1];</span>
+      var include_038 = /* flatten */<span class="cstat-no" title="statement not covered" >include$3[2];</span>
+      var include_039 = /* composeKleisli */<span class="cstat-no" title="statement not covered" >include$3[3];</span>
+      var include_040 = /* flipComposeKleisli */<span class="cstat-no" title="statement not covered" >include$3[4];</span>
+      var include_041 = /* liftM1 */<span class="cstat-no" title="statement not covered" >include$3[5];</span>
+      var include_042 = /* when_ */<span class="cstat-no" title="statement not covered" >include$3[6];</span>
+      var include_043 = /* unless */<span class="cstat-no" title="statement not covered" >include$3[7];</span>
+<span class="cstat-no" title="statement not covered" >      return /* module */[</span>
               /* WithMonad */WithMonad,
               /* make */make,
-              /* runReaderT */runReaderT,
-              /* mapReaderT */mapReaderT,
-              /* withReaderT */withReaderT,
-              /* ask */ask,
-              /* asks */asks,
-              /* local */local,
+              /* runWriterT */runWriterT,
+              /* execWriterT */execWriterT,
+              /* mapWriterT */mapWriterT,
+              /* tell */tell,
+              /* listen */listen,
+              /* listens */listens,
+              /* pass */pass,
+              /* censor */censor,
               /* Functor */Functor,
               /* map */map$1,
-              include_009,
-              include_010,
               include_011,
               include_012,
               include_013,
               include_014,
+              include_015,
+              include_016,
               /* Apply */Apply,
               /* apply */apply$1,
-              include_017,
-              include_018,
               include_019,
               include_020,
               include_021,
@@ -1945,114 +2479,168 @@ function WithMonadAndEnv(M) {
               include_025,
               include_026,
               include_027,
+              include_028,
+              include_029,
               /* Applicative */Applicative,
               /* pure */pure$1,
-              include_030,
-              include_031,
-              /* Monad */Monad,
-              /* bind */bind$1,
-              include_034,
-              include_035,
+              include_032,
+              include_033,
+              /* Monad */Monad$1,
+              /* bind */bind,
               include_036,
               include_037,
               include_038,
               include_039,
               include_040,
               include_041,
+              include_042,
+              include_043,
               /* Infix */Infix
             ];
     });
 }
 &nbsp;
-function make(rToMA) {
-  return /* ReaderT */[rToMA];
+function <span class="fstat-no" title="function not covered" >make(</span>mWriter) {
+<span class="cstat-no" title="statement not covered" >  return /* WriterT */[mWriter];</span>
 }
 &nbsp;
-function runReaderT(r, param) {
-  return Curry._1(param[0], r);
+function runWriterT(param) {
+  return param[0];
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >mapReaderT(</span>maToMB, param) {
-  var rToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >  return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >              return $less$less(maToMB, rToMA, param);</span>
-            })];
+function <span class="fstat-no" title="function not covered" >execWriterT(</span>param) {
+<span class="cstat-no" title="statement not covered" >  return Curry._2(Relude_Identity.Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (prim) {</span>
+<span class="cstat-no" title="statement not covered" >                return prim[1];</span>
+              }), param[0]);
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >withReaderT(</span>r2ToR1, param) {
-  var r1ToMA = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >  return /* ReaderT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >              return $less$less(r1ToMA, r2ToR1, param);</span>
-            })];
+function <span class="fstat-no" title="function not covered" >mapWriterT(</span>mAToMB, param) {
+<span class="cstat-no" title="statement not covered" >  return /* WriterT */[Curry._1(mAToMB, param[0])];</span>
 }
 &nbsp;
-var ask = /* ReaderT */[(function (r) {
-      return Curry._1(Relude_Identity.Monad[/* pure */2], r);
-    })];
-&nbsp;
-function asks(rToA) {
-  return /* ReaderT */[(function (r) {
-              return Curry._1(Relude_Identity.Monad[/* pure */2], Curry._1(rToA, r));
-            })];
+function tell(w) {
+  return /* WriterT */[Curry._1(Relude_Identity.Monad[/* pure */2], /* tuple */[
+                /* () */0,
+                w
+              ])];
 }
 &nbsp;
-function local(rToR, param) {
-  var rToMA = param[0];
-  return /* ReaderT */[(function (r) {
-              return Curry._1(rToMA, Curry._1(rToR, r));
-            })];
+function <span class="fstat-no" title="function not covered" >listen(</span>param) {
+<span class="cstat-no" title="statement not covered" >  return /* WriterT */[Curry._2(Relude_Identity.Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                  var w = <span class="cstat-no" title="statement not covered" >param[1];</span>
+<span class="cstat-no" title="statement not covered" >                  return /* tuple */[</span>
+                          /* tuple */[
+                            param[0],
+                            w
+                          ],
+                          w
+                        ];
+                }), param[0])];
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >pass(</span>param) {
+<span class="cstat-no" title="statement not covered" >  return /* WriterT */[Curry._2(Relude_Identity.Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                  var match = <span class="cstat-no" title="statement not covered" >param[0];</span>
+<span class="cstat-no" title="statement not covered" >                  return /* tuple */[</span>
+                          match[0],
+                          Curry._1(match[1], param[1])
+                        ];
+                }), param[0])];
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >listens(</span>w1ToW2, writerTMAW1) {
+  var match = <span class="cstat-no" title="statement not covered" >listen(writerTMAW1);</span>
+<span class="cstat-no" title="statement not covered" >  return /* WriterT */[Curry._2(Relude_Identity.Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+                  var match = <span class="cstat-no" title="statement not covered" >param[0];</span>
+                  var w1 = <span class="cstat-no" title="statement not covered" >match[1];</span>
+<span class="cstat-no" title="statement not covered" >                  return /* tuple */[</span>
+                          /* tuple */[
+                            match[0],
+                            Curry._1(w1ToW2, w1)
+                          ],
+                          w1
+                        ];
+                }), match[0])];
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >censor(</span>wToW, param) {
+<span class="cstat-no" title="statement not covered" >  return pass(/* WriterT */[Curry._2(Relude_Identity.Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
+<span class="cstat-no" title="statement not covered" >                      return /* tuple */[</span>
+                              /* tuple */[
+                                param[0],
+                                wToW
+                              ],
+                              param[1]
+                            ];
+                    }), param[0])]);
 }
 &nbsp;
 function map(aToB, param) {
-  var rToMA = param[0];
-  return /* ReaderT */[(function (r) {
-              return Curry._2(Relude_Identity.Monad[/* map */0], aToB, Curry._1(rToMA, r));
-            })];
+  return /* WriterT */[Curry._2(Relude_Identity.Monad[/* map */0], (function (param) {
+                  return /* tuple */[
+                          Curry._1(aToB, param[0]),
+                          param[1]
+                        ];
+                }), param[0])];
 }
 &nbsp;
-function apply(param, param$1) {
-  var rToMA = param$1[0];
-  var rToMAToB = param[0];
-  return /* ReaderT */[(function (r) {
-              return Curry._2(Relude_Identity.Monad[/* apply */1], Curry._1(rToMAToB, r), Curry._1(rToMA, r));
-            })];
+function <span class="fstat-no" title="function not covered" >applyWithAppendLog(</span>appendLog, param, param$1) {
+<span class="cstat-no" title="statement not covered" >  return /* WriterT */[Curry._2(Relude_Identity.Monad[/* apply */1], Curry._2(Relude_Identity.Monad[/* map */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (param, param$1) {</span>
+<span class="cstat-no" title="statement not covered" >                      return /* tuple */[</span>
+                              Curry._1(param[0], param$1[0]),
+                              Curry._2(appendLog, param[1], param$1[1])
+                            ];
+                    }), param[0]), param$1[0])];
 }
 &nbsp;
-function pure(a) {
-  return /* ReaderT */[(function (param) {
-              return Curry._1(Relude_Identity.Monad[/* pure */2], a);
-            })];
+function pureWithEmptyLog(empty, a) {
+  return /* WriterT */[Curry._1(Relude_Identity.Monad[/* pure */2], /* tuple */[
+                a,
+                empty
+              ])];
 }
 &nbsp;
-function bind(param, aToReaderB) {
-  var rToMA = param[0];
-  return /* ReaderT */[(function (r) {
-              return Curry._2(Relude_Identity.Monad[/* flat_map */3], Curry._1(rToMA, r), (function (a) {
-                            var match = Curry._1(aToReaderB, a);
-                            return Curry._1(match[0], r);
-                          }));
-            })];
+function bindWithAppendLog(appendLog, param, aToWriterTBW) {
+  return /* WriterT */[Curry._2(Relude_Identity.Monad[/* flat_map */3], param[0], (function (param) {
+                  var w1 = param[1];
+                  var match = Curry._1(aToWriterTBW, param[0]);
+                  return Curry._2(Relude_Identity.Monad[/* map */0], (function (param) {
+                                return /* tuple */[
+                                        param[0],
+                                        Curry._2(appendLog, w1, param[1])
+                                      ];
+                              }), match[0]);
+                }))];
 }
 &nbsp;
-function WithEnv(R) {
+function WithLog(Log) {
   var Functor = /* module */[/* map */map];
   var include = Relude_Extensions_Functor.FunctorExtensions(Functor);
+  var apply = <span class="fstat-no" title="function not covered" >fu</span>nction (ff, fa) {
+<span class="cstat-no" title="statement not covered" >    return applyWithAppendLog(Log[/* Monoid */0][/* append */0], ff, fa);</span>
+  };
   var Apply = /* module */[
     /* map */map,
     /* apply */apply
   ];
   var include$1 = Relude_Extensions_Apply.ApplyExtensions(Apply);
+  var pure = function (a) {
+    return pureWithEmptyLog(Log[/* Monoid */0][/* empty */1], a);
+  };
   var Applicative = /* module */[
     /* map */map,
     /* apply */apply,
     /* pure */pure
   ];
   var include$2 = Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+  var flat_map = function (fa, f) {
+    return bindWithAppendLog(Log[/* Monoid */0][/* append */0], fa, f);
+  };
   var Monad = /* module */[
     /* map */map,
     /* apply */apply,
     /* pure */pure,
-    /* flat_map */bind
+    /* flat_map */flat_map
   ];
   var include$3 = Relude_Extensions_Monad.MonadExtensions(Monad);
   var include$4 = Relude_Extensions_Functor.FunctorInfix(Functor);
@@ -2092,12 +2680,14 @@ function WithEnv(R) {
   ];
   return /* module */[
           /* make */make,
-          /* runReaderT */runReaderT,
-          /* mapReaderT */mapReaderT,
-          /* withReaderT */withReaderT,
-          /* ask */ask,
-          /* asks */asks,
-          /* local */local,
+          /* runWriterT */runWriterT,
+          /* execWriterT */execWriterT,
+          /* mapWriterT */mapWriterT,
+          /* tell */tell,
+          /* listen */listen,
+          /* listens */listens,
+          /* pass */pass,
+          /* censor */censor,
           /* Functor */Functor,
           /* map */map,
           /* BsFunctorExtensions */include[0],
@@ -2124,7 +2714,7 @@ function WithEnv(R) {
           /* BsApplicativeExtensions */include$2[0],
           /* liftA1 */include$2[1],
           /* Monad */Monad,
-          /* bind */bind,
+          /* bind */flat_map,
           /* BsMonadExtensions */include$3[0],
           /* flatMap */include$3[1],
           /* flatten */include$3[2],
@@ -2137,27 +2727,28 @@ function WithEnv(R) {
         ];
 }
 &nbsp;
-var Reader = /* module */[
+var Writer = /* module */[
   /* make */make,
-  /* runReaderT */runReaderT,
-  /* mapReaderT */mapReaderT,
-  /* withReaderT */withReaderT,
-  /* ask */ask,
-  /* asks */asks,
-  /* local */local,
+  /* runWriterT */runWriterT,
+  /* execWriterT */execWriterT,
+  /* mapWriterT */mapWriterT,
+  /* tell */tell,
+  /* listen */listen,
+  /* pass */pass,
+  /* listens */listens,
+  /* censor */censor,
   /* map */map,
-  /* apply */apply,
-  /* pure */pure,
-  /* bind */bind,
-  /* WithEnv */WithEnv
+  /* applyWithAppendLog */applyWithAppendLog,
+  /* pureWithEmptyLog */pureWithEmptyLog,
+  /* bindWithAppendLog */bindWithAppendLog,
+  /* WithLog */WithLog
 ];
 &nbsp;
-exports.$great$great = $great$great;
-exports.$less$less = $less$less;
+exports.WriterLog = WriterLog;
 exports.WithMonad = WithMonad;
-exports.WithMonadAndEnv = WithMonadAndEnv;
-exports.Reader = Reader;
-/* Relude_Function Not a pure module */
+exports.WithMonadAndLog = WithMonadAndLog;
+exports.Writer = Writer;
+/* Relude_List Not a pure module */
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->
