@@ -77,6 +77,20 @@ describe("StateT", () => {
     expect(result) |> toEqual((5, [5, 4, 1]));
   });
 
+  test("stack example 4", () => {
+    // do notation :(
+    let result =
+      Stack.push(1)
+      >>= (_ => Stack.push(2))
+      >>= (_ => Stack.push(3))
+      >>= (_ => Stack.pop)
+      >>= (_ => Stack.pop)
+      >>= (_ => Stack.push(4))
+      >>= (_ => Stack.push(5) <#> a => a * 100)
+      |> State.runStateT([]);
+    expect(result) |> toEqual((500, [5, 4, 1]));
+  });
+
   test("*> loses state", () => {
     let result =
       Stack.push(1)

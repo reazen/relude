@@ -44,6 +44,8 @@ jobs:
       - run:
           name: Coveralls
           command: |
+            # Coveralls was failing for pull requests
+            # I think there's a problem with the integration in github?
             if [[ $CIRCLE_BRANCH == master ]]; then
               npm run coveralls
             else

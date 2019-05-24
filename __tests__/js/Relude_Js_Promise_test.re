@@ -17,14 +17,14 @@ describe("Js.Promise", () => {
 
  // Unsafe.coerces here b/c I can't figure how to make this compile with the actual types
   testAsync("toIO error", onDone =>
-    Js.Promise.reject(Relude_Unsafe.coerce("my error"))
+    Js.Promise.reject(Relude_Unsafe.coerce("my error toIO"))
     |> Relude_Js_Promise.toIO
     |> IO.unsafeRunAsync(
          fun
          | Ok(_) => onDone(fail("failed"))
          | Error(e) => {
            let str: string = Relude_Unsafe.coerce(e);
-           onDone(expect(str) |> toEqual("my error"));
+           onDone(expect(str) |> toEqual("my error toIO"));
          }
        )
   );
@@ -41,14 +41,14 @@ describe("Js.Promise", () => {
 
  // Unsafe.coerces here b/c I can't figure how to make this compile with the actual types
   testAsync("toIOLazy error", onDone =>
-    (() => Js.Promise.reject(Relude_Unsafe.coerce("my error")))
+    (() => Js.Promise.reject(Relude_Unsafe.coerce("my error toIOLazy")))
     |> Relude_Js_Promise.toIOLazy
     |> IO.unsafeRunAsync(
          fun
          | Ok(_) => onDone(fail("failed"))
          | Error(e) => {
            let str: string = Relude_Unsafe.coerce(e);
-           onDone(expect(str) |> toEqual("my error"));
+           onDone(expect(str) |> toEqual("my error toIOLazy"));
          }
        )
   );
