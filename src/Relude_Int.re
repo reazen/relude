@@ -86,6 +86,9 @@ module Ord: BsAbstract.Interface.ORD with type t = int = {
   let compare = compare;
 };
 
+module Map = Relude_Map.MakeFromOrderable(Ord);
+module Set = Relude_Set.MakeFromOrderable(Ord);
+
 /**
   `compareAsInt(a, b)` returns -1 if `a` is less than `b`,
   0 if `a` equals `b`, and 1 if `a`
