@@ -56,7 +56,7 @@ Note: we currently depend on [bs-abstract](https://github.com/Risto-Stevcev/bs-a
 
 ## Project Status
 
-Relude has a fairly complete test suite, and is being used in production at at least one company.  However, it's still a relatively young project, is subject to breaking changes, and likely has some bugs.  Some of the function implementations are not optimized, as we have been more focused on the interfaces rather than the implementations initially.  We hope to improve implementations and performance over time.
+Relude has a fairly complete test suite, and is being used in production at at least two companies. However, it's still a relatively young project, is subject to breaking changes, and likely has some bugs. Some of the function implementations are not optimized, as we have been more focused on the interfaces rather than the implementations initially. We hope to improve implementations and performance over time.
 
 ## Documentation Status
 
