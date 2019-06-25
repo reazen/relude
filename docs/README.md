@@ -93,10 +93,8 @@ We currently do this by hand:
 > npm version major|minor|patch
 
 # Push git commit and tags to upstream/origin
-> git push upstream
-> git push upstream --tags
-> git push origin
-> git push origin --tags
+> git push upstream --follow-tags
+> git push origin --follow-tags
 
 # Publish the new version to npm
 > npm publish
