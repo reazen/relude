@@ -1,8 +1,8 @@
 # Relude
 
 [![CircleCI](https://img.shields.io/circleci/project/github/reazen/relude/master.svg)](https://circleci.com/gh/reazen/relude)
-[![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude) 
-[![Coveralls](https://img.shields.io/coveralls/github/reazen/relude.svg)](https://coveralls.io/github/reazen/relude) 
+[![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)
+[![Coveralls](https://img.shields.io/coveralls/github/reazen/relude.svg)](https://coveralls.io/github/reazen/relude)
 [Documentation](https://reazen.github.io/relude)
 [Coverage Report](https://reazen.github.io/relude/coverage/lcov-report/index.html)
 
@@ -56,7 +56,7 @@ Note: we currently depend on [bs-abstract](https://github.com/Risto-Stevcev/bs-a
 
 ## Project Status
 
-Relude has a fairly complete test suite, and is being used in production at at least two companies. However, it's still a relatively young project, is subject to breaking changes, and likely has some bugs. Some of the function implementations are not optimized, as we have been more focused on the interfaces rather than the implementations initially. We hope to improve implementations and performance over time.
+Relude has a fairly complete test suite and is being used in production by at least two companies. However, it's still a relatively young project, is subject to breaking changes, and likely has some bugs. Some of the function implementations are not optimized, as we have been more focused on the interfaces rather than the implementations initially. We hope to improve implementations and performance over time.
 
 ## Documentation Status
 
