@@ -188,6 +188,7 @@ module Int = Relude_Extensions_List.Int;
 module Float = Relude_Extensions_List.Float;
 module Option = Relude_Extensions_List.Option;
 module Result = Relude_Extensions_List.Result;
+module IO = Relude_Extensions_List.IO;
 module Validation = Relude_Extensions_List.Validation;
 module Infix:
   {

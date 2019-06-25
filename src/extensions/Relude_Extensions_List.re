@@ -59,7 +59,9 @@ module Float = {
   include ListOrdExtensions(Relude_Float.Ord);
 
   let sum: list(float) => float =
-    Relude_List_Instances.foldWithMonoid((module Relude_Float.Additive.Monoid));
+    Relude_List_Instances.foldWithMonoid(
+      (module Relude_Float.Additive.Monoid),
+    );
 
   let product: list(float) => float =
     Relude_List_Instances.foldWithMonoid(
@@ -99,6 +101,29 @@ module Result = {
     module TraverseResult =
       Relude_List_Instances.Traversable(ResultE.Applicative);
     TraverseResult.sequence(xs);
+  };
+};
+
+module IO = {
+  let traverse =
+      (type e, f: 'a => Relude_IO.t('b, e), list: list('a))
+      : Relude_IO.t(list('b), e) => {
+    module IoE =
+      Relude_IO.WithError({
+        type t = e;
+      });
+    module TraverseIO = Relude_List_Instances.Traversable(IoE.Applicative);
+    TraverseIO.traverse(f, list);
+  };
+
+  let sequence =
+      (type e, xs: list(Relude_IO.t('a, e))): Relude_IO.t(list('a), e) => {
+    module IoE =
+      Relude_IO.WithError({
+        type t = e;
+      });
+    module TraverseIO = Relude_List_Instances.Traversable(IoE.Applicative);
+    TraverseIO.sequence(xs);
   };
 };
 

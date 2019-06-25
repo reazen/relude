@@ -2,7 +2,7 @@ open Jest;
 open Expect;
 
 module Int = Relude_Int;
-module List = Relude_List;
+module List = Relude.List;
 
 describe("List", () => {
   test("length empty list", () =>

@@ -41,7 +41,9 @@ module String = {
 module Int = {
   include ArrayOrdExtensions(Relude_Int.Ord);
   let sum =
-    Relude_Array_Instances.foldWithMonoid((module Relude_Int.Additive.Monoid));
+    Relude_Array_Instances.foldWithMonoid(
+      (module Relude_Int.Additive.Monoid),
+    );
   let product =
     Relude_Array_Instances.foldWithMonoid(
       (module Relude_Int.Multiplicative.Monoid),
@@ -51,7 +53,9 @@ module Int = {
 module Float = {
   include ArrayOrdExtensions(Relude_Float.Ord);
   let sum =
-    Relude_Array_Instances.foldWithMonoid((module Relude_Float.Additive.Monoid));
+    Relude_Array_Instances.foldWithMonoid(
+      (module Relude_Float.Additive.Monoid),
+    );
   let product =
     Relude_Array_Instances.foldWithMonoid(
       (module Relude_Float.Multiplicative.Monoid),
@@ -81,6 +85,29 @@ module Result = {
     module TraverseResult =
       Relude_Array_Instances.Traversable(ResultE.Applicative);
     TraverseResult.sequence(xs);
+  };
+};
+
+module IO = {
+  let traverse =
+      (type e, f: 'a => Relude_IO.t('b, e), xs: array('a))
+      : Relude_IO.t(array('b), e) => {
+    module IoE =
+      Relude_IO.WithError({
+        type t = e;
+      });
+    module TraverseIO = Relude_Array_Instances.Traversable(IoE.Applicative);
+    TraverseIO.traverse(f, xs);
+  };
+
+  let sequence =
+      (type e, xs: array(Relude_IO.t('a, e))): Relude_IO.t(array('a), e) => {
+    module IoE =
+      Relude_IO.WithError({
+        type t = e;
+      });
+    module TraverseIO = Relude_Array_Instances.Traversable(IoE.Applicative);
+    TraverseIO.sequence(xs);
   };
 };
 
