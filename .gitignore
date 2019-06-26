@@ -5,6 +5,9 @@
 npm-debug.log
 /node_modules/
 
+# Jest
+/coverage/
+
 # OCaml/BuckleScript/ReasonML
 .merlin
 .bsb.lock
