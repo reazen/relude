@@ -411,9 +411,17 @@ describe("Array", () => {
     |> toEqual([|0, 0, 0, 1, 0, 2|])
   );
 
+  test("prependToAll (empty array)", () =>
+    expect(Array.prependToAll(0, [||])) |> toEqual([||])
+  );
+
   test("intersperse", () =>
     expect(Array.intersperse(",", [|"a", "b", "c"|]))
     |> toEqual([|"a", ",", "b", ",", "c"|])
+  );
+
+  test("intersperse (empty array)", () =>
+    expect(Array.intersperse(",", [||])) |> toEqual([||])
   );
 
   test("replicate", () =>
