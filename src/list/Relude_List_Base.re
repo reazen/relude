@@ -148,12 +148,15 @@ let partition: 'a. ('a => bool, list('a)) => (list('a), list('a)) =
 let splitAt: 'a. (int, list('a)) => option((list('a), list('a))) =
   (i, xs) => Belt.List.splitAt(xs, i);
 
-let rec prependToAll: 'a. ('a, list('a)) => list('a) =
-  (delim, xs) =>
-    switch (xs) {
-    | [] => []
-    | [y, ...ys] => [delim, y, ...prependToAll(delim, ys)]
-    };
+let prependToAll: 'a. ('a, list('a)) => list('a) =
+  (delim, xs) => {
+    let rec go = acc =>
+      fun
+      | [] => acc
+      | [y, ...ys] => go([y, delim, ...acc], ys);
+
+    go([], xs) |> reverse;
+  };
 
 let intersperse: 'a. ('a, list('a)) => list('a) =
   (delim, xs) =>

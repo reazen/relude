@@ -165,16 +165,8 @@ let splitAt: (int, array('a)) => option((array('a), array('a))) =
       ));
     };
 
-let rec prependToAll: ('a, array('a)) => array('a) =
-  (delim, xs) =>
-    switch (head(xs)) {
-    | None => [||]
-    | Some(x) =>
-      Relude_Array_Instances.concat(
-        [|delim, x|],
-        prependToAll(delim, tailOrEmpty(xs)),
-      )
-    };
+let prependToAll: ('a, array('a)) => array('a) =
+  (delim, xs) => Relude_Array_Instances.flatMap(v => [|delim, v|], xs);
 
 let intersperse: ('a, array('a)) => array('a) =
   (delim, xs) =>

@@ -391,6 +391,11 @@ describe("List", () => {
     |> toEqual(["a", ",", "b", ",", "c"])
   );
 
+  test("intersperse is tail recursive", () =>
+    expect(List.(repeat(20000, 0) |> intersperse(1) |> length))
+    |> toEqual(39999)
+  );
+
   test("replicate", () =>
     expect(List.replicate(3, ["a", "b", "c"]))
     |> toEqual(["a", "b", "c", "a", "b", "c", "a", "b", "c"])
