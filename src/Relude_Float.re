@@ -1,4 +1,4 @@
-let eq: (float, float) => bool = BsAbstract.Float.Eq.eq;
+let eq: (float, float) => bool = (a, b) => a == b;
 
 module Eq: BsAbstract.Interface.EQ with type t = float = {
   type t = float;

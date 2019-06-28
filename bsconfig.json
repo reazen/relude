@@ -28,7 +28,8 @@
     "@glennsl/bs-jest"
   ],
   "warnings": {
-    "error": "+a"
+    "number": "+A-4-40-42",
+    "error": "+A"
   },
   "namespace": false,
   "refmt": 3

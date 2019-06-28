@@ -394,7 +394,7 @@ let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
 /**
   `eq(s1, s2)` is a synonym for `s1 == s2`
 */
-let eq: (string, string) => bool = (==);
+let eq: (string, string) => bool = (a, b) => a == b;
 
 module Eq: BsAbstract.Interface.EQ with type t = string = {
   type t = string;
