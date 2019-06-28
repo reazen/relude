@@ -53,6 +53,7 @@ module Set = Relude_Set;
 module State = Relude_StateT.State;
 module StateT = Relude_StateT;
 module String = Relude_String;
+module Tuple = Relude_Tuple;
 module Validation = Relude_Validation;
 module Writer = Relude_WriterT.Writer;
 module WriterLog = Relude_WriterT.WriterLog;
