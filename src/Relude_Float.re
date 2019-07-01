@@ -12,6 +12,8 @@ module Ord: BsAbstract.Interface.ORD with type t = float = {
   let compare = compare;
 };
 
+include Relude_Extensions_Ord.Make(Ord);
+
 /**
   `approximatelyEqual(~tolerance=t, x, y)` returns `true` if `x` and `y`
   are within `t` of one another, `false` otherwise. The `~tolerance`

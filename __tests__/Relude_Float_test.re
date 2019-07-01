@@ -24,6 +24,58 @@ describe("Float", () => {
     expect(Float.compare(1.1, 1.2)) |> toEqual(`less_than)
   );
 
+  test("min (smaller first)", () =>
+    expect(Float.min(3.1, 3.2)) |> toEqual(3.1)
+  );
+
+  test("min (smaller second)", () =>
+    expect(Float.min(3.2, 3.1)) |> toEqual(3.1)
+  );
+
+  test("max (larger second)", () =>
+    expect(Float.max(-1.0, 1.0)) |> toEqual(1.0)
+  );
+
+  test("max (values equal)", () =>
+    expect(Float.max(10.0, 10.0)) |> toEqual(10.0)
+  );
+
+  test("lessThan (first smaller)", () =>
+    expect(Float.lessThan(3.14, 3.15)) |> toEqual(true)
+  );
+
+  test("lessThan (values equal)", () =>
+    expect(Float.lessThan(3.14, 3.14)) |> toEqual(false)
+  );
+
+  test("lessThanOrEq (first smaller)", () =>
+    expect(Float.lessThanOrEq(1.0, 2.0)) |> toEqual(true)
+  );
+
+  test("lessThanOrEq (first larger)", () =>
+    expect(Float.lessThanOrEq(3.0, 0.0)) |> toEqual(false)
+  );
+
+  test("greaterThan (first larger)", () =>
+    expect(Float.greaterThan(1.0, 0.1)) |> toEqual(true)
+  );
+
+  test("greaterThan (values equal)", () =>
+    expect(Float.greaterThan(1.0, 1.0)) |> toEqual(false)
+  );
+
+  test("greaterThanOrEq (eq)", () =>
+    expect(Float.greaterThanOrEq(0.0, 0.0)) |> toEqual(true)
+  );
+
+  test("greaterThanOrEq (first larger)", () =>
+    expect(Float.greaterThanOrEq(1.0, 0.0)) |> toEqual(true)
+  );
+
+  test("greaterThanOrEq (first smaller)", () =>
+    expect(Float.greaterThanOrEq(1.0, 2.0)) |> toEqual(false)
+  );
+
   test("approximatelyEqual", () =>
     expect(Float.approximatelyEqual(~tolerance=0.01, 0.111, 0.112))
     |> toEqual(true)
