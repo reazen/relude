@@ -33,8 +33,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   let indexOfBy: 'a. (('a, 'a) => bool, 'a, F.t('a)) => option(int) =
     (f, x, xs) =>
       F.fold_left(
-        ((i, v), y) =>
-          (i + 1, optionAlt(v, f(x, y) ? Some(i) : None)),
+        ((i, v), y) => (i + 1, optionAlt(v, f(x, y) ? Some(i) : None)),
         (0, None),
         xs,
       )
@@ -52,7 +51,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
         (min, x) =>
           switch (min) {
           | None => Some(x)
-          | Some(y) => f(x, y) == `less_than ? Some(x) : Some(y)
+          | Some(y) => Some(Relude_Extensions_Ord.minBy(f, x, y))
           },
         None,
         xs,
@@ -103,17 +102,12 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
       |> ignore;
 
   let find: 'a. ('a => bool, F.t('a)) => option('a) =
-    f =>
-      F.fold_left(
-        (v, x) => optionAlt(v, f(x) ? Some(x) : None),
-        None,
-      );
+    f => F.fold_left((v, x) => optionAlt(v, f(x) ? Some(x) : None), None);
 
   let findWithIndex: 'a. (('a, int) => bool, F.t('a)) => option('a) =
     (f, xs) =>
       F.fold_left(
-        ((i, v), x) =>
-          (i + 1, optionAlt(v, f(x, i) ? Some(x) : None)),
+        ((i, v), x) => (i + 1, optionAlt(v, f(x, i) ? Some(x) : None)),
         (0, None),
         xs,
       )
