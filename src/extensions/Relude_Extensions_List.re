@@ -70,11 +70,7 @@ module Float = {
 };
 
 module Option = {
-  module Traversable = BsAbstract.Functors.ListF.Option.Traversable;
-
-  let traverse: ('a => option('a), list('a)) => option(list('a)) = Traversable.traverse;
-
-  let sequence: list(option('a)) => option(list('a)) = Traversable.sequence;
+  include Relude_List_Instances.Traversable(Relude_Option.Applicative);
 };
 
 module Result = {
