@@ -2,36 +2,40 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   type t('a) =
     | NonEmpty('a, TailSequence.t('a));
 
-  let one: 'a => t('a) =
+  let one: 'a. 'a => t('a) =
     head => NonEmpty(head, TailSequence.MonoidAny.empty);
 
-  let make: ('a, TailSequence.t('a)) => t('a) =
+  let make: 'a. ('a, TailSequence.t('a)) => t('a) =
     (head, tailSequence) => NonEmpty(head, tailSequence);
 
-  let fromSequence: TailSequence.t('a) => option(t('a)) =
+  let fromSequence: 'a. TailSequence.t('a) => option(t('a)) =
     sequence =>
       TailSequence.head(sequence)
       ->Belt.Option.map(head =>
           NonEmpty(head, TailSequence.tailOrEmpty(sequence))
         );
 
-  let toSequence: t('a) => TailSequence.t('a) =
+  let toSequence: 'a. t('a) => TailSequence.t('a) =
     fun
     | NonEmpty(head, tail) =>
       TailSequence.MonoidAny.append(TailSequence.Monad.pure(head), tail);
 
-  let cons: ('a, t('a)) => t('a) =
+  let cons: 'a. ('a, t('a)) => t('a) =
     (head, tailNonEmpty) => NonEmpty(head, toSequence(tailNonEmpty));
 
-  let head: t('a) => 'a =
+  let uncons: 'a. t('a) => ('a, TailSequence.t('a)) =
+    fun
+    | NonEmpty(head, tail) => (head, tail);
+
+  let head: 'a. t('a) => 'a =
     fun
     | NonEmpty(head, _) => head;
 
-  let tail: t('a) => TailSequence.t('a) =
+  let tail: 'a. t('a) => TailSequence.t('a) =
     fun
     | NonEmpty(_, tail) => tail;
 
-  let concat: (t('a), t('a)) => t('a) =
+  let concat: 'a. (t('a), t('a)) => t('a) =
     (nonEmpty1, nonEmpty2) =>
       NonEmpty(
         head(nonEmpty1),
@@ -52,14 +56,14 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     let append = concat;
   };
 
-  let reduceLeft: (('a, 'a) => 'a, t('a)) => 'a =
+  let reduceLeft: 'a. (('a, 'a) => 'a, t('a)) => 'a =
     (f, NonEmpty(x, xs)) => TailSequence.Foldable.fold_left(f, x, xs);
 
-  let foldLeft: (('b, 'a) => 'b, 'b, t('a)) => 'b =
+  let foldLeft: 'a 'b. (('b, 'a) => 'b, 'b, t('a)) => 'b =
     (f, init, NonEmpty(x, xs)) =>
       TailSequence.Foldable.fold_left(f, f(init, x), xs);
 
-  let foldRight: (('a, 'b) => 'b, 'b, t('a)) => 'b =
+  let foldRight: 'a 'b. (('a, 'b) => 'b, 'b, t('a)) => 'b =
     (f, init, NonEmpty(x, xs)) =>
       f(x, TailSequence.Foldable.fold_right(f, init, xs));
 
@@ -72,7 +76,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
 
     module Fold_Map = (FoldMapMonoid: BsAbstract.Interface.MONOID) => {
       module TailFoldMap = TailSequence.Foldable.Fold_Map(FoldMapMonoid);
-      let fold_map: ('a => FoldMapMonoid.t, t('a)) => FoldMapMonoid.t =
+      let fold_map: 'a. ('a => FoldMapMonoid.t, t('a)) => FoldMapMonoid.t =
         (f, NonEmpty(x, xs)) =>
           FoldMapMonoid.append(f(x), TailFoldMap.fold_map(f, xs));
     };
@@ -80,7 +84,10 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     module Fold_Map_Plus = (FoldMapPlus: BsAbstract.Interface.PLUS) => {
       module TailFoldMapPlus =
         TailSequence.Foldable.Fold_Map_Plus(FoldMapPlus);
-      let fold_map: ('a => FoldMapPlus.t('a), t('a)) => FoldMapPlus.t('a) =
+      let fold_map:
+        'a.
+        ('a => FoldMapPlus.t('a), t('a)) => FoldMapPlus.t('a)
+       =
         (f, NonEmpty(x, xs)) =>
           FoldMapPlus.alt(f(x), TailFoldMapPlus.fold_map(f, xs));
     };
@@ -88,14 +95,14 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     module Fold_Map_Any = (FoldMapAny: BsAbstract.Interface.MONOID_ANY) => {
       module SequenceFoldMapAny =
         TailSequence.Foldable.Fold_Map_Any(FoldMapAny);
-      let fold_map: ('a => FoldMapAny.t('a), t('a)) => FoldMapAny.t('a) =
+      let fold_map: 'a. ('a => FoldMapAny.t('a), t('a)) => FoldMapAny.t('a) =
         (f, NonEmpty(x, xs)) =>
           FoldMapAny.append(f(x), SequenceFoldMapAny.fold_map(f, xs));
     };
   };
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-  let map: ('a => 'b, t('a)) => t('b) =
+  let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
     (f, NonEmpty(x, xs)) => NonEmpty(f(x), TailSequence.Monad.map(f, xs));
 
   module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
@@ -104,10 +111,10 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   };
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  let flatten: t(t('a)) => t('a) =
+  let flatten: 'a. t(t('a)) => t('a) =
     nonEmpty => reduceLeft(concat, nonEmpty);
 
-  let apply: (t('a => 'b), t('a)) => t('b) =
+  let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
     (ff, fa) => map(f => map(f, fa), ff) |> flatten;
 
   module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
@@ -125,7 +132,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   };
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  let bind: (t('a), 'a => t('b)) => t('b) =
+  let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
     (nonEmpty, f) => map(f, nonEmpty) |> flatten;
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
@@ -140,7 +147,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
       | NonEmpty(y, ys) => y ++ delim ++ TailSequence.mkString(delim, ys)
       };
 
-  let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool =
+  let eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
     (eqA, xs, ys) =>
       switch (xs, ys) {
       | (NonEmpty(x, xs), NonEmpty(y, ys)) =>
@@ -169,7 +176,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
       let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
     };
 
-  let showBy: ('a => string, t('a)) => string =
+  let showBy: 'a. ('a => string, t('a)) => string =
     (showX, xs) => {
       let strings = map(showX, xs);
       "[!" ++ mkString(", ", strings) ++ "!]";
@@ -212,12 +219,11 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
       module TailTraversable = TailSequence.Traversable(A);
 
       let traverse:
-        ('a => applicative_t('b), t('a)) => applicative_t(t('b)) =
+        'a 'b.
+        ('a => applicative_t('b), t('a)) => applicative_t(t('b))
+       =
         (f, NonEmpty(x, xs)) => {
-          let headA: A.t('b) = f(x);
-          let tailA: A.t(TailSequence.t('b)) =
-            TailTraversable.traverse(f, xs);
-          A.apply(A.map(make, headA), tailA);
+          A.apply(A.map(make, f(x)), TailTraversable.traverse(f, xs));
         };
 
       let sequence: t(applicative_t('a)) => applicative_t(t('a)) =
@@ -232,6 +238,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
 module List =
   WithSequence({
     type t('a) = list('a);
+    let empty = [];
     let length = Relude_List_Instances.length;
     let isEmpty = Relude_List_Base.isEmpty;
     let isNotEmpty = Relude_List_Base.isNotEmpty;
@@ -253,6 +260,7 @@ module List =
 module Array =
   WithSequence({
     type t('a) = array('a);
+    let empty = [||];
     let length = Relude_Array_Base.length;
     let isEmpty = Relude_Array_Base.isEmpty;
     let isNotEmpty = Relude_Array_Base.isNotEmpty;

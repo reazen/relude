@@ -4,6 +4,16 @@ open Expect;
 module NonEmpty = Relude_NonEmpty;
 
 describe("NonEmpty.List", () => {
+  test("cons", () =>
+    expect(NonEmpty.List.cons(1, NonEmpty.List.one(2)))
+    |> toEqual(NonEmpty.List.make(1, [2]))
+  );
+
+  test("uncons", () =>
+    expect(NonEmpty.List.uncons(NonEmpty.List.make(1, [2, 3])))
+    |> toEqual((1, [2, 3]))
+  );
+
   test("concat with two full NonEmpty.Lists", () => {
     let l1 = NonEmpty.List.make(1, [2, 3]);
     let l2 = NonEmpty.List.make(4, [5]);
@@ -67,6 +77,16 @@ describe("NonEmpty.List", () => {
 });
 
 describe("NonEmpty.Array", () => {
+  test("cons", () =>
+    expect(NonEmpty.Array.cons(1, NonEmpty.Array.one(2)))
+    |> toEqual(NonEmpty.Array.make(1, [|2|]))
+  );
+
+  test("uncons", () =>
+    expect(NonEmpty.Array.uncons(NonEmpty.Array.make(1, [|2, 3|])))
+    |> toEqual((1, [|2, 3|]))
+  );
+
   test("concat with two full NonEmpty.Arrays", () => {
     let l1 = NonEmpty.Array.make(1, [|2, 3|]);
     let l2 = NonEmpty.Array.make(4, [|5|]);
