@@ -134,3 +134,21 @@ describe("Tuple from list", () => {
     |> toEqual(Some(("A", "A", "A", "A", "A")))
   );
 });
+
+describe("Tuple apply helpers", () => {
+  test("apply2", () =>
+    expect((1, 2) |> Tuple.apply2((a, b) => a + b)) |> toEqual(3)
+  );
+
+  test("apply3", () =>
+    expect((1, 2, 3) |> Tuple.apply3((a, b, c) => a + b + c)) |> toEqual(6)
+  )
+
+  test("apply4", () =>
+    expect((1, 2, 3, 4) |> Tuple.apply4((a, b, c, d) => a + b + c + d)) |> toEqual(10)
+  )
+
+  test("apply5", () =>
+    expect((1, 2, 3, 4, 5) |> Tuple.apply5((a, b, c, d, e) => a + b + c + d + e)) |> toEqual(15)
+  )
+});

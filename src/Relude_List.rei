@@ -35,6 +35,17 @@ let tuple4:
 let tuple5:
   (Apply.t('a), Apply.t('b), Apply.t('c), Apply.t('d), Apply.t('e)) =>
   Apply.t(('a, 'b, 'c, 'd, 'e));
+let mapTuple2: (('a, 'b) => 'c, (Apply.t('a), Apply.t('b))) => Apply.t('c);
+let mapTuple3:
+  (('a, 'b, 'c) => 'd, (Apply.t('a), Apply.t('b), Apply.t('c))) =>
+  Apply.t('d);
+let mapTuple4:
+  (('a, 'b, 'c, 'd) => 'e,
+  (Apply.t('a), Apply.t('b), Apply.t('c), Apply.t('d))) => Apply.t('e);
+let mapTuple5:
+  (('a, 'b, 'c, 'd, 'e) => 'f,
+  (Apply.t('a), Apply.t('b), Apply.t('c), Apply.t('d), Apply.t('e))) =>
+  Apply.t('f);
 let pure: 'a => BsAbstract.List.Applicative.t('a);
 module Applicative = Relude_List_Instances.Applicative;
 module BsApplicativeExtensions =
@@ -358,6 +369,32 @@ module Infix:
           Relude_List_Instances.Apply.t('d),
           Relude_List_Instances.Apply.t('e)) =>
           Relude_List_Instances.Apply.t(('a, 'b, 'c, 'd, 'e));
+        let mapTuple2:
+          (('a, 'b) => 'c,
+          (Relude_List_Instances.Apply.t('a),
+          Relude_List_Instances.Apply.t('b))) =>
+          Relude_List_Instances.Apply.t('c);
+        let mapTuple3:
+          (('a, 'b, 'c) => 'd,
+          (Relude_List_Instances.Apply.t('a),
+          Relude_List_Instances.Apply.t('b),
+          Relude_List_Instances.Apply.t('c))) =>
+          Relude_List_Instances.Apply.t('d);
+        let mapTuple4:
+          (('a, 'b, 'c, 'd) => 'e,
+          (Relude_List_Instances.Apply.t('a),
+          Relude_List_Instances.Apply.t('b),
+          Relude_List_Instances.Apply.t('c),
+          Relude_List_Instances.Apply.t('d))) =>
+          Relude_List_Instances.Apply.t('e);
+        let mapTuple5:
+          (('a, 'b, 'c, 'd, 'e) => 'f,
+          (Relude_List_Instances.Apply.t('a),
+          Relude_List_Instances.Apply.t('b),
+          Relude_List_Instances.Apply.t('c),
+          Relude_List_Instances.Apply.t('d),
+          Relude_List_Instances.Apply.t('e))) =>
+          Relude_List_Instances.Apply.t('f);
       };
     let ( <*> ):
       (Relude_List_Instances.Apply.t('a => 'b),

@@ -130,6 +130,54 @@ describe("Option", () => {
     |> toEqual(Some(15))
   );
 
+  test("tuple2", () =>
+    expect(Option.tuple2(Some(1), Some(2))) |> toEqual(Some((1, 2)))
+  );
+
+  test("tuple3", () =>
+    expect(Option.tuple3(Some(1), Some(2), Some(3)))
+    |> toEqual(Some((1, 2, 3)))
+  );
+
+  test("tuple4", () =>
+    expect(Option.tuple4(Some(1), Some(2), Some(3), Some(4)))
+    |> toEqual(Some((1, 2, 3, 4)))
+  );
+
+  test("tuple5", () =>
+    expect(Option.tuple5(Some(1), Some(2), Some(3), Some(4), Some(5)))
+    |> toEqual(Some((1, 2, 3, 4, 5)))
+  );
+
+  test("mapTuple2", () =>
+    expect((Some(1), Some(2)) |> Option.mapTuple2((a, b) => a + b))
+    |> toEqual(Some(3))
+  );
+
+  test("mapTuple3", () =>
+    expect(
+      (Some(1), Some(2), Some(3))
+      |> Option.mapTuple3((a, b, c) => a + b + c),
+    )
+    |> toEqual(Some(6))
+  );
+
+  test("mapTuple4", () =>
+    expect(
+      (Some(1), Some(2), Some(3), Some(4))
+      |> Option.mapTuple4((a, b, c, d) => a + b + c + d),
+    )
+    |> toEqual(Some(10))
+  );
+
+  test("mapTuple5", () =>
+    expect(
+      (Some(1), Some(2), Some(3), Some(4), Some(5))
+      |> Option.mapTuple5((a, b, c, d, e) => a + b + c + d + e),
+    )
+    |> toEqual(Some(15))
+  );
+
   test("foldLeft", () =>
     expect(Option.foldLeft((acc, v) => [v, ...acc], [10, 20], Some(1)))
     |> toEqual([1, 10, 20])
@@ -220,8 +268,4 @@ describe("Option", () => {
   test("eq is false when one value is Some and one is None", () =>
     expect(Option.eq((module Int.Eq), None, Some(1))) |> toEqual(false)
   );
-
-  /**
-   * TODO: test infix functions
-   */ ();
 });

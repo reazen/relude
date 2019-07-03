@@ -81,6 +81,36 @@ let flipCompose: ('a => 'b, 'b => 'c, 'a) => 'c = (f, g, a) => g(f(a));
 */
 let andThen: ('a => 'b, 'b => 'c, 'a) => 'c = flipCompose;
 
+let curry2: 'a 'b 'c. ((('a, 'b)) => 'c, 'a, 'b) => 'c =
+  (f, a, b) => f((a, b));
+
+let curry3: 'a 'b 'c 'd. ((('a, 'b, 'c)) => 'd, 'a, 'b, 'c) => 'd =
+  (f, a, b, c) => f((a, b, c));
+
+let curry4: 'a 'b 'c 'd 'e. ((('a, 'b, 'c, 'd)) => 'e, 'a, 'b, 'c, 'd) => 'e =
+  (f, a, b, c, d) => f((a, b, c, d));
+
+let curry5:
+  'a 'b 'c 'd 'e 'f.
+  ((('a, 'b, 'c, 'd, 'e)) => 'f, 'a, 'b, 'c, 'd, 'e) => 'f
+ =
+  (f, a, b, c, d, e) => f((a, b, c, d, e));
+
+let uncurry2: 'a 'b 'c. (('a, 'b) => 'c, ('a, 'b)) => 'c =
+  (f, (a, b)) => f(a, b);
+
+let uncurry3: 'a 'b 'c 'd. (('a, 'b, 'c) => 'd, ('a, 'b, 'c)) => 'd =
+  (f, (a, b, c)) => f(a, b, c);
+
+let uncurry4: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd) => 'e, ('a, 'b, 'c, 'd)) => 'e =
+  (f, (a, b, c, d)) => f(a, b, c, d);
+
+let uncurry5:
+  'a 'b 'c 'd 'e 'f.
+  (('a, 'b, 'c, 'd, 'e) => 'f, ('a, 'b, 'c, 'd, 'e)) => 'f
+ =
+  (f, (a, b, c, d, e)) => f(a, b, c, d, e);
+
 /**
   `map` is a synonym for `compose` and is the equivalent of `f(g(a))`.
 

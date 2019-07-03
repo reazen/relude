@@ -89,6 +89,9 @@ We welcome all contributions: bug fixes, features requests (or implementations),
 We currently do this by hand:
 
 ```
+# Run the release build to generate all release artifacts
+> npm run releasebuild
+
 # Bump the version, update package.json, and create the git tag
 > npm version major|minor|patch
 

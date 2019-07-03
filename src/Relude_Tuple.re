@@ -48,3 +48,18 @@ let fromListAtLeast2 = xs => Relude_List.take(2, xs) |> fromList;
 let fromListAtLeast3 = xs => Relude_List.take(3, xs) |> fromList3;
 let fromListAtLeast4 = xs => Relude_List.take(4, xs) |> fromList4;
 let fromListAtLeast5 = xs => Relude_List.take(5, xs) |> fromList5;
+
+let apply2: 'a 'b 'c. (('a, 'b) => 'c, ('a, 'b)) => 'c =
+  (f, (a, b)) => f(a, b);
+
+let apply3: 'a 'b 'c 'd. (('a, 'b, 'c) => 'd, ('a, 'b, 'c)) => 'd =
+  (f, (a, b, c)) => f(a, b, c);
+
+let apply4: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd) => 'e, ('a, 'b, 'c, 'd)) => 'e =
+  (f, (a, b, c, d)) => f(a, b, c, d);
+
+let apply5:
+  'a 'b 'c 'd 'e 'f.
+  (('a, 'b, 'c, 'd, 'e) => 'f, ('a, 'b, 'c, 'd, 'e)) => 'f
+ =
+  (f, (a, b, c, d, e)) => f(a, b, c, d, e);
