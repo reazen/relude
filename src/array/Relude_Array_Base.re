@@ -260,6 +260,18 @@ let removeEach =
   removeEachBy(EqA.eq, x, xs);
 };
 
+let replaceAt: 'a. (int, 'a, array('a)) => array('a) =
+  (targetIndex, newX, xs) => {
+    xs
+    |> mapWithIndex((x, currentIndex) =>
+         if (currentIndex == targetIndex) {
+           newX;
+         } else {
+           x;
+         }
+       );
+  };
+
 // TODO: scans should come from a typeclass/extension
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>

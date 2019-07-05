@@ -189,6 +189,7 @@ let removeFirst:
 let removeEach:
   ((module BsAbstract.Interface.EQ with type t = 'a), 'a, list('a)) =>
   list('a);
+let replaceAt: (int, 'a, list('a)) => list('a);
 let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b);
 let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b);
 module ListEqExtensions = Relude_Extensions_List.ListEqExtensions;

@@ -596,6 +596,11 @@ describe("List", () => {
     |> toEqual([2, 4])
   );
 
+  test("replaceAt", () =>
+    expect(List.replaceAt(2, 100, [1, 2, 3, 4, 5]))
+    |> toEqual([1, 2, 100, 4, 5])
+  );
+
   test("distinctBy", () =>
     expect(List.distinctBy(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
     |> toEqual([6, 1, 2, 3, 4, 5])

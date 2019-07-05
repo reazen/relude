@@ -529,6 +529,11 @@ describe("Array", () => {
     |> toEqual([|6, 1, 2, 3, 4, 5|])
   );
 
+  test("replaceAt", () =>
+    expect(Array.replaceAt(2, 100, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 100, 4, 5|])
+  );
+
   test("map", () =>
     expect(Array.map(a => a + 2, [|1, 2, 3|])) |> toEqual([|3, 4, 5|])
   );

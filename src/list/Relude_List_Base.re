@@ -255,6 +255,18 @@ let removeEach =
   removeEachBy(EqA.eq, x, xs);
 };
 
+let replaceAt: 'a. (int, 'a, list('a)) => list('a) =
+  (targetIndex, newX, xs) => {
+    xs
+    |> mapWithIndex((x, currentIndex) =>
+         if (currentIndex == targetIndex) {
+           newX;
+         } else {
+           x;
+         }
+       );
+  };
+
 // TODO: scans come from TraversableExtensions
 let scanLeft: (('b, 'a) => 'b, 'b, list('a)) => list('b) =
   (f, init, xs) =>
