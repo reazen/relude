@@ -20,24 +20,24 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">88.72% </span>
+        <span class="strong">89% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>173/195</span>
+        <span class='fraction'>178/200</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">82.14% </span>
+        <span class="strong">82.76% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>46/56</span>
+        <span class='fraction'>48/58</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">85.96% </span>
+        <span class="strong">86.44% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>49/57</span>
+        <span class='fraction'>51/59</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">88.72% </span>
+        <span class="strong">89% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>173/195</span>
+        <span class='fraction'>178/200</span>
       </div>
     </div>
     <p class="quiet">
@@ -475,7 +475,18 @@
 <a name='L427'></a><a href='#L427'>427</a>
 <a name='L428'></a><a href='#L428'>428</a>
 <a name='L429'></a><a href='#L429'>429</a>
-<a name='L430'></a><a href='#L430'>430</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L430'></a><a href='#L430'>430</a>
+<a name='L431'></a><a href='#L431'>431</a>
+<a name='L432'></a><a href='#L432'>432</a>
+<a name='L433'></a><a href='#L433'>433</a>
+<a name='L434'></a><a href='#L434'>434</a>
+<a name='L435'></a><a href='#L435'>435</a>
+<a name='L436'></a><a href='#L436'>436</a>
+<a name='L437'></a><a href='#L437'>437</a>
+<a name='L438'></a><a href='#L438'>438</a>
+<a name='L439'></a><a href='#L439'>439</a>
+<a name='L440'></a><a href='#L440'>440</a>
+<a name='L441'></a><a href='#L441'>441</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -506,8 +517,8 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -817,6 +828,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -852,6 +873,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -1243,6 +1265,16 @@ function <span class="fstat-no" title="function not covered" >removeEach(</span>
 <span class="cstat-no" title="statement not covered" >  return removeEachBy(eqA[/* eq */0], x, xs);</span>
 }
 &nbsp;
+function replaceAt(targetIndex, newX, xs) {
+  return mapWithIndex((function (x, currentIndex) {
+                if (currentIndex === targetIndex) {
+                  return newX;
+                } else {
+                  return x;
+                }
+              }), xs);
+}
+&nbsp;
 function scanLeft(f, init, xs) {
   return Relude_Array_Instances.foldLeft((function (param, curr) {
                     var nextAcc = Curry._2(f, param[0], curr);
@@ -1330,6 +1362,7 @@ exports.removeEachBy = removeEachBy;
 exports.distinct = distinct;
 exports.removeFirst = removeFirst;
 exports.removeEach = removeEach;
+exports.replaceAt = replaceAt;
 exports.scanLeft = scanLeft;
 exports.scanRight = scanRight;
 /* Relude_Int Not a pure module */
