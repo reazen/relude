@@ -284,8 +284,8 @@ let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
        });
 
 /**
-Handles an error of types `'e` from an `IO.t('a, 'e)` and converts it into a
-new `IO.t('a, 'e)` value. This is much like `flatMap`/`bind` but works for
+Handles an error of types `'e1` from an `IO.t('a, 'e1)` and converts it into a
+new `IO.t('a, 'e2)` value. This is much like `flatMap`/`bind` but works for
 the error channel of the `IO`.
 */
 let rec catchError:

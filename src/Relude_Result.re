@@ -522,7 +522,7 @@ let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
   catchError(labelMessage, Error("not even")) == Error("Attn: not even");
   ```
 */
-let catchError: 'a 'e. ('e => t('a, 'e), t('a, 'e)) => t('a, 'e) =
+let catchError: 'a 'e1 'e2. ('e1 => t('a, 'e2), t('a, 'e1)) => t('a, 'e2) =
   (f, fa) =>
     switch (fa) {
     | Ok(_) as res => res

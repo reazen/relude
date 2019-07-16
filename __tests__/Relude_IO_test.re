@@ -139,6 +139,29 @@ describe("IO", () => {
        )
   );
 
+  testAsync("catchError success", onDone =>
+    IO.pure(42)
+    |> IO.catchError((e: string) => IO.throw(e ++ e))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(a) => onDone(expect(a) |> toEqual(42))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("catchError failure", onDone =>
+    IO.throw("42")
+    |> IO.catchError((e: string) => {
+      let intValue = Relude.Int.fromString(e) |> Relude.Option.getOrElse(0);
+      IO.throw(intValue * 2);
+    })
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(v) => onDone(expect(v) |> toEqual(84))
+       )
+  );
+
   testAsync("unsafeRunAsync pure", onDone =>
     IO.pure(42)
     |> IO.unsafeRunAsync(

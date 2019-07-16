@@ -83,6 +83,26 @@ describe("Result", () => {
     expect(Result.getError(Belt.Result.Ok(1))) |> toEqual(None)
   );
 
+  test("catchError success", () =>
+    expect(
+      Result.pure(42)
+      |> Result.catchError((e: string) => Result.error(e ++ e)),
+    )
+    |> toEqual(Belt.Result.Ok(42))
+  );
+
+  test("catchError failure", () =>
+    expect(
+      Result.error("42")
+      |> Result.catchError(e => {
+           let intValue =
+             Relude.Int.fromString(e) |> Relude.Option.getOrElse(0);
+           Result.error(intValue * 2);
+         }),
+    )
+    |> toEqual(Belt.Result.Error(84))
+  );
+
   test("eqBy when eq, both Ok", () =>
     expect(Result.eqBy(Relude_Int.eq, Relude_String.eq, Ok("a"), Ok("a")))
     |> toEqual(true)
