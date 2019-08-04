@@ -29,6 +29,11 @@ let approximatelyEqual: (~tolerance: float, float, float) => bool =
   (~tolerance, x, y) => Js.Math.abs_float(x -. y) <= tolerance;
 
 /**
+  `fromInt` converts an int (e.g. 1) to its floating-point representation (1.0)
+ */
+let fromInt = v => float_of_int(v);
+
+/**
   `toString(x)` returns the string representation of `x`. Note
   that this may not be in the same form as you wrote it in the
   source code.

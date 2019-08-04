@@ -76,6 +76,38 @@ describe("Float", () => {
     expect(Float.greaterThanOrEq(1.0, 2.0)) |> toEqual(false)
   );
 
+  test("clamp (in range)", () =>
+    expect(Float.clamp(~min=1.1, ~max=1.5, 1.3)) |> toEqual(1.3)
+  );
+
+  test("clamp (too high)", () =>
+    expect(Float.clamp(~min=1.1, ~max=1.5, 2.3)) |> toEqual(1.5)
+  );
+
+  test("clamp (too low)", () =>
+    expect(Float.clamp(~min=1.1, ~max=1.5, 0.3)) |> toEqual(1.1)
+  );
+
+  test("clamp (invalid min max)", () =>
+    expect(Float.clamp(~min=5.0, ~max=0.0, 3.0)) |> toEqual(0.0)
+  );
+
+  test("between (true)", () =>
+    expect(Float.between(~min=0.0, ~max=1.0, 0.5)) |> toEqual(true)
+  );
+
+  test("between (equal to max)", () =>
+    expect(Float.between(~min=0.0, ~max=1.0, 1.0)) |> toEqual(true)
+  );
+
+  test("between (equal to min)", () =>
+    expect(Float.between(~min=0.0, ~max=1.0, 0.0)) |> toEqual(true)
+  );
+
+  test("between (too low)", () =>
+    expect(Float.between(~min=-1.0, ~max=1.0, -2.0)) |> toEqual(false)
+  );
+
   test("approximatelyEqual", () =>
     expect(Float.approximatelyEqual(~tolerance=0.01, 0.111, 0.112))
     |> toEqual(true)

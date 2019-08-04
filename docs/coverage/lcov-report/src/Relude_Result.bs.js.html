@@ -20,24 +20,24 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">46.58% </span>
+        <span class="strong">47.86% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>109/234</span>
+        <span class='fraction'>112/234</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">51.92% </span>
+        <span class="strong">55.77% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>27/52</span>
+        <span class='fraction'>29/52</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">45% </span>
+        <span class="strong">47.5% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>18/40</span>
+        <span class='fraction'>19/40</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">46.58% </span>
+        <span class="strong">47.86% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>109/234</span>
+        <span class='fraction'>112/234</span>
       </div>
     </div>
     <p class="quiet">
@@ -645,11 +645,11 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">83x</span>
+<span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -788,7 +788,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -818,10 +818,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1393,11 +1393,11 @@ function <span class="fstat-no" title="function not covered" >alt(</span>fa1, fa
   }
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >catchError(</span>f, fa) {
-<span class="cstat-no" title="statement not covered" >  if (fa.tag) {</span>
-<span class="cstat-no" title="statement not covered" >    return Curry._1(f, fa[0]);</span>
+function catchError(f, fa) {
+  if (fa.tag) {
+    return Curry._1(f, fa[0]);
   } else {
-<span class="cstat-no" title="statement not covered" >    return fa;</span>
+    return fa;
   }
 }
 &nbsp;

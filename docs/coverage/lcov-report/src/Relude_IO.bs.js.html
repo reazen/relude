@@ -20,31 +20,31 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">49.91% </span>
+        <span class="strong">50.78% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>289/579</span>
+        <span class='fraction'>294/579</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">36.31% </span>
+        <span class="strong">37.58% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>57/157</span>
+        <span class='fraction'>59/157</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">38.89% </span>
+        <span class="strong">39.44% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>70/180</span>
+        <span class='fraction'>71/180</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">49.91% </span>
+        <span class="strong">50.78% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>289/579</span>
+        <span class='fraction'>294/579</span>
       </div>
     </div>
     <p class="quiet">
       Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
     </p>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line medium'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -1330,7 +1330,7 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-yes">61x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1338,7 +1338,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1421,14 +1421,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">86x</span>
-<span class="cline-any cline-yes">129x</span>
-<span class="cline-any cline-yes">129x</span>
-<span class="cline-any cline-yes">129x</span>
+<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-yes">131x</span>
+<span class="cline-any cline-yes">131x</span>
+<span class="cline-any cline-yes">131x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">44x</span>
+<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1622,13 +1622,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2881,20 +2881,20 @@ function <span class="fstat-no" title="function not covered" >tapError(</span>f,
               }), io);
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >catchError(</span>eToIOA, _ioA) {
-<span class="cstat-no" title="statement not covered" >  while(true) {</span>
-    var ioA = <span class="cstat-no" title="statement not covered" >_ioA;</span>
-<span class="cstat-no" title="statement not covered" >    switch (ioA.tag | 0) {</span>
+function catchError(eToIOA, _ioA) {
+  while(true) {
+    var ioA = _ioA;
+    switch (ioA.tag | 0) {
       case 0 : 
-<span class="cstat-no" title="statement not covered" >          return /* Pure */Block.__(0, [ioA[0]]);</span>
+          return /* Pure */Block.__(0, [ioA[0]]);
       case 1 : 
-<span class="cstat-no" title="statement not covered" >          return Curry._1(eToIOA, ioA[0]);</span>
-      case 2 : 
+          return Curry._1(eToIOA, ioA[0]);
+<span class="branch-2 cbranch-no" title="branch not covered" >      case 2 : </span>
 <span class="cstat-no" title="statement not covered" >          return /* Suspend */Block.__(2, [ioA[0]]);</span>
-      case 3 : 
+<span class="branch-3 cbranch-no" title="branch not covered" >      case 3 : </span>
 <span class="cstat-no" title="statement not covered" >          _ioA = Curry._1(ioA[0], /* () */0);</span>
 <span class="cstat-no" title="statement not covered" >          continue ;</span>
-      case 4 : 
+<span class="branch-4 cbranch-no" title="branch not covered" >      case 4 : </span>
           var onDone = <span class="cstat-no" title="statement not covered" >ioA[0];</span>
 <span class="cstat-no" title="statement not covered" >          return /* Async */Block.__(4, [(<span class="fstat-no" title="function not covered" >fu</span>nction(onDone){</span>
 <span class="cstat-no" title="statement not covered" >                    return <span class="fstat-no" title="function not covered" >fu</span>nction (onDone$prime) {</span>
@@ -2905,7 +2905,7 @@ function <span class="fstat-no" title="function not covered" >catchError(</span>
                                   }));
                     }
                     }(onDone))]);
-      case 5 : 
+<span class="branch-5 cbranch-no" title="branch not covered" >      case 5 : </span>
           var ioR = <span class="cstat-no" title="statement not covered" >ioA[1];</span>
           var rToA = <span class="cstat-no" title="statement not covered" >ioA[0];</span>
 <span class="cstat-no" title="statement not covered" >          switch (ioR.tag | 0) {</span>
@@ -2964,7 +2964,7 @@ function <span class="fstat-no" title="function not covered" >catchError(</span>
 <span class="cstat-no" title="statement not covered" >                continue ;</span>
             
           }
-      case 6 : 
+<span class="branch-6 cbranch-no" title="branch not covered" >      case 6 : </span>
           var ioR$1 = <span class="cstat-no" title="statement not covered" >ioA[1];</span>
           var rToIOA = <span class="cstat-no" title="statement not covered" >ioA[0];</span>
 <span class="cstat-no" title="statement not covered" >          switch (ioR$1.tag | 0) {</span>
