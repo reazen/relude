@@ -24,6 +24,51 @@ describe("Float", () => {
     expect(Float.compare(1.1, 1.2)) |> toEqual(`less_than)
   );
 
+  test("add", () =>
+    expect(
+      Float.approximatelyEqual(
+        ~tolerance=0.01,
+        Float.Semiring.add(3.1, 4.2),
+        7.3,
+      ),
+    )
+    |> toEqual(true)
+  );
+
+  test("multiply", () =>
+    expect(
+      Float.approximatelyEqual(
+        ~tolerance=0.01,
+        Float.Semiring.multiply(3.1, 2.0),
+        6.2,
+      ),
+    )
+    |> toEqual(true)
+  );
+
+  test("subtract", () =>
+    expect(
+      Float.approximatelyEqual(
+        ~tolerance=1.1,
+        Float.Ring.subtract(9.9, 8.8),
+        1.1,
+      ),
+    )
+    |> toEqual(true)
+  );
+
+  test("compareAsInt (-1)", () =>
+    expect(Float.compareAsInt(3.0, 3.1)) |> toEqual(-1)
+  );
+
+  test("compareAsInt (0)", () =>
+    expect(Float.compareAsInt(3.0, 3.0)) |> toEqual(0)
+  );
+
+  test("compareAsInt (1)", () =>
+    expect(Float.compareAsInt(3.0, 2.0)) |> toEqual(1)
+  );
+
   test("min (smaller first)", () =>
     expect(Float.min(3.1, 3.2)) |> toEqual(3.1)
   );

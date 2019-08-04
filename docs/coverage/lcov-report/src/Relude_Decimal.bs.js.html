@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">97.5% </span>
+        <span class="strong">97.56% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>39/40</span>
+        <span class='fraction'>40/41</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">83.33% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>8/8</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">97.5% </span>
+        <span class="strong">97.56% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>39/40</span>
+        <span class='fraction'>40/41</span>
       </div>
     </div>
     <p class="quiet">
@@ -140,8 +140,10 @@
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -236,6 +238,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
+var Curry = require("bs-platform/lib/js/curry.js");
 var Caml_int32 = require("bs-platform/lib/js/caml_int32.js");
 var Relude_Int = require("./Relude_Int.bs.js");
 var Relude_Array = require("./Relude_Array.bs.js");
@@ -282,7 +285,7 @@ function tenToThePowerOfPositive(exponent) {
 function normalize(param, param$1) {
   var exponentB = param$1[1];
   var exponentA = param[1];
-  var exponentMin = Relude_Int.min(exponentA, exponentB);
+  var exponentMin = Curry._2(Relude_Int.min, exponentA, exponentB);
   var newMantissaA = Caml_int32.imul(param[0], tenToThePowerOfPositive(exponentA - exponentMin | 0));
   var newMantissaB = Caml_int32.imul(param$1[0], tenToThePowerOfPositive(exponentB - exponentMin | 0));
   return /* tuple */[

@@ -20,6 +20,18 @@ describe("Int", () => {
     expect(Int.rangeAsArray(5, 0)) |> toEqual([||])
   );
 
+  test("add", () =>
+    expect(Int.Semiring.add(4, 5)) |> toEqual(9)
+  );
+
+  test("multiply", () =>
+    expect(Int.Semiring.multiply(4, 5)) |> toEqual(20)
+  );
+
+  test("subtract", () =>
+    expect(Int.Ring.subtract(4, 5)) |> toEqual(-1)
+  );
+
   test("fromString success", () =>
     expect(Int.fromString("3")) |> toEqual(Some(3))
   );

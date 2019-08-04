@@ -1,25 +1,6 @@
 /**
   `min(a, b)` returns the lesser of `a` and `b`.
 */
-let min: (int, int) => int =
-  (a, b) =>
-    if (a < b) {
-      a;
-    } else {
-      b;
-    };
-
-/**
-  `min(a, b)` returns the greater of `a` and `b`.
-*/
-let max: (int, int) => int =
-  (a, b) =>
-    if (a > b) {
-      a;
-    } else {
-      b;
-    };
-
 /**
   `rangeAsList(n, m)` returns a list of integers
   `[n, n + 1, .. m - 1]`.
@@ -86,23 +67,25 @@ module Ord: BsAbstract.Interface.ORD with type t = int = {
   let compare = compare;
 };
 
+module Semiring: BsAbstract.Interface.SEMIRING with type t = int = {
+  type t = int;
+  let zero = 0;
+  let one = 1;
+  let add = (a, b) => a + b;
+  let multiply = (a, b) => a * b;
+};
+
+module Ring: BsAbstract.Interface.RING with type t = int = {
+  include Semiring;
+  let subtract = (a, b) => a - b;
+};
+
 module Map = Relude_Map.MakeFromOrderable(Ord);
 module Set = Relude_Set.MakeFromOrderable(Ord);
 
-/**
-  `compareAsInt(a, b)` returns -1 if `a` is less than `b`,
-  0 if `a` equals `b`, and 1 if `a`
-  is greater than `b`.
+include Relude_Extensions_Ord.Make(Ord);
+include Relude_Extensions_Ord.MakeWithRing(Ord, Ring);
 
-  ### Example
-  ```re
-  compareAsInt(3, 5) == -1;
-  compareAsInt(3, 3) == 0;
-  compareAsInt(5, 3) == 1;
-  ```
-*/
-let compareAsInt: (int, int) => int =
-  (a, b) => compare(a, b) |> Relude_Ordering.toInt;
 
 /**
   `toString(n)` returns the string representation of `n`. Note

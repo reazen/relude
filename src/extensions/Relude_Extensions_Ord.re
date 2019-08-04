@@ -1,5 +1,13 @@
 open BsAbstract.Interface;
 
+let compareAsIntBy: 'a. (('a, 'a) => ordering, 'a, 'a) => int =
+  (compare, a, b) => compare(a, b) |> Relude_Ordering.toInt;
+
+let compareAsInt = (type a, ord: (module ORD with type t = a), a, b) => {
+  module Ord = (val ord);
+  compareAsIntBy(Ord.compare, a, b);
+};
+
 let minBy: 'a. (('a, 'a) => ordering, 'a, 'a) => 'a =
   (compare, a, b) =>
     switch (compare(a, b)) {
@@ -127,6 +135,7 @@ let signum =
 };
 
 module Make = (O: ORD) => {
+  let compareAsInt = (a, b) => compareAsIntBy(O.compare, a, b);
   let min = (a, b) => minBy(O.compare, a, b);
   let max = (a, b) => maxBy(O.compare, a, b);
   let lessThan = (a, b) => lessThanBy(O.compare, a, b);
