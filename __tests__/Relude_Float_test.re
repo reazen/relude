@@ -108,6 +108,30 @@ describe("Float", () => {
     expect(Float.between(~min=-1.0, ~max=1.0, -2.0)) |> toEqual(false)
   );
 
+  test("abs (zero)", () =>
+    expect(Float.abs(0.0)) |> toEqual(0.0)
+  );
+
+  test("abs (positive)", () =>
+    expect(Float.abs(5.2)) |> toEqual(5.2)
+  );
+
+  test("abs (negative)", () =>
+    expect(Float.abs(-3.1)) |> toEqual(3.1)
+  );
+
+  test("signum (zero)", () =>
+    expect(Float.signum(0.0)) |> toEqual(1.0)
+  );
+
+  test("signum (negative)", () =>
+    expect(Float.signum(-55.0)) |> toEqual(-1.0)
+  );
+
+  test("signum (positive)", () =>
+    expect(Float.signum(24.0)) |> toEqual(1.0)
+  );
+
   test("approximatelyEqual", () =>
     expect(Float.approximatelyEqual(~tolerance=0.01, 0.111, 0.112))
     |> toEqual(true)

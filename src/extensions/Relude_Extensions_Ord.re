@@ -55,7 +55,7 @@ let greaterThanOrEqBy: 'a. (('a, 'a) => ordering, 'a, 'a) => bool =
 
 let greaterThanOrEq = (type a, ord: (module ORD with type t = a), a, b) => {
   module Ord = (val ord);
-  greaterThanBy(Ord.compare, a, b);
+  greaterThanOrEqBy(Ord.compare, a, b);
 };
 
 let lt = lessThan;
@@ -96,6 +96,36 @@ let between = (type a, ord: (module ORD with type t = a), ~min: a, ~max: a, x) =
   betweenBy(Ord.compare, ~min, ~max, x);
 };
 
+/**
+  Absolute value: if x is gte zero, return zero, otherwise negate x.
+ */
+let abs =
+    (
+      type a,
+      ord: (module ORD with type t = a),
+      ring: (module RING with type t = a),
+      x,
+    ) => {
+  module Ring = (val ring);
+  gte(ord, x, Ring.zero) ? x : Ring.subtract(Ring.zero, x);
+};
+
+/**
+  Sign function, evaluates to one for values >= zero, and negative one for
+  values less than zero.
+ */
+let signum =
+    (
+      type a,
+      ord: (module ORD with type t = a),
+      ring: (module RING with type t = a),
+      x,
+    )
+    : a => {
+  module Ring = (val ring);
+  Ring.(gte(ord, x, zero) ? one : subtract(zero, one));
+};
+
 module Make = (O: ORD) => {
   let min = (a, b) => minBy(O.compare, a, b);
   let max = (a, b) => maxBy(O.compare, a, b);
@@ -109,4 +139,9 @@ module Make = (O: ORD) => {
   let gte = greaterThanOrEq;
   let clamp = (~min, ~max, v) => clampBy(O.compare, ~min, ~max, v);
   let between = (~min, ~max, v) => betweenBy(O.compare, ~min, ~max, v);
+};
+
+module MakeWithRing = (O: ORD, R: RING with type t = O.t) => {
+  let abs = v => abs((module O), (module R), v);
+  let signum = v => signum((module O), (module R), v);
 };

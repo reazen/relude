@@ -12,7 +12,21 @@ module Ord: BsAbstract.Interface.ORD with type t = float = {
   let compare = compare;
 };
 
+module Semiring: BsAbstract.Interface.SEMIRING with type t = float = {
+  type t = float;
+  let zero = 0.0;
+  let one = 1.0;
+  let add = (a, b) => a +. b;
+  let multiply = (a, b) => a *. b;
+};
+
+module Ring: BsAbstract.Interface.RING with type t = float = {
+  include Semiring;
+  let subtract = (a, b) => a -. b;
+};
+
 include Relude_Extensions_Ord.Make(Ord);
+include Relude_Extensions_Ord.MakeWithRing(Ord, Ring);
 
 /**
   `approximatelyEqual(~tolerance=t, x, y)` returns `true` if `x` and `y`
