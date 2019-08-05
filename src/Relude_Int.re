@@ -1,6 +1,16 @@
 /**
-  `min(a, b)` returns the lesser of `a` and `b`.
-*/
+ * `toFloat` returns the floating-point representation of the int
+ */
+let toFloat = float_of_int;
+
+/**
+ * `fromFloat` turns a float into an int by dropping the fractional part.
+ *
+ * Floats that can't be represented as an int (e.g. `infinity`, `nan`) will
+ * return 0.
+ */
+let fromFloat = int_of_float;
+
 /**
   `rangeAsList(n, m)` returns a list of integers
   `[n, n + 1, .. m - 1]`.
@@ -85,7 +95,6 @@ module Set = Relude_Set.MakeFromOrderable(Ord);
 
 include Relude_Extensions_Ord.Make(Ord);
 include Relude_Extensions_Ord.MakeWithRing(Ord, Ring);
-
 
 /**
   `toString(n)` returns the string representation of `n`. Note

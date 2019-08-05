@@ -4,6 +4,30 @@ open Expect;
 module Int = Relude_Int;
 
 describe("Int", () => {
+  test("toFloat", () =>
+    expect(Int.toFloat(2)) |> toEqual(2.0)
+  );
+
+  test("toFloat (negative)", () =>
+    expect(Int.toFloat(-20)) |> toEqual(-20.0)
+  );
+
+  test("fromFloat", () =>
+    expect(Int.fromFloat(4.9999)) |> toEqual(4)
+  );
+
+  test("fromFloat (negative)", () =>
+    expect(Int.fromFloat(-4.9999)) |> toEqual(-4)
+  );
+
+  test("fromFloat (infinity)", () =>
+    expect(Int.fromFloat(infinity)) |> toEqual(0)
+  );
+
+  test("fromFloat (nan)", () =>
+    expect(Int.fromFloat(nan)) |> toEqual(0)
+  );
+
   test("rangeAsList for valid range", () =>
     expect(Int.rangeAsList(0, 5)) |> toEqual([0, 1, 2, 3, 4])
   );

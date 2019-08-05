@@ -43,9 +43,17 @@ let approximatelyEqual: (~tolerance: float, float, float) => bool =
   (~tolerance, x, y) => Js.Math.abs_float(x -. y) <= tolerance;
 
 /**
+ * `toInt` converts a float to an int by dropping the fractional part.
+ *
+ * Floats that can't be represented as an int (e.g. `infinity`, `nan`) will
+ * return 0.
+ */
+let toInt = int_of_float;
+
+/**
   `fromInt` converts an int (e.g. 1) to its floating-point representation (1.0)
  */
-let fromInt = v => float_of_int(v);
+let fromInt = float_of_int;
 
 /**
   `toString(x)` returns the string representation of `x`. Note

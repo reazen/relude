@@ -182,6 +182,18 @@ describe("Float", () => {
     |> toEqual(true)
   );
 
+  test("toInt", () =>
+    expect(Float.toInt(3.9)) |> toEqual(3)
+  );
+
+  test("toInt (nan)", () =>
+    expect(Float.toInt(nan)) |> toEqual(0)
+  );
+
+  test("fromInt", () =>
+    expect(Float.fromInt(3)) |> toEqual(3.0)
+  );
+
   test("fromString success", () =>
     expect(Float.fromString("3.14")) |> toEqual(Some(3.14))
   );
