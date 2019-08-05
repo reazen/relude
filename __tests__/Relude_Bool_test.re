@@ -13,4 +13,12 @@ describe("Bool", () => {
     expect(Bool.ifElse(() => "true", () => "false", false))
     |> toEqual("false")
   );
+
+  test("inverse", () =>
+    expect(Bool.inverse(true)) |> toEqual(false)
+  );
+
+  test("inverse", () =>
+    expect(Bool.inverse(false)) |> toEqual(true)
+  );
 });

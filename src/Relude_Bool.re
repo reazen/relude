@@ -1,4 +1,12 @@
-let ifElse: (unit => 'a, unit => 'a, bool) => 'a = (onTrue, onFalse, value) => if (value) onTrue() else onFalse();
+let ifElse: (unit => 'a, unit => 'a, bool) => 'a =
+  (onTrue, onFalse, value) =>
+    if (value) {
+      onTrue();
+    } else {
+      onFalse();
+    };
+
+let inverse: bool => bool = (!);
 
 module Conjunctive = BsAbstract.Bool.Conjunctive;
 

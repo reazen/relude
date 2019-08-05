@@ -35,6 +35,7 @@ names or functions.
 module Array = Relude_Array;
 module AsyncData = Relude_AsyncData;
 module AsyncResult = Relude_AsyncResult;
+module Bool = Relude_Bool;
 module Float = Relude_Float;
 module Int = Relude_Int;
 module IO = Relude_IO;
@@ -66,4 +67,5 @@ let (<<) = Relude_Function.Infix.(<<);
 let id = Relude_Function.id;
 let const = Relude_Function.const;
 let flip = Relude_Function.flip;
-let absurd = Relude_Void.absurd;
+let absurd = Void.absurd;
+let inverse = Bool.inverse; // can't use `not` because `refmt` rewrites it
