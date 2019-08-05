@@ -165,6 +165,8 @@ let filter: ('a => bool, array('a)) => array('a);
 let filterWithIndex: (('a, int) => bool, array('a)) => array('a);
 let filterNot: ('a => bool, array('a)) => array('a);
 let filterNotWithIndex: (('a, int) => bool, array('a)) => array('a);
+let mapOption: ('a => option('b), array('a)) => array('b);
+let catOption: (array(option('a))) => array('a);
 let partition: ('a => bool, array('a)) => (array('a), array('a));
 let splitAt: (int, array('a)) => option((array('a), array('a)));
 let prependToAll: ('a, array('a)) => array('a);

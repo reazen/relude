@@ -151,6 +151,22 @@ let filterNot: 'a. ('a => bool, array('a)) => array('a) =
 let filterNotWithIndex: 'a. (('a, int) => bool, array('a)) => array('a) =
   f => filterWithIndex((a, i) => !f(a, i));
 
+let mapOption: 'a 'b. ('a => option('b), array('a)) => array('b) =
+  (f, xs) =>
+    Relude_Array_Instances.foldLeft(
+      (acc, curr) =>
+        Relude_Option.fold(
+          acc,
+          v => Relude_Array_Instances.concat(acc, [|v|]),
+          f(curr),
+        ),
+      [||],
+      xs,
+    );
+
+let catOption: 'a. array(option('a)) => array('a) =
+  xs => mapOption(v => v, xs);
+
 let partition: ('a => bool, array('a)) => (array('a), array('a)) =
   (f, xs) => Belt.Array.partition(xs, f);
 

@@ -383,6 +383,24 @@ describe("Array", () => {
     |> toEqual([|1, 2, 3|])
   );
 
+  test("mapOption (keep some)", () =>
+    expect(
+      Array.mapOption(
+        Int.fromString,
+        [|"1", "a", "2", "3", "b", "c", "4", "d"|],
+      ),
+    )
+    |> toEqual([|1, 2, 3, 4|])
+  );
+
+  test("mapOption (keep none)", () =>
+    expect(Array.mapOption(Int.fromString, [|"a", "b"|])) |> toEqual([||])
+  );
+
+  test("catOption", () =>
+    expect(Array.catOption([|Some("a"), None, None|])) |> toEqual([|"a"|])
+  );
+
   test("find not found", () =>
     expect(Array.find(a => a == 3, [|0, 1, 2|])) |> toEqual(None)
   );

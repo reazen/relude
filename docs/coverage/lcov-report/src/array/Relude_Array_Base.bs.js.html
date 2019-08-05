@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">89% </span>
+        <span class="strong">89.42% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>178/200</span>
+        <span class='fraction'>186/208</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">82.76% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>48/58</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">86.44% </span>
+        <span class="strong">87.5% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>51/59</span>
+        <span class='fraction'>56/64</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">89% </span>
+        <span class="strong">89.42% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>178/200</span>
+        <span class='fraction'>186/208</span>
       </div>
     </div>
     <p class="quiet">
@@ -486,8 +486,26 @@
 <a name='L438'></a><a href='#L438'>438</a>
 <a name='L439'></a><a href='#L439'>439</a>
 <a name='L440'></a><a href='#L440'>440</a>
-<a name='L441'></a><a href='#L441'>441</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L441'></a><a href='#L441'>441</a>
+<a name='L442'></a><a href='#L442'>442</a>
+<a name='L443'></a><a href='#L443'>443</a>
+<a name='L444'></a><a href='#L444'>444</a>
+<a name='L445'></a><a href='#L445'>445</a>
+<a name='L446'></a><a href='#L446'>446</a>
+<a name='L447'></a><a href='#L447'>447</a>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a>
+<a name='L454'></a><a href='#L454'>454</a>
+<a name='L455'></a><a href='#L455'>455</a>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -698,6 +716,20 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -925,6 +957,8 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -932,6 +966,7 @@ var Curry = require("bs-platform/lib/js/curry.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var Relude_Int = require("../Relude_Int.bs.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
+var Relude_Option = require("../Relude_Option.bs.js");
 var Belt_SortArray = require("bs-platform/lib/js/belt_SortArray.js");
 var Relude_Ordering = require("../Relude_Ordering.bs.js");
 var Relude_Array_Instances = require("./Relude_Array_Instances.bs.js");
@@ -1141,6 +1176,20 @@ function filterNotWithIndex(f) {
     });
 }
 &nbsp;
+function mapOption(f, xs) {
+  return Relude_Array_Instances.foldLeft((function (acc, curr) {
+                  return Relude_Option.fold(acc, (function (v) {
+                                return Relude_Array_Instances.concat(acc, /* array */[v]);
+                              }), Curry._1(f, curr));
+                }), /* array */[])(xs);
+}
+&nbsp;
+function catOption(xs) {
+  return mapOption((function (v) {
+                return v;
+              }), xs);
+}
+&nbsp;
 function partition(f, xs) {
   return Belt_Array.partition(xs, f);
 }
@@ -1344,6 +1393,8 @@ exports.filter = filter;
 exports.filterWithIndex = filterWithIndex;
 exports.filterNot = filterNot;
 exports.filterNotWithIndex = filterNotWithIndex;
+exports.mapOption = mapOption;
+exports.catOption = catOption;
 exports.partition = partition;
 exports.splitAt = splitAt;
 exports.prependToAll = prependToAll;
