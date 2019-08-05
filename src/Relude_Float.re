@@ -43,10 +43,10 @@ let approximatelyEqual: (~tolerance: float, float, float) => bool =
   (~tolerance, x, y) => Js.Math.abs_float(x -. y) <= tolerance;
 
 /**
- * `toInt` converts a float to an int by dropping the fractional part.
- *
- * Floats that can't be represented as an int (e.g. `infinity`, `nan`) will
- * return 0.
+  `toInt` converts a float to an int by dropping the fractional part.
+
+  Floats that can't be represented as an int (e.g. `infinity`, `nan`) will
+  return 0.
  */
 let toInt = int_of_float;
 
@@ -54,6 +54,71 @@ let toInt = int_of_float;
   `fromInt` converts an int (e.g. 1) to its floating-point representation (1.0)
  */
 let fromInt = float_of_int;
+
+/**
+  Return only the decimal portion as a positive floating point number, with the
+  whole-number portion set to 0.
+
+  Note that the returned value is subject to floating point rounding errors and
+  probably won't be exactly equal to the fractional part of the original number.
+
+  ### Example
+  ```re
+  fractionalPart(3.141592) ~= 0.141592;
+  fractionalPart(-12.3456) ~= 0.3456;
+  ```
+ */
+let fractionalPart = v => {
+  let whole = fromInt(toInt(v));
+  abs(v >= 0.0 ? v -. whole : v +. abs(whole));
+};
+
+/**
+  Round a floating point number to the nearest lower whole number.
+ */
+let floor = floor;
+
+/**
+  Round a floating point number to the nearest lower integer.
+ */
+let floorAsInt = v => toInt(floor(v));
+
+/**
+  Round a floating point number to the nearest higher whole number.
+ */
+let ceil = ceil;
+
+/**
+  Round a floating point number to the nearest higher integer.
+ */
+let ceilAsInt = v => toInt(ceil(v));
+
+/**
+  Round a floating point number to the nearest whole number.
+ */
+let round = v => fractionalPart(v) >= 0.5 ? ceil(v) : floor(v);
+
+/**
+  Round a floating point number to the nearest integer
+ */
+let roundAsInt = v => toInt(round(v));
+
+/**
+  `toPrecision` drops decimals so that the given float has no more than the
+  requested number of decimals.
+
+  ### Example
+  ```re
+  toPrecision(~decimals=2, 3.141592) == 3.14;
+  toPrecision(~decimals=4, -4.99999999999) == -4.9999;
+  ```
+ */
+
+let toPrecision = (~decimals, num) => {
+  let pow = 10.0 ** fromInt(decimals);
+  let multiplied = num >= 0.0 ? floor(pow *. num) : ceil(pow *. num);
+  multiplied /. pow;
+};
 
 /**
   `toString(x)` returns the string representation of `x`. Note

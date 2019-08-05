@@ -194,6 +194,98 @@ describe("Float", () => {
     expect(Float.fromInt(3)) |> toEqual(3.0)
   );
 
+  test("fractionalPart", () =>
+    expect(
+      Float.approximatelyEqual(
+        ~tolerance=0.0001,
+        Float.fractionalPart(3.141592),
+        0.141592,
+      ),
+    )
+    |> toEqual(true)
+  );
+
+  test("fractionalPart (negative)", () =>
+    expect(
+      Float.approximatelyEqual(
+        ~tolerance=0.0001,
+        Float.fractionalPart(-20.00001),
+        0.00001,
+      ),
+    )
+    |> toEqual(true)
+  );
+
+  test("fractionalPart (negative half)", () =>
+    expect(Float.fractionalPart(-0.5)) |> toEqual(0.5)
+  );
+
+  test("floor (positive)", () =>
+    expect(Float.floor(1.999)) |> toEqual(1.0)
+  );
+
+  test("floor (negative)", () =>
+    expect(Float.floor(-1.01)) |> toEqual(-2.0)
+  );
+
+  test("floorAsInt", () =>
+    expect(Float.floorAsInt(0.1234)) |> toEqual(0)
+  );
+
+  test("ceil (positive)", () =>
+    expect(Float.ceil(1.001)) |> toEqual(2.0)
+  );
+
+  test("ceil (negative)", () =>
+    expect(Float.ceil(-1.999)) |> toEqual(-1.0)
+  );
+
+  test("ceilAsInt", () =>
+    expect(Float.ceilAsInt(0.1234)) |> toEqual(1)
+  );
+
+  test("round", () =>
+    expect(Float.round(0.5)) |> toEqual(1.0)
+  );
+
+  test("round (negative, half)", () =>
+    expect(Float.round(-1.5)) |> toEqual(-1.0)
+  );
+
+  test("round (below half)", () =>
+    expect(Float.round(0.4)) |> toEqual(0.0)
+  );
+
+  test("round (above half)", () =>
+    expect(Float.round(0.8)) |> toEqual(1.0)
+  );
+
+  test("roundAsInt", () =>
+    expect(Float.roundAsInt(2.3)) |> toEqual(2)
+  );
+
+  test("toPrecision", () =>
+    expect(Float.toPrecision(~decimals=2, 3.141592)) |> toEqual(3.14)
+  );
+
+  test("toPrecision (negative float)", () =>
+    expect(Float.toPrecision(~decimals=4, -4.9999999999))
+    |> toEqual(-4.9999)
+  );
+
+  test("toPrecision (many requested decimals)", () =>
+    expect(Float.toPrecision(~decimals=10, 1.1111111111111))
+    |> toEqual(1.1111111111)
+  );
+
+  test("toPrecision (more requested decimals)", () =>
+    expect(Float.toPrecision(~decimals=10, 1.1)) |> toEqual(1.1)
+  );
+
+  test("toPrecision (negative number of decimals)", () =>
+    expect(Float.toPrecision(~decimals=-1, 11.111)) |> toEqual(10.0)
+  );
+
   test("fromString success", () =>
     expect(Float.fromString("3.14")) |> toEqual(Some(3.14))
   );
