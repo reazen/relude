@@ -5,11 +5,35 @@ module Str = Relude_String;
 
 describe("String", () => {
   test("length empty string", () =>
-    expect(Str.length("")) |> toEqual(0)
+    expect(Str.length(Str.empty)) |> toEqual(0)
   );
 
   test("length non-empty string", () =>
     expect(Str.length("abc")) |> toEqual(3)
+  );
+
+  test("isEmpty empty string", () =>
+    expect(Str.isEmpty("")) |> toEqual(true)
+  );
+
+  test("isEmpty non-empty string", () =>
+    expect(Str.isEmpty("abc")) |> toEqual(false)
+  );
+
+  test("isNotEmpty empty string", () =>
+    expect(Str.isNotEmpty("")) |> toEqual(false)
+  );
+
+  test("isNotEmpty non-empty string", () =>
+    expect(Str.isNotEmpty("abc")) |> toEqual(true)
+  );
+
+  test("toNonEmpty (empty)", () =>
+    expect(Str.toNonEmpty("")) |> toEqual(None)
+  );
+
+  test("toNonEmpty (non-empty)", () =>
+    expect(Str.toNonEmpty("abc")) |> toEqual(Some("abc"))
   );
 
   test("trim empty string", () =>
@@ -29,24 +53,16 @@ describe("String", () => {
     |> toEqual("hello\t world")
   );
 
-  test("isEmpty empty string", () =>
-    expect(Str.isEmpty("")) |> toEqual(true)
-  );
-
-  test("isEmpty non-empty string", () =>
-    expect(Str.isEmpty("abc")) |> toEqual(false)
-  );
-
-  test("isNotEmpty empty string", () =>
-    expect(Str.isNotEmpty("")) |> toEqual(false)
-  );
-
-  test("isNotEmpty non-empty string", () =>
-    expect(Str.isNotEmpty("abc")) |> toEqual(true)
-  );
-
   test("isWhitespace empty string", () =>
     expect(Str.isWhitespace("")) |> toEqual(true)
+  );
+
+  test("isNonWhitespace (only newlines)", () =>
+    expect(Str.isNonWhitespace("\n\n")) |> toEqual(false)
+  );
+
+  test("isNonWhitespace (un-trimmed)", () =>
+    expect(Str.isNonWhitespace("\nfoo\n")) |> toEqual(true)
   );
 
   test("toNonWhitespace empty string", () =>
@@ -55,6 +71,22 @@ describe("String", () => {
 
   test("toNonWhitespace non-empty string", () =>
     expect(Str.toNonWhitespace(" hi ")) |> toEqual(Some(" hi "))
+  );
+
+  test("concat", () =>
+    expect(Str.concat("a", "b")) |> toEqual("ab")
+  );
+
+  test("concatArray", () =>
+    expect(Str.concatArray([|"a", "b"|])) |> toEqual("ab")
+  );
+
+  test("concatList", () =>
+    expect(Str.concatList(["foo", " ", "bar"])) |> toEqual("foo bar")
+  );
+
+  test("make", () =>
+    expect(Str.make(true)) |> toEqual("true")
   );
 
   test("makeWithIndex", () =>
@@ -71,6 +103,10 @@ describe("String", () => {
 
   test("toLowerCase", () =>
     expect(Str.toLowerCase("ReLude!")) |> toEqual("relude!")
+  );
+
+  test("fromCharCode", () =>
+    expect(Str.fromCharCode(65)) |> toEqual("A")
   );
 
   test("charAt success", () =>
@@ -105,7 +141,7 @@ describe("String", () => {
     expect(Str.toList("abcde")) |> toEqual(["a", "b", "c", "d", "e"])
   );
 
-  test("toCharArray", () =>
+  test("toArray", () =>
     expect(Str.toArray("abcde")) |> toEqual([|"a", "b", "c", "d", "e"|])
   );
 
@@ -129,14 +165,6 @@ describe("String", () => {
       ),
     )
     |> toEqual(["c", "b", "a"])
-  );
-
-  test("concat", () =>
-    expect(Str.concat("a", "b")) |> toEqual("ab")
-  );
-
-  test("concatArray", () =>
-    expect(Str.concatArray([|"a", "b"|])) |> toEqual("ab")
   );
 
   test("endsWith", () =>
@@ -244,6 +272,10 @@ describe("String", () => {
     expect(Str.mapChars(s => s ++ s, "abc")) |> toEqual("aabbcc")
   );
 
+  test("fromInt", () =>
+    expect(Str.fromInt(-20)) |> toEqual("-20")
+  );
+
   test("toInt success", () =>
     expect(Str.toInt("3")) |> toEqual(Some(3))
   );
@@ -262,6 +294,14 @@ describe("String", () => {
 
   test("toInt failure on alpha", () =>
     expect(Str.toInt("abc")) |> toEqual(None)
+  );
+
+  test("fromFloat", () =>
+    expect(Str.fromFloat(3.1415)) |> toEqual("3.1415")
+  );
+
+  test("fromFloat (ends in zero)", () =>
+    expect(Str.fromFloat(3.000)) |> toEqual("3")
   );
 
   test("toFloat success", () =>

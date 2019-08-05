@@ -44,13 +44,7 @@ let isNotEmpty = isNonEmpty;
   toNonEmpty("") == None;
   ```
 */
-let toNonEmpty: string => option(string) =
-  s =>
-    if (s |> isEmpty) {
-      None;
-    } else {
-      Some(s);
-    };
+let toNonEmpty: string => option(string) = s => isEmpty(s) ? None : Some(s);
 
 /**
   `trim(str)` returns a new string with leading and trailing whitespace
@@ -85,7 +79,7 @@ let trim: string => string = Js.String.trim;
 */
 let isWhitespace: string => bool = s => s |> trim |> isEmpty;
 
-let isNonWhiteapce: string => bool = s => !isWhitespace(s);
+let isNonWhitespace: string => bool = s => !isWhitespace(s);
 
 /**
   `toNonWhiteSpace(str)` returns `Some(str)` if `str` has any non-whitespace
@@ -99,12 +93,7 @@ let isNonWhiteapce: string => bool = s => !isWhitespace(s);
   ```
 */
 let toNonWhitespace: string => option(string) =
-  s =>
-    if (s |> isWhitespace) {
-      None;
-    } else {
-      Some(s);
-    };
+  s => isWhitespace(s) ? None : Some(s);
 
 /**
   `concat(str1, str2)` concatenate the two strings, returning
@@ -408,6 +397,8 @@ module Ord: BsAbstract.Interface.ORD with type t = string = {
   let compare = compare;
 };
 
+include Relude_Extensions_Ord.Make(Ord);
+
 module Map = Relude_Map.MakeFromOrderable(Ord);
 module Set = Relude_Set.MakeFromOrderable(Ord);
 
@@ -460,7 +451,7 @@ let contains: (string, string) => bool =
   `indexOf(test, str)` returns `Some(n)`, where `n`
   is the starting position of the first occurrence of `test`
   within `str`. If `test` is not in `str`, the return value
-  is `false`.
+  is `None`.
 
   ### Example
   ```re
