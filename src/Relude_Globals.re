@@ -46,17 +46,14 @@ module Option = Relude_Option;
 module OptionT = Relude_OptionT;
 module RJs = Relude_Js;
 module ReaderT = Relude_ReaderT;
-module Reader = Relude_ReaderT.Reader;
 module Result = Relude_Result;
 module ResultT = Relude_ResultT;
 module Set = Relude_Set;
-module State = Relude_StateT.State;
 module StateT = Relude_StateT;
 module String = Relude_String;
 module Tuple = Relude_Tuple;
 module Validation = Relude_Validation;
 module Void = Relude_Void;
-module Writer = Relude_WriterT.Writer;
 module WriterLog = Relude_WriterT.WriterLog;
 module WriterT = Relude_WriterT;
 
