@@ -60,6 +60,33 @@ describe("Result", () => {
     |> toEqual(Result.ok(115))
   );
 
+  test("map4", () =>
+    expect(
+      Result.map4(
+        (a, b, c, d) => a + b + c + d,
+        Result.ok(5),
+        Result.ok(10),
+        Result.ok(100),
+        Result.ok(1000),
+      ),
+    )
+    |> toEqual(Result.ok(1115))
+  );
+
+  test("map5", () =>
+    expect(
+      Result.map5(
+        (a, b, c, d, e) => a + b + c + d + e,
+        Result.ok(5),
+        Result.ok(10),
+        Result.ok(100),
+        Result.ok(1000),
+        Result.ok(10000),
+      ),
+    )
+    |> toEqual(Result.ok(11115))
+  );
+
   test("flatMap", () =>
     expect(Result.flatMap(a => Belt.Result.Ok(a + 2), Belt.Result.Ok(1)))
     |> toEqual(Belt.Result.Ok(3))
