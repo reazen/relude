@@ -168,56 +168,56 @@ describe("String", () => {
   );
 
   test("endsWith", () =>
-    expect(Str.endsWith("de", "abcde")) |> toEqual(true)
+    expect(Str.endsWith(~search="de", "abcde")) |> toEqual(true)
   );
 
   test("startsWith", () =>
-    expect(Str.startsWith("ab", "abcde")) |> toEqual(true)
+    expect(Str.startsWith(~search="ab", "abcde")) |> toEqual(true)
   );
 
   test("contains", () =>
-    expect(Str.contains("cd", "abcde")) |> toEqual(true)
+    expect(Str.contains(~search="cd", "abcde")) |> toEqual(true)
   );
 
   test("indexOf success", () =>
-    expect(Str.indexOf("cd", "abcde")) |> toEqual(Some(2))
+    expect(Str.indexOf(~search="cd", "abcde")) |> toEqual(Some(2))
   );
 
   test("indexOf failure", () =>
-    expect(Str.indexOf("x", "abcde")) |> toEqual(None)
+    expect(Str.indexOf(~search="x", "abcde")) |> toEqual(None)
   );
 
   test("lastIndexOf success", () =>
-    expect(Str.lastIndexOf("cd", "abcdecd")) |> toEqual(Some(5))
+    expect(Str.lastIndexOf(~search="cd", "abcdecd")) |> toEqual(Some(5))
   );
 
   test("indexOf failure", () =>
-    expect(Str.lastIndexOf("x", "abcde")) |> toEqual(None)
+    expect(Str.lastIndexOf(~search="x", "abcde")) |> toEqual(None)
   );
 
   test("replaceFirst", () =>
-    expect(Str.replaceFirst("b", "xyz", "abcde")) |> toEqual("axyzcde")
+    expect(Str.replaceFirst(~search="b", ~replaceWith="xyz", "abcde")) |> toEqual("axyzcde")
   );
 
   test("replaceEach", () =>
-    expect(Str.replaceEach("b", "xyz", "abcdeb")) |> toEqual("axyzcdexyz")
+    expect(Str.replaceEach(~search="b", ~replaceWith="xyz", "abcdeb")) |> toEqual("axyzcdexyz")
   );
 
   test("replaceEach special characters", () =>
-    expect(Str.replaceEach("+", " ", "a+b+c")) |> toEqual("a b c")
+    expect(Str.replaceEach(~search="+", ~replaceWith=" ", "a+b+c")) |> toEqual("a b c")
   );
 
   test("replaceRegex", () =>
-    expect(Str.replaceRegex([%re "/b/"], "xyz", "abcde"))
+    expect(Str.replaceRegex(~search=[%re "/b/"], ~replaceWith="xyz", "abcde"))
     |> toEqual("axyzcde")
   );
 
   test("removeFirst", () =>
-    expect(Str.removeFirst(" ", "foo bar baz")) |> toEqual("foobar baz")
+    expect(Str.removeFirst(~search=" ", "foo bar baz")) |> toEqual("foobar baz")
   );
 
   test("removeEach", () =>
-    expect(Str.removeEach(" ", "foo bar baz")) |> toEqual("foobarbaz")
+    expect(Str.removeEach(~search=" ", "foo bar baz")) |> toEqual("foobarbaz")
   );
 
   test("slice", () =>
@@ -229,11 +229,11 @@ describe("String", () => {
   );
 
   test("splitArray", () =>
-    expect(Str.splitArray(",", "a,b,c")) |> toEqual([|"a", "b", "c"|])
+    expect(Str.splitArray(~delimiter=",", "a,b,c")) |> toEqual([|"a", "b", "c"|])
   );
 
   test("splitList", () =>
-    expect(Str.splitList(",", "a,b,c")) |> toEqual(["a", "b", "c"])
+    expect(Str.splitList(~delimiter=",", "a,b,c")) |> toEqual(["a", "b", "c"])
   );
 
   test("splitAt -7", () =>

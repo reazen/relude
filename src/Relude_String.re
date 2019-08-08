@@ -403,49 +403,49 @@ module Map = Relude_Map.MakeFromOrderable(Ord);
 module Set = Relude_Set.MakeFromOrderable(Ord);
 
 /**
-  `endsWith(test, str)` returns `true` if `str` ends with the characters in `test`;
+  `endsWith(~search, input)` returns `true` if `input` ends with the characters in `target`;
   `false` otherwise.
 
   ### Example
   ```re
-  endsWith("ing", "programming") == true;
-  endsWith("ing", "program") == false;
-  endsWith("ing", "in") == false;
-  endsWith("", "everything") == true;
+  endsWith(~search="ing", "programming") == true;
+  endsWith(~search="ing", "program") == false;
+  endsWith(~search="ing", "in") == false;
+  endsWith(~search="", "everything") == true;
   ```
 */
-let endsWith: (string, string) => bool =
-  (test, str) => Js.String.endsWith(test, str);
+let endsWith = (~search: string, input: string): bool =>
+  Js.String.endsWith(search, input);
 
 /**
-  `startsWith(test, str)` returns `true` if `str` starts with the characters in `test`;
+  `startsWith(~search, input)` returns `true` if `input` starts with the characters in `search`;
   `false` otherwise.
 
   ### Example
   ```re
-  startsWith("pro", "programming") == true;
-  startsWith("pre", "program") == false;
-  startsWith("pre", "pr") == false;
-  startsWith("", "everything") == true;
+  startsWith(~search="pro", "programming") == true;
+  startsWith(~search="pre", "program") == false;
+  startsWith(~search="pre", "pr") == false;
+  startsWith(~search="", "everything") == true;
   ```
 */
-let startsWith: (string, string) => bool =
-  (test, str) => Js.String.startsWith(test, str);
+let startsWith = (~search: string, input: string): bool =>
+  Js.String.startsWith(search, input);
 
 /**
-  `contains(test, str)` returns `true` if the characters in `test`
-  are anywhere in `str` (consecutively); `false` otherwise.
+  `contains(~search, input)` returns `true` if `search`
+  appears anywhere in `input`; `false` otherwise.
 
   ### Example
   ```re
-  contains("cat", "catalog") == true;
-  contains("cat", "scatter") == true;
-  contains("log", "catalog") == true;
-  contains("ato", "fraction") == false;
+  contains(~search="cat", "catalog") == true;
+  contains(~search="cat", "scatter") == true;
+  contains(~search="log", "catalog") == true;
+  contains(~search="ato", "fraction") == false;
   ```
 */
-let contains: (string, string) => bool =
-  (test, str) => Js.String.includes(test, str);
+let contains = (~search: string, input: string): bool =>
+  Js.String.includes(search, input);
 
 /**
   `indexOf(test, str)` returns `Some(n)`, where `n`
@@ -461,15 +461,14 @@ let contains: (string, string) => bool =
   indexOf("xyz", "blah") == None;
   ```
 */
-let indexOf: (string, string) => option(int) =
-  (test, str) => {
-    let index = Js.String.indexOf(test, str);
-    if (index < 0) {
-      None;
-    } else {
-      Some(index);
-    };
+let indexOf = (~search: string, input: string): option(int) => {
+  let index = Js.String.indexOf(search, input);
+  if (index < 0) {
+    None;
+  } else {
+    Some(index);
   };
+};
 
 /**
   `lastIndexOf(test, str)` returns `Some(n)`, where `n`
@@ -485,15 +484,14 @@ let indexOf: (string, string) => option(int) =
   lastIndexOf("xyz", "blah") == None;
   ```
 */
-let lastIndexOf: (string, string) => option(int) =
-  (test, str) => {
-    let index = Js.String.lastIndexOf(test, str);
-    if (index < 0) {
-      None;
-    } else {
-      Some(index);
-    };
+let lastIndexOf = (~search: string, input: string): option(int) => {
+  let index = Js.String.lastIndexOf(search, input);
+  if (index < 0) {
+    None;
+  } else {
+    Some(index);
   };
+};
 
 /**
   `slice(n1, n2, str)` returns the substring of `str` starting at
@@ -550,8 +548,8 @@ let sliceToEnd: (int, string) => string =
   splitArray(";", "has-no-delimiter") == [|"has-no-delimiter"|];
   ```
 */
-let splitArray: (string, string) => array(string) =
-  (delimiter, input) => Js.String.split(delimiter, input);
+let splitArray = (~delimiter: string, input: string): array(string) =>
+  Js.String.split(delimiter, input);
 
 /**
   `splitList(delimiter, str)` splits the given `str`
@@ -566,9 +564,8 @@ let splitArray: (string, string) => array(string) =
   splitList(";", "has-no-delimiter") == ["has-no-delimiter"];
   ```
 */
-let splitList: (string, string) => list(string) =
-  (delimiter, str) =>
-    splitArray(delimiter, str) |> Relude_List_Instances.fromArray;
+let splitList = (~delimiter: string, input: string): list(string) =>
+  splitArray(~delimiter, input) |> Relude_List_Instances.fromArray;
 
 /**
   `splitAt(index, str)` splits the string at the given index,
@@ -614,8 +611,9 @@ let mapChars: (string => string, string) => string =
   replaceFirst("in", "t", "playground") == "playground";
   ```
  */
-let replaceFirst: (string, string, string) => string =
-  (target, newValue, source) => Js.String.replace(target, newValue, source);
+let replaceFirst =
+    (~search: string, ~replaceWith: string, input: string): string =>
+  Js.String.replace(search, replaceWith, input);
 
 /**
   `replaceEach(target, newValue, str)`replaces each occurrence of
@@ -627,9 +625,9 @@ let replaceFirst: (string, string, string) => string =
   replaceEach("in", "t", "playground") == "playground";
   ```
 */
-let replaceEach: (string, string, string) => string =
-  (target, newValue, source) =>
-    splitList(target, source) |> String.concat(newValue);
+let replaceEach =
+    (~search: string, ~replaceWith: string, input: string): string =>
+  splitList(~delimiter=search, input) |> String.concat(replaceWith);
 
 /**
   `replaceRegex(targetRe, newValue, str)` replaces the matched
@@ -647,9 +645,9 @@ let replaceEach: (string, string, string) => string =
   replaceRegex([%re"/(\\w+)\\s+(\\w+)/"], "$2, $1", "Clyde Tolson") == "Tolson, Clyde";
   ```
 */
-let replaceRegex: (Js.Re.t, string, string) => string =
-  (target, newValue, source) =>
-    Js.String.replaceByRe(target, newValue, source);
+let replaceRegex =
+    (~search: Js.Re.t, ~replaceWith: string, input: string): string =>
+  Js.String.replaceByRe(search, replaceWith, input);
 
 /**
   `removeFirst(target, str)` returns a new string with the first occurrence of `target`
@@ -661,8 +659,8 @@ let replaceRegex: (Js.Re.t, string, string) => string =
   removeFirst("the ", "ReasonML is cool") == "ReasonML is cool";
   ```
 */
-let removeFirst: (string, string) => string =
-  (target, source) => replaceFirst(target, "", source);
+let removeFirst = (~search: string, input: string): string =>
+  replaceFirst(~search, ~replaceWith="", input);
 
 /**
   `removeEach(target, str)` returns a new string with every occurrence of `target`
@@ -674,8 +672,8 @@ let removeFirst: (string, string) => string =
   removeEach("the ", "ReasonML is cool") == "ReasonML is cool";
   ```
 */
-let removeEach: (string, string) => string =
-  (target, source) => replaceEach(target, "", source);
+let removeEach = (~search: string, input: string): string =>
+  replaceEach(~search, ~replaceWith="", input);
 
 /**
   `fromInt(n)` returns `n` as a string. This function is

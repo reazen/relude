@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for src/list/Relude_List_Instances.bs.js</title>
+    <title>Code coverage report for src/Relude_HMap.bs.js</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../prettify.css" />
-    <link rel="stylesheet" href="../../base.css" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../sort-arrow-sprite.png);
+            background-image: url(../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -16,35 +16,35 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../../index.html">All files</a> / <a href="index.html">src/list</a> Relude_List_Instances.bs.js
+      <a href="../index.html">All files</a> / <a href="index.html">src</a> Relude_HMap.bs.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.65% </span>
+        <span class="strong">75.2% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>202/209</span>
+        <span class='fraction'>94/125</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">30% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>8/8</span>
+        <span class='fraction'>3/10</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">37.5% </span>
+        <span class="strong">55.56% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>3/8</span>
+        <span class='fraction'>25/45</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.65% </span>
+        <span class="strong">75.2% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>202/209</span>
+        <span class='fraction'>94/125</span>
       </div>
     </div>
     <p class="quiet">
       Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
     </p>
   </div>
-  <div class='status-line high'></div>
+  <div class='status-line medium'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -344,803 +344,602 @@
 <a name='L296'></a><a href='#L296'>296</a>
 <a name='L297'></a><a href='#L297'>297</a>
 <a name='L298'></a><a href='#L298'>298</a>
-<a name='L299'></a><a href='#L299'>299</a>
-<a name='L300'></a><a href='#L300'>300</a>
-<a name='L301'></a><a href='#L301'>301</a>
-<a name='L302'></a><a href='#L302'>302</a>
-<a name='L303'></a><a href='#L303'>303</a>
-<a name='L304'></a><a href='#L304'>304</a>
-<a name='L305'></a><a href='#L305'>305</a>
-<a name='L306'></a><a href='#L306'>306</a>
-<a name='L307'></a><a href='#L307'>307</a>
-<a name='L308'></a><a href='#L308'>308</a>
-<a name='L309'></a><a href='#L309'>309</a>
-<a name='L310'></a><a href='#L310'>310</a>
-<a name='L311'></a><a href='#L311'>311</a>
-<a name='L312'></a><a href='#L312'>312</a>
-<a name='L313'></a><a href='#L313'>313</a>
-<a name='L314'></a><a href='#L314'>314</a>
-<a name='L315'></a><a href='#L315'>315</a>
-<a name='L316'></a><a href='#L316'>316</a>
-<a name='L317'></a><a href='#L317'>317</a>
-<a name='L318'></a><a href='#L318'>318</a>
-<a name='L319'></a><a href='#L319'>319</a>
-<a name='L320'></a><a href='#L320'>320</a>
-<a name='L321'></a><a href='#L321'>321</a>
-<a name='L322'></a><a href='#L322'>322</a>
-<a name='L323'></a><a href='#L323'>323</a>
-<a name='L324'></a><a href='#L324'>324</a>
-<a name='L325'></a><a href='#L325'>325</a>
-<a name='L326'></a><a href='#L326'>326</a>
-<a name='L327'></a><a href='#L327'>327</a>
-<a name='L328'></a><a href='#L328'>328</a>
-<a name='L329'></a><a href='#L329'>329</a>
-<a name='L330'></a><a href='#L330'>330</a>
-<a name='L331'></a><a href='#L331'>331</a>
-<a name='L332'></a><a href='#L332'>332</a>
-<a name='L333'></a><a href='#L333'>333</a>
-<a name='L334'></a><a href='#L334'>334</a>
-<a name='L335'></a><a href='#L335'>335</a>
-<a name='L336'></a><a href='#L336'>336</a>
-<a name='L337'></a><a href='#L337'>337</a>
-<a name='L338'></a><a href='#L338'>338</a>
-<a name='L339'></a><a href='#L339'>339</a>
-<a name='L340'></a><a href='#L340'>340</a>
-<a name='L341'></a><a href='#L341'>341</a>
-<a name='L342'></a><a href='#L342'>342</a>
-<a name='L343'></a><a href='#L343'>343</a>
-<a name='L344'></a><a href='#L344'>344</a>
-<a name='L345'></a><a href='#L345'>345</a>
-<a name='L346'></a><a href='#L346'>346</a>
-<a name='L347'></a><a href='#L347'>347</a>
-<a name='L348'></a><a href='#L348'>348</a>
-<a name='L349'></a><a href='#L349'>349</a>
-<a name='L350'></a><a href='#L350'>350</a>
-<a name='L351'></a><a href='#L351'>351</a>
-<a name='L352'></a><a href='#L352'>352</a>
-<a name='L353'></a><a href='#L353'>353</a>
-<a name='L354'></a><a href='#L354'>354</a>
-<a name='L355'></a><a href='#L355'>355</a>
-<a name='L356'></a><a href='#L356'>356</a>
-<a name='L357'></a><a href='#L357'>357</a>
-<a name='L358'></a><a href='#L358'>358</a>
-<a name='L359'></a><a href='#L359'>359</a>
-<a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a>
-<a name='L366'></a><a href='#L366'>366</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L299'></a><a href='#L299'>299</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
+var $$Map = require("bs-platform/lib/js/map.js");
 var Curry = require("bs-platform/lib/js/curry.js");
-var Belt_List = require("bs-platform/lib/js/belt_List.js");
-var List$BsAbstract = require("bs-abstract/lib/js/src/implementations/List.bs.js");
-var String$BsAbstract = require("bs-abstract/lib/js/src/implementations/String.bs.js");
-var Relude_Extensions_Alt = require("../extensions/Relude_Extensions_Alt.bs.js");
-var Relude_Extensions_Apply = require("../extensions/Relude_Extensions_Apply.bs.js");
-var Relude_Extensions_Monad = require("../extensions/Relude_Extensions_Monad.bs.js");
-var Relude_Extensions_Functor = require("../extensions/Relude_Extensions_Functor.bs.js");
-var Relude_Extensions_Foldable = require("../extensions/Relude_Extensions_Foldable.bs.js");
-var Relude_Extensions_Applicative = require("../extensions/Relude_Extensions_Applicative.bs.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
+var Caml_primitive = require("bs-platform/lib/js/caml_primitive.js");
+var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
+var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 &nbsp;
-var concat = Belt_List.concat;
+var Witness = /* module */[];
 &nbsp;
-var SemigroupAny = /* module */[/* append */concat];
+function <span class="fstat-no" title="function not covered" >makeWitness(</span>param) {
+  var Witness = <span class="cstat-no" title="statement not covered" >Caml_exceptions.create("Witness");</span>
+<span class="cstat-no" title="statement not covered" >  return /* module */[/* Witness */Witness];</span>
+}
 &nbsp;
-var MonoidAny = /* module */[
-  /* append */concat,
-  /* empty : [] */0
-];
+function typeEq(l, r) {
+  var match = l[/* Witness */0];
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (match === r[/* Witness */0]) {
+    return /* TypeEq */0;
+  }
+  
+}
 &nbsp;
-var map = List$BsAbstract.Functor[/* map */0];
-&nbsp;
-var Functor = /* module */[/* map */map];
-&nbsp;
-var include = Relude_Extensions_Functor.FunctorExtensions(Functor);
-&nbsp;
-var apply = List$BsAbstract.Apply[/* apply */1];
-&nbsp;
-var Apply = /* module */[
-  /* map */map,
-  /* apply */apply
-];
-&nbsp;
-var include$1 = Relude_Extensions_Apply.ApplyExtensions(Apply);
-&nbsp;
-var pure = List$BsAbstract.Applicative[/* pure */2];
-&nbsp;
-var Applicative = /* module */[
-  /* map */map,
-  /* apply */apply,
-  /* pure */pure
-];
-&nbsp;
-var include$2 = Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
-&nbsp;
-var bind = List$BsAbstract.Monad[/* flat_map */3];
-&nbsp;
-var Monad = /* module */[
-  /* map */map,
-  /* apply */apply,
-  /* pure */pure,
-  /* flat_map */bind
-];
-&nbsp;
-var include$3 = Relude_Extensions_Monad.MonadExtensions(Monad);
-&nbsp;
-var alt = List$BsAbstract.Alt[/* alt */1];
-&nbsp;
-var Alt = /* module */[
-  /* map */map,
-  /* alt */alt
-];
-&nbsp;
-Relude_Extensions_Alt.AltExtensions(Alt);
-&nbsp;
-var Plus = /* module */[
-  /* map */map,
-  /* alt */alt,
-  /* empty : [] */0
-];
-&nbsp;
-var Alternative = /* module */[
-  /* apply */apply,
-  /* pure */pure,
-  /* map */map,
-  /* alt */alt,
-  /* empty : [] */0
-];
-&nbsp;
-var foldLeft = List$BsAbstract.Foldable[/* fold_left */0];
-&nbsp;
-var foldRight = List$BsAbstract.Foldable[/* fold_right */1];
-&nbsp;
-var Foldable_002 = /* Fold_Map */List$BsAbstract.Foldable[/* Fold_Map */2];
-&nbsp;
-var Foldable_003 = /* Fold_Map_Any */List$BsAbstract.Foldable[/* Fold_Map_Any */3];
-&nbsp;
-var Foldable_004 = /* Fold_Map_Plus */List$BsAbstract.Foldable[/* Fold_Map_Plus */4];
-&nbsp;
-var Foldable = /* module */[
-  /* fold_left */foldLeft,
-  /* fold_right */foldRight,
-  Foldable_002,
-  Foldable_003,
-  Foldable_004
-];
-&nbsp;
-var include$4 = Relude_Extensions_Foldable.FoldableExtensions(Foldable);
-&nbsp;
-var intercalate = include$4[23];
-&nbsp;
-function eqBy(innerEq, _a, _b) {
-  while(true) {
-    var b = _b;
-    var a = _a;
-    if (a) {
-      if (b &amp;&amp; Curry._2(innerEq, a[0], b[0])) {
-        _b = b[1];
-        _a = a[1];
-        continue ;
+function Make(KeyMeta) {
+  var id = /* record */[/* contents */-1];
+  var create = function (keyMeta) {
+    id[0] = id[0] + 1 | 0;
+    var intId = id[0];
+    var Witness = Caml_exceptions.create("Witness");
+    var witness = /* module */[/* Witness */Witness];
+    return /* record */[
+            /* intId */intId,
+            /* witness */witness,
+            /* keyMeta */keyMeta
+          ];
+  };
+  var keyMeta = function (keyData) {
+    return keyData[/* keyMeta */2];
+  };
+  var hideType = <span class="fstat-no" title="function not covered" >fu</span>nction (k) {
+<span class="cstat-no" title="statement not covered" >    return /* Key */[k];</span>
+  };
+  var eq = <span class="fstat-no" title="function not covered" >fu</span>nction (param, param$1) {
+<span class="cstat-no" title="statement not covered" >    return param[0][/* intId */0] === param$1[0][/* intId */0];</span>
+  };
+  var compare = function (param, param$1) {
+    return Caml_primitive.caml_int_compare(param[0][/* intId */0], param$1[0][/* intId */0]);
+  };
+  var HMap = $$Map.Make([compare]);
+  var empty = HMap[/* empty */0];
+  var isEmpty = HMap[/* is_empty */1];
+  var hasKey = <span class="fstat-no" title="function not covered" >fu</span>nction (k, m) {
+<span class="cstat-no" title="statement not covered" >    return Curry._2(HMap[/* mem */2], /* Key */[k], m);</span>
+  };
+  var add = function (k, v, m) {
+    return Curry._3(HMap[/* add */3], /* Key */[k], /* KeyValue */[
+                k,
+                v
+              ], m);
+  };
+  var singleton = <span class="fstat-no" title="function not covered" >fu</span>nction (k, v) {
+<span class="cstat-no" title="statement not covered" >    return Curry._2(HMap[/* singleton */4], /* Key */[k], /* KeyValue */[</span>
+                k,
+                v
+              ]);
+  };
+  var remove = <span class="fstat-no" title="function not covered" >fu</span>nction (k, m) {
+<span class="cstat-no" title="statement not covered" >    return Curry._2(HMap[/* remove */5], /* Key */[k], m);</span>
+  };
+  var find = <span class="fstat-no" title="function not covered" >fu</span>nction (k, s) {
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      var match = <span class="cstat-no" title="statement not covered" >Curry._2(HMap[/* find */21], /* Key */[k], s);</span>
+      var match$1 = <span class="cstat-no" title="statement not covered" >typeEq(k[/* witness */1], match[0][/* witness */1]);</span>
+<span class="cstat-no" title="statement not covered" >      if (match$1 !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >        return Caml_option.some(match[1]);</span>
       } else {
-        return false;
+<span class="cstat-no" title="statement not covered" >        return undefined;</span>
       }
-    } else if (b) {
-      return false;
-    } else {
-      return true;
+    }
+    catch (exn){
+<span class="cstat-no" title="statement not covered" >      if (exn === Caml_builtin_exceptions.not_found) {</span>
+<span class="cstat-no" title="statement not covered" >        return undefined;</span>
+      } else {
+<span class="cstat-no" title="statement not covered" >        throw exn;</span>
+      }
     }
   };
-}
-&nbsp;
-function eq(eqA, xs, ys) {
-  return eqBy(eqA[/* eq */0], xs, ys);
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >Eq(</span>EqA) {
-  var eq = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (xs, ys) {</span>
-<span class="cstat-no" title="statement not covered" >    return eqBy(EqA[/* eq */0], xs, ys);</span>
+  var forEach = function (f, m) {
+    return Curry._2(HMap[/* iter */9], (function (_key, value) {
+                  return Curry._1(f, value);
+                }), m);
   };
-<span class="cstat-no" title="statement not covered" >  return /* module */[/* eq */eq];</span>
-}
-&nbsp;
-function showBy(innerShow, xs) {
-  var join = Curry._1(intercalate, String$BsAbstract.Monoid);
-  return "[" + (Curry._2(join, ", ", map(innerShow)(xs)) + "]");
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >show(</span>showA, xs) {
-<span class="cstat-no" title="statement not covered" >  return showBy(showA[/* show */0], xs);</span>
-}
-&nbsp;
-function <span class="fstat-no" title="function not covered" >Show(</span>ShowA) {
-  var show = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (xs) {</span>
-<span class="cstat-no" title="statement not covered" >    return showBy(ShowA[/* show */0], xs);</span>
+  var fold = function (f, acc, m) {
+    return Curry._3(HMap[/* fold */10], (function (_key, value, acc) {
+                  return Curry._2(f, value, acc);
+                }), m, acc);
   };
-<span class="cstat-no" title="statement not covered" >  return /* module */[/* show */show];</span>
+  var all = function (p, m) {
+    return Curry._2(HMap[/* for_all */11], (function (param, b) {
+                  return Curry._1(p, b);
+                }), m);
+  };
+  var any = function (p, m) {
+    return Curry._2(HMap[/* exists */12], (function (param, b) {
+                  return Curry._1(p, b);
+                }), m);
+  };
+  var filter = function (p, m) {
+    return Curry._2(HMap[/* filter */13], (function (param, b) {
+                  return Curry._1(p, b);
+                }), m);
+  };
+  var size = function (m) {
+    return Curry._1(HMap[/* cardinal */15], m);
+  };
+  return /* module */[
+          /* Key */[
+            create,
+            keyMeta,
+            hideType,
+            eq,
+            compare
+          ],
+          /* empty */empty,
+          /* isEmpty */isEmpty,
+          /* hasKey */hasKey,
+          /* add */add,
+          /* singleton */singleton,
+          /* remove */remove,
+          /* find */find,
+          /* forEach */forEach,
+          /* fold */fold,
+          /* all */all,
+          /* any */any,
+          /* filter */filter,
+          /* size */size
+        ];
 }
 &nbsp;
-var IsoArray = /* module */[
-  /* fromArray */Belt_List.fromArray,
-  /* toArray */Belt_List.toArray
+var id = /* record */[/* contents */-1];
+&nbsp;
+function create(keyMeta) {
+  id[0] = id[0] + 1 | 0;
+  var intId = id[0];
+  var Witness = Caml_exceptions.create("Witness");
+  var witness = /* module */[/* Witness */Witness];
+  return /* record */[
+          /* intId */intId,
+          /* witness */witness,
+          /* keyMeta */keyMeta
+        ];
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >keyMeta(</span>keyData) {
+<span class="cstat-no" title="statement not covered" >  return keyData[/* keyMeta */2];</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >hideType(</span>k) {
+<span class="cstat-no" title="statement not covered" >  return /* Key */[k];</span>
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >eq(</span>param, param$1) {
+<span class="cstat-no" title="statement not covered" >  return param[0][/* intId */0] === param$1[0][/* intId */0];</span>
+}
+&nbsp;
+function compare(param, param$1) {
+  return Caml_primitive.caml_int_compare(param[0][/* intId */0], param$1[0][/* intId */0]);
+}
+&nbsp;
+var HMap = $$Map.Make([compare]);
+&nbsp;
+var empty = HMap[/* empty */0];
+&nbsp;
+var isEmpty = HMap[/* is_empty */1];
+&nbsp;
+function hasKey(k, m) {
+  return Curry._2(HMap[/* mem */2], /* Key */[k], m);
+}
+&nbsp;
+function add(k, v, m) {
+  return Curry._3(HMap[/* add */3], /* Key */[k], /* KeyValue */[
+              k,
+              v
+            ], m);
+}
+&nbsp;
+function singleton(k, v) {
+  return Curry._2(HMap[/* singleton */4], /* Key */[k], /* KeyValue */[
+              k,
+              v
+            ]);
+}
+&nbsp;
+function remove(k, m) {
+  return Curry._2(HMap[/* remove */5], /* Key */[k], m);
+}
+&nbsp;
+function find(k, s) {
+  try {
+    var match = Curry._2(HMap[/* find */21], /* Key */[k], s);
+    var match$1 = typeEq(k[/* witness */1], match[0][/* witness */1]);
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (match$1 !== undefined) {
+      return Caml_option.some(match[1]);
+    } else {
+<span class="cstat-no" title="statement not covered" >      return undefined;</span>
+    }
+  }
+  catch (exn){
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (exn === Caml_builtin_exceptions.not_found) {
+      return undefined;
+    } else {
+<span class="cstat-no" title="statement not covered" >      throw exn;</span>
+    }
+  }
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >forEach(</span>f, m) {
+<span class="cstat-no" title="statement not covered" >  return Curry._2(HMap[/* iter */9], (<span class="fstat-no" title="function not covered" >fu</span>nction (_key, value) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(f, value);</span>
+              }), m);
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >fold(</span>f, acc, m) {
+<span class="cstat-no" title="statement not covered" >  return Curry._3(HMap[/* fold */10], (<span class="fstat-no" title="function not covered" >fu</span>nction (_key, value, acc) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._2(f, value, acc);</span>
+              }), m, acc);
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >all(</span>p, m) {
+<span class="cstat-no" title="statement not covered" >  return Curry._2(HMap[/* for_all */11], (<span class="fstat-no" title="function not covered" >fu</span>nction (param, b) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(p, b);</span>
+              }), m);
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >any(</span>p, m) {
+<span class="cstat-no" title="statement not covered" >  return Curry._2(HMap[/* exists */12], (<span class="fstat-no" title="function not covered" >fu</span>nction (param, b) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(p, b);</span>
+              }), m);
+}
+&nbsp;
+function <span class="fstat-no" title="function not covered" >filter(</span>p, m) {
+<span class="cstat-no" title="statement not covered" >  return Curry._2(HMap[/* filter */13], (<span class="fstat-no" title="function not covered" >fu</span>nction (param, b) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(p, b);</span>
+              }), m);
+}
+&nbsp;
+function size(m) {
+  return Curry._1(HMap[/* cardinal */15], m);
+}
+&nbsp;
+var WithUnitKeyMeta_000 = /* Key */[
+  create,
+  keyMeta,
+  hideType,
+  eq,
+  compare
 ];
 &nbsp;
-var empty = /* [] */0;
+var WithUnitKeyMeta = /* module */[
+  WithUnitKeyMeta_000,
+  /* empty */empty,
+  /* isEmpty */isEmpty,
+  /* hasKey */hasKey,
+  /* add */add,
+  /* singleton */singleton,
+  /* remove */remove,
+  /* find */find,
+  /* forEach */forEach,
+  /* fold */fold,
+  /* all */all,
+  /* any */any,
+  /* filter */filter,
+  /* size */size
+];
 &nbsp;
-var BsFunctorExtensions = include[0];
+var Key = WithUnitKeyMeta_000;
 &nbsp;
-var flipMap = include[1];
-&nbsp;
-var $$void = include[2];
-&nbsp;
-var voidRight = include[3];
-&nbsp;
-var voidLeft = include[4];
-&nbsp;
-var flap = include[5];
-&nbsp;
-var BsApplyExtensions = include$1[0];
-&nbsp;
-var applyFirst = include$1[1];
-&nbsp;
-var applySecond = include$1[2];
-&nbsp;
-var map2 = include$1[3];
-&nbsp;
-var map3 = include$1[4];
-&nbsp;
-var map4 = include$1[5];
-&nbsp;
-var map5 = include$1[6];
-&nbsp;
-var tuple2 = include$1[7];
-&nbsp;
-var tuple3 = include$1[8];
-&nbsp;
-var tuple4 = include$1[9];
-&nbsp;
-var tuple5 = include$1[10];
-&nbsp;
-var mapTuple2 = include$1[11];
-&nbsp;
-var mapTuple3 = include$1[12];
-&nbsp;
-var mapTuple4 = include$1[13];
-&nbsp;
-var mapTuple5 = include$1[14];
-&nbsp;
-var BsApplicativeExtensions = include$2[0];
-&nbsp;
-var liftA1 = include$2[1];
-&nbsp;
-var BsMonadExtensions = include$3[0];
-&nbsp;
-var flatMap = include$3[1];
-&nbsp;
-var flatten = include$3[2];
-&nbsp;
-var composeKleisli = include$3[3];
-&nbsp;
-var flipComposeKleisli = include$3[4];
-&nbsp;
-var liftM1 = include$3[5];
-&nbsp;
-var when_ = include$3[6];
-&nbsp;
-var unless = include$3[7];
-&nbsp;
-var BsFoldableExtensions = include$4[0];
-&nbsp;
-var any = include$4[1];
-&nbsp;
-var all = include$4[2];
-&nbsp;
-var containsBy = include$4[3];
-&nbsp;
-var contains = include$4[4];
-&nbsp;
-var indexOfBy = include$4[5];
-&nbsp;
-var indexOf = include$4[6];
-&nbsp;
-var minBy = include$4[7];
-&nbsp;
-var min = include$4[8];
-&nbsp;
-var maxBy = include$4[9];
-&nbsp;
-var max = include$4[10];
-&nbsp;
-var countBy = include$4[11];
-&nbsp;
-var length = include$4[12];
-&nbsp;
-var forEach = include$4[13];
-&nbsp;
-var forEachWithIndex = include$4[14];
-&nbsp;
-var find = include$4[15];
-&nbsp;
-var findWithIndex = include$4[16];
-&nbsp;
-var toList = include$4[17];
-&nbsp;
-var FoldableSemigroupExtensions = include$4[19];
-&nbsp;
-var FoldableMonoidExtensions = include$4[20];
-&nbsp;
-var foldMap = include$4[21];
-&nbsp;
-var foldWithMonoid = include$4[22];
-&nbsp;
-var FoldableApplicativeExtensions = include$4[24];
-&nbsp;
-var FoldableMonadExtensions = include$4[25];
-&nbsp;
-var FoldableEqExtensions = include$4[26];
-&nbsp;
-var FoldableOrdExtensions = include$4[27];
-&nbsp;
-var Traversable = List$BsAbstract.Traversable;
-&nbsp;
-var fromArray = Belt_List.fromArray;
-&nbsp;
-var toArray = Belt_List.toArray;
-&nbsp;
-exports.concat = concat;
-exports.SemigroupAny = SemigroupAny;
+exports.Witness = Witness;
+exports.makeWitness = makeWitness;
+exports.typeEq = typeEq;
+exports.Make = Make;
+exports.WithUnitKeyMeta = WithUnitKeyMeta;
+exports.Key = Key;
 exports.empty = empty;
-exports.MonoidAny = MonoidAny;
-exports.map = map;
-exports.Functor = Functor;
-exports.BsFunctorExtensions = BsFunctorExtensions;
-exports.flipMap = flipMap;
-exports.$$void = $$void;
-exports.voidRight = voidRight;
-exports.voidLeft = voidLeft;
-exports.flap = flap;
-exports.apply = apply;
-exports.Apply = Apply;
-exports.BsApplyExtensions = BsApplyExtensions;
-exports.applyFirst = applyFirst;
-exports.applySecond = applySecond;
-exports.map2 = map2;
-exports.map3 = map3;
-exports.map4 = map4;
-exports.map5 = map5;
-exports.tuple2 = tuple2;
-exports.tuple3 = tuple3;
-exports.tuple4 = tuple4;
-exports.tuple5 = tuple5;
-exports.mapTuple2 = mapTuple2;
-exports.mapTuple3 = mapTuple3;
-exports.mapTuple4 = mapTuple4;
-exports.mapTuple5 = mapTuple5;
-exports.pure = pure;
-exports.Applicative = Applicative;
-exports.BsApplicativeExtensions = BsApplicativeExtensions;
-exports.liftA1 = liftA1;
-exports.bind = bind;
-exports.Monad = Monad;
-exports.BsMonadExtensions = BsMonadExtensions;
-exports.flatMap = flatMap;
-exports.flatten = flatten;
-exports.composeKleisli = composeKleisli;
-exports.flipComposeKleisli = flipComposeKleisli;
-exports.liftM1 = liftM1;
-exports.when_ = when_;
-exports.unless = unless;
-exports.alt = alt;
-exports.Alt = Alt;
-exports.Plus = Plus;
-exports.Alternative = Alternative;
-exports.foldLeft = foldLeft;
-exports.foldRight = foldRight;
-exports.Foldable = Foldable;
-exports.BsFoldableExtensions = BsFoldableExtensions;
-exports.any = any;
-exports.all = all;
-exports.containsBy = containsBy;
-exports.contains = contains;
-exports.indexOfBy = indexOfBy;
-exports.indexOf = indexOf;
-exports.minBy = minBy;
-exports.min = min;
-exports.maxBy = maxBy;
-exports.max = max;
-exports.countBy = countBy;
-exports.length = length;
-exports.forEach = forEach;
-exports.forEachWithIndex = forEachWithIndex;
+exports.isEmpty = isEmpty;
+exports.hasKey = hasKey;
+exports.add = add;
+exports.singleton = singleton;
+exports.remove = remove;
 exports.find = find;
-exports.findWithIndex = findWithIndex;
-exports.toList = toList;
-exports.FoldableSemigroupExtensions = FoldableSemigroupExtensions;
-exports.FoldableMonoidExtensions = FoldableMonoidExtensions;
-exports.foldMap = foldMap;
-exports.foldWithMonoid = foldWithMonoid;
-exports.intercalate = intercalate;
-exports.FoldableApplicativeExtensions = FoldableApplicativeExtensions;
-exports.FoldableMonadExtensions = FoldableMonadExtensions;
-exports.FoldableEqExtensions = FoldableEqExtensions;
-exports.FoldableOrdExtensions = FoldableOrdExtensions;
-exports.Traversable = Traversable;
-exports.eqBy = eqBy;
-exports.eq = eq;
-exports.Eq = Eq;
-exports.showBy = showBy;
-exports.show = show;
-exports.Show = Show;
-exports.fromArray = fromArray;
-exports.toArray = toArray;
-exports.IsoArray = IsoArray;
-/* include Not a pure module */
+exports.forEach = forEach;
+exports.fold = fold;
+exports.all = all;
+exports.any = any;
+exports.filter = filter;
+exports.size = size;
+/* HMap Not a pure module */
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->
@@ -1149,7 +948,7 @@ exports.IsoArray = IsoArray;
   Code coverage
 </div>
 </div>
-<script src="../../prettify.js"></script>
+<script src="../prettify.js"></script>
 <script>
 window.onload = function () {
         if (typeof prettyPrint === 'function') {
@@ -1157,7 +956,7 @@ window.onload = function () {
         }
 };
 </script>
-<script src="../../sorter.js"></script>
-<script src="../../block-navigation.js"></script>
+<script src="../sorter.js"></script>
+<script src="../block-navigation.js"></script>
 </body>
 </html>
