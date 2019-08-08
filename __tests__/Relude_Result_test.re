@@ -38,7 +38,31 @@ describe("Result", () => {
     |> toEqual(Result.error("hihi"))
   );
 
-  test("apply", () =>
+  test("tap Ok", () => {
+    let x = ref(0);
+    Result.ok(42) |> Result.tap(i => x := i) |> ignore;
+    expect(x^) |> toEqual(42);
+  });
+
+  test("tap Error", () => {
+    let x = ref(0);
+    Result.error(42) |> Result.tap(i => x := i) |> ignore;
+    expect(x^) |> toEqual(0);
+  });
+
+  test("tapError Ok", () => {
+    let x = ref(0);
+    Result.ok(42) |> Result.tapError(i => x := i) |> ignore;
+    expect(x^) |> toEqual(0);
+  });
+
+  test("tapError Error", () => {
+    let x = ref(0);
+    Result.error(42) |> Result.tapError(i => x := i) |> ignore;
+    expect(x^) |> toEqual(42);
+  });
+
+  test("apply Ok Ok", () =>
     expect(Result.apply(Result.ok(a => a + 10), Result.ok(42)))
     |> toEqual(Result.ok(52))
   );

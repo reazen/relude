@@ -20,24 +20,24 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">52.99% </span>
+        <span class="strong">55.56% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>124/234</span>
+        <span class='fraction'>130/234</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">67.31% </span>
+        <span class="strong">75% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>35/52</span>
+        <span class='fraction'>39/52</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">62.5% </span>
+        <span class="strong">67.5% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>25/40</span>
+        <span class='fraction'>27/40</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">52.99% </span>
+        <span class="strong">55.56% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>124/234</span>
+        <span class='fraction'>130/234</span>
       </div>
     </div>
     <p class="quiet">
@@ -645,11 +645,11 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">111x</span>
+<span class="cline-any cline-yes">113x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -744,17 +744,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1319,18 +1319,18 @@ function bimap(mapA, mapE, result) {
   }
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >tap(</span>f, ra) {
-<span class="cstat-no" title="statement not covered" >  if (!ra.tag) {</span>
-<span class="cstat-no" title="statement not covered" >    Curry._1(f, ra[0]);</span>
+function tap(f, ra) {
+  if (!ra.tag) {
+    Curry._1(f, ra[0]);
   }
-<span class="cstat-no" title="statement not covered" >  return ra;</span>
+  return ra;
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >tapError(</span>f, ra) {
-<span class="cstat-no" title="statement not covered" >  if (ra.tag) {</span>
-<span class="cstat-no" title="statement not covered" >    Curry._1(f, ra[0]);</span>
+function tapError(f, ra) {
+  if (ra.tag) {
+    Curry._1(f, ra[0]);
   }
-<span class="cstat-no" title="statement not covered" >  return ra;</span>
+  return ra;
 }
 &nbsp;
 function apply(rf, ra) {
