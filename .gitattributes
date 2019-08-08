@@ -1,4 +1,5 @@
 *.re linguist-language=Reason
 *.rei linguist-language=Reason
 
-docs/coverage/**/* -diff
+docs/coverage/**/* -diff -merge
+docs/coverage/**/* linguist-generated=true
