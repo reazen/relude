@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">52.14% </span>
+        <span class="strong">52.99% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>122/234</span>
+        <span class='fraction'>124/234</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">67.31% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>35/52</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">57.5% </span>
+        <span class="strong">62.5% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>23/40</span>
+        <span class='fraction'>25/40</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">52.14% </span>
+        <span class="strong">52.99% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>122/234</span>
+        <span class='fraction'>124/234</span>
       </div>
     </div>
     <p class="quiet">
@@ -645,7 +645,7 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">111x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -720,10 +720,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -758,17 +758,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -777,14 +785,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1355,12 +1355,12 @@ function map3(f, fa, fb, fc) {
   return apply(map2(f, fa, fb), fc);
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >map4(</span>f, fa, fb, fc, fd) {
-<span class="cstat-no" title="statement not covered" >  return apply(map3(f, fa, fb, fc), fd);</span>
+function map4(f, fa, fb, fc, fd) {
+  return apply(map3(f, fa, fb, fc), fd);
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >map5(</span>f, fa, fb, fc, fd, fe) {
-<span class="cstat-no" title="statement not covered" >  return apply(map4(f, fa, fb, fc, fd), fe);</span>
+function map5(f, fa, fb, fc, fd, fe) {
+  return apply(map4(f, fa, fb, fc, fd), fe);
 }
 &nbsp;
 function pure(a) {
