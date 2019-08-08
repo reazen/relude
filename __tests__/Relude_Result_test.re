@@ -8,9 +8,56 @@ describe("Result", () => {
     expect(Result.pure(1)) |> toEqual(Belt.Result.Ok(1))
   );
 
-  test("map", () =>
+  test("map Ok", () =>
     expect(Result.map(a => a + 2, Belt.Result.Ok(1)))
     |> toEqual(Belt.Result.Ok(3))
+  );
+
+  test("map Error", () =>
+    expect(Result.map(a => a + 2, Belt.Result.Error("error")))
+    |> toEqual(Belt.Result.Error("error"))
+  );
+
+  test("mapError Ok", () =>
+    expect(Result.ok(42) |> Result.mapError(x => x ++ x))
+    |> toEqual(Result.ok(42))
+  );
+
+  test("mapError Error", () =>
+    expect(Result.error("hi") |> Result.mapError(x => x ++ x))
+    |> toEqual(Result.error("hihi"))
+  );
+
+  test("bimap Ok", () =>
+    expect(Result.ok(42) |> Result.bimap(a => a + 10, e => e ++ e))
+    |> toEqual(Result.ok(52))
+  );
+
+  test("bimap Error", () =>
+    expect(Result.error("hi") |> Result.bimap(a => a + 10, e => e ++ e))
+    |> toEqual(Result.error("hihi"))
+  );
+
+  test("apply", () =>
+    expect(Result.apply(Result.ok(a => a + 10), Result.ok(42)))
+    |> toEqual(Result.ok(52))
+  );
+
+  test("map2", () =>
+    expect(Result.map2((a, b) => a + b, Result.ok(5), Result.ok(10)))
+    |> toEqual(Result.ok(15))
+  );
+
+  test("map3", () =>
+    expect(
+      Result.map3(
+        (a, b, c) => a + b + c,
+        Result.ok(5),
+        Result.ok(10),
+        Result.ok(100),
+      ),
+    )
+    |> toEqual(Result.ok(115))
   );
 
   test("flatMap", () =>
@@ -31,6 +78,23 @@ describe("Result", () => {
   test("fold Error", () =>
     expect(Result.fold(_ => "error", _ => "ok", Belt.Result.Error(1)))
     |> toEqual("error")
+  );
+
+  test("getOrElse Ok", () =>
+    expect(Result.ok(42) |> Result.getOrElse(5)) |> toEqual(42)
+  );
+
+  test("getOrElse Error", () =>
+    expect(Result.error("abc") |> Result.getOrElse(5)) |> toEqual(5)
+  );
+
+  test("getOrElseLazy Ok", () =>
+    expect(Result.ok(42) |> Result.getOrElseLazy(_ => 5)) |> toEqual(42)
+  );
+
+  test("getOrElseLazy Error", () =>
+    expect(Result.error("abc") |> Result.getOrElseLazy(_ => 5))
+    |> toEqual(5)
   );
 
   test("merge Error", () =>
