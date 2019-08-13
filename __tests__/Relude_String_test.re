@@ -196,28 +196,35 @@ describe("String", () => {
   );
 
   test("replaceFirst", () =>
-    expect(Str.replaceFirst(~search="b", ~replaceWith="xyz", "abcde")) |> toEqual("axyzcde")
+    expect(Str.replaceFirst(~search="b", ~replaceWith="xyz", "abcde"))
+    |> toEqual("axyzcde")
   );
 
   test("replaceEach", () =>
-    expect(Str.replaceEach(~search="b", ~replaceWith="xyz", "abcdeb")) |> toEqual("axyzcdexyz")
+    expect(Str.replaceEach(~search="b", ~replaceWith="xyz", "abcdeb"))
+    |> toEqual("axyzcdexyz")
   );
 
   test("replaceEach special characters", () =>
-    expect(Str.replaceEach(~search="+", ~replaceWith=" ", "a+b+c")) |> toEqual("a b c")
+    expect(Str.replaceEach(~search="+", ~replaceWith=" ", "a+b+c"))
+    |> toEqual("a b c")
   );
 
   test("replaceRegex", () =>
-    expect(Str.replaceRegex(~search=[%re "/b/"], ~replaceWith="xyz", "abcde"))
+    expect(
+      Str.replaceRegex(~search=[%re "/b/"], ~replaceWith="xyz", "abcde"),
+    )
     |> toEqual("axyzcde")
   );
 
   test("removeFirst", () =>
-    expect(Str.removeFirst(~search=" ", "foo bar baz")) |> toEqual("foobar baz")
+    expect(Str.removeFirst(~search=" ", "foo bar baz"))
+    |> toEqual("foobar baz")
   );
 
   test("removeEach", () =>
-    expect(Str.removeEach(~search=" ", "foo bar baz")) |> toEqual("foobarbaz")
+    expect(Str.removeEach(~search=" ", "foo bar baz"))
+    |> toEqual("foobarbaz")
   );
 
   test("slice", () =>
@@ -229,11 +236,13 @@ describe("String", () => {
   );
 
   test("splitArray", () =>
-    expect(Str.splitArray(~delimiter=",", "a,b,c")) |> toEqual([|"a", "b", "c"|])
+    expect(Str.splitArray(~delimiter=",", "a,b,c"))
+    |> toEqual([|"a", "b", "c"|])
   );
 
   test("splitList", () =>
-    expect(Str.splitList(~delimiter=",", "a,b,c")) |> toEqual(["a", "b", "c"])
+    expect(Str.splitList(~delimiter=",", "a,b,c"))
+    |> toEqual(["a", "b", "c"])
   );
 
   test("splitAt -7", () =>
@@ -322,5 +331,17 @@ describe("String", () => {
 
   test("toFloat failure on alpha", () =>
     expect(Str.toFloat("abc")) |> toEqual(None)
+  );
+
+  test("MonoidExtensions guard false", () =>
+    expect(Str.guard(false, "hi")) |> toEqual("")
+  );
+
+  test("MonoidExtensions guard true", () =>
+    expect(Str.guard(true, "hi")) |> toEqual("hi")
+  );
+
+  test("MonoidExtensions power", () =>
+    expect(Str.power("hi", 5)) |> toEqual("hihihihihi")
   );
 });

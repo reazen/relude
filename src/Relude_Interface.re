@@ -1,5 +1,11 @@
+/**
+ * Module type signature for a type constructor with a single type hole.
+ */
 module type TYPE_ANY = {type t('a);};
 
+/**
+ * Module type signature for a module that represents a sequence of values and related functions.
+ */
 module type SEQUENCE = {
   type t('a);
 
@@ -35,24 +41,36 @@ module type SEQUENCE = {
      BsAbstract.Interface.SHOW with type t = t(ShowA.t);
 };
 
+/**
+ * Module type signature for a module that is isomorphic with an array
+ */
 module type ISO_ARRAY = {
   type t('a);
   let fromArray: array('a) => t('a);
   let toArray: t('a) => array('a);
 };
 
+/**
+ * Module type signature for a module that is isomorphic with a list
+ */
 module type ISO_LIST = {
   type t('a);
   let fromList: list('a) => t('a);
   let toList: t('a) => list('a);
 };
 
+/**
+ * Module type signature for a Monad that can produce an error in a monadic context
+ */
 module type MONAD_THROW = {
   include BsAbstract.Interface.MONAD;
   type e;
   let throwError: e => t('a);
 };
 
+/**
+ * Module type signature for a Monad that can handle an error by creating a new monadic value.
+ */
 module type MONAD_ERROR = {
   include MONAD_THROW;
   let catchError: (e => t('a), t('a)) => t('a);

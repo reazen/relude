@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">33.33% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>2/6</span>
+        <span class='fraction'>6/6</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,21 +30,21 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/1</span>
+        <span class='fraction'>1/1</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">33.33% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>2/6</span>
+        <span class='fraction'>6/6</span>
       </div>
     </div>
     <p class="quiet">
       Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
     </p>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -68,10 +68,10 @@
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -84,11 +84,11 @@
 &nbsp;
 var Functions$BsAbstract = require("bs-abstract/lib/js/src/functions/Functions.bs.js");
 &nbsp;
-function <span class="fstat-no" title="function not covered" >MonoidExtensions(</span>M) {
-  var BsMonoidExtensions = <span class="cstat-no" title="statement not covered" >Functions$BsAbstract.Monoid(M);</span>
-  var guard = <span class="cstat-no" title="statement not covered" >BsMonoidExtensions[/* guard */2];</span>
-  var power = <span class="cstat-no" title="statement not covered" >BsMonoidExtensions[/* power */1];</span>
-<span class="cstat-no" title="statement not covered" >  return /* module */[</span>
+function MonoidExtensions(M) {
+  var BsMonoidExtensions = Functions$BsAbstract.Monoid(M);
+  var guard = BsMonoidExtensions[/* guard */2];
+  var power = BsMonoidExtensions[/* power */1];
+  return /* module */[
           /* BsMonoidExtensions */BsMonoidExtensions,
           /* guard */guard,
           /* power */power

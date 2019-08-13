@@ -79,6 +79,9 @@ let trim: string => string = Js.String.trim;
 */
 let isWhitespace: string => bool = s => s |> trim |> isEmpty;
 
+/**
+ * Indicates if the string contains any non-whitespace characters
+ */
 let isNonWhitespace: string => bool = s => !isWhitespace(s);
 
 /**
@@ -112,11 +115,13 @@ module Semigroup: BsAbstract.Interface.SEMIGROUP with type t = string = {
   type t = string;
   let append = concat;
 };
+include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 
 module Monoid: BsAbstract.Interface.MONOID with type t = string = {
   include Semigroup;
   let empty = empty;
 };
+include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
 
 /**
   `concatArray(xs)` returns a new string that is the result
@@ -389,18 +394,28 @@ module Eq: BsAbstract.Interface.EQ with type t = string = {
   type t = string;
   let eq = eq;
 };
+include Relude_Extensions_Eq.EqExtensions(Eq);
 
+/**
+ * Compares two strings
+ */
 let compare = BsAbstract.String.Ord.compare;
 
 module Ord: BsAbstract.Interface.ORD with type t = string = {
   include Eq;
   let compare = compare;
 };
+include Relude_Extensions_Ord.OrdExtensions(Ord);
 
-include Relude_Extensions_Ord.Make(Ord);
+/**
+ * Map module with a string key
+ */
+module Map = Relude_Map.WithOrd(Ord);
 
-module Map = Relude_Map.MakeFromOrderable(Ord);
-module Set = Relude_Set.MakeFromOrderable(Ord);
+/**
+ * Set module for strings
+ */
+module Set = Relude_Set.WithOrd(Ord);
 
 /**
   `endsWith(~search, input)` returns `true` if `input` ends with the characters in `target`;

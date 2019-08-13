@@ -1,5 +1,11 @@
+/**
+ * The type of the base of our Decimal
+ */
 type mantissa = int;
 
+/**
+ * The type of the exponent of our Decimal
+ */
 type exponent = int;
 
 /**
@@ -44,7 +50,7 @@ Decimal(12345, -2) |> Decimal.toString // "123.45"
 Decimal(12345, 3) |> Decimal.toString // "12345000"
 ```
 */
-let toString: t => string =
+let show: t => string =
   (Decimal(mantissa, exponent)) =>
     if (exponent == 0) {
       string_of_int(mantissa);

@@ -7,7 +7,7 @@ module HMap = Relude.HMap;
 // This type of key info is necessary for things like folding (I think), otherwise you have no way to know
 // what type you're dealing with (because 'a is existential in KeyValue(keyData('a), 'a))
 module HMapS =
-  HMap.Make({
+  HMap.WithKeyMeta({
     // Our key info is a tuple of a label, and a function to convert the value into a string
     type t('a) = (string, 'a => string);
   });

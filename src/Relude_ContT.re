@@ -1,3 +1,6 @@
+/**
+ * Creates a ContT (continuation) Monad module with the given Monad module.
+ */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   type t('r, 'a) =
     | ContT(('a => M.t('r)) => M.t('r));

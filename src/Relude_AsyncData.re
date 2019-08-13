@@ -14,14 +14,29 @@ type t('a) =
   | Reloading('a)
   | Complete('a);
 
+/**
+ * Constructs an Init value
+ */
 let init: t('a) = Init;
 
+/**
+ * Constructs a Loading value
+ */
 let loading: t('a) = Loading;
 
+/**
+ * Constructs a Reloading value containing the given value
+ */
 let reloading: 'a => t('a) = a => Reloading(a);
 
+/**
+ * Constructs a Reloading value containing the given value
+ */
 let complete: 'a => t('a) = a => Complete(a);
 
+/**
+ * Checks if this AsyncData value is Init
+ */
 let isInit: 'a. t('a) => bool =
   fun
   | Init => true
@@ -29,6 +44,9 @@ let isInit: 'a. t('a) => bool =
   | Reloading(_) => false
   | Complete(_) => false;
 
+/**
+ * Checks if this AsyncData value is Loading
+ */
 let isLoading: 'a. t('a) => bool =
   fun
   | Init => false
@@ -36,6 +54,9 @@ let isLoading: 'a. t('a) => bool =
   | Reloading(_) => false
   | Complete(_) => false;
 
+/**
+ * Checks if this AsyncData value is Reloading with any value
+ */
 let isReloading: 'a. t('a) => bool =
   fun
   | Init => false
@@ -43,6 +64,9 @@ let isReloading: 'a. t('a) => bool =
   | Reloading(_) => true
   | Complete(_) => false;
 
+/**
+ * Checks if this AsyncData value is Complete with any value
+ */
 let isComplete: 'a. t('a) => bool =
   fun
   | Init => false
@@ -50,6 +74,9 @@ let isComplete: 'a. t('a) => bool =
   | Reloading(_) => false
   | Complete(_) => true;
 
+/**
+ * Checks if this AsyncData value is working (Loading or Reloading)
+ */
 let isBusy: 'a. t('a) => bool =
   fun
   | Init => false
@@ -57,6 +84,9 @@ let isBusy: 'a. t('a) => bool =
   | Reloading(_) => true
   | Complete(_) => false;
 
+/**
+ * Checks if this AsyncData value is not working (Init or Complete)
+ */
 let isIdle: 'a. t('a) => bool = fa => !isBusy(fa);
 
 /**
@@ -150,6 +180,9 @@ let foldByValueLazy: 'a 'b. (unit => 'b, 'a => 'b, t('a)) => 'b =
   (onNoValue, onValue, fa) =>
     foldLazy(onNoValue, onNoValue, onValue, onValue, fa);
 
+/**
+ * Maps a pure function over the value contained by Reloading or Complete
+ */
 let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
   (f, fa) =>
     switch (fa) {
@@ -165,6 +198,9 @@ module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
 };
 include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
+/**
+ * Applies a wrapped function to the value contained by Reloading or Complete
+ */
 let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
   (ff, fa) =>
     switch (ff, fa) {
@@ -195,6 +231,9 @@ module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
 };
 include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
+/**
+ * Lifts a pure value into the context of an AsyncData, in the Complete state
+ */
 let pure: 'a. 'a => t('a) = a => Complete(a);
 
 module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
@@ -203,6 +242,9 @@ module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
 };
 include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
+/**
+ * Applies a monadic function to the value contained by Reloading or Complete
+ */
 let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
   (fa, f) =>
     switch (fa) {
@@ -218,6 +260,10 @@ module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
 };
 include Relude_Extensions_Monad.MonadExtensions(Monad);
 
+/**
+ * alt for AsyncData tries to find the most advanced state between
+ * two AsyncData values in terms of completeness.
+ */
 let alt: 'a. (t('a), t('a)) => t('a) =
   (fa, fb) =>
     switch (fa, fb) {
@@ -248,6 +294,10 @@ module Alt: BsAbstract.Interface.ALT with type t('a) = t('a) = {
 };
 include Relude_Extensions_Alt.AltExtensions(Alt);
 
+/**
+ * Indicates if two AsyncData values are in the same state, and that the
+ * contained values are equal.
+ */
 let eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
   (innerEq, a, b) =>
     switch (a, b) {
@@ -266,6 +316,10 @@ module Eq = (E: BsAbstract.Interface.EQ) : BsAbstract.Interface.EQ => {
   let eq = eqBy(E.eq);
 };
 
+/**
+ * Converts an AsyncData value to a string, using the given function to
+ * convert the contained value to a string.
+ */
 let showBy: 'a. ('a => string, t('a)) => string =
   (showA, fa) =>
     switch (fa) {

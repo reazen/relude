@@ -3,6 +3,9 @@ module RWSResult = {
     | RWSResult('a, 's, 'w);
 };
 
+/**
+ * Creates a RWST (Reader/Writer/State) Monad with the given Monad module.
+ */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   open RWSResult;
 

@@ -41,6 +41,11 @@ let getOk: 'a 'e. t('a, 'e) => option('a) =
   | Error(_) => None;
 
 /**
+ * Alias for `getOk`
+ */
+let toOption: 'a 'e. t('a, 'e) => option('a) = getOk;
+
+/**
   `getError(result)` returns `Some(e)` when `result` is
   of the form `Error(e)`; otherwise it returns `None`.
 
@@ -488,6 +493,9 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
+/**
+ * Flattens a nested Result one time.
+ */
 let flatten: 'a. t(t('a, 'e), 'e) => t('a, 'e) = mma => bind(mma, a => a);
 
 /**

@@ -666,7 +666,7 @@ function typeEq(l, r) {
   
 }
 &nbsp;
-function Make(KeyMeta) {
+function WithKeyMeta(KeyMeta) {
   var id = /* record */[/* contents */-1];
   var create = function (keyMeta) {
     id[0] = id[0] + 1 | 0;
@@ -893,7 +893,7 @@ function size(m) {
   return Curry._1(HMap[/* cardinal */15], m);
 }
 &nbsp;
-var WithUnitKeyMeta_000 = /* Key */[
+var WithKeyMetaUnit_000 = /* Key */[
   create,
   keyMeta,
   hideType,
@@ -901,8 +901,8 @@ var WithUnitKeyMeta_000 = /* Key */[
   compare
 ];
 &nbsp;
-var WithUnitKeyMeta = /* module */[
-  WithUnitKeyMeta_000,
+var WithKeyMetaUnit = /* module */[
+  WithKeyMetaUnit_000,
   /* empty */empty,
   /* isEmpty */isEmpty,
   /* hasKey */hasKey,
@@ -918,13 +918,13 @@ var WithUnitKeyMeta = /* module */[
   /* size */size
 ];
 &nbsp;
-var Key = WithUnitKeyMeta_000;
+var Key = WithKeyMetaUnit_000;
 &nbsp;
 exports.Witness = Witness;
 exports.makeWitness = makeWitness;
 exports.typeEq = typeEq;
-exports.Make = Make;
-exports.WithUnitKeyMeta = WithUnitKeyMeta;
+exports.WithKeyMeta = WithKeyMeta;
+exports.WithKeyMetaUnit = WithKeyMetaUnit;
 exports.Key = Key;
 exports.empty = empty;
 exports.isEmpty = isEmpty;

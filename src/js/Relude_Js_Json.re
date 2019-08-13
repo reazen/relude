@@ -263,13 +263,17 @@ module Errors = {
 };
 
 module ValidationE = Validation.WithErrors(Errors.SemigroupAny, Error.Type);
-module ArrayValidationE = Array.Validation.WithErrors(Errors.SemigroupAny, Error.Type);
+module ArrayValidationE =
+  Array.Validation.WithErrors(Errors.SemigroupAny, Error.Type);
 module TraversableE = ArrayValidationE.Traversable;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Basic value validation
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Validates that the given Js.Json.t value is a null
+ */
 let validateNull: json => Validation.t(unit, Errors.t) =
   json =>
     toNull(json)
@@ -277,6 +281,9 @@ let validateNull: json => Validation.t(unit, Errors.t) =
          Errors.pure("JSON value is not a null: " ++ show(json))
        );
 
+/**
+ * Validates that the given Js.Json.t value is a bool
+ */
 let validateBool: json => Validation.t(bool, Errors.t) =
   json =>
     toBool(json)
@@ -284,6 +291,9 @@ let validateBool: json => Validation.t(bool, Errors.t) =
          Errors.pure("JSON value is not a bool: " ++ show(json))
        );
 
+/**
+ * Validates that the given Js.Json.t value is a string
+ */
 let validateString: json => Validation.t(string, Errors.t) =
   json =>
     toString(json)
@@ -291,6 +301,9 @@ let validateString: json => Validation.t(string, Errors.t) =
          Errors.pure("JSON value is not a string: " ++ show(json))
        );
 
+/**
+ * Validates that the given Js.Json.t value is an int
+ */
 let validateInt: json => Validation.t(int, Errors.t) =
   json =>
     toInt(json)
@@ -298,6 +311,9 @@ let validateInt: json => Validation.t(int, Errors.t) =
          Errors.pure("JSON value is not an int: " ++ show(json))
        );
 
+/**
+ * Validates that the given Js.Json.t value is a float
+ */
 let validateFloat: json => Validation.t(float, Errors.t) =
   json =>
     toFloat(json)
@@ -309,11 +325,19 @@ let validateFloat: json => Validation.t(float, Errors.t) =
 // Array validation (at index and whole array)
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Validates that the given Js.Json.t value is an array, and attempts to get the value
+ * at the given index as a raw Js.Json.t value.
+ */
 let getJsonAtIndex: (int, json) => option(json) =
   (index, json) => {
     toArrayOfJson(json) |> Option.flatMap(Array.at(index));
   };
 
+/**
+ * Validates that the given Js.Json.t value is an array, and attempts to get the value
+ * at the given index and validate it with the given validation function.
+ */
 let validateJsonAtIndex:
   (int, json => Validation.t('a, Errors.t), json) =>
   Validation.t('a, Errors.t) =
@@ -332,6 +356,9 @@ let validateJsonAtIndex:
        );
   };
 
+/**
+ * Validates that the given Js.Json.t value is an array with a null at the given index
+ */
 let validateNullAtIndex: (int, json) => Validation.t(unit, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -344,6 +371,9 @@ let validateNullAtIndex: (int, json) => Validation.t(unit, Errors.t) =
       json,
     );
 
+/**
+ * Validates that the given Js.Json.t value is an array with a bool at the given index.
+ */
 let validateBoolAtIndex: (int, json) => Validation.t(bool, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -354,6 +384,9 @@ let validateBoolAtIndex: (int, json) => Validation.t(bool, Errors.t) =
       json,
     );
 
+/**
+ * Validates that the given Js.Json.t value is an array with an int at the given index.
+ */
 let validateIntAtIndex: (int, json) => Validation.t(int, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -364,6 +397,9 @@ let validateIntAtIndex: (int, json) => Validation.t(int, Errors.t) =
       json,
     );
 
+/**
+ * Validates that the given Js.Json.t value is an array with a float at the given index.
+ */
 let validateFloatAtIndex: (int, json) => Validation.t(float, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -374,6 +410,9 @@ let validateFloatAtIndex: (int, json) => Validation.t(float, Errors.t) =
       json,
     );
 
+/**
+ * Validates that the given Js.Json.t value is an array with a string at the given index.
+ */
 let validateStringAtIndex: (int, json) => Validation.t(string, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -384,6 +423,10 @@ let validateStringAtIndex: (int, json) => Validation.t(string, Errors.t) =
       json,
     );
 
+/**
+ * Validates that the given Js.Json.t value is an array, then validates each item of the array
+ * using the given validation function.
+ */
 let validateArrayOfJson:
   'a 'e.
   ((int, json) => Validation.t('a, Errors.t), json) =>
@@ -409,6 +452,10 @@ let validateArrayOfJson:
        );
   };
 
+/**
+ * Validates that the given Js.Json.t value is an array, then validates each item of the array
+ * using the given validation function, then converts the result to a list.
+ */
 let validateArrayOfJsonAsList:
   'a 'e.
   ((int, json) => Validation.t('a, Errors.t), json) =>
@@ -435,6 +482,10 @@ let validateArrayOfJsonAsList:
     |> Validation.map(Array.toList);
   };
 
+/**
+ * Validates that the given Js.Json.t value is an array, and then validates the value at the given
+ * index is an array, and validates it using the given validation function.
+ */
 let validateArrayAtIndex:
   'a.
   (int, (int, json) => Validation.t('a, Errors.t), json) =>
@@ -454,6 +505,10 @@ let validateArrayAtIndex:
          json => validateArrayOfJson(validateItem, json),
        );
 
+/**
+ * Validates that the Js.Json.t value is an array, then validates that the value at the
+ * given index is a Json object, and validates the object using the given validation function.
+ */
 let validateObjectAtIndex:
   'a.
   (int, json => Validation.t('a, Errors.t), json) =>
@@ -464,11 +519,19 @@ let validateObjectAtIndex:
 // Object validation for key and whole object
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Validates that the given Js.Json.t value is an object, and then gets the raw Js.Json.t
+ * value for the given key.
+ */
 let getJsonForKey: (string, json) => option(json) =
   (key, json) => {
     toDictOfJson(json) |> Option.flatMap(dict => Js.Dict.get(dict, key));
   };
 
+/**
+ * Validates that the given Js.Json.t value is an object, then validates the value at the
+ * given key using the given validation function.
+ */
 let validateJsonForKey:
   (string, json => Validation.t('a, Errors.t), json) =>
   Validation.t('a, Errors.t) =
@@ -483,6 +546,9 @@ let validateJsonForKey:
        );
   };
 
+/**
+ * Validates the given Js.Json.t value is an object with a null at the given key.
+ */
 let validateNullForKey: (string, json) => Validation.t(unit, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -492,6 +558,9 @@ let validateNullForKey: (string, json) => Validation.t(unit, Errors.t) =
       json,
     );
 
+/**
+ * Validates the given Js.Json.t value is an object with a bool at the given key.
+ */
 let validateBoolForKey: (string, json) => Validation.t(bool, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -501,6 +570,9 @@ let validateBoolForKey: (string, json) => Validation.t(bool, Errors.t) =
       json,
     );
 
+/**
+ * Validates the given Js.Json.t value is an object with an int at the given key.
+ */
 let validateIntForKey: (string, json) => Validation.t(int, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -510,6 +582,9 @@ let validateIntForKey: (string, json) => Validation.t(int, Errors.t) =
       json,
     );
 
+/**
+ * Validates the given Js.Json.t value is an object with a float at the given key.
+ */
 let validateFloatForKey: (string, json) => Validation.t(float, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -519,6 +594,9 @@ let validateFloatForKey: (string, json) => Validation.t(float, Errors.t) =
       json,
     );
 
+/**
+ * Validates the given Js.Json.t value is an object with a string at the given key.
+ */
 let validateStringForKey: (string, json) => Validation.t(string, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -528,6 +606,10 @@ let validateStringForKey: (string, json) => Validation.t(string, Errors.t) =
       json,
     );
 
+/**
+ * Validates the given Js.Json.t value is an object with an array at the given key,
+ * then validates the array using the given validation function.
+ */
 let validateArrayForKey:
   'a.
   (string, (int, json) => Validation.t('a, Errors.t), json) =>
@@ -543,6 +625,10 @@ let validateArrayForKey:
          json => validateArrayOfJson(validateItem, json),
        );
 
+/**
+ * Validates the given Js.Json.t value is an object with an object at the given key,
+ * then validates the object using the given validation function.
+ */
 let validateObjectForKey:
   'a.
   (string, json => Validation.t('a, Errors.t), json) =>
@@ -573,21 +659,82 @@ module DSL = {
   JSON encode utilities
   */
   module JE = {
-    let null = null;
-    let bool = fromBool;
-    let int = fromInt;
-    let float = fromFloat;
-    let num = fromFloat;
-    let string = fromString;
-    let array = fromArrayOfJson;
-    let arrayBy = fromArrayOfJsonBy;
-    let arrayOfDict = fromArrayOfDictOfJson;
-    let arrayOfTuples = fromArrayOfKeyValueTuples;
-    let list = fromListOfJson;
+    /**
+     * Creates a JSON null value
+     */
+    let null: json = null;
+
+    /**
+     * Encodes a bool as a JSON bool value
+     */
+    let bool: bool => json = fromBool;
+
+    /**
+     * Encodes an int as a JSON number value
+     */
+    let int: int => json = fromInt;
+
+    /**
+     * Encodes a float as a JSON number value
+     */
+    let float: float => json = fromFloat;
+
+    /**
+     * Encodes a float as a JSON number value
+     *
+     * Alias of `float`
+     */
+    let num: float => json = fromFloat;
+
+    /**
+     * Encodes a string as a JSON string value
+     */
+    let string: string => json = fromString;
+
+    /**
+     * Encodes an array(Js.Json.t) as a single Js.Json.t (array) value
+     */
+    let array: array(json) => json = fromArrayOfJson;
+
+    /**
+     * Maps a JSON-conversaion function over an array of values, and then encodes the result as a JSON array
+     */
+    let arrayBy: 'a. ('a => json, array('a)) => json = fromArrayOfJsonBy;
+
+    /**
+     * Encodes an array(Js.Dict.t(Js.Json.t)) into a Js.Json.t value
+     */
+    let arrayOfDict: array(dict) => json = fromArrayOfDictOfJson;
+
+    /**
+     * Encodes an array of key/value pairs into a Js.Json.t value
+     */
+    let arrayOfTuples: array((Js.Dict.key, json)) => json = fromArrayOfKeyValueTuples;
+
+    /**
+     * Encodes a list of Js.Json.t values to a Js.Json.t value
+     */
+    let list: list(json) => json = fromListOfJson;
+
+    /**
+     * Maps a JSON-conversion function over a list of values, then encodes the result as a Js.Json.t array value
+     */
     let listBy = fromListOfJsonBy;
-    let listOfDict = fromListOfDictOfJson;
-    let listOfTuples = fromListOfKeyValueTuples;
-    let dict = fromDictOfJson;
+
+    /**
+     * Encodes a list Js.Dict.t(Js.Json.t) values into a Js.Json.t array value
+     */
+    let listOfDict: list(dict) => json = fromListOfDictOfJson;
+
+    /**
+     * Encodes a list of key/value pairs into a Js.Json.t array value
+    */
+    let listOfTuples: list((Js.Dict.key, json)) => json = fromListOfKeyValueTuples;
+
+    /**
+     * Encodes a dict of Js.Json.t values into a Js.Json.t value
+     */
+    let dict: dict => json = fromDictOfJson;
   };
 
   /**
@@ -598,8 +745,15 @@ module DSL = {
     // Plain value validation (decoding)
     ////////////////////////////////////////////////////////////////////////////////
 
-    let null = validateNull;
-    let bool = validateBool;
+    /**
+     * Validates the given Js.Json.t value is a null
+     */
+    let null: json => Validation.t(unit, Errors.t) = validateNull;
+
+    /**
+     * Validates the given Js.Json.t value is a bool
+     */
+    let bool: json => Validation.t(bool, Errors.t) = validateBool;
     let int = validateInt;
     let float = validateFloat;
     let string = validateString;
@@ -608,30 +762,108 @@ module DSL = {
     // Array validation - validating items by array index (or whole array)
     ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Gets the Js.Json.t value at the given index of a Js.Json.t array
+     */
     let getAt = getJsonAtIndex;
+
+    /**
+     * Validates the Js.Json.t value at the given index with the given validation function
+    */
     let jsonAt = validateJsonAtIndex;
+
+    /**
+     * Validates a null value at the given index of a Js.Json.t array value
+    */
     let nullAt = validateNullAtIndex;
+
+    /**
+     * Validates a bool value at the given index of a Js.Json.t array value
+     */
     let boolAt = validateBoolAtIndex;
+
+    /**
+     * Validates a string value at the given index of a Js.Json.t array value
+     */
     let stringAt = validateStringAtIndex;
+
+    /**
+     * Validates an int value at the given index of a Js.Json.t array value
+     */
     let intAt = validateIntAtIndex;
+
+    /**
+     * Validates a float value at the given index of a Js.Json.t array value
+     */
     let floatAt = validateFloatAtIndex;
+
+    /**
+     * Validates an array at the given index of a Js.Json.t array value
+     */
     let arrayAt = validateArrayAtIndex;
+
+    /**
+     * Validates an obejct at the given index of a Js.Json.t array value
+     */
     let objectAt = validateObjectAtIndex;
+
+    /**
+     * Validates an Js.Json.t array using the given validation function
+     */
     let array = validateArrayOfJson;
+
+    /**
+     * Validates an Js.Json.t object using the given validation function
+     */
     let list = validateArrayOfJsonAsList;
 
     ////////////////////////////////////////////////////////////////////////////////
     // Object validation - validating items by object key
     ////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Gets the Js.Json.t value for the given key of a Js.Json.t object value
+     */
     let getFor = getJsonForKey;
+
+    /**
+     * Validates the Js.Json.t value for the given key, using the given validation function
+     */
     let jsonFor = validateJsonForKey;
+
+    /**
+     * Validates a null for the given key of a Js.Json.t object value
+     */
     let nullFor = validateNullForKey;
+
+    /**
+     * Validates a bool for the given key of a Js.Json.t object value
+     */
     let boolFor = validateBoolForKey;
+
+    /**
+     * Validates a string for the given key of a Js.Json.t object value
+     */
     let stringFor = validateStringForKey;
+
+    /**
+     * Validates an int for the given key of a Js.Json.t object value
+     */
     let intFor = validateIntForKey;
+
+    /**
+     * Validates a float for the given key of a Js.Json.t object value
+     */
     let floatFor = validateFloatForKey;
+
+    /**
+     * Validates an array for the given key of a Js.Json.t object value
+     */
     let arrayFor = validateArrayForKey;
+
+    /**
+     * Validates an object for the given key of a Js.Json.t object value
+     */
     let objectFor = validateObjectForKey;
   };
 };

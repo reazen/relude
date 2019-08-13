@@ -13,16 +13,16 @@ describe("Decimal", () => {
     expect(Decimal.fromInt(12345)) |> toEqual(Decimal(12345, 0))
   );
 
-  test("toString Decimal(12345, -2)", () =>
-    expect(Decimal(12345, -2) |> Decimal.toString) |> toEqual("123.45")
+  test("show Decimal(12345, -2)", () =>
+    expect(Decimal(12345, -2) |> Decimal.show) |> toEqual("123.45")
   );
 
-  test("toString Decimal(12345, 0)", () =>
-    expect(Decimal(12345, 0) |> Decimal.toString) |> toEqual("12345")
+  test("show Decimal(12345, 0)", () =>
+    expect(Decimal(12345, 0) |> Decimal.show) |> toEqual("12345")
   );
 
-  test("toString Decimal(12345, 2)", () =>
-    expect(Decimal(12345, 2) |> Decimal.toString) |> toEqual("1234500")
+  test("show Decimal(12345, 2)", () =>
+    expect(Decimal(12345, 2) |> Decimal.show) |> toEqual("1234500")
   );
 
   test("tenToThePowerOfPositive -2", () =>

@@ -5,6 +5,9 @@ let (<<) = Relude_Function.Infix.(<<);
 // have it nested inside.  I have a convenience variant called WithMonadAndEnv, but maybe that should
 // just be the only thing.
 
+/**
+ * Creates a ReaderT Monad with the given Monad module
+ */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   type t('r, 'a) =
     | ReaderT('r => M.t('a));
@@ -50,6 +53,10 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
           ),
       );
 
+  /**
+   * Locks in the reader environment type, so that we can implement
+   * the single-type-parameter typeclasses.
+   */
   module WithEnv = (R: BsAbstract.Interface.TYPE) => {
     type nonrec t('a) = t(R.t, 'a);
 

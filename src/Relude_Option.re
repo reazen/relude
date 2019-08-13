@@ -393,6 +393,9 @@ let eq =
 
 module Eq = BsAbstract.Option.Eq;
 
+/**
+ * Converts the option to a string using the given show function
+ */
 let showBy: 'a. ('a => string, option('a)) => string =
   (showA, fa) =>
     switch (fa) {
@@ -400,6 +403,9 @@ let showBy: 'a. ('a => string, option('a)) => string =
     | None => "None"
     };
 
+/**
+ * Converts the option to a string using the given SHOW module
+ */
 let show =
     (
       type a,
