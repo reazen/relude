@@ -1,3 +1,6 @@
+/**
+ * Indicates if two floats are exactly equal
+ */
 let eq: (float, float) => bool = (a, b) => a == b;
 
 module Eq: BsAbstract.Interface.EQ with type t = float = {
@@ -5,12 +8,16 @@ module Eq: BsAbstract.Interface.EQ with type t = float = {
   let eq = eq;
 };
 
+/**
+ * Compates two floats
+ */
 let compare: (float, float) => BsAbstract.Interface.ordering = BsAbstract.Float.Ord.compare;
 
 module Ord: BsAbstract.Interface.ORD with type t = float = {
   include Eq;
   let compare = compare;
 };
+include Relude_Extensions_Ord.OrdExtensions(Ord);
 
 module Semiring: BsAbstract.Interface.SEMIRING with type t = float = {
   type t = float;
@@ -19,14 +26,14 @@ module Semiring: BsAbstract.Interface.SEMIRING with type t = float = {
   let add = (a, b) => a +. b;
   let multiply = (a, b) => a *. b;
 };
+include Relude_Extensions_Semiring.SemiringExtensions(Semiring);
 
 module Ring: BsAbstract.Interface.RING with type t = float = {
   include Semiring;
   let subtract = (a, b) => a -. b;
 };
-
-include Relude_Extensions_Ord.Make(Ord);
-include Relude_Extensions_Ord.MakeWithRing(Ord, Ring);
+include Relude_Extensions_Ring.RingExtensions(Ring);
+include OrdRingExtensions(Ring);
 
 /**
   `approximatelyEqual(~tolerance=t, x, y)` returns `true` if `x` and `y`
@@ -133,6 +140,10 @@ let toPrecision = (~decimals, num) => {
   ```
 */
 let show: float => string = Js.Float.toString;
+
+/**
+ * Alias for `show`
+ */
 let toString = show;
 
 module Show: BsAbstract.Interface.SHOW with type t = float = {
@@ -157,12 +168,22 @@ let fromString: string => option(float) =
     | _ => None
     };
 
-module Additive = BsAbstract.Float.Additive;
+module Additive = {
+  include BsAbstract.Float.Additive;
+};
 
-module Multiplicative = BsAbstract.Float.Multiplicative;
+module Multiplicative = {
+  include BsAbstract.Float.Multiplicative;
+};
 
-module Subtractive = BsAbstract.Float.Subtractive;
+module Subtractive = {
+  include BsAbstract.Float.Subtractive;
+};
 
-module Divisive = BsAbstract.Float.Divisive;
+module Divisive = {
+  include BsAbstract.Float.Divisive;
+};
 
-module Infix = BsAbstract.Float.Infix;
+module Infix = {
+  include BsAbstract.Float.Infix;
+};

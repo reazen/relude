@@ -118,23 +118,85 @@ module type HMAP_TYPE = {
     let compare: (t, t) => int;
   };
 
+  /**
+   * The abstract type of the HMap
+   */
   type t;
+
+  /**
+   * An empty HMap
+   */
   let empty: t;
+
+  /**
+   * Indicates if the HMap is empty
+   */
   let isEmpty: t => bool;
+
+  /**
+   * Indicates if the HMap has a value for the given key
+   */
   let hasKey: (keyImpl('a), t) => bool;
+
+  /**
+   * Adds the given key/value pair to the HMap
+   */
   let add: (keyImpl('a), 'a, t) => t;
+
+  /**
+   * Creates an HMap with the given key/value pair
+   */
   let singleton: (keyImpl('a), 'a) => t;
+
+  /**
+   * Creates a new HMap that does not contain a value for the given key
+   */
   let remove: (keyImpl('a), t) => t;
+
+  /**
+   * Looks up a value in the HMap for the given key
+   */
   let find: (keyImpl('a), t) => option('a);
 
+  /**
+   * The type of a key/value pair in the HMap.  The key captures the type of the corresponding value.
+   */
   type keyValue =
     | KeyValue(keyImpl('a), 'a): keyValue;
 
+  /**
+   * Runs a side effect for each key/value pair in the HMap.  Note: the KEY_META must provide appropriate
+   * functions for converting the existentially typed values into values of a known type.
+   */
   let forEach: (keyValue => unit, t) => unit;
+  
+  /**
+   * Folds the HMap into a value.  Note the KEY_META must provide appropriate functions for manipulating
+   * the values stored for each key.
+   */
   let fold: ((keyValue, 'a) => 'a, 'a, t) => 'a;
+
+  /**
+   * Indicates if all key/value pairs in the HMap satisfy the given predicate.  Note the KEY_META must
+   * provide appropriate functions for manipulating the values stored for each key.
+   */
   let all: (keyValue => bool, t) => bool;
+
+  /**
+   * Indicates if any key/value pairs in the HMap satisfy the given predicate.  Note the KEY_META must
+   * provide appropriate functions for manipulating the values stored for each key.
+   */
   let any: (keyValue => bool, t) => bool;
+
+  /**
+   * Creates a new HMap that only contains the key/value pairs that satisfy the given predicate.  Note the KEY_META must
+   * provide appropriate functions for manipulating the values stored for each key.
+   */
   let filter: (keyValue => bool, t) => t;
+
+  /**
+   * Gets the number of key/value pairs stored in this HMap.
+   */
   let size: t => int;
 };
 
@@ -144,7 +206,7 @@ module type HMAP_TYPE = {
  * KEY_META contains extra information to store with the key, like labels, and functions for
  * operating on the values contained with each key-value pair.
  */
-module Make =
+module WithKeyMeta =
        (KeyMeta: KEY_META)
        : (HMAP_TYPE with type Key.keyMeta('a) = KeyMeta.t('a)) => {
   module Key = {
@@ -285,8 +347,8 @@ module Make =
  * In order to use the iterating functions, use a custom HMap with the key metadata functions
  * needed to convert the existential 'a into a useful value.
  */
-module WithUnitKeyMeta =
-  Make({
+module WithKeyMetaUnit =
+  WithKeyMeta({
     type t('a) = unit;
   });
-include WithUnitKeyMeta;
+include WithKeyMetaUnit;

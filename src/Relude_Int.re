@@ -57,6 +57,7 @@ module Eq: BsAbstract.Interface.EQ with type t = int = {
   type t = int;
   let eq = eq;
 };
+include Relude_Extensions_Eq.EqExtensions(Eq);
 
 /**
   `compare(a, b)` returns ` `less_than ` if `a` is less than `b`,
@@ -76,6 +77,7 @@ module Ord: BsAbstract.Interface.ORD with type t = int = {
   include Eq;
   let compare = compare;
 };
+include Relude_Extensions_Ord.OrdExtensions(Ord);
 
 module Semiring: BsAbstract.Interface.SEMIRING with type t = int = {
   type t = int;
@@ -84,17 +86,24 @@ module Semiring: BsAbstract.Interface.SEMIRING with type t = int = {
   let add = (a, b) => a + b;
   let multiply = (a, b) => a * b;
 };
+include Relude_Extensions_Semiring.SemiringExtensions(Semiring);
 
 module Ring: BsAbstract.Interface.RING with type t = int = {
   include Semiring;
   let subtract = (a, b) => a - b;
 };
+include Relude_Extensions_Ring.RingExtensions(Ring);
+include OrdRingExtensions(Ring);
 
-module Map = Relude_Map.MakeFromOrderable(Ord);
-module Set = Relude_Set.MakeFromOrderable(Ord);
+/**
+ * Map module with an int key
+ */
+module Map = Relude_Map.WithOrd(Ord);
 
-include Relude_Extensions_Ord.Make(Ord);
-include Relude_Extensions_Ord.MakeWithRing(Ord, Ring);
+/**
+ * Set module for ints
+ */
+module Set = Relude_Set.WithOrd(Ord);
 
 /**
   `toString(n)` returns the string representation of `n`. Note
@@ -108,6 +117,10 @@ include Relude_Extensions_Ord.MakeWithRing(Ord, Ring);
   ```
 */
 let show: int => string = string_of_int;
+
+/**
+ * Alias for `show`
+ */
 let toString = show;
 
 module Show: BsAbstract.Interface.SHOW with type t = int = {
@@ -133,12 +146,22 @@ let fromString: string => option(int) =
     | _ => None
     };
 
-module Additive = BsAbstract.Int.Additive;
+module Additive = {
+  include BsAbstract.Int.Additive;
+};
 
-module Multiplicative = BsAbstract.Int.Multiplicative;
+module Multiplicative = {
+  include BsAbstract.Int.Multiplicative;
+};
 
-module Subtractive = BsAbstract.Int.Subtractive;
+module Subtractive = {
+  include BsAbstract.Int.Subtractive;
+};
 
-module Divisive = BsAbstract.Int.Divisive;
+module Divisive = {
+  include BsAbstract.Int.Divisive;
+};
 
-module Infix = BsAbstract.Int.Infix;
+module Infix = {
+  include BsAbstract.Int.Infix;
+};

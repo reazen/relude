@@ -1,3 +1,6 @@
+/**
+ * Creates an OptionT monad with the given outer Monad
+ */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   type t('a) =
     | OptionT(M.t(option('a)));

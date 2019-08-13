@@ -1,5 +1,8 @@
 module Result = Relude_Result;
 
+/**
+ * Creates a ResultT Monad with the given outer Monad module.
+ */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   type t('a, 'e) =
     | ResultT(M.t(Result.t('a, 'e)));

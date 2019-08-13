@@ -1,4 +1,4 @@
-module type Map = {
+module type MAP = {
   type key;
   module Comparable: {
     type identity;
@@ -51,9 +51,9 @@ module type Map = {
   let mapWithKey: ((key, 'v1) => 'v2, t('v1)) => t('v2);
 };
 
-module MakeFromOrderable =
+module WithOrd =
        (M: BsAbstract.Interface.ORD)
-       : (Map with type key = M.t) => {
+       : (MAP with type key = M.t) => {
   type key = M.t;
   module Comparable =
     Belt.Id.MakeComparable({

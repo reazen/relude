@@ -81,30 +81,54 @@ let flipCompose: ('a => 'b, 'b => 'c, 'a) => 'c = (f, g, a) => g(f(a));
 */
 let andThen: ('a => 'b, 'b => 'c, 'a) => 'c = flipCompose;
 
+/**
+ * Converts a function that takes a tuple 2 as an argument to a normal curried function
+ */
 let curry2: 'a 'b 'c. ((('a, 'b)) => 'c, 'a, 'b) => 'c =
   (f, a, b) => f((a, b));
 
+/**
+ * Converts a function that takes a tuple-3 as an argument to a normal curried function
+ */
 let curry3: 'a 'b 'c 'd. ((('a, 'b, 'c)) => 'd, 'a, 'b, 'c) => 'd =
   (f, a, b, c) => f((a, b, c));
 
+/**
+ * Converts a function that takes a tuple-4 as an argument to a normal curried function
+ */
 let curry4: 'a 'b 'c 'd 'e. ((('a, 'b, 'c, 'd)) => 'e, 'a, 'b, 'c, 'd) => 'e =
   (f, a, b, c, d) => f((a, b, c, d));
 
+/**
+ * Converts a function that takes a tuple-5 as an argument to a normal curried function
+ */
 let curry5:
   'a 'b 'c 'd 'e 'f.
   ((('a, 'b, 'c, 'd, 'e)) => 'f, 'a, 'b, 'c, 'd, 'e) => 'f
  =
   (f, a, b, c, d, e) => f((a, b, c, d, e));
 
+/**
+ * Converts a normal curried function of two arguments to a function that takes a tuple-2 as an argument
+ */
 let uncurry2: 'a 'b 'c. (('a, 'b) => 'c, ('a, 'b)) => 'c =
   (f, (a, b)) => f(a, b);
 
+/**
+ * Converts a normal curried function of 3 arguments to a function that takes a tuple-3 as an argument
+ */
 let uncurry3: 'a 'b 'c 'd. (('a, 'b, 'c) => 'd, ('a, 'b, 'c)) => 'd =
   (f, (a, b, c)) => f(a, b, c);
 
+/**
+ * Converts a normal curried function of 4 arguments to a function that takes a tuple-4 as an argument
+ */
 let uncurry4: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd) => 'e, ('a, 'b, 'c, 'd)) => 'e =
   (f, (a, b, c, d)) => f(a, b, c, d);
 
+/**
+ * Converts a normal curried function of 5 arguments to a function that takes a tuple-5 as an argument
+ */
 let uncurry5:
   'a 'b 'c 'd 'e 'f.
   (('a, 'b, 'c, 'd, 'e) => 'f, ('a, 'b, 'c, 'd, 'e)) => 'f

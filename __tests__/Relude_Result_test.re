@@ -2,6 +2,10 @@ open Jest;
 open Expect;
 
 module Result = Relude_Result;
+module ResultS =
+  Result.WithError({
+    type t = string;
+  });
 
 describe("Result", () => {
   test("pure", () =>
@@ -249,4 +253,22 @@ describe("Result", () => {
     )
     |> toEqual(false)
   );
+
+  test("<<$>> Ok", () => {
+    open ResultS.Infix;
+    let f = a => a * 2;
+    let g = err => err ++ err;
+    let ok = Belt.Result.Ok(42);
+    let actual = (f <<$>> g)(ok);
+    expect(actual) |> toEqual(Belt.Result.Ok(84));
+  });
+
+  test("<<$>> Error", () => {
+    open ResultS.Infix;
+    let f = a => a * 2;
+    let g = err => err ++ err;
+    let error = Belt.Result.Error("hi");
+    let actual = (f <<$>> g)(error);
+    expect(actual) |> toEqual(Belt.Result.Error("hihi"));
+  });
 });

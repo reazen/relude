@@ -1,17 +1,46 @@
+/**
+ * List extensions for when you have an EQ instance.
+ */
 module ListEqExtensions = (E: BsAbstract.Interface.EQ) => {
   include Relude_List_Instances.FoldableEqExtensions(E);
+  /**
+   * Gets the distinct items of the list, based on the given EQ module
+   */
   let distinct = Relude_List_Base.distinctBy(E.eq);
-  let removeFirst = Relude_List_Base.removeFirstBy(E.eq);
-  let removeEach = Relude_List_Base.removeEachBy(E.eq);
-  let eq = Relude_List_Instances.eqBy(E.eq);
+
+  /**
+   * Removes the first item of the list which equals the given item, based on the given EQ module
+   */
+  let removeFirst: (E.t, list(E.t)) => list(E.t) =
+    Relude_List_Base.removeFirstBy(E.eq);
+
+  /**
+   * Removes all items of the list which equal the given item, based on the given EQ module
+   */
+  let removeEach: (E.t, list(E.t)) => list(E.t) =
+    Relude_List_Base.removeEachBy(E.eq);
+
+  /**
+   * Indicates if all pairwise items in the given lists are equal, using the given EQ module
+   */
+  let eq: (list(E.t), list(E.t)) => bool = Relude_List_Instances.eqBy(E.eq);
 };
 
+/**
+ * List extensions for when you have an ORD instance.
+ */
 module ListOrdExtensions = (O: BsAbstract.Interface.ORD) => {
   include ListEqExtensions(O);
   include Relude_List_Instances.FoldableOrdExtensions(O);
+  /**
+   * Sorts the list using the given ORD module.
+   */
   let sort = Relude_List_Base.sortBy(O.compare);
 };
 
+/**
+ * List extensions for when you have an MONOID instance.
+ */
 module ListMonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
   include Relude_List_Instances.FoldableMonoidExtensions(M);
 };
@@ -20,8 +49,16 @@ module String = {
   include ListOrdExtensions(Relude_String.Ord);
   include ListMonoidExtensions(Relude_String.Monoid);
 
-  let join = foldWithMonoid;
-  let joinWith = intercalate;
+  /**
+   * Joins a list of strings using the empty string "" as a delimiter
+   */
+  let join: list(string) => string = foldWithMonoid;
+
+  /**
+   * Joins a list of strings using the given delimiter
+   */
+  let joinWith: (string, list(string)) => string = intercalate;
+
   /**
    * Remove all duplicate entries from a list of strings.
    *
@@ -43,39 +80,64 @@ module String = {
       |> Relude_List_Instances.fromArray;
 };
 
+/**
+ * List extensions for list(int)
+ */
 module Int = {
   include ListOrdExtensions(Relude_Int.Ord);
 
+  /**
+   * Finds the sum of all the ints in the list
+   */
   let sum: list(int) => int =
     Relude_List_Instances.foldWithMonoid((module Relude_Int.Additive.Monoid));
 
+  /**
+   * Finds the product of all the ints in the list
+   */
   let product: list(int) => int =
     Relude_List_Instances.foldWithMonoid(
       (module Relude_Int.Multiplicative.Monoid),
     );
 };
 
+/**
+ * List extensions for list(float)
+ */
 module Float = {
   include ListOrdExtensions(Relude_Float.Ord);
 
+  /**
+   * Finds the sum of all the floats in the list
+   */
   let sum: list(float) => float =
     Relude_List_Instances.foldWithMonoid(
       (module Relude_Float.Additive.Monoid),
     );
 
+  /**
+   * Finds the product of all the floats in the list
+   */
   let product: list(float) => float =
     Relude_List_Instances.foldWithMonoid(
       (module Relude_Float.Multiplicative.Monoid),
     );
 };
 
+/**
+ * List extensions for list(option('a))
+ */
 module Option = {
   include Relude_List_Instances.Traversable(Relude_Option.Applicative);
 };
 
+/**
+ * List extensions for list(Result.t('a, 'e))
+ */
 module Result = {
-  /*
-   Traversing with Result has fail fast semantics, and errors are not collected.
+  /**
+   * Traverses a `'a => Result.t('b, 'e)` function over a `list('a)`, to produce a `Result.t(list('b), 'e)` using
+   * fail-fast semantics.
    */
   let traverse =
       (type e, f: 'a => Belt.Result.t('b, e), list: list('a))
@@ -89,6 +151,10 @@ module Result = {
     TraverseResult.traverse(f, list);
   };
 
+/**
+ * Sequences a `list(Result.t('a, 'e))` into `Result.t(list('a) 'e))` using fail
+ * fast semantics.
+ */
   let sequence = (type e, xs): Belt.Result.t(list('a), e) => {
     module ResultE =
       Relude_Result.WithError({
@@ -100,6 +166,9 @@ module Result = {
   };
 };
 
+/**
+ * List extensions for `IO.t('a, 'e)`
+ */
 module IO = {
   let traverse =
       (type e, f: 'a => Relude_IO.t('b, e), list: list('a))
@@ -123,6 +192,9 @@ module IO = {
   };
 };
 
+/**
+ * List extensions for `Validation.t('a, 'e)`
+ */
 module Validation = {
   module Traversable =
          (

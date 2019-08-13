@@ -1,5 +1,11 @@
+/**
+ * Type of an empty HList
+ */
 type nil = unit;
 
+/**
+ * Type of a non-empty HList
+ */
 type cons('h, 't) = 'h => 't;
 
 /**

@@ -1,7 +1,7 @@
 let flip = Relude_Function.flip;
 let (>>) = Relude_Function.Infix.(>>);
 
-module type Set = {
+module type SET = {
   type value;
   module Comparable: {
     type identity;
@@ -39,9 +39,9 @@ module type Set = {
   let split: (value, t) => ((t, t), bool);
 };
 
-module MakeFromOrderable =
+module WithOrd =
        (M: BsAbstract.Interface.ORD)
-       : (Set with type value = M.t) => {
+       : (SET with type value = M.t) => {
   module Comparable =
     Belt.Id.MakeComparable({
       type t = M.t;

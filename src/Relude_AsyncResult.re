@@ -5,38 +5,87 @@
  */
 type t('a, 'e) = Relude_AsyncData.t(Belt.Result.t('a, 'e));
 
+/**
+ * Constructs an Init value
+ */
 let init: 'a 'e. t('a, 'e) = Relude_AsyncData.init;
 
+/**
+ * Constructs a Loading value
+ */
 let loading: 'a 'e. t('a, 'e) = Relude_AsyncData.loading;
 
+/**
+ * Constructs a Reloading(Ok(_)) value
+ */
 let reloadingOk: 'a 'e. 'a => t('a, 'e) =
   a => Relude_AsyncData.reloading(Belt.Result.Ok(a));
 
+/**
+ * Constructs a Reloading(Error(_)) value
+ */
 let reloadingError: 'a 'e. 'e => t('a, 'e) =
   e => Relude_AsyncData.reloading(Belt.Result.Error(e));
 
+/**
+ * Constructs a Complete(Ok(_)) value
+ */
 let completeOk: 'a 'e. 'a => t('a, 'e) =
   a => Relude_AsyncData.complete(Belt.Result.Ok(a));
 
+/**
+ * Constructs a Complete(Error(_)) value
+ */
 let completeError: 'a 'e. 'e => t('a, 'e) =
   e => Relude_AsyncData.complete(Belt.Result.Error(e));
 
+/**
+ * Constructs a Complete(Ok(_)) value
+ * 
+ * Alias for `completeOk`
+ */
 let ok: 'a 'e. 'a => t('a, 'e) = completeOk;
 
+/**
+ * Constructs a Complete(Error(_)) value
+ * 
+ * Alias for `completeError`
+ */
 let error: 'a 'e. 'e => t('a, 'e) = completeError;
 
+/**
+ * Indicates if the AsyncResult is in the Init state
+ */
 let isInit = Relude_AsyncData.isInit;
 
+/**
+ * Indicates if the AsyncResult is in the Loading state
+ */
 let isLoading = Relude_AsyncData.isLoading;
 
+/**
+ * Indicates if the AsyncResult is in the Reloading state with any value
+ */
 let isReloading = Relude_AsyncData.isReloading;
 
+/**
+ * Indicates if the AsyncResult is in the Complete state with any value
+ */
 let isComplete = Relude_AsyncData.isComplete;
 
+/**
+ * Indicates if the AsyncResult is in a working state (Loading or Reloading)
+ */
 let isBusy = Relude_AsyncData.isBusy;
 
+/**
+ * Indicates if the AsyncResult is in a non-working state (Init or Complete)
+ */
 let isIdle = Relude_AsyncData.isIdle;
 
+/**
+ * Indicates if the contained Result is in an Ok state for Reloading or Complete
+ */
 let isOk: 'a 'e. t('a, 'e) => bool =
   fun
   | Init => false
@@ -46,6 +95,9 @@ let isOk: 'a 'e. t('a, 'e) => bool =
   | Complete(Error(_)) => false
   | Complete(Ok(_)) => true;
 
+/**
+ * Indicates if the contained Result is in an Error state for Reloading or Complete
+ */
 let isError: 'a 'e. t('a, 'e) => bool =
   fun
   | Init => false
@@ -55,6 +107,9 @@ let isError: 'a 'e. t('a, 'e) => bool =
   | Complete(Error(_)) => true
   | Complete(Ok(_)) => false;
 
+/**
+ * Indicates if AsyncResult is in a Reloading(Ok(_)) state
+ */
 let isReloadingOk: 'a 'e. t('a, 'e) => bool =
   fun
   | Init => false
@@ -64,6 +119,9 @@ let isReloadingOk: 'a 'e. t('a, 'e) => bool =
   | Complete(Error(_)) => false
   | Complete(Ok(_)) => false;
 
+/**
+ * Indicates if AsyncResult is in a Reloading(Error(_)) state
+ */
 let isReloadingError: 'a 'e. t('a, 'e) => bool =
   fun
   | Init => false
@@ -73,6 +131,9 @@ let isReloadingError: 'a 'e. t('a, 'e) => bool =
   | Complete(Error(_)) => false
   | Complete(Ok(_)) => false;
 
+/**
+ * Indicates if AsyncResult is in a Complete(Ok(_)) state
+ */
 let isCompleteOk: 'a 'e. t('a, 'e) => bool =
   fun
   | Init => false
@@ -82,6 +143,9 @@ let isCompleteOk: 'a 'e. t('a, 'e) => bool =
   | Complete(Error(_)) => false
   | Complete(Ok(_)) => true;
 
+/**
+ * Indicates if AsyncResult is in a Complete(Error(_)) state
+ */
 let isCompleteError: 'a 'e. t('a, 'e) => bool =
   fun
   | Init => false
@@ -91,6 +155,9 @@ let isCompleteError: 'a 'e. t('a, 'e) => bool =
   | Complete(Error(_)) => true
   | Complete(Ok(_)) => false;
 
+/**
+ * Gets the value from a Reloading(Ok(_)) or Complete(Ok(_)) value, as an option
+ */
 let getOk: 'a 'e. t('a, 'e) => option('a) =
   fun
   | Init => None
@@ -100,6 +167,9 @@ let getOk: 'a 'e. t('a, 'e) => option('a) =
   | Complete(Error(_)) => None
   | Complete(Ok(v)) => Some(v);
 
+/**
+ * Gets the value from a Reloading(Error(_)) or Complete(Error(_)) value, as an option
+ */
 let getError: 'a 'e. t('a, 'e) => option('e) =
   fun
   | Init => None
@@ -109,6 +179,9 @@ let getError: 'a 'e. t('a, 'e) => option('e) =
   | Reloading(Error(x)) => Some(x)
   | Reloading(Ok(_)) => None;
 
+/**
+ * Gets the value from a Reloading(Ok(_)) value, as an option
+ */
 let getReloadingOk: 'a 'e. t('a, 'e) => option('a) =
   fun
   | Init => None
@@ -118,6 +191,9 @@ let getReloadingOk: 'a 'e. t('a, 'e) => option('a) =
   | Complete(Error(_)) => None
   | Complete(Ok(_)) => None;
 
+/**
+ * Gets the value from a Reloading(Error(_)) value, as an option
+ */
 let getReloadingError: 'a 'e. t('a, 'e) => option('e) =
   fun
   | Init => None
@@ -127,6 +203,9 @@ let getReloadingError: 'a 'e. t('a, 'e) => option('e) =
   | Complete(Error(_)) => None
   | Complete(Ok(_)) => None;
 
+/**
+ * Gets the value from a Complete(Ok(_)) value, as an option
+ */
 let getCompleteOk: 'a 'e. t('a, 'e) => option('a) =
   fun
   | Init => None
@@ -136,6 +215,9 @@ let getCompleteOk: 'a 'e. t('a, 'e) => option('a) =
   | Complete(Error(_)) => None
   | Complete(Ok(v)) => Some(v);
 
+/**
+ * Gets the value from a Complete(Error(_)) value, as an option
+ */
 let getCompleteError: 'a 'e. t('a, 'e) => option('e) =
   fun
   | Init => None
@@ -145,10 +227,19 @@ let getCompleteError: 'a 'e. t('a, 'e) => option('e) =
   | Complete(Error(x)) => Some(x)
   | Complete(Ok(_)) => None;
 
+/**
+ * Indicates if the AsyncResult is in a working state (Loading or Reloading)
+ */
 let toBusy = Relude_AsyncData.toBusy;
 
+/**
+ * Indicates if the AsyncResult is in a non-working state (Init or Complete)
+ */
 let toIdle = Relude_AsyncData.toBusy;
 
+/**
+ * Maps a pure function over the value in a Reloading(Ok(_)) or Complete(Ok(_)) value
+ */
 let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, fa) =>
     switch (fa) {
@@ -160,6 +251,9 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     | Complete(Belt.Result.Error(_)) as r => r
     };
 
+/**
+ * Maps a pure function over the value in a Reloading(Error(_)) or Complete(Error(_)) value
+ */
 let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
   (f, fa) =>
     switch (fa) {
@@ -171,6 +265,9 @@ let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     | Complete(Belt.Result.Error(e)) => completeError(f(e))
     };
 
+/**
+ * Applies a wrapped function to a value in a Reloading(Ok(_)) or Complete(Ok(_)) value
+ */
 let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
   (ff, fa) =>
     switch (ff, fa) {
@@ -215,8 +312,14 @@ let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
     | (Complete(Error(_)) as r, Complete(Error(_))) => r
     };
 
+/**
+ * Lifts a pure value into a Complete(Ok(_)) context
+ */
 let pure: 'a 'e. 'a => t('a, 'e) = completeOk;
 
+/**
+ * Applies a monadic function to the value in a Reloading(Ok(_)) or Complete(Ok(_)) value
+ */
 let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   (fa, f) =>
     switch (fa) {
@@ -228,12 +331,22 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     | Complete(Error(_)) as r => r
     };
 
+/**
+ * Applies a monadic function to the value in a Reloading(Ok(_)) or Complete(Ok(_)) value
+ */
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
+/**
+ * Flattens a nested AsyncResult value one time
+ */
 let flatten: 'a 'e. t(t('a, 'e), 'e) => t('a, 'e) =
   mma => flatMap(a => a, mma);
 
+/**
+ * Folds an AsyncResult value into a value of a new type, by applying the appropriate function
+ * for each of the possible states.
+ */
 let fold:
   'a 'e 'b.
   (
@@ -253,6 +366,10 @@ let fold:
     | Complete(result) => onComplete(result)
     };
 
+/**
+ * Folds an AsyncResult value into a value of a new type, by applying the appropriate function
+ * for each of the possible states.
+ */
 let foldLazy:
   'a 'e 'b.
   (
@@ -272,6 +389,12 @@ let foldLazy:
     | Complete(result) => onComplete(result)
     };
 
+/**
+ * Folds an AsyncResult value into a value of a new type, by applying the appropriate
+ * function.  The non-value Init/Loading constructors use the same function, the
+ * Reloading(Ok(_)) and Complete(Ok(_)) values use the same function and same for Reloading(Error(_))
+ * and Complete(Error(_)).
+ */
 let foldByValue: 'a 'e 'b. ('b, 'a => 'b, 'e => 'b, t('a, 'e)) => 'b =
   (defaultValue, onOk, onError, fa) =>
     switch (fa) {
@@ -283,6 +406,12 @@ let foldByValue: 'a 'e 'b. ('b, 'a => 'b, 'e => 'b, t('a, 'e)) => 'b =
     | Complete(Error(e)) => onError(e)
     };
 
+/**
+ * Folds an AsyncResult value into a value of a new type, by applying the appropriate
+ * function.  The non-value Init/Loading constructors use the same function, the
+ * Reloading(Ok(_)) and Complete(Ok(_)) values use the same function and same for Reloading(Error(_))
+ * and Complete(Error(_)).
+ */
 let foldByValueLazy:
   'a 'e 'b.
   (unit => 'b, 'a => 'b, 'e => 'b, t('a, 'e)) => 'b
@@ -319,12 +448,21 @@ let toAsyncData: 'a. t('a, 'a) => Relude_AsyncData.t('a) =
   | Complete(Error(a)) => Complete(a)
   | Complete(Ok(a)) => Complete(a);
 
+/**
+ * Indicates if two AsyncResult values are in the same state, and have the same contained value.
+ */
 let eqBy:
   'a 'e.
   (('e, 'e) => bool, ('a, 'a) => bool, t('a, 'e), t('a, 'e)) => bool
  =
   (errEq, okEq) => Relude_AsyncData.eqBy(Relude_Result.eqBy(errEq, okEq));
 
+/**
+ * Create a Result module with the given Error Type, specified as a TYPE module.
+ * 
+ * This is useful so that we can provide typeclass instances for typeclasses that
+ * have a single type hole, like Functor, Apply, Monad, etc.
+ */
 module WithError = (E: BsAbstract.Interface.TYPE) => {
   module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
     type nonrec t('a) = t('a, E.t);
