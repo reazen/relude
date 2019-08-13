@@ -2,24 +2,33 @@
  * Creates a ContT (continuation) Monad module with the given Monad module.
  */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
+  /**
+   * The type of a continuation.  `'a` is the intermediate result type, and `'r`' is the final result type.
+   */
   type t('r, 'a) =
     | ContT(('a => M.t('r)) => M.t('r));
 
   /**
-  Runs the computation by providing the continuation callback
-  */
-  let runContT: 'a 'r. (t('r, 'a), 'a => M.t('r)) => M.t('r) =
-    (ContT(f), k) => f(k);
+   * Constructs a ContT
+   */
+  let make: (('a => M.t('r)) => M.t('r)) => t('r, 'a) =
+    onDone => ContT(onDone);
 
   /**
-  Modify the underlying action in a ContT monad
-  */
+   * Runs the computation by providing a final continuation callback
+   */
+  let runContT: 'a 'r. ('a => M.t('r), t('r, 'a)) => M.t('r) =
+    (k, ContT(f)) => f(k);
+
+  /**
+   * Modify the underlying action in a ContT monad
+   */
   let mapContT: 'a 'r. (M.t('r) => M.t('r), t('r, 'a)) => t('r, 'a) =
     (f, ContT(m)) => ContT(k => f(m(k)));
 
   /**
-  Modify the continuation in a ContT monad
-  */
+   * Modify the continuation in a ContT monad
+   */
   let withContT:
     'r 'a 'b.
     (('b => M.t('r), 'a) => M.t('r), t('r, 'a)) => t('r, 'b)
@@ -27,15 +36,15 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     (f, ContT(m)) => ContT(k => m(f(k)));
 
   /**
-  Functor map
-  */
+   * Maps a pure function over the intermediate type `'a` of the `ContT`
+   */
   let map: 'r 'a 'b. ('a => 'b, t('r, 'a)) => t('r, 'b) =
     (aToB, ContT(aToMRToMR)) =>
       ContT(bToMR => aToMRToMR(a => bToMR(aToB(a))));
 
   /**
-  Apply apply
-  */
+   * Applies a wrapped function over the intermediate type `'a` of the `ContT`
+   */
   let apply: 'r 'a 'b. (t('r, 'a => 'b), t('r, 'a)) => t('r, 'b) =
     (ContT(aToBToMRToMR), ContT(aToMRToMR)) =>
       ContT(bToMR => aToBToMRToMR(aToB => aToMRToMR(a => bToMR(aToB(a)))));
@@ -59,9 +68,10 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
           ),
       );
 
-  module WithEnv = (R: BsAbstract.Interface.TYPE) => {
-    type nonrec t('a) = t(R.t, 'a);
+  module WithResult = (R: BsAbstract.Interface.TYPE) => {
+    type nonrec t('a) = t(R.t, 'a); // = | ContT(('a => M.t(R.t)) => M.t(R.t));
 
+    let make = make;
     let runContT = runContT;
     let mapContT = mapContT;
     let withContT = withContT;
@@ -103,10 +113,10 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   };
 };
 
-module WithMonadAndEnv =
-       (M: BsAbstract.Interface.MONAD, E: BsAbstract.Interface.TYPE) => {
+module WithMonadAndResult =
+       (M: BsAbstract.Interface.MONAD, R: BsAbstract.Interface.TYPE) => {
   module WithMonad = WithMonad(M);
-  include WithMonad.WithEnv(E);
+  include WithMonad.WithResult(R);
 };
 
 module Cont = WithMonad(Relude_Identity.Monad);
