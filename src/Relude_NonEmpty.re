@@ -180,7 +180,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
 
   /**
    * Lifts a single pure value into a NonEmpty of one item
-   * 
+   *
    * Alias for `one`
    */
   let pure = one;
@@ -319,49 +319,9 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
 /**
  * A NonEmpty implemented using a list as the tail sequence
  */
-module List =
-  WithSequence({
-    type t('a) = list('a);
-    let empty = [];
-    let length = Relude_List_Instances.length;
-    let isEmpty = Relude_List_Base.isEmpty;
-    let isNotEmpty = Relude_List_Base.isNotEmpty;
-    let head = Relude_List_Base.head;
-    let tail = Relude_List_Base.tail;
-    let tailOrEmpty = Relude_List_Base.tailOrEmpty;
-    let eqBy = Relude_List_Instances.eqBy;
-    let showBy = Relude_List_Instances.showBy;
-    let mkString =
-      Relude_List_Instances.intercalate((module BsAbstract.String.Monoid));
-    module MonoidAny = Relude_List_Instances.MonoidAny;
-    module Monad = Relude_List_Instances.Monad;
-    module Foldable = Relude_List_Instances.Foldable;
-    module Traversable = Relude_List_Instances.Traversable;
-    module Eq = Relude_List_Instances.Eq;
-    module Show = Relude_List_Instances.Show;
-  });
+module List = WithSequence(Relude_Sequence.List);
 
 /**
  * A NonEmpty implemented using an array as the tail sequence
  */
-module Array =
-  WithSequence({
-    type t('a) = array('a);
-    let empty = [||];
-    let length = Relude_Array_Base.length;
-    let isEmpty = Relude_Array_Base.isEmpty;
-    let isNotEmpty = Relude_Array_Base.isNotEmpty;
-    let head = Relude_Array_Base.head;
-    let tail = Relude_Array_Base.tail;
-    let tailOrEmpty = Relude_Array_Base.tailOrEmpty;
-    let eqBy = Relude_Array_Instances.eqBy;
-    let showBy = Relude_Array_Instances.showBy;
-    let mkString =
-      Relude_Array_Instances.intercalate((module BsAbstract.String.Monoid));
-    module MonoidAny = Relude_Array_Instances.MonoidAny;
-    module Monad = Relude_Array_Instances.Monad;
-    module Foldable = Relude_Array_Instances.Foldable;
-    module Traversable = Relude_Array_Instances.Traversable;
-    module Eq = Relude_Array_Instances.Eq;
-    module Show = Relude_Array_Instances.Show;
-  });
+module Array = WithSequence(Relude_Sequence.Array);

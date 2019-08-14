@@ -7,12 +7,12 @@
   `identity(x)` returns `x`. This is useful when you need
   to supply a function but don’t want to transform any values.
 */
-let identity: 'a => 'a = a => a;
+let identity: 'a. 'a => 'a = a => a;
 
 /**
   `id` is a synonym for `identity`.
 */
-let id: 'a => 'a = identity;
+let id: 'a. 'a => 'a = identity;
 
 /**
   `const(x, y)` returns `x`.
@@ -23,7 +23,7 @@ let id: 'a => 'a = identity;
   const("keep", -1) == "keep";
   ```
 */
-let const: ('a, 'b) => 'a = (a, _) => a;
+let const: 'a 'b. ('a, 'b) => 'a = (a, _) => a;
 
 /**
   `flip(f, a, b)` has a two-parameter function `f()` as its
@@ -37,7 +37,7 @@ let const: ('a, 'b) => 'a = (a, _) => a;
   flip(formula, 5, 3) == 13;
   ```
 */
-let flip: (('a, 'b) => 'c, 'b, 'a) => 'c = (f, b, a) => f(a, b);
+let flip: 'a 'b 'c. (('a, 'b) => 'c, 'b, 'a) => 'c = (f, b, a) => f(a, b);
 
 /**
   `compose(f, g, a)` is the equivalent of `f(g(a))`.
@@ -50,7 +50,7 @@ let flip: (('a, 'b) => 'c, 'b, 'a) => 'c = (f, b, a) => f(a, b);
   compose(double, square, 3) == 18;
   ```
 */
-let compose: ('b => 'c, 'a => 'b, 'a) => 'c = (f, g, a) => f(g(a));
+let compose: 'a 'b 'c. ('b => 'c, 'a => 'b, 'a) => 'c = (f, g, a) => f(g(a));
 
 /**
   `flipCompose(f, g, a)` is the equivalent of `g(f(a))`.
@@ -63,7 +63,7 @@ let compose: ('b => 'c, 'a => 'b, 'a) => 'c = (f, g, a) => f(g(a));
   flipCompose(double, square, 3) == 36;
   ```
 */
-let flipCompose: ('a => 'b, 'b => 'c, 'a) => 'c = (f, g, a) => g(f(a));
+let flipCompose: 'a 'b 'c. ('a => 'b, 'b => 'c, 'a) => 'c = (f, g, a) => g(f(a));
 
 /**
   `andThen` is a synonym for `flipCompose`
@@ -79,7 +79,7 @@ let flipCompose: ('a => 'b, 'b => 'c, 'a) => 'c = (f, g, a) => g(f(a));
   formula(3);
   ```
 */
-let andThen: ('a => 'b, 'b => 'c, 'a) => 'c = flipCompose;
+let andThen: 'a 'b 'c. ('a => 'b, 'b => 'c, 'a) => 'c = flipCompose;
 
 /**
  * Converts a function that takes a tuple 2 as an argument to a normal curried function
@@ -146,7 +146,7 @@ let uncurry5:
   map(double, square, 3) == 18;
   ```
 */
-let map: ('a => 'b, 'r => 'a, 'r) => 'b = (aToB, rToA, r) => aToB(rToA(r)); /* Same as compose */
+let map: 'a 'b 'r. ('a => 'b, 'r => 'a, 'r) => 'b = (aToB, rToA, r) => aToB(rToA(r)); /* Same as compose */
 
 /**
   In `apply(hof, f, a)`, `hof` is a higher-order function that takes one argument
@@ -173,13 +173,13 @@ let map: ('a => 'b, 'r => 'a, 'r) => 'b = (aToB, rToA, r) => aToB(rToA(r)); /* S
   apply(showResult, cube, 5) == "input 5 yields 125";
   ```
 */
-let apply: (('r, 'a) => 'b, 'r => 'a, 'r) => 'b =
+let apply: 'a 'b 'r. (('r, 'a) => 'b, 'r => 'a, 'r) => 'b =
   (rToAToB, rToA, r) => rToAToB(r, rToA(r));
 
 /**
   `pure` is a synonym for `const`
 */
-let pure: ('a, 'r) => 'a = (a, _) => a;
+let pure: 'a 'r. ('a, 'r) => 'a = (a, _) => a;
 
 /**
   In `bind(f, hof, a)`, `hof` is a higher-order function that takes one argument
@@ -206,7 +206,7 @@ let pure: ('a, 'r) => 'a = (a, _) => a;
   bind(cube, showResult, 5) == "input 5 yields 125";
   ```
 */
-let bind: 'r 'a 'b. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
+let bind: 'a 'b 'r. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   (rToA, arToB, r) => arToB(rToA(r), r);
 
 /**
@@ -235,7 +235,7 @@ let bind: 'r 'a 'b. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   flatMap(showResult, cube, 5) == "input 5 yields 125";
   ```
 */
-let flatMap: (('a, 'r) => 'b, 'r => 'a, 'r) => 'b = (f, fa) => bind(fa, f);
+let flatMap: 'a 'b 'r. (('a, 'r) => 'b, 'r => 'a, 'r) => 'b = (f, fa) => bind(fa, f);
 
 /**
   The `Infix` submodule provides two infix operators

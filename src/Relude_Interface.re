@@ -10,17 +10,34 @@ module type SEQUENCE = {
   type t('a);
 
   let empty: t('a);
+  let emptyLazy: unit => t('a);
   let length: t('a) => int;
   let isEmpty: t('a) => bool;
   let isNotEmpty: t('a) => bool;
   let head: t('a) => option('a);
   let tail: t('a) => option(t('a));
   let tailOrEmpty: t('a) => t('a);
+  let prepend: ('a, t('a)) => t('a);
+  let append: ('a, t('a)) => t('a);
+  let concat: (t('a), t('a)) => t('a);
+  let reverse: t('a) => t('a);
   let mkString: (string, t(string)) => string;
+  let zipWith: (('a, 'b) => 'c, t('a), t('b)) => t('c);
+  let fromArray: array('a) => t('a);
+  let fromList: list('a) => t('a);
+  let toArray: t('a) => array('a);
+  let toList: t('a) => list('a);
   let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool;
   let showBy: ('a => string, t('a)) => string;
 
   module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = t('a);
+
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a);
+
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a);
+
+  module Applicative:
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a);
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a);
 
