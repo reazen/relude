@@ -469,14 +469,89 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     (Zipper(_, _, right)) => right |> S.head;
 
   /**
+   * Indicates if the focus is at the start of the zipper
+   */
+  let isAtStart: 'a. t('a) => bool =
+    (Zipper(left, _, _)) => left |> S.isEmpty;
+
+  /**
+   * Indicates if the focus is at the end of the zipper
+   */
+  let isAtEnd: 'a. t('a) => bool =
+    (Zipper(_, _, right)) => right |> S.isEmpty;
+
+  /**
+   * Indicates if the focus is at the given index of the zipper
+   */
+  let isAtIndex: 'a. (int, t('a)) => bool =
+    (target, z) => z |> zipWithIndex |> getFocus |> snd == target;
+
+  /**
+   * Indicates if the focus is at the item, based on the given equality function
+   */
+  let isAtItemBy: 'a. (('a, 'a) => bool, 'a, t('a)) => bool =
+    (eq, target, z) => eq(z |> getFocus, target);
+
+  /**
+   * Indicates if the focus is at the item, based on the given EQ module
+   */
+  let isAtItem = "TODO"; // eq
+
+  /**
+   * Moves the focus one item to the left.  If there are no items to the left, returns None.
+   */
+  let moveLeft: 'a. t('a) => option(t('a)) =
+    (Zipper(left, focus, right)) =>
+      left
+      |> S.uncons
+      |> Relude_Option.map(((leftH, leftT)) =>
+           Zipper(leftT, leftH, S.prepend(focus, right))
+         );
+
+  /**
+   * Moves the focus one item to the right.  If there are no items to the right, returns None.
+   */
+  let moveRight: 'a. t('a) => option(t('a)) =
+    (Zipper(left, focus, right)) =>
+      right
+      |> S.uncons
+      |> Relude_Option.map(((rightH, rightT)) =>
+           Zipper(S.prepend(focus, left), rightH, rightT)
+         );
+
+  /**
+   * Moves the focus one item to the left, unless we are at the start.
+   */
+  let moveLeftWithClamp: 'a. t('a) => t('a) =
+    z => moveLeft(z) |> Relude_Option.getOrElse(z);
+
+  /**
+   * Moves the focus one item to the right, unless we are at the end.
+   */
+  let moveRightWithClamp: 'a. t('a) => t('a) =
+    z => moveRight(z) |> Relude_Option.getOrElse(z);
+
+  /**
    * Moves the focus to the start of the zipper
    */
-  let moveStart = "TODO";
+  let moveStart: 'a. t('a) => t('a) = z => z;
 
   /**
    * Moves the focus to the end of the zipper
    */
-  let moveEnd = "TODO";
+  let moveEnd: 'a. t('a) => t('a) = z => z;
+
+  /**
+   * Moves the focus one item to the left, wrapping to the end if we are currently at the start.
+   */
+  let moveLeftWithWrap: 'a. t('a) => t('a) =
+    z => moveLeft(z) |> Relude_Option.getOrElse(moveEnd(z));
+
+  /**
+   * Moves the focus one item to the right, wrapping to the start if we are currently at the end.
+   */
+  let moveRightWithWrap: 'a. t('a) => t('a) =
+    z => moveRight(z) |> Relude_Option.getOrElse(moveStart(z));
 
   /**
    * Moves the focus to the given index.  If the index is out of range, None is returned.
@@ -502,61 +577,6 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Moves the focus to the given item, based on the given EQ module
    */
   let moveToItem = "TODO"; // eq
-
-  /**
-   * Indicates if the focus is at the start of the zipper
-   */
-  let isAtStart = "TODO";
-
-  /**
-   * Indicates if the focus is at the end of the zipper
-   */
-  let isAtEnd = "TODO";
-
-  /**
-   * Indicates if the focus is at the given index of the zipper
-   */
-  let isAtIndex = "TODO";
-
-  /**
-   * Indicates if the focus is at the item, based on the given equality function
-   */
-  let isAtItemBy = "TODO"; // eq
-
-  /**
-   * Indicates if the focus is at the item, based on the given EQ module
-   */
-  let isAtItem = "TODO"; // eq
-
-  /**
-   * Moves the focus one item to the left.  If there are no items to the left, returns None.
-   */
-  let moveLeft = "TODO"; // option
-
-  /**
-   * Moves the focus one item to the right.  If there are no items to the right, returns None.
-   */
-  let moveRight = "TODO"; // option
-
-  /**
-   * Moves the focus one item to the left, unless we are at the start.
-   */
-  let moveLeftWithClamp = "TODO";
-
-  /**
-   * Moves the focus one item to the right, unless we are at the end.
-   */
-  let moveRightWithClamp = "TODO";
-
-  /**
-   * Moves the focus one item to the left, wrapping to the end if we are currently at the start.
-   */
-  let moveLeftWithWrap = "TODO";
-
-  /**
-   * Moves the focus one item to the right, wrapping to the start if we are currently at the end.
-   */
-  let moveRightWithWrap = "TODO";
 
   /**
    * Inserts a new item at the focus, and pushes the previous focus to the left side
