@@ -17,11 +17,13 @@ module type SEQUENCE = {
   let head: t('a) => option('a);
   let tail: t('a) => option(t('a));
   let tailOrEmpty: t('a) => t('a);
+  let uncons: t('a) => option(('a, t('a)));
   let prepend: ('a, t('a)) => t('a);
   let append: ('a, t('a)) => t('a);
   let concat: (t('a), t('a)) => t('a);
   let reverse: t('a) => t('a);
   let mkString: (string, t(string)) => string;
+  let zip: (t('a), t('b)) => t(('a, 'b));
   let zipWith: (('a, 'b) => 'c, t('a), t('b)) => t('c);
   let fromArray: array('a) => t('a);
   let fromList: list('a) => t('a);

@@ -464,8 +464,8 @@ let replaceAt: 'a. (int, 'a, array('a)) => array('a) =
   };
 
 /**
- * Folds a function over the array from left-to-right, collecting the results of the
- * accumulation for each iteration.
+ * Folds an array from left-to-right, collecting the results of the
+ * accumulation for each individual iteration.
  */
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>
@@ -481,8 +481,8 @@ let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
     );
 
 /**
- * Folds a function over the array from right-to-left, collecting the results of the
- * accumulation for each iteration.
+ * Folds an array from right-to-left, collecting the results of the
+ * accumulation for each individual iteration.
  */
 let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>

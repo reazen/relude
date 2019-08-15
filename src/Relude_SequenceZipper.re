@@ -1,5 +1,11 @@
 let id = Relude_Function.id;
 
+/**
+ * Creates a Zipper using the given SEQUENCE as the backing implementation
+ *
+ * Heavily inspired by Queensland Function Programming Lab Haskell implementation:
+ * https://github.com/qfpl/list-zipper/blob/master/src/Data/ListZipper.hs
+ */
 module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   module SFoldableExtensions =
     Relude_Extensions_Foldable.FoldableExtensions(S.Foldable);
@@ -10,11 +16,12 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * a focused item, and a sequence on the right.
    *
    * The left sequence is reversed so that moving the focus one item to the left is an O(1) operation
-   * for list-backed implementations.  For arrays it doesn't matter, but it is treated consistently
-   * in reverse for consistency.
+   * for list-based implementations.  Pre-pending to an array-based implementation might not be O(1),
+   * but list is probably the more common use-case for a zipper since it has ideal performance for moving
+   * the focus to the left or right.
    */
   type t('a) =
-    | SZ(S.t('a), 'a, S.t('a));
+    | Zipper(S.t('a), 'a, S.t('a));
 
   /**
    * Constructs a Zipper from a left sequence, a focus, and a right sequence.
@@ -25,7 +32,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * immediately to the right of the focus.
    */
   let make: 'a. (S.t('a), 'a, S.t('a)) => t('a) =
-    (left, focus, right) => SZ(left, focus, right);
+    (left, focus, right) => Zipper(left, focus, right);
 
   /**
  * Constructs a Zipper from a left sequence and a focus.
@@ -34,7 +41,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
  * is treated as the item immediately to the left of the focus.
  */
   let makeWithLeft: 'a. (S.t('a), 'a) => t('a) =
-    (left, focus) => SZ(left, focus, S.emptyLazy());
+    (left, focus) => Zipper(left, focus, S.emptyLazy());
 
   /**
    * Constructs a Zipper from a focus and a right sequence.
@@ -43,7 +50,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * immediately to the right of the focus.
    */
   let makeWithRight: 'a. ('a, S.t('a)) => t('a) =
-    (focus, right) => SZ(S.emptyLazy(), focus, right);
+    (focus, right) => Zipper(S.emptyLazy(), focus, right);
 
   /**
    * Makes a zipper with a focus at the start and with an array at the tail end
@@ -61,7 +68,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Constructs a zipper with empty left and right sequence, and a single focus.
    */
   let makeWithFocus: 'a. 'a => t('a) =
-    focus => SZ(S.emptyLazy(), focus, S.emptyLazy());
+    focus => Zipper(S.emptyLazy(), focus, S.emptyLazy());
 
   /**
    * Creates a Zipper from a sequence putting the focus on the first item.  If the sequence is empty,
@@ -122,8 +129,8 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Maps a pure function over the values of a Zipper
    */
   let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
-    (f, SZ(left, focus, right)) =>
-      SZ(S.Functor.map(f, left), f(focus), S.Functor.map(f, right));
+    (f, Zipper(left, focus, right)) =>
+      Zipper(S.Functor.map(f, left), f(focus), S.Functor.map(f, right));
 
   module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
@@ -133,10 +140,13 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
 
   /**
    * Maps a Zipper of functions over a Zipper
+   *
+   * Implementation taken from: https://github.com/qfpl/list-zipper/blob/master/src/Data/ListZipper.hs#L151
+   * At the time of this writing, I don't personally understand why it's implemented this way.
    */
   let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
-    (SZ(l1, f1, r1), SZ(l2, f2, r2)) =>
-      SZ(S.zipWith(id, l1, l2), f1(f2), S.zipWith(id, r1, r2));
+    (Zipper(l1, f1, r1), Zipper(l2, f2, r2)) =>
+      Zipper(S.zipWith(id, l1, l2), f1(f2), S.zipWith(id, r1, r2));
 
   module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
     include Functor;
@@ -148,6 +158,10 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Lifts a pure value into a Zipper, as the focused value.
    *
    * Alias for `makeWithFocus`
+   *
+   * Note: QFPL implementation has `repeat a` on the left and right sides.
+   * At the time of this writing, I don't understand why it's implemented this way.
+   * I'm not sure if we can implement it this way in a strict language.
    */
   let pure: 'a. 'a => t('a) = makeWithFocus;
 
@@ -159,12 +173,13 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   // Zipper doesn't have a Monad by itself b/c of the focus item
+  // Zipper is a Comonad, but I'm not going to implement that for now.
 
   /**
    * Folds a zipper from left-to-right using an accumulator
    */
   let foldLeft: (('b, 'a) => 'b, 'b, t('a)) => 'b =
-    (f, acc, SZ(left, focus, right)) => {
+    (f, acc, Zipper(left, focus, right)) => {
       let flipF: ('a, 'b) => 'b = (a, b) => f(b, a);
       // Fold the left list from the right b/c it's reversed
       let accL = S.Foldable.fold_right(flipF, acc, left);
@@ -176,7 +191,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Folds a zipper from right-to-left using an accumulator
    */
   let foldRight: (('a, 'b) => 'b, 'b, t('a)) => 'b =
-    (f, acc, SZ(left, focus, right)) => {
+    (f, acc, Zipper(left, focus, right)) => {
       let flipF: ('b, 'a) => 'b = (b, a) => f(a, b);
       // Fold the left list from the right b/c it's reversed
       let accR = S.Foldable.fold_right(f, acc, right);
@@ -225,7 +240,13 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   };
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-  module Traversable: BsAbstract.Interface.TRAVERSABLE_F =
+  module type TRAVERSABLE_F =
+    (A: BsAbstract.Interface.APPLICATIVE) =>
+
+      BsAbstract.Interface.TRAVERSABLE with
+        type t('a) = t('a) and type applicative_t('a) = A.t('a);
+
+  module Traversable: TRAVERSABLE_F =
     (A: BsAbstract.Interface.APPLICATIVE) => {
       type nonrec t('a) = t('a);
       type applicative_t('a) = A.t('a);
@@ -242,22 +263,23 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
       let (<*>) = A.apply;
       module STraversable = S.Traversable(A);
 
-      let traverse: ('a => A.t('b), t('a)) => A.t(t('b)) =
-        (f, SZ(left, focus, right)) => {
+      let traverse: 'a 'b. ('a => A.t('b), t('a)) => A.t(t('b)) =
+        (f, Zipper(left, focus, right)) => {
           make
           <$> STraversable.traverse(f, left)
           <*> f(focus)
           <*> STraversable.traverse(f, right);
         };
 
-      let sequence: t(A.t('a)) => A.t(t('a)) = fa => traverse(a => a, fa);
+      let sequence: 'a. t(A.t('a)) => A.t(t('a)) =
+        fa => traverse(a => a, fa);
     };
 
   /**
    * Converts the Zipper into a Sequence
    */
   let toSequence: 'a. t('a) => S.t('a) = {
-    (SZ(left, focus, right)) =>
+    (Zipper(left, focus, right)) =>
       S.concat(S.append(focus, S.reverse(left)), right);
   };
 
@@ -279,27 +301,27 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
 
   /**
    * Converts the Zipper into a NonEmptyArray
-   *
-   * TODO: better implementation
    */
   let toNonEmptyArray: 'a. t('a) => Relude_NonEmpty.Array.t('a) =
-    (SZ(left, focus, right)) =>
-      switch (left |> S.reverse |> S.toList) {
-      | [] => NonEmpty(focus, S.toArray(right))
-      | [leftHead, ...leftTail] =>
-        NonEmpty(
-          leftHead,
-          S.concat(S.append(focus, S.fromList(leftTail)), right)
-          |> S.toArray,
-        )
-      };
+    (Zipper(left, focus, right)) =>
+      left
+      |> S.reverse
+      |> S.uncons
+      |> Relude_Option.foldLazy(
+           () => Relude_NonEmpty.Array.make(focus, right |> S.toArray),
+           ((lh, lt)) =>
+             Relude_NonEmpty.Array.make(
+               lh,
+               S.concat(lt |> S.append(focus), right) |> S.toArray,
+             ),
+         );
 
   /**
    * Converts the Zipper into a NonEmptyArray
    *
    * Alias for toNonEmptyArray
    */
-  let toNea = toNonEmptyArray;
+  let toNea: 'a. t('a) => Relude_NonEmpty.Array.t('a) = toNonEmptyArray;
 
   /**
    * Converts the Zipper into a NonEmptyList
@@ -307,29 +329,32 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * TODO: better implementation
    */
   let toNonEmptyList: 'a. t('a) => Relude_NonEmpty.List.t('a) =
-    (SZ(left, focus, right)) =>
-      switch (left |> S.reverse |> S.toList) {
-      | [] => NonEmpty(focus, S.toList(right))
-      | [leftHead, ...leftTail] =>
-        NonEmpty(
-          leftHead,
-          S.concat(S.append(focus, S.fromList(leftTail)), right) |> S.toList,
-        )
-      };
+    (Zipper(left, focus, right)) =>
+      left
+      |> S.reverse
+      |> S.uncons
+      |> Relude_Option.foldLazy(
+           () => Relude_NonEmpty.List.make(focus, right |> S.toList),
+           ((lh, lt)) =>
+             Relude_NonEmpty.List.make(
+               lh,
+               S.concat(lt |> S.append(focus), right) |> S.toList,
+             ),
+         );
 
   /**
    * Converts the Zipper into a NonEmptyList
    *
    * Alias for toNonEmptyList
    */
-  let toNel = toNonEmptyList;
+  let toNel: 'a. t('a) => Relude_NonEmpty.List.t('a) = toNonEmptyList;
 
   /**
    * Concatenates two Zippers, keeping the focus from the left Zipper
    */
   let concatWithKeepLeftFocus = (~prefix: t('a), suffix: t('a)): t('a) => {
-    let SZ(l1, f1, r1) = prefix;
-    SZ(l1, f1, S.concat(r1, toSequence(suffix)));
+    let Zipper(l1, f1, r1) = prefix;
+    Zipper(l1, f1, S.concat(r1, toSequence(suffix)));
   };
 
   /**
@@ -343,8 +368,8 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Concatenates two Zippers, keeping the focus from the right Zipper
    */
   let concatWithKeepRightFocus = (~prefix: t('a), suffix: t('a)): t('a) => {
-    let SZ(l2, f2, r2) = suffix;
-    SZ(S.concat(toSequence(prefix), l2), f2, r2);
+    let Zipper(l2, f2, r2) = suffix;
+    Zipper(S.concat(l2, prefix |> toSequence |> S.reverse), f2, r2);
   };
 
   module Semigroup_Any:
@@ -356,47 +381,92 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   /**
    * Reverses the Zipper
    */
-  let reverse = "TODO";
+  let reverse: 'a. t('a) => t('a) = (Zipper(l, f, r)) => Zipper(r, f, l);
+
+  /**
+   * Zips two zippers together pair-wise using the given function
+   */
+  let zipWith: 'a 'b 'c. (('a, 'b) => 'c, t('a), t('b)) => t('c) =
+    (f, Zipper(l1, f1, r1), Zipper(l2, f2, r2)) =>
+      Zipper(S.zipWith(f, l1, l2), f(f1, f2), S.zipWith(f, r1, r2));
+
+  /**
+   * Zips two zippers together in pairs.
+   */
+  let zip: 'a 'b. (t('a), t('b)) => t(('a, 'b)) =
+    (z1, z2) => zipWith((a, b) => (a, b), z1, z2);
 
   /**
    * Pairs each item in the zipper with it's index as if the zipper was converted to a list or array
    */
-  let zipWithIndex = "TODO";
+  let zipWithIndex: 'a. t('a) => t(('a, int)) =
+    (Zipper(left, focus, right)) => {
+      let leftLength = S.length(left);
+      let rightLength = S.length(right);
+      let totalLength = leftLength + 1 + rightLength;
+      let leftRange =
+        Relude_Int.rangeAsList(0, leftLength) |> Relude_List.reverse;
+      let focusIndex = leftLength;
+      let rightRange = Relude_Int.rangeAsList(focusIndex + 1, totalLength);
+      Zipper(
+        S.zip(left, S.fromList(leftRange)),
+        (focus, focusIndex),
+        S.zip(right, S.fromList(rightRange)),
+      );
+    };
 
   /**
    * Gets the item at the focus
    */
-  let getFocus = "TODO";
+  let getFocus: 'a. t('a) => 'a = (Zipper(_, focus, _)) => focus;
 
   /**
    * Modifies the focus value with the given function
    */
-  let setFocusBy = "TODO";
+  let setFocusBy: 'a. ('a => 'a, t('a)) => t('a) =
+    (f, Zipper(left, focus, right)) => Zipper(left, f(focus), right);
 
   /**
    * Sets a new value at the focus
    */
-  let setFocus = "TODO";
+  let setFocus: 'a. ('a, t('a)) => t('a) =
+    (focus, Zipper(left, _, right)) => Zipper(left, focus, right);
 
   /**
-   * Gets the sequence to the left of the focus
+   * Gets the sequence to the left of the focus (in its sequential order, i.e. reversed from how its stored in the zipper)
    */
-  let getLeft = "TODO";
+  let getLeftInOrder: 'a. t('a) => S.t('a) =
+    (Zipper(left, _, _)) => left |> S.reverse;
 
   /**
-   * Gets the sequence to the right of the focus
+   * Sets the sequence to the left of the focus from an in-order sequence.  I.e. the given sequence will be reversed by this function when stored in the new zipper.
    */
-  let getRight = "TODO"; // option
+  let setLeftFromInOrder: 'a. (S.t('a), t('a)) => t('a) =
+    (left, Zipper(_, focus, right)) =>
+      Zipper(left |> S.reverse, focus, right);
+
+  /**
+   * Gets the sequence to the right of the focus (order is in order, i.e. not changed)
+   */
+  let getRight: 'a. t('a) => S.t('a) = (Zipper(_, _, right)) => right;
+
+  /**
+   * Sets the sequence to the right of the focus (order is not changed)
+   */
+  let setRight: 'a. (S.t('a), t('a)) => t('a) =
+    (right, Zipper(left, focus, _)) => Zipper(left, focus, right);
 
   /**
    * Gets the item to the immediate left of the focus
    */
-  let peekLeft = "TODO";
+  let peekLeft: 'a. t('a) => option('a) =
+    (Zipper(left, _, _)) => left |> S.head;
 
   /**
    * Gets the item to the immediate right of the focus
    */
-  let peekRight = "TODO";
+  let peekRight: 'a. t('a) => option('a) =
+    (Zipper(_, _, right)) => right |> S.head;
 
   /**
    * Moves the focus to the start of the zipper
@@ -489,36 +559,50 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   let moveRightWithWrap = "TODO";
 
   /**
-   * Inserts a new item at the focus, and moves the previous focus to the left
+   * Inserts a new item at the focus, and pushes the previous focus to the left side
    */
-  let insertWithPushFocusLeft = "TODO";
+  let insertWithPushLeft = "TODO";
 
   /**
-   * Inserts a new item at the focus, and moves the previous focus to the right
+   * Inserts a new item at the focus, and pushes the previous focus to the right side
    */
-  let insertWithPushFocusRight = "TODO";
+  let insertWithPushRight = "TODO";
 
   /**
-   * Deletes the item at the focus, and moves an item from the left to be the new focus
+   * Deletes the item at the focus, and pulls a value from the left side into focus
    */
-  let deleteWithPromoteLeft = "TODO";
+  let deleteWithPullLeft = "TODO";
 
   /**
-   * Deletes the item at the focus, and moves an item from the right to be new focus
+   * Deletes the item at the focus, and pulls a value from the right side into focus
    */
-  let deleteWithPromoteRight = "TODO";
+  let deleteWithPullRight = "TODO";
 
   /**
    * Deletes the item at the focus, and moves an item from the left or right to be the new focus (whichever has a value, if either)
    */
   let deleteWithPromoteLeftOrRight = "TODO";
 
+  /*
+   let findLeft: 'a. ('a => bool, t('a)) => option(t('a)) = (f, Zipper(left, focus, _) as z) => {
+     if (f(focus)) Some(z)
+     else {
+       S.find(
+     }
+
+   };
+
+   let findRight = "TODO";
+
+   let find = "TODO:";
+   */
+
   /**
    * Converts a Zipper to a string using the given function
    */
   let showBy: 'a. ('a => string, t('a)) => string =
-    (showA, SZ(left, focus, right)) =>
-      "SZ("
+    (showA, Zipper(left, focus, right)) =>
+      "Zipper("
       ++ S.showBy(showA, left)
       ++ ", "
       ++ showA(focus)
@@ -544,7 +628,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Compares two Zippers for length and pair-wise equality
    */
   let eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
-    (eqA, SZ(left1, focus1, right1), SZ(left2, focus2, right2)) =>
+    (eqA, Zipper(left1, focus1, right1), Zipper(left2, focus2, right2)) =>
       S.eqBy(eqA, left1, left2)
       && eqA(focus1, focus2)
       && S.eqBy(eqA, right1, right2);

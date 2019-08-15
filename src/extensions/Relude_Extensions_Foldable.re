@@ -285,8 +285,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
     module BsFoldableMonadExtensions = BsFoldableExtensions.Monad(M);
 
     /**
-     * Folds a monadic function over the foldable sequentially.  Each successive call is bound/flatMapped
-     * on the previous result.
+     * Folds the foldable sequentially, using a monadic function, chained on the previous value for each iteration.
      */
     let foldWithMonad:
       'a 'acc.

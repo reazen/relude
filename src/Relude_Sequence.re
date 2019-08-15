@@ -8,10 +8,12 @@ module List: Relude_Interface.SEQUENCE with type t('a) = list('a) = {
   let head = Relude_List_Base.head;
   let tail = Relude_List_Base.tail;
   let tailOrEmpty = Relude_List_Base.tailOrEmpty;
+  let uncons = Relude_List_Base.uncons;
   let prepend = Relude_List_Base.prepend;
   let append = Relude_List_Base.append;
   let concat = Relude_List_Instances.concat;
   let reverse = Relude_List_Base.reverse;
+  let zip = Relude_List_Base.zip;
   let zipWith = Relude_List_Base.zipWith;
   let fromArray = Relude_List_Instances.fromArray;
   let fromList = a => a;
@@ -42,10 +44,12 @@ module Array: Relude_Interface.SEQUENCE with type t('a) = array('a) = {
   let head = Relude_Array_Base.head;
   let tail = Relude_Array_Base.tail;
   let tailOrEmpty = Relude_Array_Base.tailOrEmpty;
+  let uncons = Relude_Array_Base.uncons;
   let prepend = Relude_Array_Base.prepend;
   let append = Relude_Array_Base.append;
   let concat = Relude_Array_Instances.concat;
   let reverse = Relude_Array_Base.reverse;
+  let zip = Relude_Array_Base.zip;
   let zipWith = Relude_Array_Base.zipWith;
   let fromArray = a => a;
   let fromList = Relude_Array_Instances.fromList;
