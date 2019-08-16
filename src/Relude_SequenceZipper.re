@@ -3,8 +3,12 @@ let id = Relude_Function.id;
 /**
  * Creates a Zipper using the given SEQUENCE as the backing implementation
  *
- * Heavily inspired by Queensland Function Programming Lab Haskell implementation:
+ * Heavily inspired by Queensland Function Programming Lab Haskell implementation,
+ * although without many of the advanced capabilities, like the ListZipperOp stuff.
  * https://github.com/qfpl/list-zipper/blob/master/src/Data/ListZipper.hs
+ * 
+ * See also this very enlightening presentation about zippers for more background:
+ * http://data.tmorris.net/talks/zippers/0a1062fd0526d7ac1f41ade1e4db1465d311b4fd/zippers.pdf
  */
 module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   module SFoldableExtensions =
@@ -12,13 +16,13 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
 
   /**
    * A Zipper type contains a sequence on the left (in reverse order, so that the head
-   * of the left sequence is treated as if it's the item immediatley to the left of the focus),
+   * of the left sequence is treated as if it's the item immediately to the left of the focus),
    * a focused item, and a sequence on the right.
    *
    * The left sequence is reversed so that moving the focus one item to the left is an O(1) operation
-   * for list-based implementations.  Pre-pending to an array-based implementation might not be O(1),
+   * for list-based implementations.  Prepending to an array-based implementation might not be O(1),
    * but list is probably the more common use-case for a zipper since it has ideal performance for moving
-   * the focus to the left or right.
+   * the focus to the left or right.  The array-backed implementation has the left reversed too, for API consistency.
    */
   type t('a) =
     | Zipper(S.t('a), 'a, S.t('a));
@@ -193,9 +197,9 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   let foldRight: (('a, 'b) => 'b, 'b, t('a)) => 'b =
     (f, acc, Zipper(left, focus, right)) => {
       let flipF: ('b, 'a) => 'b = (b, a) => f(a, b);
-      // Fold the left list from the right b/c it's reversed
       let accR = S.Foldable.fold_right(f, acc, right);
       let accF = f(focus, accR);
+      // Fold the left list from the left, b/c it's reversed
       S.Foldable.fold_left(flipF, accF, left);
     };
 
@@ -325,8 +329,6 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
 
   /**
    * Converts the Zipper into a NonEmptyList
-   *
-   * TODO: better implementation
    */
   let toNonEmptyList: 'a. t('a) => Relude_NonEmpty.List.t('a) =
     (Zipper(left, focus, right)) =>
@@ -433,6 +435,18 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     (focus, Zipper(left, _, right)) => Zipper(left, focus, right);
 
   /**
+   * Gets the sequence to the left of the focus (in the unchanged reverse order in which its stored)
+   */
+  let getLeft: 'a. t('a) => S.t('a) = (Zipper(left, _, _)) => left;
+
+  /**
+   * Sets the sequence to the left of the focus.  Note:  the given sequence should be in reverse so that the
+   * head of the sequence is the item that should immediately to the left of the focus.
+   */
+  let setLeft: 'a. (S.t('a), t('a)) => t('a) =
+    (left, Zipper(_, focus, right)) => Zipper(left, focus, right);
+
+  /**
    * Gets the sequence to the left of the focus (in its sequential order, i.e. reversed from how its stored in the zipper)
    */
   let getLeftInOrder: 'a. t('a) => S.t('a) =
@@ -495,7 +509,17 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   /**
    * Indicates if the focus is at the item, based on the given EQ module
    */
-  let isAtItem = "TODO"; // eq
+  let isAtItem =
+      (
+        type a,
+        eq: (module BsAbstract.Interface.EQ with type t = a),
+        item: a,
+        zipper: t(a),
+      )
+      : bool => {
+    module Eq = (val eq);
+    isAtItemBy(Eq.eq, item, zipper);
+  };
 
   /**
    * Moves the focus one item to the left.  If there are no items to the left, returns None.
@@ -534,88 +558,299 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   /**
    * Moves the focus to the start of the zipper
    */
-  let moveStart: 'a. t('a) => t('a) = z => z;
+  let moveStart: 'a. t('a) => t('a) =
+    (Zipper(left, focus, right) as z) =>
+      left
+      |> S.reverse
+      |> S.uncons
+      |> Relude_Option.foldLazy(
+           () => z,
+           ((leftH, leftT)) =>
+             Zipper(
+               S.emptyLazy(),
+               leftH,
+               S.concat(leftT |> S.append(focus), right),
+             ),
+         );
 
   /**
    * Moves the focus to the end of the zipper
    */
-  let moveEnd: 'a. t('a) => t('a) = z => z;
+  let moveEnd: 'a. t('a) => t('a) =
+    (Zipper(left, focus, right) as z) =>
+      right
+      |> S.reverse
+      |> S.uncons
+      |> Relude_Option.foldLazy(
+           () => z,
+           ((rightH, rightT)) =>
+             Zipper(
+               S.concat(rightT, left |> S.prepend(focus)),
+               rightH,
+               S.emptyLazy(),
+             ),
+         );
 
   /**
    * Moves the focus one item to the left, wrapping to the end if we are currently at the start.
    */
   let moveLeftWithWrap: 'a. t('a) => t('a) =
-    z => moveLeft(z) |> Relude_Option.getOrElse(moveEnd(z));
+    z => moveLeft(z) |> Relude_Option.getOrElseLazy(() => moveEnd(z));
 
   /**
    * Moves the focus one item to the right, wrapping to the start if we are currently at the end.
    */
   let moveRightWithWrap: 'a. t('a) => t('a) =
-    z => moveRight(z) |> Relude_Option.getOrElse(moveStart(z));
+    z => moveRight(z) |> Relude_Option.getOrElseLazy(() => moveStart(z));
+
+  /**
+   * Moves the focus a number of times to the left.  If the count is out of range, None is returned
+   */
+  let rec moveLeftTimes: 'a. (int, t('a)) => option(t('a)) =
+    (times, z) =>
+      if (times < 0) {
+        None;
+      } else if (times == 0) {
+        Some(z);
+      } else {
+        moveLeft(z) |> Relude_Option.flatMap(moveLeftTimes(times - 1));
+      };
+
+  /**
+   * Moves the focus a number of times to the right.  If the count is out of range, None is returned
+   */
+  let rec moveRightTimes: 'a. (int, t('a)) => option(t('a)) =
+    (times, z) =>
+      if (times < 0) {
+        None;
+      } else if (times == 0) {
+        Some(z);
+      } else {
+        moveRight(z) |> Relude_Option.flatMap(moveRightTimes(times - 1));
+      };
+
+  /**
+   * Moves the focus a number of times to the left.  If the count is out of range, the focus is moved to the start.
+   */
+  let moveLeftTimesWithClamp: 'a. (int, t('a)) => t('a) =
+    (times, z) =>
+      moveLeftTimes(times, z)
+      |> Relude_Option.getOrElseLazy(() => moveStart(z));
+
+  /**
+   * Moves the focus a number of times to the right.  If the count is out of range, the focus is moved to the start.
+   */
+  let moveRightTimesWithClamp: 'a. (int, t('a)) => t('a) =
+    (times, z) =>
+      moveRightTimes(times, z)
+      |> Relude_Option.getOrElseLazy(() => moveEnd(z));
 
   /**
    * Moves the focus to the given index.  If the index is out of range, None is returned.
    */
-  let moveToIndex = "TODO";
+  let rec moveToIndex: 'a. (int, t('a)) => option(t('a)) =
+    (target, z) => {
+      let Zipper(_, (_, index), _) = z |> zipWithIndex;
+      if (index == target) {
+        Some(z);
+      } else if (index < target) {
+        z |> moveRight |> Relude_Option.flatMap(moveToIndex(target));
+      } else {
+        z |> moveLeft |> Relude_Option.flatMap(moveToIndex(target));
+      };
+    };
 
   /**
    * Moves the focus to the given index modulus the length of the zipper.
    */
-  let moveToIndexWithMod = "TODO";
+  let moveToIndexWithMod: 'a. (int, t('a)) => t('a) =
+    (target, z) => {
+      let modTarget = target mod (z |> length);
+      moveToIndex(modTarget, z) |> Relude_Option.getOrThrow; // Should be safe with index mod length
+    };
 
   /**
    * Moves the focus to the given index, but no farther than the start or end if the index is out of range in either direction.
    */
-  let moveToIndexWithClamp = "TODO";
+  let moveToIndexWithClamp: 'a. (int, t('a)) => t('a) =
+    (target, z) => {
+      let maxIndex = (z |> length) - 1;
+      let newTarget =
+        if (target < 0) {
+          0;
+        } else if (target > maxIndex) {
+          maxIndex;
+        } else {
+          target;
+        };
+      z |> moveToIndex(newTarget) |> Relude_Option.getOrThrow; // should be safe with range checks
+    };
 
   /**
-   * Moves the focus to the given item, based on the given equality function
+   * Finds the first item that satisfies the given predicate, and returns a zipper focused on that item.
+   * Only searches the focus and the left side of the zipper.
    */
-  let moveToItemBy = "TODO"; // eq
+  let rec findLeftBy =
+          (~checkFocus=true, f: 'a => bool, Zipper(_, focus, _) as z: t('a))
+          : option(t('a)) =>
+    if (checkFocus && f(focus)) {
+      Some(z);
+    } else {
+      z |> moveLeft |> Relude_Option.flatMap(findLeftBy(~checkFocus=true, f));
+    };
 
   /**
-   * Moves the focus to the given item, based on the given EQ module
+   * Finds the first item that satisfies the given predicate, and returns a zipper focused on that item.
+   * Only searches the focus and the right side of the zipper.
    */
-  let moveToItem = "TODO"; // eq
+  let rec findRightBy =
+          (~checkFocus=true, f: 'a => bool, Zipper(_, focus, _) as z: t('a))
+          : option(t('a)) =>
+    if (checkFocus && f(focus)) {
+      Some(z);
+    } else {
+      z |> moveRight |> Relude_Option.flatMap(findRightBy(~checkFocus=true, f));
+    };
+
+  /**
+   * Finds the first item that satisfies the given predicate, and returns a zipper focused on that itme.
+   * The left side is searched first, then the right.
+   */
+  let findBy = (~checkFocus=true, f: 'a => bool, z: t('a)): option(t('a)) =>
+    findLeftBy(~checkFocus, f, z)
+    |> Relude_Option.orElseLazy(~fallback=() =>
+         findRightBy(~checkFocus=false, f, z)
+       );
+
+  /**
+   * Finds the given item at the focus or to the left, using the given eq function.
+   */
+  let findItemLeftBy =
+      (~checkFocus=true, eq: ('a, 'a) => bool, item: 'a, zipper: t('a))
+      : option(t('a)) => {
+    let p = eq(item);
+    findLeftBy(~checkFocus, p, zipper);
+  };
+
+  /**
+   * Finds the given item at the focus or to the right, using the given eq function.
+   */
+  let findItemRightBy =
+      (~checkFocus=true, eq: ('a, 'a) => bool, item: 'a, zipper: t('a))
+      : option(t('a)) => {
+    let p = eq(item);
+    findRightBy(~checkFocus, p, zipper);
+  };
+
+  /**
+   * Finds the given item using the given eq function.  Searches the left side first, then the right.
+   */
+  let findItemBy =
+      (~checkFocus=true, eq: ('a, 'a) => bool, item: 'a, zipper: t('a))
+      : option(t('a)) => {
+    findItemLeftBy(~checkFocus, eq, item, zipper)
+    ->Relude_Option.orElseLazy(~fallback=() =>
+        findItemRightBy(~checkFocus=false, eq, item, zipper)
+      );
+  };
+
+  /**
+   *  Finds the given item in the left side, using the given EQ module.
+   */
+  let findItemLeft =
+      (
+        type a,
+        eq: (module BsAbstract.Interface.EQ with type t = a),
+        ~checkFocus=true,
+        item: a,
+        zipper: t(a),
+      )
+      : option(t(a)) => {
+    module Eq = (val eq);
+    findItemLeftBy(~checkFocus, Eq.eq, item, zipper);
+  };
+
+  /**
+   *  Finds the given item in the right side, using the given EQ module.
+   */
+  let findItemRight =
+      (
+        type a,
+        eq: (module BsAbstract.Interface.EQ with type t = a),
+        ~checkFocus=true,
+        item: a,
+        zipper: t(a),
+      )
+      : option(t(a)) => {
+    module Eq = (val eq);
+    findItemRightBy(~checkFocus, Eq.eq, item, zipper);
+  };
+
+  /**
+   * Finds the given item using the given EQ module.
+   * The left side is searched first, then the right.
+   */
+  let findItem =
+      (
+        type a,
+        eq: (module BsAbstract.Interface.EQ with type t = a),
+        ~checkFocus=true,
+        item: a,
+        zipper: t(a),
+      )
+      : option(t(a)) => {
+    findItemLeft(~checkFocus, eq, item, zipper)
+    |> Relude_Option.orElseLazy(~fallback=() =>
+         findItemRight(~checkFocus=false, eq, item, zipper)
+       );
+  };
 
   /**
    * Inserts a new item at the focus, and pushes the previous focus to the left side
    */
-  let insertWithPushLeft = "TODO";
+  let insertWithPushLeft: 'a. ('a, t('a)) => t('a) =
+    (item, Zipper(left, focus, right)) =>
+      Zipper(S.prepend(focus, left), item, right);
 
   /**
    * Inserts a new item at the focus, and pushes the previous focus to the right side
    */
-  let insertWithPushRight = "TODO";
+  let insertWithPushRight: 'a. ('a, t('a)) => t('a) =
+    (item, Zipper(left, focus, right)) =>
+      Zipper(left, item, S.prepend(focus, right));
 
   /**
-   * Deletes the item at the focus, and pulls a value from the left side into focus
+   * Deletes the item at the focus, and pulls a value from the left side into focus.
+   *
+   * If there is no value on the left, None is returned.
    */
-  let deleteWithPullLeft = "TODO";
+  let deleteWithPullLeft: 'a. t('a) => option(t('a)) =
+    (Zipper(left, _, right)) =>
+      left
+      |> S.uncons
+      |> Relude_Option.map(((leftH, leftT)) => Zipper(leftT, leftH, right));
 
   /**
-   * Deletes the item at the focus, and pulls a value from the right side into focus
+   * Deletes the item at the focus, and pulls a value from the right side into focus.
+   *
+   * If there is no value on the right, None is returned.
    */
-  let deleteWithPullRight = "TODO";
+  let deleteWithPullRight: 'a. t('a) => option(t('a)) =
+    (Zipper(left, _, right)) =>
+      right
+      |> S.uncons
+      |> Relude_Option.map(((rightH, rightT)) =>
+           Zipper(left, rightH, rightT)
+         );
 
   /**
-   * Deletes the item at the focus, and moves an item from the left or right to be the new focus (whichever has a value, if either)
+   * Deletes the item at the focus, and tries to pull an item from the left into focus.  If there is no
+   * item on the left, it tries to pull an item from the right.  If there is no item on the right, None is returned.
    */
-  let deleteWithPromoteLeftOrRight = "TODO";
-
-  /*
-   let findLeft: 'a. ('a => bool, t('a)) => option(t('a)) = (f, Zipper(left, focus, _) as z) => {
-     if (f(focus)) Some(z)
-     else {
-       S.find(
-     }
-
-   };
-
-   let findRight = "TODO";
-
-   let find = "TODO:";
-   */
+  let deleteWithPullLeftOrRight: 'a. t('a) => option(t('a)) =
+    z =>
+      deleteWithPullLeft(z)
+      |> Relude_Option.orElseLazy(~fallback=() => deleteWithPullRight(z));
 
   /**
    * Converts a Zipper to a string using the given function
