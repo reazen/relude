@@ -33,6 +33,7 @@ very core/common things, and be careful about accidental shadowing of module
 names or functions.
 */
 module Array = Relude_Array;
+module ArrayZipper = Relude_ArrayZipper;
 module AsyncData = Relude_AsyncData;
 module AsyncResult = Relude_AsyncResult;
 module Bool = Relude_Bool;
@@ -43,6 +44,7 @@ module Int = Relude_Int;
 module IO = Relude_IO;
 module Ior = Relude_Ior;
 module List = Relude_List;
+module ListZipper = Relude_ListZipper;
 module Map = Relude_Map;
 module Nea = Relude_NonEmpty.Array;
 module Nel = Relude_NonEmpty.List;
@@ -55,6 +57,8 @@ module RJs = Relude_Js;
 module ReaderT = Relude_ReaderT;
 module Result = Relude_Result;
 module ResultT = Relude_ResultT;
+module Sequence = Relude_Sequence;
+module SequenceZipper = Relude_SequenceZipper;
 module Set = Relude_Set;
 module StateT = Relude_StateT;
 module String = Relude_String;
@@ -74,4 +78,4 @@ let id = Relude_Function.id;
 let const = Relude_Function.const;
 let flip = Relude_Function.flip;
 let absurd = Void.absurd;
-let inverse = Bool.inverse; // can't use `not` because `refmt` rewrites it
+let inverse = Bool.inverse /* can't use `not` because `refmt` rewrites i*/;

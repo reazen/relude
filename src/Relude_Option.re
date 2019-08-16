@@ -124,6 +124,30 @@ let getOrElseLazy: (unit => 'a, option('a)) => 'a =
     };
 
 /**
+ * `getOrThrow(opt)` returns the value of the option or throws an exception.
+ * 
+ * This should only be used if you are absolutely sure there is a value in the option.
+ */
+let getOrThrow: 'a. option('a) => 'a = Belt.Option.getExn;
+
+/**
+ * Similar to alt, but with the arguments reversed and labelled for use with `|>`
+ */
+let orElse = (~fallback: option('a), fa: option('a)): option('a) => switch (fa) {
+  | Some(_) as s => s
+  | None => fallback
+};
+
+/**
+ * Similar to alt, but with the arguments reversed and labelled for use with `|>`.
+ * The fallback value is also lazy for expensive constructions.
+ */
+let orElseLazy = (~fallback: unit => option('a), fa: option('a)): option('a) => switch (fa) {
+  | Some(_) as s => s
+  | None => fallback()
+};
+
+/**
   `map(f, opt)`, when `opt` is `Some(v)`, returns `Some(f(v))`.
   When `opt` is `None`, it returns `None`.
 
@@ -173,7 +197,8 @@ include Relude_Extensions_Apply.ApplyExtensions(Apply);
 */
 let pure: 'a => option('a) = v => BsAbstract.Option.Applicative.pure(v);
 
-module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = option('a) = {
+module Applicative:
+  BsAbstract.Interface.APPLICATIVE with type t('a) = option('a) = {
   include Apply;
   let pure = pure;
 };
@@ -252,6 +277,8 @@ include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
   `alt(opt1, opt2)` returns `opt1` if it is of the form `Some(v)`;
   otherwise it returns `opt2`.
 
+  Note: the value to check is on the left, and the fallback value is on the right.
+
   ### Example
   ```re
   alt(Some(3), Some(4)) == Some(3);
@@ -269,6 +296,8 @@ let alt: (option('a), option('a)) => option('a) =
 
 /**
 Lazy version of `alt()` (doesn't evaluate the second argument unless needed
+
+Note: the value to check is on the left, and the fallback value function is on the right.
 */
 let altLazy: 'a. (option('a), unit => option('a)) => option('a) =
   (fa1, getFA2) =>

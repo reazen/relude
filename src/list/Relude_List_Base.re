@@ -5,7 +5,7 @@ let cons: 'a. ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
 
 /**
  * Prepends the given item to the start of the given list.
- * 
+ *
  * Alias for `cons`
  */
 let prepend: 'a. ('a, list('a)) => list('a) = cons;

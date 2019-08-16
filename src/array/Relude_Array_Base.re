@@ -162,7 +162,7 @@ let last: array('a) => option('a) =
 
 /**
  * Gets up to the given count of items from the array.
- * 
+ *
  * If the count is greater than the length, it gets all of the items.
  */
 let take: (int, array('a)) => array('a) =
@@ -174,7 +174,7 @@ let take: (int, array('a)) => array('a) =
 
 /**
  * Gets exactly the given count of items from the array.
- * 
+ *
  * If the count is greater than the length of the array, None is returned.
  */
 let takeExactly: (int, array('a)) => option(array('a)) =
@@ -197,7 +197,7 @@ let rec takeWhile: ('a => bool, array('a)) => array('a) =
 
 /**
  * Removes up to the count items from the array.
- * 
+ *
  * If the count is greater than the length of the array, an empty array is returned.
  */
 let drop: (int, array('a)) => array('a) =
@@ -209,7 +209,7 @@ let drop: (int, array('a)) => array('a) =
 
 /**
  * Removes exactly the count items from the array.
- * 
+ *
  * If the count is greater than the length of the array, None is returned.
  */
 let dropExactly: (int, array('a)) => option(array('a)) =
@@ -279,7 +279,7 @@ let catOption: 'a. array(option('a)) => array('a) =
 /**
  * Splits an array into two separate arrays - one containing items which satisfy the predicate, and
  * the other array containing the items which do not satisfy the predicate.
- * 
+ *
  * The items which satisfy the predicate are on the left side of the resulting tuple.
  */
 let partition: ('a => bool, array('a)) => (array('a), array('a)) =
@@ -287,7 +287,7 @@ let partition: ('a => bool, array('a)) => (array('a), array('a)) =
 
 /**
  * Splits an array into two parts at the given index.
- * 
+ *
  * Returns `None` if the index is out of range.
  */
 let splitAt: (int, array('a)) => option((array('a), array('a))) =
@@ -464,8 +464,8 @@ let replaceAt: 'a. (int, 'a, array('a)) => array('a) =
   };
 
 /**
- * Folds a function over the array from left-to-right, collecting the results of the
- * accumulation for each iteration.
+ * Folds an array from left-to-right, collecting the results of the
+ * accumulation for each individual iteration.
  */
 let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>
@@ -481,8 +481,8 @@ let scanLeft: (('b, 'a) => 'b, 'b, array('a)) => array('b) =
     );
 
 /**
- * Folds a function over the array from right-to-left, collecting the results of the
- * accumulation for each iteration.
+ * Folds an array from right-to-left, collecting the results of the
+ * accumulation for each individual iteration.
  */
 let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b) =
   (f, init, xs) =>
