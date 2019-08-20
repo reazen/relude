@@ -49,11 +49,12 @@ module type MAP = {
     ((key, 'value) => bool, t('value)) => (t('value), t('value));
   let map: ('v1 => 'v2, t('v1)) => t('v2);
   let mapWithKey: ((key, 'v1) => 'v2, t('v1)) => t('v2);
+  let groupListBy: ('a => Comparable.t, list('a)) => t(list('a));
+  let groupArrayBy: ('a => Comparable.t, array('a)) => t(array('a));
 };
 
-module WithOrd =
-       (M: BsAbstract.Interface.ORD)
-       : (MAP with type key = M.t) => {
+module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
+  open Relude_Function.Infix;
   type key = M.t;
   module Comparable =
     Belt.Id.MakeComparable({
@@ -98,4 +99,18 @@ module WithOrd =
   let partition = fn => Belt.Map.partition(_, fn);
   let map = fn => Belt.Map.map(_, fn);
   let mapWithKey = fn => Belt.Map.mapWithKey(_, fn);
+  let groupListBy = groupBy => {
+    let addItemToGroup = x =>
+      getOrElse(x |> groupBy, []) >> (xs => [x, ...xs]);
+    let addItemToMap = (dict, x) =>
+      dict |> set(x |> groupBy, addItemToGroup(x, dict));
+    Belt.List.reduce(_, make(), addItemToMap) >> map(Belt.List.reverse);
+  };
+  let groupArrayBy = groupBy => {
+    let addItemToGroup = x =>
+      getOrElse(x |> groupBy, [||]) >> Belt.Array.concat(_, [|x|]);
+    let addItemToMap = (dict, x) =>
+      dict |> set(x |> groupBy, addItemToGroup(x, dict));
+    Belt.Array.reduce(_, make(), addItemToMap);
+  };
 };
