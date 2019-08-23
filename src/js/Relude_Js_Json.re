@@ -1,3 +1,7 @@
+/**
+ * Relude.Js.Json contains helper functions for dealing with Js.Json.t values
+ */;
+
 module Array = Relude_Array;
 module List = Relude_List;
 module NonEmptyList = Relude_NonEmpty.List;
@@ -88,6 +92,13 @@ Creates a Js.Json.t number value from a float
 let fromFloat: float => json = Js.Json.number;
 
 /**
+ * Creates a Js.Json.t value from an option('a).  If the option is `None`, a null value is returned, otherwise,
+ * the value is encoded using the given function.
+ */
+let fromOption: ('a => json, option('a)) => json =
+  (encode, opt) => opt |> Relude_Option.fold(null, encode);
+
+/**
 Creates a Js.Json.t array value from an array of Js.Json.t values
 */
 let fromArrayOfJson: array(json) => json = Js.Json.array;
@@ -115,24 +126,24 @@ Creates a Js.Json.t object value from a Js.Dict containing Js.Json.t values.
 let fromDictOfJson: dict => json = Js.Json.object_;
 
 /**
-Creates a Js.Json.t value from an array of Js.Dict.t(Js.Json.t) values.
+Creates a Js.Json.t array value from an array of Js.Dict.t(Js.Json.t) values.
 */
 let fromArrayOfDictOfJson: array(dict) => json = Js.Json.objectArray;
 
 /**
-Creates a Js.Json.t value from an list of Js.Dict.t(Js.Json.t) values.
+Creates a Js.Json.t array value from an list of Js.Dict.t(Js.Json.t) values.
 */
 let fromListOfDictOfJson: list(dict) => json =
   List.toArray >> Js.Json.objectArray;
 
 /**
-Creates a Js.Json.t value from an array of key/value (string/Js.Json.t) tuples.
+Creates a Js.Json.t object value from an array of key/value (string/Js.Json.t) tuples.
  */
 let fromArrayOfKeyValueTuples: array((Js.Dict.key, json)) => json =
   tuples => fromDictOfJson(Js.Dict.fromArray(tuples));
 
 /**
-Creates a Js.Json.t value from an list of key/value (string/Js.Json.t) tuples.
+Creates a Js.Json.t object value from an list of key/value (string/Js.Json.t) tuples.
  */
 let fromListOfKeyValueTuples: list((Js.Dict.key, json)) => json =
   tuples => fromDictOfJson(Js.Dict.fromList(tuples));
@@ -321,6 +332,34 @@ let validateFloat: json => Validation.t(float, Errors.t) =
          Errors.pure("JSON value is not a float: " ++ show(json))
        );
 
+/**
+ * Validates that the given value is either null or can be decoded using the given decoder.
+ *
+ * Failed validation can be treated as None or returned as an error using the errorAsNone flag.
+ */
+let validateOptional =
+    (
+      ~errorAsNone=false,
+      validate: json => Validation.t('a, Errors.t),
+      json: json,
+    )
+    : Validation.t(option('a), Errors.t) =>
+  switch (validateNull(json)) {
+  | VOk () => VOk(None)
+  | VError(_) =>
+    // It was not a null, so try the real validation function
+    switch (validate(json)) {
+    | VOk(a) => Validation.pure(Some(a))
+    | VError(_) as e =>
+      // The value was not null, and the real validation failed - decide if we ignore the error or return it
+      if (errorAsNone) {
+        Validation.pure(None);
+      } else {
+        e;
+      }
+    }
+  };
+
 ////////////////////////////////////////////////////////////////////////////////
 // Array validation (at index and whole array)
 ////////////////////////////////////////////////////////////////////////////////
@@ -422,6 +461,65 @@ let validateStringAtIndex: (int, json) => Validation.t(string, Errors.t) =
         |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
+
+/**
+ * Validates the given Js.Json.t value at the given index, using the validation function.
+ *
+ * An invalid index can be treated as None or returned as an error using the missingAsNone flag.
+ * A null value can be treated as None or returned as an error using the nullAsNone flag.
+ * Failed validation can be treated as None or returned as an error using the errorAsNone flag.
+ */
+let validateOptionalAtIndex =
+    (
+      ~missingAsNone=true,
+      ~nullAsNone=true,
+      ~errorAsNone=false,
+      index: int,
+      validate: json => Validation.t('a, Errors.t),
+      json: json,
+    )
+    : Validation.t(option('a), Errors.t) =>
+  switch (getJsonAtIndex(index, json)) {
+  | Some(json) =>
+    // We got JSON at the index, see if it's null
+    switch (validateNull(json)) {
+    | VOk () =>
+      // The value was null, see if we treat that as a None or an error
+      if (nullAsNone) {
+        Validation.pure(None);
+      } else {
+        Validation.error(
+          Errors.pure(
+            string_of_int(index)
+            ++ " had a null value in JSON: "
+            ++ show(json),
+          ),
+        );
+      }
+    | VError(_) =>
+      // The value was not null, try to validate it, and see if we treat an error as None or return it
+      switch (validate(json)) {
+      | VOk(a) => Validation.pure(Some(a))
+      | VError(_) as e =>
+        if (errorAsNone) {
+          Validation.pure(None);
+        } else {
+          e;
+        }
+      }
+    }
+  | None =>
+    // There was no JSON at the index, see if we treat this as None or an error
+    if (missingAsNone) {
+      Validation.ok(None);
+    } else {
+      Validation.error(
+        Errors.pure(
+          "No value was found at index " ++ string_of_int(index) ++ " for JSON: " ++ show(json),
+        ),
+      );
+    }
+  };
 
 /**
  * Validates that the given Js.Json.t value is an array, then validates each item of the array
@@ -607,6 +705,62 @@ let validateStringForKey: (string, json) => Validation.t(string, Errors.t) =
     );
 
 /**
+ * Validates the given Js.Json.t value at the given key, using the validation function.
+ *
+ * An missing key or null value can be treated as None or returned as an error using the missingAsNone flag.
+ * A null value can be treated as None or returned as an error using the nullAsNone flag.
+ * Failed validation can be treated as None or returned as an error using the errorAsNone flag.
+ */
+let validateOptionalForKey =
+    (
+      ~missingAsNone=true,
+      ~nullAsNone=true,
+      ~errorAsNone=false,
+      key: string,
+      validate: json => Validation.t('a, Errors.t),
+      json: json,
+    )
+    : Validation.t(option('a), Errors.t) =>
+  // Try to get the JSON for the key
+  switch (getJsonForKey(key, json)) {
+  | Some(json) =>
+    // We got JSON for the key - see if it's null
+    switch (validateNull(json)) {
+    | VOk () =>
+      // The value was null - see if we treat this as a None or an error
+      if (nullAsNone) {
+        Validation.pure(None);
+      } else {
+        Validation.error(
+          Errors.pure(
+            key ++ " contained a null value in JSON: " ++ show(json),
+          ),
+        );
+      }
+    | VError(_) =>
+      // The value was not null - try to decode and see if we treat an error as None or as an error
+      switch (validate(json)) {
+      | VOk(a) => Validation.pure(Some(a))
+      | VError(_) as e =>
+        if (errorAsNone) {
+          Validation.pure(None);
+        } else {
+          e;
+        }
+      }
+    }
+  | None =>
+    // No JSON found for key - see if we treat that as a None or an error
+    if (missingAsNone) {
+      Validation.ok(None);
+    } else {
+      Validation.error(
+        Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
+      );
+    }
+  };
+
+/**
  * Validates the given Js.Json.t value is an object with an array at the given key,
  * then validates the array using the given validation function.
  */
@@ -623,6 +777,25 @@ let validateArrayForKey:
              Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
            ),
          json => validateArrayOfJson(validateItem, json),
+       );
+
+/**
+ * Validates the given Js.Json.t value is an object with an array at the given key,
+ * then validates the array using the given validation function, returning the result in a list.
+ */
+let validateListForKey:
+  'a.
+  (string, (int, json) => Validation.t('a, Errors.t), json) =>
+  Validation.t(list('a), Errors.t)
+ =
+  (key, validateItem, json) =>
+    getJsonForKey(key, json)
+    |> Option.foldLazy(
+         _ =>
+           Validation.error(
+             Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
+           ),
+         json => validateArrayOfJsonAsList(validateItem, json),
        );
 
 /**
@@ -692,6 +865,11 @@ module DSL = {
     let string: string => json = fromString;
 
     /**
+     * Encodes an option('a) as JSON, using the given encode function, or returning null for None.
+     */
+    let opt: ('a => json, option('a)) => json = fromOption;
+
+    /**
      * Encodes an array(Js.Json.t) as a single Js.Json.t (array) value
      */
     let array: array(json) => json = fromArrayOfJson;
@@ -738,8 +916,8 @@ module DSL = {
   };
 
   /**
-  JSON decoding utilities
-  */
+   * JSON decoding utilities
+   */
   module JD = {
     ////////////////////////////////////////////////////////////////////////////////
     // Plain value validation (decoding)
@@ -754,9 +932,36 @@ module DSL = {
      * Validates the given Js.Json.t value is a bool
      */
     let bool: json => Validation.t(bool, Errors.t) = validateBool;
-    let int = validateInt;
-    let float = validateFloat;
-    let string = validateString;
+
+    /**
+     * Validates the given Js.Json.t value as a string
+     */
+    let int: json => Validation.t(int, Errors.t) = validateInt;
+
+    /**
+     * Validates the given Js.Json.t value as a float
+     */
+    let float: json => Validation.t(float, Errors.t) = validateFloat;
+
+    /**
+     * Validates the given Js.Json.t value as a string
+     */
+    let string: json => Validation.t(string, Errors.t) = validateString;
+
+    /**
+     * Validates that the given Js.Json.t value is either null or can be validated using the given function.
+     *
+     * If the validation function fails, the error can either be returned as a successful None value, or the error
+     * can be returned - depending on the errorAsNone flag.
+     */
+    let opt =
+        (
+          ~errorAsNone=false,
+          validate: json => Validation.t('a, Errors.t),
+          json: json,
+        )
+        : Validation.t(option('a), Errors.t) =>
+      validateOptional(~errorAsNone, validate, json);
 
     ////////////////////////////////////////////////////////////////////////////////
     // Array validation - validating items by array index (or whole array)
@@ -765,57 +970,103 @@ module DSL = {
     /**
      * Gets the Js.Json.t value at the given index of a Js.Json.t array
      */
-    let getAt = getJsonAtIndex;
+    let getAt: (int, json) => option(json) = getJsonAtIndex;
 
     /**
      * Validates the Js.Json.t value at the given index with the given validation function
     */
-    let jsonAt = validateJsonAtIndex;
+    let jsonAt:
+      'a.
+      (int, json => Validation.t('a, Errors.t), json) =>
+      Validation.t('a, Errors.t)
+     = validateJsonAtIndex;
 
     /**
      * Validates a null value at the given index of a Js.Json.t array value
     */
-    let nullAt = validateNullAtIndex;
+    let nullAt: (int, json) => Validation.t(unit, Errors.t) = validateNullAtIndex;
 
     /**
      * Validates a bool value at the given index of a Js.Json.t array value
      */
-    let boolAt = validateBoolAtIndex;
+    let boolAt: (int, json) => Validation.t(bool, Errors.t) = validateBoolAtIndex;
 
     /**
      * Validates a string value at the given index of a Js.Json.t array value
      */
-    let stringAt = validateStringAtIndex;
+    let stringAt: (int, json) => Validation.t(string, Errors.t) = validateStringAtIndex;
 
     /**
      * Validates an int value at the given index of a Js.Json.t array value
      */
-    let intAt = validateIntAtIndex;
+    let intAt: (int, json) => Validation.t(int, Errors.t) = validateIntAtIndex;
 
     /**
      * Validates a float value at the given index of a Js.Json.t array value
      */
-    let floatAt = validateFloatAtIndex;
+    let floatAt: (int, json) => Validation.t(float, Errors.t) = validateFloatAtIndex;
+
+    /**
+     * Validates that the Js.Json.t value at the given index is either null or can be validated using the given function.
+     *
+     * Bad indices can be treated as None or as an error using missingAsNone
+     * Null value can be treated as None or as an error using nullAsNone
+     * Failed validation can be treated as None or an error using errorAsNone
+     */
+    let optAt =
+        (
+          ~missingAsNone=true,
+          ~nullAsNone=true,
+          ~errorAsNone=false,
+          index: int,
+          validate: json => Validation.t('a, Errors.t),
+          json: json,
+        )
+        : Validation.t(option('a), Errors.t) =>
+      validateOptionalAtIndex(
+        ~missingAsNone,
+        ~nullAsNone,
+        ~errorAsNone,
+        index,
+        validate,
+        json,
+      );
 
     /**
      * Validates an array at the given index of a Js.Json.t array value
      */
-    let arrayAt = validateArrayAtIndex;
+    let arrayAt:
+      'a.
+      (int, (int, json) => Validation.t('a, Errors.t), json) =>
+      Validation.t(array('a), Errors.t)
+     = validateArrayAtIndex;
 
     /**
      * Validates an obejct at the given index of a Js.Json.t array value
      */
-    let objectAt = validateObjectAtIndex;
+    let objectAt:
+      'a.
+      (int, json => Validation.t('a, Errors.t), json) =>
+      Validation.t('a, Errors.t)
+     = validateObjectAtIndex;
 
     /**
      * Validates an Js.Json.t array using the given validation function
      */
-    let array = validateArrayOfJson;
+    let array:
+      'a.
+      ((int, json) => Validation.t('a, Errors.t), json) =>
+      Validation.t(array('a), Errors.t)
+     = validateArrayOfJson;
 
     /**
      * Validates an Js.Json.t object using the given validation function
      */
-    let list = validateArrayOfJsonAsList;
+    let list:
+      'a.
+      ((int, json) => Validation.t('a, Errors.t), json) =>
+      Validation.t(list('a), Errors.t)
+     = validateArrayOfJsonAsList;
 
     ////////////////////////////////////////////////////////////////////////////////
     // Object validation - validating items by object key
@@ -824,42 +1075,85 @@ module DSL = {
     /**
      * Gets the Js.Json.t value for the given key of a Js.Json.t object value
      */
-    let getFor = getJsonForKey;
+    let getFor: (string, json) => option(json) = getJsonForKey;
 
     /**
      * Validates the Js.Json.t value for the given key, using the given validation function
      */
-    let jsonFor = validateJsonForKey;
+    let jsonFor:
+      'a.
+      (string, json => Validation.t('a, Errors.t), json) =>
+      Validation.t('a, Errors.t)
+     = validateJsonForKey;
 
     /**
      * Validates a null for the given key of a Js.Json.t object value
      */
-    let nullFor = validateNullForKey;
+    let nullFor: (string, json) => Validation.t(unit, Errors.t) = validateNullForKey;
 
     /**
      * Validates a bool for the given key of a Js.Json.t object value
      */
-    let boolFor = validateBoolForKey;
+    let boolFor: (string, json) => Validation.t(bool, Errors.t) = validateBoolForKey;
 
     /**
      * Validates a string for the given key of a Js.Json.t object value
      */
-    let stringFor = validateStringForKey;
+    let stringFor: (string, json) => Validation.t(string, Errors.t) = validateStringForKey;
 
     /**
      * Validates an int for the given key of a Js.Json.t object value
      */
-    let intFor = validateIntForKey;
+    let intFor: (string, json) => Validation.t(int, Errors.t) = validateIntForKey;
 
     /**
      * Validates a float for the given key of a Js.Json.t object value
      */
-    let floatFor = validateFloatForKey;
+    let floatFor: (string, json) => Validation.t(float, Errors.t) = validateFloatForKey;
+
+    /**
+     * Validates that the Js.Json.t value at the given key is either null or can be validated using the given function.
+     *
+     * Bad indices can be treated as None or as an error using missingAsNone
+     * Null value can be treated as None or as an error using nullAsNone
+     * Failed validation can be treated as None or an error using errorAsNone
+     */
+    let optFor =
+        (
+          ~missingAsNone=true,
+          ~nullAsNone=true,
+          ~errorAsNone=false,
+          key: string,
+          validate: json => Validation.t('a, Errors.t),
+          json: json,
+        )
+        : Validation.t(option('a), Errors.t) =>
+      validateOptionalForKey(
+        ~missingAsNone,
+        ~nullAsNone,
+        ~errorAsNone,
+        key,
+        validate,
+        json,
+      );
 
     /**
      * Validates an array for the given key of a Js.Json.t object value
      */
-    let arrayFor = validateArrayForKey;
+    let arrayFor:
+      'a.
+      (string, (int, json) => Validation.t('a, Errors.t), json) =>
+      Validation.t(array('a), Errors.t)
+     = validateArrayForKey;
+
+    /**
+     * Validates an array for the given key of a Js.Json.t object value, as a list
+     */
+    let listFor:
+      'a.
+      (string, (int, json) => Validation.t('a, Errors.t), json) =>
+      Validation.t(list('a), Errors.t)
+     = validateListForKey;
 
     /**
      * Validates an object for the given key of a Js.Json.t object value

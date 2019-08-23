@@ -23,7 +23,331 @@ open Json.DSL;
 
 describe("Json", () => {
   test("isNull", () =>
-    expect(Json.null |> Json.isNull) |> toEqual(true)
+    expect(JE.null |> Json.isNull) |> toEqual(true)
+  );
+
+  test("isBool", () =>
+    expect(JE.bool(true) |> Json.isBool) |> toEqual(true)
+  );
+
+  test("isString", () =>
+    expect(JE.string("hi") |> Json.isString) |> toEqual(true)
+  );
+
+  test("isNumber", () =>
+    expect(JE.float(1.23) |> Json.isNumber) |> toEqual(true)
+  );
+
+  test("isObject", () =>
+    expect(
+      JE.listOfTuples([("hi", Json.fromFloat(1.23))]) |> Json.isObject,
+    )
+    |> toEqual(true)
+  );
+
+  test("isArray", () =>
+    expect(
+      JE.list([Json.fromInt(42), Json.fromString("hi")]) |> Json.isArray,
+    )
+    |> toEqual(true)
+  );
+
+  test("encode opt Some", () =>
+    expect(JE.opt(JE.string, Some("hi"))) |> toEqual(JE.string("hi"))
+  );
+
+  test("encode opt None", () =>
+    expect(JE.opt(JE.string, None)) |> toEqual(JE.null)
+  );
+
+  test("validateOptional null value is None", () =>
+    expect(JD.opt(~errorAsNone=false, JD.string, JE.null))
+    |> toEqual(Validation.VOk(None))
+  );
+
+  test("validateOptional good value validates", () =>
+    expect(JD.opt(~errorAsNone=false, JD.string, JE.string("hi")))
+    |> toEqual(Validation.VOk(Some("hi")))
+  );
+
+  test("validateOptional bad value is an error when errorAsNone=false", () =>
+    expect(JD.opt(~errorAsNone=false, JD.string, JE.float(42.2)))
+    |> toEqual(
+         Validation.VError(
+           Relude.Nea.pure("JSON value is not a string: 42.2"),
+         ),
+       )
+  );
+
+  test("validateOptional bad value is None when errorAsNone=true", () =>
+    expect(JD.opt(~errorAsNone=true, JD.string, JE.float(42.2)))
+    |> toEqual(Validation.VOk(None))
+  );
+
+  test("validateOptionalAtIndex good value passes validation", () =>
+    expect(
+      JD.optAt(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        1,
+        JD.string,
+        JE.list([JE.int(42), JE.string("abc"), JE.string("hi")]),
+      ),
+    )
+    |> toEqual(Validation.VOk(Some("abc")))
+  );
+
+  test(
+    "validateOptionalAtIndex missing value is an error when missingAsNone=false",
+    () =>
+    expect(
+      JD.optAt(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        42,
+        JD.string,
+        JE.list([JE.int(42), JE.null, JE.string("hi")]),
+      ),
+    )
+    |> toEqual(
+         Validation.VError(
+           Relude.Nea.pure(
+             "No value was found at index 42 for JSON: [\n  42,\n  null,\n  \"hi\"\n]",
+           ),
+         ),
+       )
+  );
+
+  test(
+    "validateOptionalAtIndex missing value is a None when missingAsNone=true",
+    () =>
+    expect(
+      JD.optAt(
+        ~missingAsNone=true,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        42,
+        JD.string,
+        JE.list([JE.int(42), JE.null, JE.string("hi")]),
+      ),
+    )
+    |> toEqual(Validation.VOk(None))
+  );
+
+  test(
+    "validateOptionalAtIndex null value is an error when nullAsNone=false", () =>
+    expect(
+      JD.optAt(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        1,
+        JD.string,
+        JE.list([JE.int(42), JE.null, JE.string("hi")]),
+      ),
+    )
+    |> toEqual(
+         Validation.VError(
+           Relude.Nea.pure("1 had a null value in JSON: null"),
+         ),
+       )
+  );
+
+  test("validateOptionalAtIndex null value is a None when nullAsNone=true", () =>
+    expect(
+      JD.optAt(
+        ~missingAsNone=false,
+        ~nullAsNone=true,
+        ~errorAsNone=false,
+        1,
+        JD.string,
+        JE.list([JE.int(42), JE.null, JE.string("hi")]),
+      ),
+    )
+    |> toEqual(Validation.VOk(None))
+  );
+
+  test(
+    "validateOptionalAtIndex bad value is an error when errorAsNone is false",
+    () =>
+    expect(
+      JD.optAt(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        1,
+        JD.bool,
+        JE.list([JE.int(42), JE.string("abc"), JE.string("hi")]),
+      ),
+    )
+    |> toEqual(
+         Validation.VError(
+           Relude.Nea.pure("JSON value is not a bool: \"abc\""),
+         ),
+       )
+  );
+
+  test("validateOptionalAtIndex bad value is a None when errorAsNone=true", () =>
+    expect(
+      JD.optAt(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=true,
+        1,
+        JD.bool,
+        JE.list([JE.int(42), JE.string("abc"), JE.string("hi")]),
+      ),
+    )
+    |> toEqual(Validation.pure(None))
+  );
+
+  test("validateOptionalForKey good value passes validation", () =>
+    expect(
+      JD.optFor(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        "b",
+        JD.string,
+        JE.listOfTuples([
+          ("a", JE.int(42)),
+          ("b", JE.string("abc")),
+          ("c", JE.string("hi")),
+        ]),
+      ),
+    )
+    |> toEqual(Validation.VOk(Some("abc")))
+  );
+
+  test(
+    "validateOptionalForKey missing value is an error when missingAsNone=false",
+    () =>
+    expect(
+      JD.optFor(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        "d",
+        JD.string,
+        JE.listOfTuples([
+          ("a", JE.int(42)),
+          ("b", JE.string("abc")),
+          ("c", JE.string("hi")),
+        ]),
+      ),
+    )
+    |> toEqual(
+         Validation.VError(
+           Relude.Nea.pure(
+             "d was not found in JSON: {\n  \"a\": 42,\n  \"b\": \"abc\",\n  \"c\": \"hi\"\n}",
+           ),
+         ),
+       )
+  );
+
+  test(
+    "validateOptionalForKey missing value is a None when missingAsNone=true",
+    () =>
+    expect(
+      JD.optFor(
+        ~missingAsNone=true,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        "d",
+        JD.string,
+        JE.listOfTuples([
+          ("a", JE.int(42)),
+          ("b", JE.string("abc")),
+          ("c", JE.string("hi")),
+        ]),
+      ),
+    )
+    |> toEqual(Validation.VOk(None))
+  );
+
+  test(
+    "validateOptionalForKey null value is an error when nullAsNone=false", () =>
+    expect(
+      JD.optFor(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        "b",
+        JD.string,
+        JE.listOfTuples([
+          ("a", JE.int(42)),
+          ("b", JE.null),
+          ("c", JE.string("hi")),
+        ]),
+      ),
+    )
+    |> toEqual(
+         Validation.VError(
+           Relude.Nea.pure("b contained a null value in JSON: null"),
+         ),
+       )
+  );
+
+  test("validateOptionalForKey null value is a None when nullAsNone=true", () =>
+    expect(
+      JD.optFor(
+        ~missingAsNone=false,
+        ~nullAsNone=true,
+        ~errorAsNone=false,
+        "b",
+        JD.string,
+        JE.listOfTuples([
+          ("a", JE.int(42)),
+          ("b", JE.null),
+          ("c", JE.string("hi")),
+        ]),
+      ),
+    )
+    |> toEqual(Validation.VOk(None))
+  );
+
+  test(
+    "validateOptionalForKey bad value is an error when errorAsNone is false",
+    () =>
+    expect(
+      JD.optFor(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=false,
+        "b",
+        JD.bool,
+        JE.listOfTuples([
+          ("a", JE.int(42)),
+          ("b", JE.string("abc")),
+          ("c", JE.string("hi")),
+        ]),
+      ),
+    )
+    |> toEqual(
+         Validation.VError(
+           Relude.Nea.pure("JSON value is not a bool: \"abc\""),
+         ),
+       )
+  );
+
+  test("validateOptionalForKey bad value is a None when errorAsNone=true", () =>
+    expect(
+      JD.optFor(
+        ~missingAsNone=false,
+        ~nullAsNone=false,
+        ~errorAsNone=true,
+        "b",
+        JD.bool,
+        JE.listOfTuples([
+          ("a", JE.int(42)),
+          ("b", JE.string("hi")),
+          ("c", JE.string("hi")),
+        ]),
+      ),
+    )
+    |> toEqual(Validation.pure(None))
   );
 
   test("decode array using applicative validation (success)", () => {
