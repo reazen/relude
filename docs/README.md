@@ -42,4 +42,11 @@ Below are some libraries which may be coming soon to the `Relude` ecosystem:
 
 - `relude-color` - a color manipulation library
 - `relude-rationaljs-future` - an interop library for [rationaljs/future](https://github.com/RationalJS/future)
-- others?
+- And many more!
+
+## Contact
+
+- Open a [GitHub issue](https://github.com/reazen/relude/issues) if you have any feature requests, ideas, or bugs to report
+- Find us on the [ReasonML Discord Chat](https://discordapp.com/channels/235176658175262720/235176658175262720)
+    - `mulmus#4010`
+    - `whitehouse3001#3245`
