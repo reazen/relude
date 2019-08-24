@@ -1,7 +1,12 @@
 - Getting started
-  - [README](/)
+  - [Overview](Overview.md)
+  - [Installation](Installation.md)
   - [Conventions](Conventions.md)
-  - [Test Coverage](https://reazen.github.io/relude/coverage/lcov-report/index.html)
+  - [Status](Status.md)
+  - [Developer info](Developers.md)
+  - [Test coverage](https://reazen.github.io/relude/coverage/lcov-report/index.html)
+  - [FAQ](FAQ.md)
+
 - Typeclasses
   - [Introduction](typeclasses/Introduction.md)
   - [Show](typeclasses/Show.md)
@@ -15,7 +20,9 @@
   - [Monad](typeclasses/Monad.md)
   - [Foldable](typeclasses/Foldable.md)
   - [Traversable](typeclasses/Traversable.md)
-- Relude API Docs
+
+- API
+  - [Introduction](api/Introduction.md)
   - [Array](api/Array.md)
   - [AsyncData](api/AsyncData.md)
   - [AsyncResult](api/AsyncResult.md)
