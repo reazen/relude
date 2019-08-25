@@ -2,10 +2,9 @@
 
 > A functional programming prelude for ReasonML and Bucklescript OCaml
 
-- Typeclasses
-- First-class modules
-- Utilities
-- Everything you need!
+- Core modules
+- Utility types and functions
+- Typeclasses and extensions
 
 [![CircleCI](https://img.shields.io/circleci/project/github/reazen/relude/master.svg)](https://circleci.com/gh/reazen/relude)
 [![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)
