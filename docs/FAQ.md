@@ -6,8 +6,8 @@
 There are some issues open for exploring the possibility of compiling on the native OCaml
 environment.
 
-    - [bs-abstract native compilation issue](https://github.com/Risto-Stevcev/bs-abstract/issues/13)
-    - [Relude native compilation issue](https://github.com/reazen/relude/issues/133)
+- [bs-abstract native compilation issue](https://github.com/Risto-Stevcev/bs-abstract/issues/13)
+- [Relude native compilation issue](https://github.com/reazen/relude/issues/133)
 
 ## Why does `Relude` use peer dependencies for everything, rather than hard production dependencies?
 
@@ -32,10 +32,10 @@ If you are trying to compile and get an error like:
 This has type array(t) but somewhere wanted BsAbstract.Array.Foldable.t(string)`
 ```
 
-you likely need to add `bs-abstract` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because BuckleScript is not able to find the types defined in the `BsAbstract` module, so it can't determine that `array(t)` is the same type as `BsAbstract.Array.Foldabe.t(string)`.
+you likely need to add `bs-abstract` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because BuckleScript is not able to find the types defined in the `BsAbstract` module, so it can't determine that `array(t)` is the same type as `BsAbstract.Array.Foldable.t(string)`.
 
-Since we are not using .rei interface files, we are not able to abstract these types away for functions that get included into our implementation modules.  (See .rei topic below).
+Because we are not using .rei interface files, we are not able to abstract these types away for functions that get included into our implementation modules.  (See .rei topic below).
 
 ## Why doesn't `Relude` have interface (.rei) files?
 
-`Relude` relies heavily on the module [include](https://reasonml.github.io/docs/en/module#extending-modules) capability of ReasonML/OCaml.  Many of the typeclasses in `Relude` have extension modules that can be `include`d into your module to add a variety of useful utility functions, operators, and extension modules to your host module "for free," simply because you've taken the time to create an instance of a given typeclass.  Since there are lots of functions automatically added to many modules, it becomes difficult to maintain good .rei files which include documentation and more specialized type annotations.  Until we have a maintainable solution to this challenge, we are avoiding the use of .rei files.
+e`Relude` relies heavily on the module [include](https://reasonml.github.io/docs/en/module#extending-modules) capability of ReasonML/OCaml.  Many of the typeclasses in `Relude` have extension modules that can be `include`'d into your module to add a variety of useful utility functions, operators, and extension modules to your host module "for free," simply because you've taken the time to create an instance of a given typeclass.  Because there are lots of functions automatically added to many modules, it becomes difficult to maintain good .rei files which expose all of these automatically added functions, while at the same time including documentation and more specialized type annotations.  Until we have a maintainable solution for this challenge, we are avoiding the use of .rei files.

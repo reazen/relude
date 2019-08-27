@@ -36,7 +36,7 @@ This pattern of defining typeclasses instances and then including the correspond
 
 ## First-class modules
 
-ReasonML/OCaml does not support implement typeclass isntance resolution like Haskell, Purescript, and Scala.  This is a bummer, because it puts some roadblocks in the way of seamlessly using the typeclass infrastructure that is provided by `Relude`.  For example, in `Haskell`, you can use the `>>=` (`bind`) operator anywhere you want, as long as the compiler can find a `Monad` instance for the type in question somewhere in scope.  In ReasonML/OCaml, there is no ad-hoc polymorphism, so you can't just use operators and functions from typeclasses like you can in Haskell and Purescript.
+ReasonML/OCaml does not support implicit typeclass resolution like Haskell, Purescript, and Scala.  This is a bummer, because it puts some roadblocks in the way of seamlessly using the typeclass infrastructure that is provided by `Relude`.  For example, in `Haskell`, you can use the `>>=` (`bind`) operator anywhere you want, as long as the compiler can find a `Monad` instance for the type in question somewhere in scope.  In ReasonML/OCaml, there is no ad-hoc polymorphism, so you can't just use operators and functions from typeclasses like you can in Haskell and Purescript.
 
 Instead, ReasonML/OCaml provides the concept of [first-class modules](https://v1.realworldocaml.org/v1/en/html/first-class-modules.html).  This allows you to pass actual OCaml modules into functions, which gives you the same power of abstraction as typeclasses, but without the implicit (automatic) resolution.  "First-class modules" can be a bit brain-bending at first, but it becomes more clear when demonstrated with simpler typeclasses like `SHOW` or `EQ`.
 
