@@ -4,6 +4,11 @@
 
 This guide will not attempt to fully explain what typeclasses and typeclass instances are, and how they fit into functional programming, but it will try to explain how typeclasses are implemented in [bs-abstract](https://github.com/Risto-Stevcev) and `Relude`.  Also, the descriptions here are meant to help readers gain intuition, and are not intended to be 100% rigorously correct.  There are plenty of other resources on these topics which can be sought out for further reading.
 
+## Typeclasss in Relude
+
+- [Alt](Alt.md)
+- [Alternative](Alt.md)
+
 ## What is a typeclass?
 
 If you are coming from the OO world, it can be useful to relate typeclasses to OO interfaces or traits; however, there are some important differences.  A typeclass describes some capability or set of capabilities of a type or set of types along with a set of laws to which all instances (implementations) of the typeclass must adhere.  A `typeclass` is sort of like the interface and laws, and a `typeclass instance` is an implementation of the `typeclass` for a particular type, which must adhere to the laws in order to be considered a valid instance of the typeclass.  A `typeclass` is not something that you extend or implement in the OO sense, it is something you implement as its own standalone module for a particular type.  Instead of passing around "rich" values which implement interfaces like you might do in the OO world, you pass around plain values along with `typeclass instance` modules that can operate on the plain values.  You can also build more advanced typeclasses and instances by composing other component typeclasses and instances.

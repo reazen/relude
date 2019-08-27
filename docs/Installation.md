@@ -12,7 +12,7 @@ the duplicate package issues that surface when using a statically typed language
 > npm install --save bs-abstract relude
 ```
 
-2. Add `relude` and `bs-abstract` to your `bsconfig.json`
+2. **IMPORTANT**: add `relude` **and** `bs-abstract` to your `bsconfig.json`:
 
 ```json
 {
@@ -22,3 +22,5 @@ the duplicate package issues that surface when using a statically typed language
   ]
 }
 ```
+
+Without `bs-abstract` in your `bs-dependencies`, some things may fail to compile - see the [FAQ](FAQ.md) for more information.

@@ -2,7 +2,7 @@
 
 ## Contributions
 
-We welcome all contributions: bug fixes, features requests (or implementations), documentation, issues, discussions or feedback.
+We welcome contributions, bug fixes, features requests (or implementations), documentation, issues, discussions or feedback.  If you're not sure what exactly you want, or how to implement it, feel free to [create an issue](https://github.com/reazen/relude/issues).
 
 ## Development scripts
 
