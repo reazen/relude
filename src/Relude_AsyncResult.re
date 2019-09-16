@@ -235,7 +235,7 @@ let toBusy = Relude_AsyncData.toBusy;
 /**
  * Indicates if the AsyncResult is in a non-working state (Init or Complete)
  */
-let toIdle = Relude_AsyncData.toBusy;
+let toIdle = Relude_AsyncData.toIdle;
 
 /**
  * Maps a pure function over the value in a Reloading(Ok(_)) or Complete(Ok(_)) value
