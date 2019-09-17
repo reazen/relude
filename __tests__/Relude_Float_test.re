@@ -26,11 +26,7 @@ describe("Float", () => {
 
   test("add", () =>
     expect(
-      Float.approximatelyEqual(
-        ~tolerance=0.01,
-        Float.Semiring.add(3.1, 4.2),
-        7.3,
-      ),
+      Float.approximatelyEqual(~tolerance=0.01, Float.add(3.1, 4.2), 7.3),
     )
     |> toEqual(true)
   );
@@ -39,7 +35,7 @@ describe("Float", () => {
     expect(
       Float.approximatelyEqual(
         ~tolerance=0.01,
-        Float.Semiring.multiply(3.1, 2.0),
+        Float.multiply(3.1, 2.0),
         6.2,
       ),
     )
@@ -50,8 +46,19 @@ describe("Float", () => {
     expect(
       Float.approximatelyEqual(
         ~tolerance=1.1,
-        Float.Ring.subtract(9.9, 8.8),
+        Float.subtract(9.9, 8.8),
         1.1,
+      ),
+    )
+    |> toEqual(true)
+  );
+
+  test("divide", () =>
+    expect(
+      Float.approximatelyEqual(
+        ~tolerance=0.01,
+        Float.divide(1.0, 3.0),
+        0.333,
       ),
     )
     |> toEqual(true)

@@ -12,6 +12,68 @@ let toFloat = float_of_int;
 let fromFloat = int_of_float;
 
 /**
+ * The integer value 0
+ */
+let zero = 0;
+
+/**
+ * The integer value 1
+ */
+let one = 1;
+
+/**
+ * Finds the sum of two integers
+ */
+let add: (int, int) => int = (+);
+
+/**
+ * Finds the difference of two integers
+ */
+let subtract: (int, int) => int = (-);
+
+/**
+ * Finds the product of two integers
+ */
+let multiply: (int, int) => int = ( * );
+
+/**
+ * Finds the quotient of an integer division
+ */
+let divide: (int, int) => int = (/);
+
+/**
+ * Finds the remainder of an integer division
+ */
+let modulo: (int, int) => int = (a, b) => a mod b;
+
+/**
+ * Finds the quotient and remainder of an integer division
+ */
+let divideWithModulo: (int, int) => (int, int) =
+  (a, b) => (divide(a, b), modulo(a, b));
+
+/**
+ * Converts two int values to floats, then performs a float division
+ */
+let divideAsFloat: (int, int) => float =
+  (a, b) => float_of_int(a) /. float_of_int(b);
+
+/**
+ * The top bound (max value) of 32 bit int
+ */
+let top = Js.Int.max;
+
+/**
+ * The bottom bound (min value) of 32 bit int
+ */
+let bottom = Js.Int.min;
+
+/**
+ * Degree finds the smaller of the absolute value of the given in, or the max int value
+ */
+let degree: int => int = a => Js.Math.min_int(Js.Math.abs_int(a), top);
+
+/**
   `rangeAsList(n, m)` returns a list of integers
   `[n, n + 1, .. m - 1]`.
 
@@ -81,19 +143,32 @@ include Relude_Extensions_Ord.OrdExtensions(Ord);
 
 module Semiring: BsAbstract.Interface.SEMIRING with type t = int = {
   type t = int;
-  let zero = 0;
-  let one = 1;
-  let add = (a, b) => a + b;
-  let multiply = (a, b) => a * b;
+  let zero = zero;
+  let one = one;
+  let add = add;
+  let multiply = multiply;
 };
 include Relude_Extensions_Semiring.SemiringExtensions(Semiring);
 
 module Ring: BsAbstract.Interface.RING with type t = int = {
   include Semiring;
-  let subtract = (a, b) => a - b;
+  let subtract = subtract;
 };
 include Relude_Extensions_Ring.RingExtensions(Ring);
 include OrdRingExtensions(Ring);
+
+module Bounded: BsAbstract.Interface.BOUNDED with type t = int = {
+  include Ord;
+  let top = top;
+  let bottom = bottom;
+};
+
+module EuclideanRing: BsAbstract.Interface.EUCLIDEAN_RING with type t = int = {
+  include Ring;
+  let divide = divide;
+  let modulo = modulo;
+  let degree = degree;
+};
 
 /**
  * Map module with an int key

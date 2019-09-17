@@ -28,6 +28,54 @@ describe("Int", () => {
     expect(Int.fromFloat(nan)) |> toEqual(0)
   );
 
+  test("zero", () =>
+    expect(Int.zero) |> toEqual(0)
+  );
+
+  test("one", () =>
+    expect(Int.one) |> toEqual(1)
+  );
+
+  test("add", () =>
+    expect(Int.add(3, 4)) |> toEqual(7)
+  );
+
+  test("subtract", () =>
+    expect(Int.subtract(3, 4)) |> toEqual(-1)
+  );
+
+  test("multiply", () =>
+    expect(Int.multiply(3, 4)) |> toEqual(12)
+  );
+
+  test("divide", () =>
+    expect(Int.divide(13, 4)) |> toEqual(3)
+  );
+
+  test("modulo", () =>
+    expect(Int.modulo(13, 4)) |> toEqual(1)
+  );
+
+  test("divideWithModulo", () =>
+    expect(Int.divideWithModulo(13, 4)) |> toEqual((3, 1))
+  );
+
+  test("divideAsFloat", () =>
+    expect(Int.divideAsFloat(13, 4)) |> toEqual(13.0 /. 4.0)
+  );
+
+  test("degree", () =>
+    expect(Int.degree(42)) |> toEqual(42)
+  );
+
+  test("top", () =>
+    expect(Int.top) |> toEqual(Js.Int.max)
+  );
+
+  test("bottom", () =>
+    expect(Int.bottom) |> toEqual(Js.Int.min)
+  );
+
   test("rangeAsList for valid range", () =>
     expect(Int.rangeAsList(0, 5)) |> toEqual([0, 1, 2, 3, 4])
   );

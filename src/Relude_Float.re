@@ -9,6 +9,46 @@ module Eq: BsAbstract.Interface.EQ with type t = float = {
 };
 
 /**
+ * 0.0 value
+ */
+let zero: float = 0.0;
+
+/**
+ * 1.0 value
+ */
+let one: float = 1.0;
+
+/**
+ * Finds the sum of two floats
+ */
+let add: (float, float) => float = (+.);
+
+/**
+ * Finds the difference of two floats
+ */
+let subtract: (float, float) => float = (-.);
+
+/**
+ * Finds the product of two floats
+ */
+let multiply: (float, float) => float = ( *. );
+
+/**
+ * Finds the quotient of two floats
+ */
+let divide: (float, float) => float = (/.);
+
+/**
+ * Finds the max float value
+ */
+let top: float = BsAbstract.Float.Bounded.top;
+
+/**
+ * Finds the max float value
+ */
+let bottom: float = BsAbstract.Float.Bounded.bottom;
+
+/**
  * Compates two floats
  */
 let compare: (float, float) => BsAbstract.Interface.ordering = BsAbstract.Float.Ord.compare;
@@ -21,10 +61,10 @@ include Relude_Extensions_Ord.OrdExtensions(Ord);
 
 module Semiring: BsAbstract.Interface.SEMIRING with type t = float = {
   type t = float;
-  let zero = 0.0;
-  let one = 1.0;
-  let add = (a, b) => a +. b;
-  let multiply = (a, b) => a *. b;
+  let zero = zero;
+  let one = one;
+  let add = add;
+  let multiply = multiply;
 };
 include Relude_Extensions_Semiring.SemiringExtensions(Semiring);
 
@@ -34,6 +74,13 @@ module Ring: BsAbstract.Interface.RING with type t = float = {
 };
 include Relude_Extensions_Ring.RingExtensions(Ring);
 include OrdRingExtensions(Ring);
+
+module EuclideanRing: BsAbstract.Interface.EUCLIDEAN_RING with type t = float = {
+  include Ring;
+  let divide = divide;
+  let modulo = (_, _) => 0.0;
+  let degree = _ => 1;
+};
 
 /**
   `approximatelyEqual(~tolerance=t, x, y)` returns `true` if `x` and `y`
