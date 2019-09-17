@@ -14,14 +14,12 @@ let toIO: 'a. Js.Promise.t('a) => Relude_IO.t('a, Js.Promise.error) =
   promise =>
     Relude_IO.async(onDone =>
       promise
-      |> Js.Promise.then_(v => {
-           onDone(Belt.Result.Ok(v));
-           promise;
-         })
-      |> Js.Promise.catch(e => {
-           onDone(Belt.Result.Error(e));
-           promise;
-         })
+      |> Js.Promise.then_(v =>
+           Js.Promise.resolve(onDone(Belt.Result.Ok(v)))
+         )
+      |> Js.Promise.catch(e =>
+           Js.Promise.resolve(onDone(Belt.Result.Error(e)))
+         )
       |> ignore
     );
 
@@ -36,14 +34,12 @@ let toIOLazy:
     Relude_IO.async(onDone => {
       let promise = runPromise();
       promise
-      |> Js.Promise.then_(v => {
-           onDone(Belt.Result.Ok(v));
-           promise;
-         })
-      |> Js.Promise.catch(e => {
-           onDone(Belt.Result.Error(e));
-           promise;
-         })
+      |> Js.Promise.then_(v =>
+           Js.Promise.resolve(onDone(Belt.Result.Ok(v)))
+         )
+      |> Js.Promise.catch(e =>
+           Js.Promise.resolve(onDone(Belt.Result.Error(e)))
+         )
       |> ignore;
     });
 

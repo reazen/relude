@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">60.53% </span>
+        <span class="strong">55.88% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>23/38</span>
+        <span class='fraction'>19/34</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>8/17</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">60.53% </span>
+        <span class="strong">55.88% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>23/38</span>
+        <span class='fraction'>19/34</span>
       </div>
     </div>
     <p class="quiet">
@@ -117,11 +117,7 @@
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -131,9 +127,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -145,9 +139,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -205,11 +197,9 @@ var Relude_IO = require("../Relude_IO.bs.js");
 function toIO(promise) {
   return Relude_IO.async((function (onDone) {
                 promise.then((function (v) {
-                          Curry._1(onDone, /* Ok */Block.__(0, [v]));
-                          return promise;
+                          return Promise.resolve(Curry._1(onDone, /* Ok */Block.__(0, [v])));
                         })).catch((function (e) {
-                        Curry._1(onDone, /* Error */Block.__(1, [e]));
-                        return promise;
+                        return Promise.resolve(Curry._1(onDone, /* Error */Block.__(1, [e])));
                       }));
                 return /* () */0;
               }));
@@ -219,11 +209,9 @@ function toIOLazy(runPromise) {
   return Relude_IO.async((function (onDone) {
                 var promise = Curry._1(runPromise, /* () */0);
                 promise.then((function (v) {
-                          Curry._1(onDone, /* Ok */Block.__(0, [v]));
-                          return promise;
+                          return Promise.resolve(Curry._1(onDone, /* Ok */Block.__(0, [v])));
                         })).catch((function (e) {
-                        Curry._1(onDone, /* Error */Block.__(1, [e]));
-                        return promise;
+                        return Promise.resolve(Curry._1(onDone, /* Error */Block.__(1, [e])));
                       }));
                 return /* () */0;
               }));
