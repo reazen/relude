@@ -125,7 +125,7 @@ let getOrElseLazy: (unit => 'a, option('a)) => 'a =
 
 /**
  * `getOrThrow(opt)` returns the value of the option or throws an exception.
- * 
+ *
  * This should only be used if you are absolutely sure there is a value in the option.
  */
 let getOrThrow: 'a. option('a) => 'a = Belt.Option.getExn;
@@ -133,19 +133,22 @@ let getOrThrow: 'a. option('a) => 'a = Belt.Option.getExn;
 /**
  * Similar to alt, but with the arguments reversed and labelled for use with `|>`
  */
-let orElse = (~fallback: option('a), fa: option('a)): option('a) => switch (fa) {
-  | Some(_) as s => s
+let orElse = (~fallback: option('a), fa: option('a)): option('a) =>
+  switch (fa) {
+  | Some(_) => fa
   | None => fallback
-};
+  };
 
 /**
  * Similar to alt, but with the arguments reversed and labelled for use with `|>`.
  * The fallback value is also lazy for expensive constructions.
  */
-let orElseLazy = (~fallback: unit => option('a), fa: option('a)): option('a) => switch (fa) {
-  | Some(_) as s => s
+let orElseLazy =
+    (~fallback: unit => option('a), fa: option('a)): option('a) =>
+  switch (fa) {
+  | Some(_) => fa
   | None => fallback()
-};
+  };
 
 /**
   `map(f, opt)`, when `opt` is `Some(v)`, returns `Some(f(v))`.
@@ -164,6 +167,52 @@ module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = option('a) = {
   let map = map;
 };
 include Relude_Extensions_Functor.FunctorExtensions(Functor);
+
+/**
+ * `tap(f, opt)` applies a side-effect function to the value in a `Some`, and returns
+ * the original option value untouched.
+ */
+let tap: 'a. ('a => unit, option('a)) => option('a) =
+  (ifSome, fa) =>
+    switch (fa) {
+    | Some(a) =>
+      ifSome(a);
+      fa;
+    | None => fa
+    };
+
+/**
+ * `tapSome` is an alias for `tap`
+ */
+let tapSome: 'a. ('a => unit, option('a)) => option('a) = tap;
+
+/**
+ * `tap(f, opt)` applies a side-effect function if the value of the option is None, and returns
+ * the original option value untouched.
+ */
+let tapNone: 'a. (unit => unit, option('a)) => option('a) =
+  (ifNone, fa) =>
+    switch (fa) {
+    | Some(_) => fa
+    | None =>
+      ifNone();
+      fa;
+    };
+
+/**
+ * `bitap(ifNone, ifSome, opt)` applies a side effect function for each of the cases of the option, and
+ * returns the original option untouched.
+ */
+let bitap: 'a. (unit => unit, 'a => unit, option('a)) => option('a) =
+  (ifNone, ifSome, fa) =>
+    switch (fa) {
+    | Some(a) =>
+      ifSome(a);
+      fa;
+    | None =>
+      ifNone();
+      fa;
+    };
 
 /**
   `apply(optFcn, optVal)` returns `Some(f(v))` if `optFcn`

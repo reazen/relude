@@ -55,12 +55,101 @@ let isBoth: 'a 'e. t('a, 'e) => bool =
 /**
  * Maps a pure function over the success channel of the Ior
  */
-let map: ('a => 'b, t('a, 'e)) => t('b, 'e) =
+let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
   (f, fa) =>
     switch (fa) {
     | IError(_) as e => e
     | IOk(a) => IOk(f(a))
     | IBoth(a, e) => IBoth(f(a), e)
+    };
+
+/**
+ * Applies a side effect function if the value is IOk, IError, or IBoth
+ */
+let tap:
+  'a 'e.
+  ('a => unit, 'e => unit, ('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
+ =
+  (ifOk, ifError, ifBoth, fa) =>
+    switch (fa) {
+    | IOk(a) =>
+      ifOk(a);
+      fa;
+    | IError(e) =>
+      ifError(e);
+      fa;
+    | IBoth(a, e) =>
+      ifBoth(a, e);
+      fa;
+    };
+
+/**
+ * Applies a side-effect function if the value is IOk
+ */
+let tapOk: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
+  (ifOk, fa) =>
+    switch (fa) {
+    | IOk(a) =>
+      ifOk(a);
+      fa;
+    | IError(_) => fa
+    | IBoth(_, _) => fa
+    };
+
+/**
+ * Applies a side-effect function if the value is IError
+ */
+let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
+  (ifError, fa) =>
+    switch (fa) {
+    | IOk(_) => fa
+    | IError(e) =>
+      ifError(e);
+      fa;
+    | IBoth(_, _) => fa
+    };
+
+/**
+ * Applies a side-effect function if the value is IBoth
+ */
+let tapBoth: 'a 'e. (('a, 'e) => unit, t('a, 'e)) => t('a, 'e) =
+  (ifBoth, fa) =>
+    switch (fa) {
+    | IOk(_) => fa
+    | IError(_) => fa
+    | IBoth(a, e) =>
+      ifBoth(a, e);
+      fa;
+    };
+
+/**
+ * Applies a side effect function to the 'a value in an IOk or an IBoth
+ */
+let tapOkOrBothOk: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
+  (ifValue, fa) =>
+    switch (fa) {
+    | IOk(a) =>
+      ifValue(a);
+      fa;
+    | IError(_) => fa
+    | IBoth(a, _) =>
+      ifValue(a);
+      fa;
+    };
+
+/**
+ * Applies a side effect function to the 'e value in an IError or an IBoth
+ */
+let tapErrorOrBothError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
+  (ifError, fa) =>
+    switch (fa) {
+    | IOk(_) => fa
+    | IError(e) =>
+      ifError(e);
+      fa;
+    | IBoth(_, e) =>
+      ifError(e);
+      fa;
     };
 
 /**

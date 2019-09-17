@@ -41,14 +41,14 @@ let completeError: 'a 'e. 'e => t('a, 'e) =
 
 /**
  * Constructs a Complete(Ok(_)) value
- * 
+ *
  * Alias for `completeOk`
  */
 let ok: 'a 'e. 'a => t('a, 'e) = completeOk;
 
 /**
  * Constructs a Complete(Error(_)) value
- * 
+ *
  * Alias for `completeError`
  */
 let error: 'a 'e. 'e => t('a, 'e) = completeError;
@@ -82,6 +82,16 @@ let isBusy = Relude_AsyncData.isBusy;
  * Indicates if the AsyncResult is in a non-working state (Init or Complete)
  */
 let isIdle = Relude_AsyncData.isIdle;
+
+/**
+ * Indicates if the AsyncResult is Init or Loading
+ */
+let isEmpty = Relude_AsyncData.isEmpty;
+
+/**
+ * Indicates if the AsyncResult is Reloading or Complete
+ */
+let isNotEmpty = Relude_AsyncData.isNotEmpty;
 
 /**
  * Indicates if the contained Result is in an Ok state for Reloading or Complete
@@ -263,6 +273,111 @@ let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     | Reloading(Belt.Result.Error(e)) => reloadingError(f(e))
     | Complete(Belt.Result.Ok(_)) as c => c
     | Complete(Belt.Result.Error(e)) => completeError(f(e))
+    };
+
+/**
+ * Applies a side effect function for each case of the AsyncResult
+ */
+let tap:
+  'a 'e.
+  (
+    unit => unit,
+    unit => unit,
+    Belt.Result.t('a, 'e) => unit,
+    Belt.Result.t('a, 'e) => unit,
+    t('a, 'e)
+  ) =>
+  t('a, 'e)
+ = Relude_AsyncData.tap;
+
+/**
+ * Applies a side-effect function if the value is Init
+ */
+let tapInit: 'a 'e. (unit => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData.tapInit;
+
+/**
+ * Applies a side-effect function if the value is Loading
+ */
+let tapLoading: 'a 'e. (unit => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData.tapLoading;
+
+/**
+ * Applies a side-effect function if the value is Reloading
+ */
+let tapReloading:
+  'a 'e.
+  (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
+ = Relude_AsyncData.tapReloading;
+
+/**
+ * Applies a side-effect function if the value is Complete
+ */
+let tapComplete:
+  'a 'e.
+  (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
+ = Relude_AsyncData.tapComplete;
+
+/**
+ * Applies a side-effect function if the value is Init or Loading
+ */
+let tapEmpty: 'a 'e. (unit => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData.tapEmpty;
+
+/**
+ * Applies a side-effect function if the value is Reloading or Complete
+ */
+let tapNotEmpty:
+  'a 'e.
+  (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
+ = Relude_AsyncData.tapNotEmpty;
+
+/**
+ * Applies a side effect function if the value is empty or not-empty
+ */
+let tapByValue:
+  'a 'e.
+  (unit => unit, Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
+ =
+  (ifEmpty, ifNotEmpty, fa) =>
+    switch (fa) {
+    | Init
+    | Loading =>
+      ifEmpty();
+      fa;
+    | Reloading(a)
+    | Complete(a) =>
+      ifNotEmpty(a);
+      fa;
+    };
+
+/**
+ * Applies a side effect function if the value is Reloading or Complete Ok
+ */
+let tapOk: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
+  (ifOk, fa) =>
+    switch (fa) {
+    | Init
+    | Loading
+    | Reloading(Error(_))
+    | Complete(Error(_)) => fa
+    | Reloading(Ok(a))
+    | Complete(Ok(a)) =>
+      ifOk(a);
+      fa;
+    };
+
+/**
+ * Applies a side effect function if the value is Reloading or Complete Error
+ */
+let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
+  (ifError, fa) =>
+    switch (fa) {
+    | Init
+    | Loading
+    | Reloading(Ok(_))
+    | Complete(Ok(_)) => fa
+    | Reloading(Error(e))
+    | Complete(Error(e)) =>
+      ifError(e);
+      fa;
     };
 
 /**
@@ -459,7 +574,7 @@ let eqBy:
 
 /**
  * Create a Result module with the given Error Type, specified as a TYPE module.
- * 
+ *
  * This is useful so that we can provide typeclass instances for typeclasses that
  * have a single type hole, like Functor, Apply, Monad, etc.
  */

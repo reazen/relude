@@ -90,6 +90,26 @@ let isBusy: 'a. t('a) => bool =
 let isIdle: 'a. t('a) => bool = fa => !isBusy(fa);
 
 /**
+ * Checks if this AsyncData value is Init or Loading
+ */
+let isEmpty: 'a. t('a) => bool =
+  fun
+  | Init => true
+  | Loading => true
+  | Reloading(_) => false
+  | Complete(_) => false;
+
+/**
+ * Checks if this AsyncData value is Reloading or Complete
+ */
+let isNotEmpty: 'a. t('a) => bool =
+  fun
+  | Init => false
+  | Loading => false
+  | Reloading(_) => true
+  | Complete(_) => true;
+
+/**
  * Creates a new `AsyncData` by transitioning the given `AsyncData` into a busy state (`Loading` or `Reloading`), and carrying over the internal data if available.
  */
 let toBusy: 'a. t('a) => t('a) =
@@ -197,6 +217,129 @@ module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
   let map = map;
 };
 include Relude_Extensions_Functor.FunctorExtensions(Functor);
+
+/**
+ * Applies a side effect function for each case of the variant (Init, Loading, Reloading, Complete)
+ */
+let tap:
+  'a.
+  (unit => unit, unit => unit, 'a => unit, 'a => unit, t('a)) => t('a)
+ =
+  (ifInit, ifLoading, ifReloading, ifComplete, fa) =>
+    switch (fa) {
+    | Init =>
+      ifInit();
+      fa;
+    | Loading =>
+      ifLoading();
+      fa;
+    | Reloading(a) =>
+      ifReloading(a);
+      fa;
+    | Complete(a) =>
+      ifComplete(a);
+      fa;
+    };
+
+/**
+ * Applies a side effect function if the value is Init
+ */
+let tapInit: 'a. (unit => unit, t('a)) => t('a) =
+  (ifInit, fa) =>
+    switch (fa) {
+    | Init =>
+      ifInit();
+      fa;
+    | Loading => fa
+    | Reloading(_) => fa
+    | Complete(_) => fa
+    };
+
+/**
+ * Applies a side effect function if the value is Loading
+ */
+let tapLoading: 'a. (unit => unit, t('a)) => t('a) =
+  (ifLoading, fa) =>
+    switch (fa) {
+    | Init => fa
+    | Loading =>
+      ifLoading();
+      fa;
+    | Reloading(_) => fa
+    | Complete(_) => fa
+    };
+
+/**
+ * Applies a side effect function if the value is Reloading
+ */
+let tapReloading: 'a. ('a => unit, t('a)) => t('a) =
+  (ifReloading, fa) =>
+    switch (fa) {
+    | Init => fa
+    | Loading => fa
+    | Reloading(a) =>
+      ifReloading(a);
+      fa;
+    | Complete(_) => fa
+    };
+
+/**
+ * Applies a side effect function if the value is Complete
+ */
+let tapComplete: 'a. ('a => unit, t('a)) => t('a) =
+  (ifComplete, fa) =>
+    switch (fa) {
+    | Init => fa
+    | Loading => fa
+    | Reloading(_) => fa
+    | Complete(a) =>
+      ifComplete(a);
+      fa;
+    };
+
+/**
+ * Applies a side effect function if the value is Init or Loading
+ */
+let tapEmpty: 'a. (unit => unit, t('a)) => t('a) =
+  (ifEmpty, fa) =>
+    switch (fa) {
+    | Init
+    | Loading =>
+      ifEmpty();
+      fa;
+    | Reloading(_)
+    | Complete(_) => fa
+    };
+
+/**
+ * Applies a side effect function if the value is Reloading or Complete
+ */
+let tapNotEmpty: 'a. ('a => unit, t('a)) => t('a) =
+  (ifNotEmpty, fa) =>
+    switch (fa) {
+    | Init
+    | Loading => fa
+    | Reloading(a)
+    | Complete(a) =>
+      ifNotEmpty(a);
+      fa;
+    };
+
+/**
+ * Applies a side effect function for the empty case and the not-empty case
+ */
+let tapByValue: 'a. (unit => unit, 'a => unit, t('a)) => t('a) =
+  (ifEmpty, ifNotEmpty, fa) =>
+    switch (fa) {
+    | Init
+    | Loading =>
+      ifEmpty();
+      fa;
+    | Reloading(a)
+    | Complete(a) =>
+      ifNotEmpty(a);
+      fa;
+    };
 
 /**
  * Applies a wrapped function to the value contained by Reloading or Complete
