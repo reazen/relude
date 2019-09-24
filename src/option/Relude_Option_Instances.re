@@ -103,6 +103,20 @@ module Monad: MONAD with type t('a) = option('a) = {
 };
 include Relude_Extensions_Monad.MonadExtensions(Monad);
 
+module MonadRec:
+  Relude_Typeclass_MonadRec.MONAD_REC with type t('a) = option('a) = {
+  include Monad;
+  let tailRecM = (f, v) => {
+    let g =
+      fun
+      | None => `Done(None)
+      | Some(`Loop(v)) => `Loop(f(v))
+      | Some(`Done(b)) => `Done(Some(b));
+
+    Relude_Typeclass_MonadRec.tailRec(g, f(v));
+  };
+};
+
 let align:
   'a 'b.
   (option('a), option('b)) => option(Relude_Ior_Type.t('a, 'b))
