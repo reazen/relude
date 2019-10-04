@@ -67,22 +67,22 @@
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -90,15 +90,15 @@ var Functions$BsAbstract = require("bs-abstract/lib/js/src/functions/Functions.b
 &nbsp;
 function ApplicativeExtensions(A) {
   var BsApplicativeExtensions = Functions$BsAbstract.Applicative(A);
-  var liftA1 = BsApplicativeExtensions[/* liftA1 */1];
-  var when_ = BsApplicativeExtensions[/* when_ */2];
-  var unless = BsApplicativeExtensions[/* unless */3];
-  return /* module */[
-          /* BsApplicativeExtensions */BsApplicativeExtensions,
-          /* liftA1 */liftA1,
-          /* when_ */when_,
-          /* unless */unless
-        ];
+  var liftA1 = BsApplicativeExtensions.liftA1;
+  var when_ = BsApplicativeExtensions.when_;
+  var unless = BsApplicativeExtensions.unless;
+  return {
+          BsApplicativeExtensions: BsApplicativeExtensions,
+          liftA1: liftA1,
+          when_: when_,
+          unless: unless
+        };
 }
 &nbsp;
 exports.ApplicativeExtensions = ApplicativeExtensions;

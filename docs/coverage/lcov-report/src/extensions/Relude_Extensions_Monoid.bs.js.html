@@ -65,20 +65,20 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -86,13 +86,13 @@ var Functions$BsAbstract = require("bs-abstract/lib/js/src/functions/Functions.b
 &nbsp;
 function MonoidExtensions(M) {
   var BsMonoidExtensions = Functions$BsAbstract.Monoid(M);
-  var guard = BsMonoidExtensions[/* guard */2];
-  var power = BsMonoidExtensions[/* power */1];
-  return /* module */[
-          /* BsMonoidExtensions */BsMonoidExtensions,
-          /* guard */guard,
-          /* power */power
-        ];
+  var guard = BsMonoidExtensions.guard;
+  var power = BsMonoidExtensions.power;
+  return {
+          BsMonoidExtensions: BsMonoidExtensions,
+          guard: guard,
+          power: power
+        };
 }
 &nbsp;
 exports.MonoidExtensions = MonoidExtensions;

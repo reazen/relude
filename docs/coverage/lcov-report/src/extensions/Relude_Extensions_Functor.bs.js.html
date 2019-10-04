@@ -103,19 +103,19 @@
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
-<span class="cline-any cline-yes">144x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
+<span class="cline-any cline-yes">328x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -126,15 +126,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">70x</span>
-<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">246x</span>
+<span class="cline-any cline-yes">246x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">70x</span>
-<span class="cline-any cline-yes">70x</span>
-<span class="cline-any cline-yes">70x</span>
-<span class="cline-any cline-yes">70x</span>
-<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">246x</span>
+<span class="cline-any cline-yes">246x</span>
+<span class="cline-any cline-yes">246x</span>
+<span class="cline-any cline-yes">246x</span>
+<span class="cline-any cline-yes">246x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -142,8 +142,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">70x</span>
-<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">246x</span>
+<span class="cline-any cline-yes">246x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,8 +153,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -164,48 +164,48 @@ var Functions$BsAbstract = require("bs-abstract/lib/js/src/functions/Functions.b
 function FunctorExtensions(F) {
   var BsFunctorExtensions = Functions$BsAbstract.Functor(F);
   var flipMap = <span class="fstat-no" title="function not covered" >fu</span>nction (fa, f) {
-<span class="cstat-no" title="statement not covered" >    return Curry._2(F[/* map */0], f, fa);</span>
+<span class="cstat-no" title="statement not covered" >    return Curry._2(F.map, f, fa);</span>
   };
-  var $$void = BsFunctorExtensions[/* void */0];
-  var voidRight = BsFunctorExtensions[/* void_right */1];
-  var voidLeft = BsFunctorExtensions[/* void_left */2];
-  var flap = BsFunctorExtensions[/* flap */3];
-  return /* module */[
-          /* BsFunctorExtensions */BsFunctorExtensions,
-          /* flipMap */flipMap,
-          /* void */$$void,
-          /* voidRight */voidRight,
-          /* voidLeft */voidLeft,
-          /* flap */flap
-        ];
+  var $$void = BsFunctorExtensions.void;
+  var voidRight = BsFunctorExtensions.void_right;
+  var voidLeft = BsFunctorExtensions.void_left;
+  var flap = BsFunctorExtensions.flap;
+  return {
+          BsFunctorExtensions: BsFunctorExtensions,
+          flipMap: flipMap,
+          void: $$void,
+          voidRight: voidRight,
+          voidLeft: voidLeft,
+          flap: flap
+        };
 }
 &nbsp;
 function FunctorInfix(F) {
   var BsFunctorExtensions = Functions$BsAbstract.Functor(F);
   var flipMap = function (fa, f) {
-    return Curry._2(F[/* map */0], f, fa);
+    return Curry._2(F.map, f, fa);
   };
-  var $$void = BsFunctorExtensions[/* void */0];
-  var voidRight = BsFunctorExtensions[/* void_right */1];
-  var voidLeft = BsFunctorExtensions[/* void_left */2];
-  var flap = BsFunctorExtensions[/* flap */3];
-  var FunctorExtensions = /* module */[
-    /* BsFunctorExtensions */BsFunctorExtensions,
-    /* flipMap */flipMap,
-    /* void */$$void,
-    /* voidRight */voidRight,
-    /* voidLeft */voidLeft,
-    /* flap */flap
-  ];
-  var $less$$great = F[/* map */0];
-  return /* module */[
-          /* FunctorExtensions */FunctorExtensions,
-          /* &lt;$&gt; */$less$$great,
-          /* &lt;#&gt; */flipMap,
-          /* &lt;$ */voidRight,
-          /* $&gt; */voidLeft,
-          /* &lt;@&gt; */flap
-        ];
+  var $$void = BsFunctorExtensions.void;
+  var voidRight = BsFunctorExtensions.void_right;
+  var voidLeft = BsFunctorExtensions.void_left;
+  var flap = BsFunctorExtensions.flap;
+  var FunctorExtensions = {
+    BsFunctorExtensions: BsFunctorExtensions,
+    flipMap: flipMap,
+    void: $$void,
+    voidRight: voidRight,
+    voidLeft: voidLeft,
+    flap: flap
+  };
+  var $less$$great = F.map;
+  return {
+          FunctorExtensions: FunctorExtensions,
+          "&lt;$&gt;": $less$$great,
+          "&lt;#&gt;": flipMap,
+          "&lt;$": voidRight,
+          "$&gt;": voidLeft,
+          "&lt;@&gt;": flap
+        };
 }
 &nbsp;
 exports.FunctorExtensions = FunctorExtensions;

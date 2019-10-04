@@ -65,34 +65,34 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">51x</span>
+<span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
 var Curry = require("bs-platform/lib/js/curry.js");
 &nbsp;
 function RingExtensions(R) {
-  var $neg = R[/* subtract */4];
+  var $neg = R.subtract;
   var negate = <span class="fstat-no" title="function not covered" >fu</span>nction (v) {
-<span class="cstat-no" title="statement not covered" >    return Curry._2($neg, R[/* zero */1], v);</span>
+<span class="cstat-no" title="statement not covered" >    return Curry._2($neg, R.zero, v);</span>
   };
-  return /* module */[
-          /* - */$neg,
-          /* negate */negate
-        ];
+  return {
+          "-": $neg,
+          negate: negate
+        };
 }
 &nbsp;
 exports.RingExtensions = RingExtensions;

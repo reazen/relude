@@ -76,9 +76,11 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
@@ -103,8 +105,10 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -112,25 +116,27 @@ var Curry = require("bs-platform/lib/js/curry.js");
 &nbsp;
 function BifunctorExtensions(B) {
   var mapLeft = <span class="fstat-no" title="function not covered" >fu</span>nction (aToC, fab) {
-<span class="cstat-no" title="statement not covered" >    return Curry._3(B[/* bimap */0], aToC, (<span class="fstat-no" title="function not covered" >fu</span>nction (b) {</span>
+<span class="cstat-no" title="statement not covered" >    return Curry._3(B.bimap, aToC, (<span class="fstat-no" title="function not covered" >fu</span>nction (b) {</span>
 <span class="cstat-no" title="statement not covered" >                  return b;</span>
                 }), fab);
   };
   var mapRight = function (bToD, fab) {
-    return Curry._3(B[/* bimap */0], (<span class="fstat-no" title="function not covered" >fu</span>nction (a) {
+    return Curry._3(B.bimap, (<span class="fstat-no" title="function not covered" >fu</span>nction (a) {
 <span class="cstat-no" title="statement not covered" >                  return a;</span>
                 }), bToD, fab);
   };
-  return /* module */[
-          /* mapLeft */mapLeft,
-          /* mapRight */mapRight,
-          /* mapError */mapRight
-        ];
+  return {
+          mapLeft: mapLeft,
+          mapRight: mapRight,
+          mapError: mapRight
+        };
 }
 &nbsp;
 function BifunctorInfix(B) {
-  var $less$less$$great$great = B[/* bimap */0];
-  return /* module */[/* &lt;&lt;$&gt;&gt; */$less$less$$great$great];
+  var $less$less$$great$great = B.bimap;
+  return {
+          "&lt;&lt;$&gt;&gt;": $less$less$$great$great
+        };
 }
 &nbsp;
 exports.BifunctorExtensions = BifunctorExtensions;

@@ -118,25 +118,25 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">143x</span>
-<span class="cline-any cline-yes">143x</span>
+<span class="cline-any cline-yes">284x</span>
+<span class="cline-any cline-yes">284x</span>
 <span class="cline-any cline-yes">115x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">143x</span>
+<span class="cline-any cline-yes">284x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">143x</span>
-<span class="cline-any cline-yes">143x</span>
-<span class="cline-any cline-yes">143x</span>
-<span class="cline-any cline-yes">143x</span>
-<span class="cline-any cline-yes">143x</span>
-<span class="cline-any cline-yes">143x</span>
+<span class="cline-any cline-yes">284x</span>
+<span class="cline-any cline-yes">284x</span>
+<span class="cline-any cline-yes">284x</span>
+<span class="cline-any cline-yes">284x</span>
+<span class="cline-any cline-yes">284x</span>
+<span class="cline-any cline-yes">284x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -149,21 +149,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
+<span class="cline-any cline-yes">202x</span>
+<span class="cline-any cline-yes">202x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">69x</span>
+<span class="cline-any cline-yes">202x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
+<span class="cline-any cline-yes">202x</span>
+<span class="cline-any cline-yes">202x</span>
+<span class="cline-any cline-yes">202x</span>
+<span class="cline-any cline-yes">202x</span>
+<span class="cline-any cline-yes">202x</span>
+<span class="cline-any cline-yes">202x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -173,8 +173,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
+<span class="cline-any cline-yes">202x</span>
+<span class="cline-any cline-yes">202x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -183,8 +183,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -194,63 +194,63 @@ var Functions$BsAbstract = require("bs-abstract/lib/js/src/functions/Functions.b
 function MonadExtensions(M) {
   var BsMonadExtensions = Functions$BsAbstract.Monad(M);
   var flatMap = function (f, ma) {
-    return Curry._2(M[/* flat_map */3], ma, f);
+    return Curry._2(M.flat_map, ma, f);
   };
   var flatten = function (mma) {
-    return Curry._2(M[/* flat_map */3], mma, (function (v) {
+    return Curry._2(M.flat_map, mma, (function (v) {
                   return v;
                 }));
   };
-  var composeKleisli = BsMonadExtensions[/* compose_kliesli */3];
-  var flipComposeKleisli = BsMonadExtensions[/* compose_kliesli_flipped */4];
-  var liftM1 = BsMonadExtensions[/* liftM1 */6];
-  var when_ = BsMonadExtensions[/* when_ */8];
-  var unless = BsMonadExtensions[/* unless */9];
-  return /* module */[
-          /* BsMonadExtensions */BsMonadExtensions,
-          /* flatMap */flatMap,
-          /* flatten */flatten,
-          /* composeKleisli */composeKleisli,
-          /* flipComposeKleisli */flipComposeKleisli,
-          /* liftM1 */liftM1,
-          /* when_ */when_,
-          /* unless */unless
-        ];
+  var composeKleisli = BsMonadExtensions.compose_kliesli;
+  var flipComposeKleisli = BsMonadExtensions.compose_kliesli_flipped;
+  var liftM1 = BsMonadExtensions.liftM1;
+  var when_ = BsMonadExtensions.when_;
+  var unless = BsMonadExtensions.unless;
+  return {
+          BsMonadExtensions: BsMonadExtensions,
+          flatMap: flatMap,
+          flatten: flatten,
+          composeKleisli: composeKleisli,
+          flipComposeKleisli: flipComposeKleisli,
+          liftM1: liftM1,
+          when_: when_,
+          unless: unless
+        };
 }
 &nbsp;
 function MonadInfix(M) {
   var BsMonadExtensions = Functions$BsAbstract.Monad(M);
   var flatMap = <span class="fstat-no" title="function not covered" >fu</span>nction (f, ma) {
-<span class="cstat-no" title="statement not covered" >    return Curry._2(M[/* flat_map */3], ma, f);</span>
+<span class="cstat-no" title="statement not covered" >    return Curry._2(M.flat_map, ma, f);</span>
   };
   var flatten = <span class="fstat-no" title="function not covered" >fu</span>nction (mma) {
-<span class="cstat-no" title="statement not covered" >    return Curry._2(M[/* flat_map */3], mma, (<span class="fstat-no" title="function not covered" >fu</span>nction (v) {</span>
+<span class="cstat-no" title="statement not covered" >    return Curry._2(M.flat_map, mma, (<span class="fstat-no" title="function not covered" >fu</span>nction (v) {</span>
 <span class="cstat-no" title="statement not covered" >                  return v;</span>
                 }));
   };
-  var composeKleisli = BsMonadExtensions[/* compose_kliesli */3];
-  var flipComposeKleisli = BsMonadExtensions[/* compose_kliesli_flipped */4];
-  var liftM1 = BsMonadExtensions[/* liftM1 */6];
-  var when_ = BsMonadExtensions[/* when_ */8];
-  var unless = BsMonadExtensions[/* unless */9];
-  var MonadExtensions = /* module */[
-    /* BsMonadExtensions */BsMonadExtensions,
-    /* flatMap */flatMap,
-    /* flatten */flatten,
-    /* composeKleisli */composeKleisli,
-    /* flipComposeKleisli */flipComposeKleisli,
-    /* liftM1 */liftM1,
-    /* when_ */when_,
-    /* unless */unless
-  ];
-  var $great$great$eq = M[/* flat_map */3];
-  return /* module */[
-          /* MonadExtensions */MonadExtensions,
-          /* &gt;&gt;= */$great$great$eq,
-          /* =&lt;&lt; */flatMap,
-          /* &gt;=&gt; */composeKleisli,
-          /* &lt;=&lt; */flipComposeKleisli
-        ];
+  var composeKleisli = BsMonadExtensions.compose_kliesli;
+  var flipComposeKleisli = BsMonadExtensions.compose_kliesli_flipped;
+  var liftM1 = BsMonadExtensions.liftM1;
+  var when_ = BsMonadExtensions.when_;
+  var unless = BsMonadExtensions.unless;
+  var MonadExtensions = {
+    BsMonadExtensions: BsMonadExtensions,
+    flatMap: flatMap,
+    flatten: flatten,
+    composeKleisli: composeKleisli,
+    flipComposeKleisli: flipComposeKleisli,
+    liftM1: liftM1,
+    when_: when_,
+    unless: unless
+  };
+  var $great$great$eq = M.flat_map;
+  return {
+          MonadExtensions: MonadExtensions,
+          "&gt;&gt;=": $great$great$eq,
+          "=&lt;&lt;": flatMap,
+          "&gt;=&gt;": composeKleisli,
+          "&lt;=&lt;": flipComposeKleisli
+        };
 }
 &nbsp;
 exports.MonadExtensions = MonadExtensions;

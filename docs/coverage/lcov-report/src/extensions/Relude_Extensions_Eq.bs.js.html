@@ -73,15 +73,21 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">39x</span>
+<span class="cline-any cline-yes">52x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">39x</span>
+<span class="cline-any cline-yes">52x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -89,6 +95,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -97,8 +105,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -106,22 +114,26 @@ var Curry = require("bs-platform/lib/js/curry.js");
 &nbsp;
 function EqExtensions(Eq) {
   var notEq = <span class="fstat-no" title="function not covered" >fu</span>nction (a, b) {
-<span class="cstat-no" title="statement not covered" >    return !Curry._2(Eq[/* eq */0], a, b);</span>
+<span class="cstat-no" title="statement not covered" >    return !Curry._2(Eq.eq, a, b);</span>
   };
-  return /* module */[/* notEq */notEq];
+  return {
+          notEq: notEq
+        };
 }
 &nbsp;
 function <span class="fstat-no" title="function not covered" >EqInfix(</span>Eq) {
   var notEq = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (a, b) {</span>
-<span class="cstat-no" title="statement not covered" >    return !Curry._2(Eq[/* eq */0], a, b);</span>
+<span class="cstat-no" title="statement not covered" >    return !Curry._2(Eq.eq, a, b);</span>
   };
-  var EqExtensions = /* module */<span class="cstat-no" title="statement not covered" >[/* notEq */notEq];</span>
-  var $pipe$eq$pipe = <span class="cstat-no" title="statement not covered" >Eq[/* eq */0];</span>
-<span class="cstat-no" title="statement not covered" >  return /* module */[</span>
-          /* EqExtensions */EqExtensions,
-          /* |=| */$pipe$eq$pipe,
-          /* |!=| */notEq
-        ];
+  var EqExtensions = <span class="cstat-no" title="statement not covered" >{</span>
+    notEq: notEq
+  };
+  var $pipe$eq$pipe = <span class="cstat-no" title="statement not covered" >Eq.eq;</span>
+<span class="cstat-no" title="statement not covered" >  return {</span>
+          EqExtensions: EqExtensions,
+          "|=|": $pipe$eq$pipe,
+          "|!=|": notEq
+        };
 }
 &nbsp;
 exports.EqExtensions = EqExtensions;
