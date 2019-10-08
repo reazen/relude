@@ -631,6 +631,47 @@ describe("IO", () => {
     |> IO.unsafeRunAsync(_ => onDone(fail("IO should have been cancelled")));
     IO.delay(100) |> IO.unsafeRunAsync(_ => onDone(pass));
   });
+
+  testAsync("debounce", onDone => {
+    let getTimestamp = () => Js.Date.make() |> Js.Date.getTime;
+    let timeIntervals = ref([getTimestamp()]);
+    let delayMs = 100;
+    let areTimestampsSpacedCorrectly = (x1, x2) =>
+      x2 -. x1 >= (delayMs |> float_of_int);
+    let debouncedIO =
+      IO.debounce(
+        ~delayMs,
+        () => {
+          timeIntervals := [getTimestamp(), ...timeIntervals^];
+          IO.pure();
+        },
+      );
+
+    debouncedIO() |> IO.unsafeRunAsync(ignore);
+
+    debouncedIO() |> IO.unsafeRunAsync(ignore);
+
+    debouncedIO() |> IO.flatMap(debouncedIO) |> IO.unsafeRunAsync(ignore);
+
+    debouncedIO()
+    |> IO.flatMap(debouncedIO)
+    |> IO.flatMap(() => IO.delay(300))
+    |> IO.unsafeRunAsync(_ =>
+         (
+           switch (timeIntervals^) {
+           | [x2, x1, x0]
+               when
+                 areTimestampsSpacedCorrectly(x0, x1)
+                 && areTimestampsSpacedCorrectly(x1, x2) => pass
+           | [_, _, _] => fail("debounced IO did not time calls correctly")
+           | [_]
+           | [_, _] => fail("debounced IO was called too few times")
+           | _ => fail("debounced IO was called too many times")
+           }
+         )
+         |> onDone
+       );
+  });
 });
 
 describe("IO examples", () => {

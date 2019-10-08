@@ -93,6 +93,9 @@ function makes the conversion lazy.
 let suspendIO: 'a 'e. (unit => t('a, 'e)) => t('a, 'e) =
   getIO => SuspendIO(getIO);
 
+/**
+Stops further execution of an `IO`
+*/
 let cancelIO: 'a 'e. t('a, 'e) => t('a, 'e) =
   io => FlatMap(_ => Cancel, io);
 
@@ -736,6 +739,27 @@ IO.pure(4) |> IO.withDelay(2000) |> ...
 */
 let withDelay: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
   (millis, io) => delay(millis) |> flatMap(_ => io);
+
+let debounce: 'r 'a 'e. (~delayMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e) =
+  (~delayMs=150, io) => {
+    let latestDebouncedIO = ref(None);
+    let clearLatestDebouncedIO = () => latestDebouncedIO := None;
+
+    a => {
+      let debouncedIO = pure() |> withDelay(delayMs);
+      latestDebouncedIO := debouncedIO |> Option.pure;
+      debouncedIO
+      |> flatMap(() =>
+           switch (latestDebouncedIO^) {
+           | Some(latestDebouncedIO) when latestDebouncedIO === debouncedIO =>
+             clearLatestDebouncedIO();
+             a |> io;
+           | Some(_)
+           | None => Cancel
+           }
+         );
+    };
+  };
 
 /**
 Because this is a bifunctor, we need to use a module functor to lock in the error type,
