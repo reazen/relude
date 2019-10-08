@@ -3,6 +3,7 @@ open Expect;
 
 module IO = Relude_IO;
 module Result = Relude_Result;
+module Float = Relude_Float;
 
 /* Test helpers */
 let throwJSError: unit => int = [%bs.raw
@@ -635,12 +636,12 @@ describe("IO", () => {
   testAsync("debounce", onDone => {
     let getTimestamp = () => Js.Date.make() |> Js.Date.getTime;
     let timeIntervals = ref([getTimestamp()]);
-    let delayMs = 100;
+    let intervalMs = 100;
     let areTimestampsSpacedCorrectly = (x1, x2) =>
-      x2 -. x1 >= (delayMs |> float_of_int);
+      x2 -. x1 >= (intervalMs |> float_of_int);
     let debouncedIO =
       IO.debounce(
-        ~delayMs,
+        ~intervalMs,
         () => {
           timeIntervals := [getTimestamp(), ...timeIntervals^];
           IO.pure();
@@ -667,6 +668,45 @@ describe("IO", () => {
            | [_]
            | [_, _] => fail("debounced IO was called too few times")
            | _ => fail("debounced IO was called too many times")
+           }
+         )
+         |> onDone
+       );
+  });
+
+  testAsync("throttle", onDone => {
+    let getTimestamp = () => Js.Date.make() |> Js.Date.getTime;
+    let timeIntervals = ref([getTimestamp()]);
+    let intervalMs = 100;
+    let throttledIO =
+      IO.throttle(
+        ~intervalMs,
+        () => {
+          timeIntervals := [getTimestamp(), ...timeIntervals^];
+          IO.pure();
+        },
+      );
+
+    throttledIO() |> IO.unsafeRunAsync(ignore);
+
+    throttledIO() |> IO.unsafeRunAsync(ignore);
+
+    throttledIO() |> IO.flatMap(throttledIO) |> IO.unsafeRunAsync(ignore);
+
+    IO.delay(300)
+    |> IO.flatMap(throttledIO)
+    |> IO.unsafeRunAsync(_ =>
+         (
+           switch (timeIntervals^) {
+           | [x2, x1, x0]
+               when
+                 x2
+                 -. x1 >= (intervalMs |> float_of_int)
+                 && Float.approximatelyEqual(~tolerance=2.0, x1, x0) => pass
+           | [_, _, _] => fail("throttled IO did not time calls correctly")
+           | [_]
+           | [_, _] => fail("throttled IO was called too few times")
+           | _ => fail("throttled IO was called too many times")
            }
          )
          |> onDone

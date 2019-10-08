@@ -740,13 +740,30 @@ IO.pure(4) |> IO.withDelay(2000) |> ...
 let withDelay: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
   (millis, io) => delay(millis) |> flatMap(_ => io);
 
-let debounce: 'r 'a 'e. (~delayMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e) =
-  (~delayMs=150, io) => {
+/**
+This will "debounce" an IO so that it will only allow the latest call within some interval to go through.
+All other calls will be cancelled.
+
+Example
+
+```re
+let ioLog = messageToLog => IO.pure() |> IO.map(() => Js.log(messageToLog));
+let debouncedIoLog = IO.debounce(ioLog);
+
+"This message will not get logged" |> debouncedIoLog |> IO.unsafeRunAsync(ignore);
+"This message will also not get logged" |> debouncedIoLog |> IO.unsafeRunAsync(ignore);
+"This message will get logged" |> debouncedIoLog |> IO.unsafeRunAsync(ignore);
+*/
+let debounce:
+  'r 'a 'e.
+  (~intervalMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e)
+ =
+  (~intervalMs=150, io) => {
     let latestDebouncedIO = ref(None);
     let clearLatestDebouncedIO = () => latestDebouncedIO := None;
 
     a => {
-      let debouncedIO = pure() |> withDelay(delayMs);
+      let debouncedIO = pure() |> withDelay(intervalMs);
       latestDebouncedIO := debouncedIO |> Option.pure;
       debouncedIO
       |> flatMap(() =>
@@ -759,6 +776,41 @@ let debounce: 'r 'a 'e. (~delayMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e) =
            }
          );
     };
+  };
+
+/**
+This will "throttle" an IO so that it will only allow subsequent calls to go through after some period of time
+has elapsed.
+
+Example
+
+```re
+let ioLog = messageToLog => IO.pure() |> IO.map(() => Js.log(messageToLog));
+let throttledIoLog = IO.throttled(ioLog);
+
+"This message will get logged" |> throttledIoLog |> IO.unsafeRunAsync(ignore);
+"This message will not get logged" |> throttledIoLog |> IO.unsafeRunAsync(ignore);
+"This message will also not get logged" |> throttledIoLog |> IO.unsafeRunAsync(ignore);
+*/
+let throttle:
+  'r 'a 'e.
+  (~intervalMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e)
+ =
+  (~intervalMs=150, io) => {
+    let currentlyThrottled = ref(false);
+    let startThrottle = () => {
+      currentlyThrottled := true;
+      Js.Global.setTimeout(() => currentlyThrottled := false, intervalMs)
+      |> ignore;
+    };
+
+    a =>
+      if (currentlyThrottled^) {
+        Cancel;
+      } else {
+        startThrottle();
+        a |> io;
+      };
   };
 
 /**
