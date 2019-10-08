@@ -22,6 +22,7 @@ type t('a, 'e) =
   | Throw('e): t('a, 'e)
   | Suspend(unit => 'a): t('a, 'e)
   | SuspendIO(unit => t('a, 'e)): t('a, 'e)
+  | Cancel
   | Async((Result.t('a, 'e) => unit) => unit): t('a, 'e)
   | Map('r => 'a, t('r, 'e)): t('a, 'e)
   | FlatMap('r => t('a, 'e), t('r, 'e)): t('a, 'e);
@@ -91,6 +92,9 @@ function makes the conversion lazy.
 */
 let suspendIO: 'a 'e. (unit => t('a, 'e)) => t('a, 'e) =
   getIO => SuspendIO(getIO);
+
+let cancelIO: 'a 'e. t('a, 'e) => t('a, 'e) =
+  io => FlatMap(_ => Cancel, io);
 
 /**
 Creates an async `IO` value that is run by invoking a callback `Result.t('a, 'e) => unit`
@@ -176,6 +180,7 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
     | Throw(e) => onDone(Result.error(e))
     | Suspend(getA) => onDone(Result.ok(getA()))
     | SuspendIO(getIOA) => getIOA() |> unsafeRunAsync(onDone)
+    | Cancel => ()
     | Async(onDoneA) => onDoneA(onDone)
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
@@ -189,6 +194,7 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
              | Error(_) as resultE => onDone(resultE)
              | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
            )
+      | Cancel => ()
       | Async(onDoneR0) =>
         onDoneR0(
           fun
@@ -228,6 +234,7 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
              | Error(_) as resultE => onDone(resultE)
              | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
            )
+      | Cancel => ()
       | Async(onDoneR0) =>
         onDoneR0(
           fun
@@ -273,6 +280,7 @@ let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
           onDoneA(resultA => resultA |> Result.mapError(e1ToE2) |> onDone),
       )
     | Map(rToA, ioR) => ioR |> mapError(e1ToE2) |> map(rToA)
+    | Cancel => Cancel
     | FlatMap(rToIOA, ioR) =>
       ioR |> mapError(e1ToE2) |> flatMap(r => rToIOA(r) |> mapError(e1ToE2))
     };
@@ -312,6 +320,7 @@ let rec catchError:
             | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
           ),
       )
+    | Cancel => Cancel
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
       | Pure(r0) => r0 |> r0ToA |> pure |> catchError(eToIOA)
@@ -328,6 +337,7 @@ let rec catchError:
             | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
           )
         )
+      | Cancel => Cancel
       | Map(r1ToR0, ioR1) =>
         ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> catchError(eToIOA)
       | FlatMap(r1ToIOR0, ioR1) =>
@@ -423,6 +433,7 @@ let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
               | Error(e) => e |> eToA |> Result.ok |> onDone,
             ),
         )
+      | Cancel => Cancel
       | Map(r1ToR0, ioR1) =>
         ioR1 |> flatMap(r1 => r1 |> r1ToR0 |> r0ToIOA) |> handleError(eToA)
       | FlatMap(r1ToIOR0, ioR1) =>
@@ -441,6 +452,7 @@ let rec bimap:
  =
   (aToB, e1ToE2, io) =>
     switch (io) {
+    | Cancel => Cancel
     | Pure(a) => a |> aToB |> pure
     | Throw(e1) => e1 |> e1ToE2 |> throw
     | Suspend(getA) => suspend(() => getA() |> aToB)
@@ -514,6 +526,7 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
     | Throw(e) => pure(e)
     | Suspend(getA) => suspendIO(() => getA() |> throw)
     | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> flip)
+    | Cancel => Cancel
     | Async(onDoneA) =>
       Async(onDoneE => onDoneA(resultA => onDoneE(resultA |> Result.flip)))
     | Map(r0ToA, ioR0) =>
@@ -523,6 +536,7 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
       | Suspend(getR0) => SuspendIO(() => Throw(r0ToA(getR0())))
       | SuspendIO(getIOR0) =>
         SuspendIO(() => getIOR0() |> map(r0ToA) |> flip)
+      | Cancel => Cancel
       | Async(onDoneR0) =>
         Async(
           onDoneE =>
@@ -541,6 +555,7 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
       | Suspend(getR0) => SuspendIO(() => r0ToIOA(getR0()) |> flip)
       | SuspendIO(getIOR0) =>
         SuspendIO(() => getIOR0() |> flatMap(r0ToIOA) |> flip)
+      | Cancel => Cancel
       | Async(onDoneR0) =>
         Async(
           onDoneE =>
@@ -569,6 +584,7 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
     | Throw(e) => Pure(Result.error(e))
     | Suspend(getA) => Suspend(() => Result.ok(getA()))
     | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> summonError)
+    | Cancel => Cancel
     | Async(onDoneA) =>
       Async(onDone => onDoneA(result => onDone(Result.ok(result))))
     | Map(r0ToA, ioR0) =>
@@ -578,6 +594,7 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
       | Suspend(getR0) => Suspend(() => Result.ok(r0ToA(getR0())))
       | SuspendIO(getIOR0) =>
         SuspendIO(() => getIOR0() |> map(r0ToA) |> summonError)
+      | Cancel => Cancel
       | Async(onDoneR0) =>
         Async(
           onDone =>
@@ -595,6 +612,7 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
       | Suspend(getR0) => SuspendIO(() => r0ToIOA(getR0()) |> summonError)
       | SuspendIO(getIOR0) =>
         SuspendIO(() => getIOR0() |> flatMap(r0ToIOA) |> summonError)
+      | Cancel => Cancel
       | Async(onDoneR0) =>
         Async(
           onDone =>
@@ -619,6 +637,7 @@ Unsummons an error from a success channel `Result.t('a, 'e)` back into the error
 */
 let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
   fun
+  | Cancel => Cancel
   | Pure(resultA) => resultA |> Result.fold(throw, pure)
   | Throw(void) => Void.absurd(void)
   | Suspend(getResultA) =>
@@ -643,6 +662,7 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
       SuspendIO(() => getR0() |> r0ToResultA |> Result.fold(throw, pure))
     | SuspendIO(getIOR0) =>
       SuspendIO(() => getIOR0() |> map(r0ToResultA) |> unsummonError)
+    | Cancel => Cancel
     | Async(onDoneR0) =>
       Async(
         onDoneResultA =>
@@ -665,6 +685,7 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
       SuspendIO(() => getR0() |> r0ToIOResultA |> unsummonError)
     | SuspendIO(getIOR0) =>
       SuspendIO(() => getIOR0() |> flatMap(r0ToIOResultA) |> unsummonError)
+    | Cancel => Cancel
     | Async(onDoneR0) =>
       Async(
         onDoneResultA =>

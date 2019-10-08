@@ -624,6 +624,13 @@ describe("IO", () => {
          | Error(_) => onDone(fail("fail")),
        )
   );
+
+  testAsync("cancel", onDone => {
+    IO.pure()
+    |> IO.cancelIO
+    |> IO.unsafeRunAsync(_ => onDone(fail("IO should have been cancelled")));
+    IO.delay(100) |> IO.unsafeRunAsync(_ => onDone(pass));
+  });
 });
 
 describe("IO examples", () => {
