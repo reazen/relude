@@ -634,6 +634,9 @@ describe("IO", () => {
   });
 
   testAsync("debounce", onDone => {
+    // This will test that when a debounced IO is called, it will only let the most recent one go through
+    // after some predetermined amount of time. After that call has gone through the time should reset and
+    // the next time the function is called it will have to wait that amount of time all over again.
     let getTimestamp = () => Js.Date.make() |> Js.Date.getTime;
     let timeIntervals = ref([getTimestamp()]);
     let intervalMs = 100;
@@ -664,10 +667,68 @@ describe("IO", () => {
                when
                  areTimestampsSpacedCorrectly(x0, x1)
                  && areTimestampsSpacedCorrectly(x1, x2) => pass
-           | [_, _, _] => fail("debounced IO did not time calls correctly")
+           | [_, _, _] =>
+             fail("debounced IO did not time executions correctly")
            | [_]
-           | [_, _] => fail("debounced IO was called too few times")
-           | _ => fail("debounced IO was called too many times")
+           | [_, _] => fail("debounced IO was executed too few times")
+           | xs =>
+             fail(
+               "debounced IO was executed too many times. Was executed "
+               ++ ((xs |> List.length) - 1 |> string_of_int),
+             )
+           }
+         )
+         |> onDone
+       );
+  });
+
+  testAsync("debounce immediate", onDone => {
+    // This tests a debounced IO that has an execution on the leading edge of the timing interval. It will
+    // test that the first execution immediately goes out and that only the latest execution that happens
+    // within the time interval goes out. After that time interval is up, the next time the IO is executed it
+    // should go out immediately
+    let getTimestamp = () => Js.Date.make() |> Js.Date.getTime;
+    let timeIntervals = ref([getTimestamp()]);
+    let intervalMs = 100;
+    let areTimestampsSpacedCorrectly = (x1, x2) =>
+      x2 -. x1 >= (intervalMs |> float_of_int);
+
+    let debouncedIO =
+      IO.debounce(
+        ~immediate=true,
+        ~intervalMs,
+        () => {
+          timeIntervals := [getTimestamp(), ...timeIntervals^];
+          IO.pure();
+        },
+      );
+
+    debouncedIO() |> IO.unsafeRunAsync(ignore);
+
+    debouncedIO() |> IO.unsafeRunAsync(ignore);
+
+    debouncedIO() |> IO.flatMap(debouncedIO) |> IO.unsafeRunAsync(ignore);
+
+    debouncedIO()
+    |> IO.flatMap(debouncedIO)
+    |> IO.flatMap(() => IO.delay(300))
+    |> IO.unsafeRunAsync(_ =>
+         (
+           switch (timeIntervals^) {
+           | [x3, x2, x1, x0]
+               when
+                 Float.approximatelyEqual(~tolerance=2.0, x1, x0)
+                 && areTimestampsSpacedCorrectly(x1, x2)
+                 && Float.approximatelyEqual(~tolerance=2.0, x2, x3) => pass
+           | [_, _, _, _] =>
+             fail("debounced IO did not time executions correctly")
+           | [_]
+           | [_, _] => fail("debounced IO was executions too few times")
+           | xs =>
+             fail(
+               "debounced IO was executions too many times. Was executed "
+               ++ ((xs |> List.length) - 1 |> string_of_int),
+             )
            }
          )
          |> onDone
@@ -703,10 +764,15 @@ describe("IO", () => {
                  x2
                  -. x1 >= (intervalMs |> float_of_int)
                  && Float.approximatelyEqual(~tolerance=2.0, x1, x0) => pass
-           | [_, _, _] => fail("throttled IO did not time calls correctly")
+           | [_, _, _] =>
+             fail("throttled IO did not time executions correctly")
            | [_]
-           | [_, _] => fail("throttled IO was called too few times")
-           | _ => fail("throttled IO was called too many times")
+           | [_, _] => fail("throttled IO was executed too few times")
+           | xs =>
+             fail(
+               "throttled IO was executed too many times. Was executed "
+               ++ ((xs |> List.length) - 1 |> string_of_int),
+             )
            }
          )
          |> onDone

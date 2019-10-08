@@ -756,25 +756,40 @@ let debouncedIoLog = IO.debounce(ioLog);
 */
 let debounce:
   'r 'a 'e.
-  (~intervalMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e)
+  (~immediate: bool=?, ~intervalMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e)
  =
-  (~intervalMs=150, io) => {
-    let latestDebouncedIO = ref(None);
-    let clearLatestDebouncedIO = () => latestDebouncedIO := None;
+  (~immediate=false, ~intervalMs=150, io) => {
+    let currerntlyDebouncedIO = ref(None);
+    let startDebouncedIO = () => {
+      let debouncedIO = delay(intervalMs);
+      currerntlyDebouncedIO := debouncedIO |> Option.pure;
+      debouncedIO
+      |> map(() => {
+           let shouldRunIO =
+             currerntlyDebouncedIO^ |> Option.fold(false, (===)(debouncedIO));
+           if (shouldRunIO) {
+             currerntlyDebouncedIO := None;
+           };
+           shouldRunIO;
+         });
+    };
 
     a => {
-      let debouncedIO = pure() |> withDelay(intervalMs);
-      latestDebouncedIO := debouncedIO |> Option.pure;
-      debouncedIO
-      |> flatMap(() =>
-           switch (latestDebouncedIO^) {
-           | Some(latestDebouncedIO) when latestDebouncedIO === debouncedIO =>
-             clearLatestDebouncedIO();
-             a |> io;
-           | Some(_)
-           | None => Cancel
-           }
-         );
+      let immediatelyRanIO =
+        switch (immediate, currerntlyDebouncedIO^) {
+        | (true, None) => suspendIO(() => a |> io) |> Option.pure
+        | (true, Some(_))
+        | (false, None)
+        | (false, Some(_)) => None
+        };
+      let debouncedIO =
+        startDebouncedIO()
+        |> flatMap(shouldRunIO =>
+             shouldRunIO && immediatelyRanIO |> Option.isNone
+               ? a |> io : Cancel
+           );
+
+      immediatelyRanIO |> Option.getOrElse(debouncedIO);
     };
   };
 
