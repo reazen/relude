@@ -97,7 +97,7 @@ let suspendIO: 'a 'e. (unit => t('a, 'e)) => t('a, 'e) =
 Stops further execution of an `IO`
 */
 let cancelIO: 'a 'e. t('a, 'e) => t('a, 'e) =
-  io => FlatMap(_ => Cancel, io);
+  io => FlatMap(() => io, Cancel);
 
 /**
 Creates an async `IO` value that is run by invoking a callback `Result.t('a, 'e) => unit`

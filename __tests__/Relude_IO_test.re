@@ -633,6 +633,19 @@ describe("IO", () => {
     IO.delay(100) |> IO.unsafeRunAsync(_ => onDone(pass));
   });
 
+  testAsync("cancel stops previous actions", onDone => {
+    let wasRun = ref(false);
+    IO.suspend(() => wasRun := true)
+    |> IO.cancelIO
+    |> IO.unsafeRunAsync(_ => onDone(fail("IO should have been cancelled")));
+    IO.delay(100)
+    |> IO.unsafeRunAsync(_ =>
+         wasRun^
+           ? onDone(fail("IO should have stopped previous actions"))
+           : onDone(pass)
+       );
+  });
+
   testAsync("debounce", onDone => {
     // This will test that when a debounced IO is called, it will only let the most recent one go through
     // after some predetermined amount of time. After that call has gone through the time should reset and
