@@ -231,6 +231,20 @@ module OrdExtensions = (O: ORD) => {
     let abs = v => abs((module O), (module R), v);
     let signum = v => signum((module O), (module R), v);
   };
+
+  module Named = {
+    let lessThan = (~compareTo, a) => lessThanBy(O.compare, a, compareTo);
+    let lessThanOrEq = (~compareTo, a) =>
+      lessThanOrEqBy(O.compare, a, compareTo);
+    let greaterThan = (~compareTo, a) =>
+      greaterThanBy(O.compare, a, compareTo);
+    let greaterThanOrEq = (~compareTo, a) =>
+      greaterThanOrEqBy(O.compare, a, compareTo);
+    let lt = lessThan;
+    let lte = lessThanOrEq;
+    let gt = greaterThan;
+    let gte = greaterThanOrEq;
+  };
 };
 
 module OrdInfix = (O: ORD) => {
