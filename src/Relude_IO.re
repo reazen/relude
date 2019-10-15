@@ -543,7 +543,10 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
               | Ok(r0) =>
                 r0ToIOA(r0)
                 |> summonError
-                |> tap(resA => onDoneMat(Result.ok(resA)))
+                |> bitap(
+                     resA => onDoneMat(Result.ok(resA)),
+                     resA => onDoneMat(Result.error(resA)),
+                   )
                 |> ignore,
             ),
         )
