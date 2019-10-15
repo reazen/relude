@@ -128,6 +128,45 @@ describe("Float", () => {
     expect(Float.greaterThanOrEq(1.0, 2.0)) |> toEqual(false)
   );
 
+  test("named lessThan (smaller)", () =>
+    expect(Float.Named.lessThan(~compareTo=3.15, 3.14)) |> toEqual(true)
+  );
+
+  test("named lessThan (equal)", () =>
+    expect(Float.Named.lessThan(~compareTo=3.14, 3.14)) |> toEqual(false)
+  );
+
+  test("named lessThanOrEq (smaller)", () =>
+    expect(Float.Named.lessThanOrEq(~compareTo=2.0, 1.0)) |> toEqual(true)
+  );
+
+  test("named lessThanOrEq (larger)", () =>
+    expect(Float.Named.lessThanOrEq(~compareTo=0.0, 3.0)) |> toEqual(false)
+  );
+
+  test("named greaterThan (larger)", () =>
+    expect(Float.Named.greaterThan(~compareTo=0.1, 1.0)) |> toEqual(true)
+  );
+
+  test("named greaterThan (equal)", () =>
+    expect(Float.Named.greaterThan(~compareTo=1.0, 1.0)) |> toEqual(false)
+  );
+
+  test("named greaterThanOrEq (eq)", () =>
+    expect(Float.Named.greaterThanOrEq(~compareTo=0.0, 0.0))
+    |> toEqual(true)
+  );
+
+  test("named greaterThanOrEq (larger)", () =>
+    expect(Float.Named.greaterThanOrEq(~compareTo=0.0, 1.0))
+    |> toEqual(true)
+  );
+
+  test("named greaterThanOrEq (smaller)", () =>
+    expect(Float.Named.greaterThanOrEq(~compareTo=2.0, 1.0))
+    |> toEqual(false)
+  );
+
   test("clamp (in range)", () =>
     expect(Float.clamp(~min=1.1, ~max=1.5, 1.3)) |> toEqual(1.3)
   );
