@@ -152,13 +152,14 @@ describe("IO", () => {
   testAsync("catchError failure", onDone =>
     IO.throw("42")
     |> IO.catchError((e: string) => {
-      let intValue = Relude.Int.fromString(e) |> Relude.Option.getOrElse(0);
-      IO.throw(intValue * 2);
-    })
+         let intValue =
+           Relude.Int.fromString(e) |> Relude.Option.getOrElse(0);
+         IO.throw(intValue * 2);
+       })
     |> IO.unsafeRunAsync(
          fun
          | Ok(_) => onDone(fail("Failed"))
-         | Error(v) => onDone(expect(v) |> toEqual(84))
+         | Error(v) => onDone(expect(v) |> toEqual(84)),
        )
   );
 
@@ -398,6 +399,36 @@ describe("IO", () => {
     |> IO.summonError
     |> IO.bimap(
          resA => expect(resA) |> toEqual(Belt.Result.Ok(63)),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("summonError async - flatMap pure", onDone =>
+    IO.async(onDone => 42 |> Result.ok |> onDone)
+    |> IO.flatMap(IO.pure)
+    |> IO.summonError
+    |> IO.bimap(
+         resA => expect(resA) |> toEqual(Belt.Result.Ok(42)),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
+
+  testAsync("summonError async - flatMap throw", onDone =>
+    IO.async(onDone => 42 |> Result.ok |> onDone)
+    |> IO.flatMap(IO.throw)
+    |> IO.summonError
+    |> IO.bimap(
+         resA => expect(resA) |> toEqual(Belt.Result.Error(42)),
          _ => fail("Failed"),
        )
     |> IO.unsafeRunAsync(
