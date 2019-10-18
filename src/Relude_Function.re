@@ -50,7 +50,8 @@ let flip: 'a 'b 'c. (('a, 'b) => 'c, 'b, 'a) => 'c = (f, b, a) => f(a, b);
   compose(double, square, 3) == 18;
   ```
 */
-let compose: 'a 'b 'c. ('b => 'c, 'a => 'b, 'a) => 'c = (f, g, a) => f(g(a));
+let compose: 'a 'b 'c. ('b => 'c, 'a => 'b, 'a) => 'c =
+  (f, g, a) => f(g(a));
 
 /**
   `flipCompose(f, g, a)` is the equivalent of `g(f(a))`.
@@ -63,7 +64,8 @@ let compose: 'a 'b 'c. ('b => 'c, 'a => 'b, 'a) => 'c = (f, g, a) => f(g(a));
   flipCompose(double, square, 3) == 36;
   ```
 */
-let flipCompose: 'a 'b 'c. ('a => 'b, 'b => 'c, 'a) => 'c = (f, g, a) => g(f(a));
+let flipCompose: 'a 'b 'c. ('a => 'b, 'b => 'c, 'a) => 'c =
+  (f, g, a) => g(f(a));
 
 /**
   `andThen` is a synonym for `flipCompose`
@@ -146,7 +148,8 @@ let uncurry5:
   map(double, square, 3) == 18;
   ```
 */
-let map: 'a 'b 'r. ('a => 'b, 'r => 'a, 'r) => 'b = (aToB, rToA, r) => aToB(rToA(r)); /* Same as compose */
+let map: 'a 'b 'r. ('a => 'b, 'r => 'a, 'r) => 'b =
+  (aToB, rToA, r) => aToB(rToA(r)); /* Same as compose */
 
 /**
   In `apply(hof, f, a)`, `hof` is a higher-order function that takes one argument
@@ -235,7 +238,158 @@ let bind: 'a 'b 'r. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   flatMap(showResult, cube, 5) == "input 5 yields 125";
   ```
 */
-let flatMap: 'a 'b 'r. (('a, 'r) => 'b, 'r => 'a, 'r) => 'b = (f, fa) => bind(fa, f);
+let flatMap: 'a 'b 'r. (('a, 'r) => 'b, 'r => 'a, 'r) => 'b =
+  (f, fa) => bind(fa, f);
+
+type debounced('a, 'b) = {
+  f: 'a => option('b),
+  cancel: unit => unit,
+  flush: unit => option('b),
+  isPending: unit => bool,
+};
+
+let debounce:
+  //'a 'b 'timerId.
+  (
+    ~wait: int,
+    ~maxWait: int=?,
+    ~leading: bool=?,
+    ~trailing: bool=?,
+    ~getTime: unit => int,
+    ~startTimer: (unit => unit, int) => 'timerId,
+    ~cancelTimer: 'timerId => unit,
+    'a => 'b
+  ) =>
+  debounced('a, 'b) =
+  (
+    ~wait,
+    ~maxWait=?,
+    ~leading=false,
+    ~trailing=true,
+    ~getTime,
+    ~startTimer,
+    ~cancelTimer,
+    f,
+  ) => {
+    let lastInvokeTime = ref(0);
+    let lastCallTimeOpt = ref(None);
+    let lastArgsOpt: ref(option('a)) = ref(None);
+    let lastResultOpt: ref(option('b)) = ref(None);
+    let timerIdOpt: ref(option('timerId)) = ref(None);
+
+    let invokeFunc = (time: int): option('b) => {
+      lastArgsOpt^
+      |> Relude_Option.map(args => {
+           lastArgsOpt := None;
+           lastInvokeTime := time;
+           let result = f(args);
+           lastResultOpt := Some(result);
+           result;
+         });
+    };
+
+    let shouldInvoke = (time: int): bool => {
+      lastCallTimeOpt^
+      |> Relude_Option.fold(
+           true,
+           lastCallTime => {
+             let timeSinceLastCall = time - lastCallTime;
+             let timeSinceLastInvoke = time - lastInvokeTime^;
+
+             timeSinceLastCall >= wait
+             || timeSinceLastCall < 0
+             || maxWait
+             |> Relude_Option.fold(false, maxWait =>
+                  timeSinceLastInvoke >= maxWait
+                );
+           },
+         );
+    };
+
+    let trailingEdge = (time: int): option('b) => {
+      timerIdOpt := None;
+
+      if (trailing && lastArgsOpt^ |> Relude_Option.isSome) {
+        invokeFunc(time);
+      } else {
+        lastArgsOpt := None;
+        lastResultOpt^;
+      };
+    };
+
+    let remainingWait = time => {
+      let timeSinceLastCall =
+        time - (lastCallTimeOpt^ |> Relude_Option.getOrElse(0));
+
+      let timeSinceLastInvoke = time - lastInvokeTime^;
+
+      let timeWaiting = wait - timeSinceLastCall;
+
+      maxWait
+      |> Relude_Option.fold(timeWaiting, maxWait =>
+           maxWait - timeSinceLastInvoke
+         );
+    };
+
+    let rec onTimerExpired = (): unit => {
+      let time = getTime();
+      if (shouldInvoke(time)) {
+        trailingEdge(time) |> ignore;
+      } else {
+        timerIdOpt :=
+          Some(startTimer(onTimerExpired, remainingWait(time)));
+      };
+    };
+
+    let leadingEdge = (time: int): option('b) => {
+      lastInvokeTime := time;
+      timerIdOpt := Some(startTimer(onTimerExpired, wait));
+      if (leading) {
+        invokeFunc(time);
+      } else {
+        lastResultOpt^;
+      };
+    };
+
+    let cancel = (): unit => {
+      timerIdOpt^
+      |> Relude_Option.forEach(timerId => cancelTimer(timerId));
+
+      lastInvokeTime := 0;
+      lastArgsOpt := None;
+      lastCallTimeOpt := None;
+      timerIdOpt := None;
+    };
+
+    let isPending = (): bool => {
+      timerIdOpt^ |> Relude_Option.isSome;
+    };
+
+    let flush = (): option('b) => {
+      timerIdOpt^
+      |> Relude_Option.fold(lastResultOpt^, _ => trailingEdge(getTime()));
+    };
+
+    let debounced = (a: 'a): option('b) => {
+      let time = getTime();
+      let isInvoking = shouldInvoke(time);
+
+      lastArgsOpt := Some(a);
+      lastCallTimeOpt := Some(time);
+
+      /*
+       if (isInvoking) {
+         {};
+       } else {
+         {};
+       };
+       */
+
+      lastResultOpt^;
+    };
+
+    {f: debounced, cancel, flush, isPending};
+  };
 
 /**
   The `Infix` submodule provides two infix operators
