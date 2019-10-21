@@ -26,6 +26,10 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     (aToB, OptionT(mOptionA)) =>
       OptionT(M.map(optionA => Relude_Option.map(aToB, optionA), mOptionA));
 
+  let semiFlatMap: 'a 'b. ('a => option('b), t('a)) => t('b) =
+    (aToB, OptionT(mOptionA)) =>
+      OptionT(M.map(optionA => Relude_Option.flatMap(aToB, optionA), mOptionA));
+
   module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;

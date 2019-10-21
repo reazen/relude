@@ -72,9 +72,10 @@ describe("ResultT", () => {
        )
   );
 
-  testAsync("bind/flatMap", onDone =>
+  testAsync("bind/flatMap/semiflatMap", onDone =>
     ResultIOE.pure(2)
-    |> ResultIOE.flatMap(a => ResultIOE.pure(expect(a) |> toEqual(2)))
+    |> ResultIOE.semiFlatMap(a => Result.pure(a + 3))
+    |> ResultIOE.flatMap(a => ResultIOE.pure(expect(a) |> toEqual(5)))
     |> ResultIOE.runResultT
     |> IO.unsafeRunAsync(
          fun
