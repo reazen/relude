@@ -111,7 +111,9 @@ let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
     option |> Option.foldLazy(() => throw(getError()), pure);
 
 /**
-Converts an `option('a)` to an `IO.t('a, 'e) by providing a callback to use when the `option` is `None`
+Converts an `Result.t('a, 'e)` to an `IO.t('a, 'e)
+
+Because the result is already evaluated, no effort is made to suspend any effects.
 */
 let fromResult: 'a 'e. Result.t('a, 'e) => t('a, 'e) =
   res => res |> Result.fold(throw, pure);
