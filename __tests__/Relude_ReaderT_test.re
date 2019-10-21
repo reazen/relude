@@ -108,8 +108,9 @@ describe("Reader IO", () =>
         <#> (a => a ++ env.stringValue);
       }
     )
+    |> ReaderIOE.semiFlatMap(c => IOE.pure(c ++ "semi"))
     |> ReaderIOE.runReaderT(testEnv)
-    |> IOE.map(a => expect(a) |> toEqual("-42abc"))
+    |> IOE.map(a => expect(a) |> toEqual("-42abcsemi"))
     |> IO.unsafeRunAsync(
          fun
          | Ok(assertion) => onDone(assertion)
