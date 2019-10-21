@@ -36,7 +36,7 @@
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.9",
     "bs-abstract": "^0.17.0",
-    "bs-platform": "^5.2.0",
+    "bs-platform": "^5.2.1",
     "coveralls": "^3.0.6",
     "docsify-cli": "~4.3.0"
   },
