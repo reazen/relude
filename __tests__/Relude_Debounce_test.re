@@ -5,35 +5,143 @@ module Timer = Relude_Timer;
 module Debounce = Relude_Debounce;
 
 describe("Debounce", () => {
-  testAsync("debounce (leading=false)", onDone => {
-    Js.log("leading = false");
+  test("debounce (leading=false)", () => {
+    Jest.useFakeTimers();
+
     let runCount = ref(0);
+
     let f = () => {
       runCount := runCount^ + 1;
-      Js.log("runCount = " ++ string_of_int(runCount^));
     };
+
     let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=false, f);
-    Timer.Js.repeatTimes(~delayMS=50, ~times=4, debounced.f) |> ignore;
-    Js.Global.setTimeout(
-      () => onDone(expect(runCount^) |> toEqual(1)),
-      500,
-    )
-    |> ignore;
+
+    let isScheduled1 = debounced.isScheduled();
+
+    debounced.f();
+    debounced.f();
+    debounced.f();
+
+    let isScheduled2 = debounced.isScheduled();
+
+    Jest.advanceTimersByTime(100);
+    let runCount1 = runCount^;
+
+    debounced.f();
+    debounced.f();
+    debounced.f();
+
+    let isScheduled3 = debounced.isScheduled();
+
+    Jest.advanceTimersByTime(199);
+    let runCount2 = runCount^;
+
+    Jest.advanceTimersByTime(1);
+    let runCount3 = runCount^;
+
+    let isScheduled4 = debounced.isScheduled();
+
+    expect((
+      runCount1,
+      runCount2,
+      runCount3,
+      isScheduled1,
+      isScheduled2,
+      isScheduled3,
+      isScheduled4,
+    ))
+    |> toEqual((0, 0, 1, false, true, true, false));
   });
 
-  testAsync("debounce (leading=true)", onDone => {
-    Js.log("leading = true");
+  test("debounce (leading=true)", () => {
+    Jest.useFakeTimers();
+
+    let runCount = ref(0);
+
+    let f = () => {
+      runCount := runCount^ + 1;
+    };
+
+    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=true, f);
+
+    debounced.f();
+    debounced.f();
+    debounced.f();
+
+    Jest.advanceTimersByTime(100);
+    let runCount1 = runCount^;
+
+    debounced.f();
+    debounced.f();
+    debounced.f();
+
+    Jest.advanceTimersByTime(199);
+    let runCount2 = runCount^;
+
+    Jest.advanceTimersByTime(1);
+    let runCount3 = runCount^;
+
+    expect((runCount1, runCount2, runCount3)) |> toEqual((1, 1, 2));
+  });
+
+  test("cancel", () => {
+    Jest.useFakeTimers();
+
     let runCount = ref(0);
     let f = () => {
       runCount := runCount^ + 1;
-      Js.log("runCount = " ++ string_of_int(runCount^));
     };
-    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=true, f);
-    Timer.Js.repeatTimes(~delayMS=50, ~times=4, debounced.f) |> ignore;
-    Js.Global.setTimeout(
-      () => onDone(expect(runCount^) |> toEqual(2)),
-      500,
-    )
-    |> ignore;
+
+    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=false, f);
+
+    let runCount1 = runCount^;
+
+    debounced.f();
+    debounced.f();
+    debounced.f();
+
+    Jest.advanceTimersByTime(100);
+
+    let runCount2 = runCount^;
+
+    debounced.cancel();
+
+    Jest.advanceTimersByTime(300);
+
+    let runCount3 = runCount^;
+
+    expect((runCount1, runCount2, runCount3)) |> toEqual((0, 0, 0));
+  });
+
+  test("flush", () => {
+    Jest.useFakeTimers();
+
+    let runCount = ref(0);
+    let f = () => {
+      runCount := runCount^ + 1;
+    };
+
+    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=false, f);
+
+    let runCount1 = runCount^;
+
+    debounced.f();
+    debounced.f();
+    debounced.f();
+
+    Jest.advanceTimersByTime(100);
+
+    let runCount2 = runCount^;
+
+    debounced.flush();
+
+    let runCount3 = runCount^;
+
+    Jest.advanceTimersByTime(300);
+
+    let runCount4 = runCount^;
+
+    expect((runCount1, runCount2, runCount3, runCount4))
+    |> toEqual((0, 0, 1, 1));
   });
 });

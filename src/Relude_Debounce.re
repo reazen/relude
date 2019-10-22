@@ -50,7 +50,16 @@ let debounce =
 
   let schedule = () => {
     cancel();
-    timerId := Some(setTimeout(f, delayMS));
+    timerId :=
+      Some(
+        setTimeout(
+          () => {
+            f();
+            timerId := None;
+          },
+          delayMS,
+        ),
+      );
   };
 
   let isScheduled = () => {
@@ -81,6 +90,4 @@ module Js = {
   let clearTimeout = Js.Global.clearTimeout;
 
   let debounce = debounce(~setTimeout, ~clearTimeout);
-};
-
-// TODO: might make sense to have a requestAnimationFrame version of this?
+} /* TODO: might make sense to have a requestAnimationFrame version of this*/;
