@@ -87,9 +87,9 @@ describe("OptionT", () => {
        )
   );
 
-  testAsync("semiflatmap", onDone =>
+  testAsync("subflatMap", onDone =>
     OptionIOE.pure(2)
-    |> OptionIOE.semiFlatMap(a => Some(a * 3))
+    |> OptionIOE.subflatMap(a => Some(a * 3))
     <#> (a => expect(a) |> toEqual(6))
     |> OptionIOE.runOptionT
     |> IO.unsafeRunAsync(

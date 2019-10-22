@@ -53,7 +53,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
           ),
       )
 
-  let semiFlatMap: 'r 'a 'b. ('a => M.t('b), t('r, 'a)) => t('r, 'b) =
+  let subflatMap: 'r 'a 'b. ('a => M.t('b), t('r, 'a)) => t('r, 'b) =
     (aToMA, ReaderT(rToMA)) =>
       ReaderT(
         r =>
@@ -77,7 +77,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let ask = ask;
     let asks = asks;
     let local = local;
-    let semiFlatMap = semiFlatMap;
+    let subflatMap = subflatMap;
 
     module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
