@@ -37,7 +37,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     (aToB, ResultT(mResultA)) =>
       ResultT(M.map(resultA => Result.map(aToB, resultA), mResultA));
 
-  let semiFlatMap: 'a 'b 'e. ('a => Result.t('b, 'e),  t('a, 'e)) => t('b, 'e) =
+  let subflatMap: 'a 'b 'e. ('a => Result.t('b, 'e),  t('a, 'e)) => t('b, 'e) =
     (aToB, ResultT(mResultA)) =>
       ResultT(M.map(optionA => Result.flatMap(aToB, optionA), mResultA));
 
@@ -88,7 +88,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let mapResultT = mapResultT;
     let fromResult = fromResult;
     let liftF = liftF;
-    let semiFlatMap = semiFlatMap;
+    let subflatMap = subflatMap;
 
     module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
       type nonrec t('a) = t('a, E.t);
