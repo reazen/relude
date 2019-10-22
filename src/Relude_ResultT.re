@@ -81,6 +81,9 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
       );
     };
 
+  let semiflatMap: 'a 'b 'e. ('a => M.t('b), t('a, 'e)) => t('b, 'e) =
+    (aToMB, resultTA) => bind(resultTA, a => liftF(aToMB(a)));
+
   module WithError = (E: BsAbstract.Interface.TYPE) => {
     let make = make;
     let runResultT = runResultT;
