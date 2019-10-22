@@ -78,6 +78,9 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
         ),
       );
     };
+  
+  let semiflatMap: 'a 'b. ('a => M.t('b), t('a)) => t('b) =
+    (aToMB, optionTA) => bind(optionTA, a => liftF(aToMB(a)));
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;

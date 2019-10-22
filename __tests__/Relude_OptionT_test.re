@@ -98,4 +98,16 @@ describe("OptionT", () => {
          | _ => onDone(fail("fail")),
        )
   );
+
+  testAsync("semiflatMap", onDone =>
+    OptionIOE.pure(2)
+    |> OptionIOE.semiflatMap(a => IO.pure(a * 3))
+    <#> (a => expect(a) |> toEqual(6))
+    |> OptionIOE.runOptionT
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(Some(assertion)) => onDone(assertion)
+         | _ => onDone(fail("fail")),
+       )
+  );
 });

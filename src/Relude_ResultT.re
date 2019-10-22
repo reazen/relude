@@ -92,6 +92,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let fromResult = fromResult;
     let liftF = liftF;
     let subflatMap = subflatMap;
+    let semiflatMap = semiflatMap;
 
     module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
       type nonrec t('a) = t('a, E.t);
