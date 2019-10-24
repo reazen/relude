@@ -646,6 +646,29 @@ describe("IO", () => {
        );
   });
 
+  testAsync("cancel stops current action", onDone => {
+    let firstPartWasRun = ref(false);
+    let secondPartWasRun = ref(false);
+
+    IO.suspend(() => firstPartWasRun := true)
+    |> IO.flatMap(() => Cancel)
+    |> IO.map(() => secondPartWasRun := true)
+    |> IO.unsafeRunAsync(_ => onDone(fail("IO should have been cancelled")));
+
+    IO.delay(100)
+    |> IO.unsafeRunAsync(_ =>
+         (
+           switch (firstPartWasRun^, secondPartWasRun^) {
+           | (true, false) => pass
+           | (false, false) => "IO should have run the first part" |> fail
+           | (true, true) => "IO should have no run the second part" |> fail
+           | (false, true) => "IO reached an impossible state" |> fail
+           }
+         )
+         |> onDone
+       );
+  });
+
   testAsync("debounce", onDone => {
     // This will test that when a debounced IO is called, it will only let the most recent one go through
     // after some predetermined amount of time. After that call has gone through the time should reset and
