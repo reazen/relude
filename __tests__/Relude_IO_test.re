@@ -172,7 +172,6 @@ describe("IO", () => {
        )
   );
 
-  /*
   testAsync("throw catchError unsafeRunAsync", onDone =>
     IO.throw("42")
     |> IO.catchError((e: string) => {
@@ -186,7 +185,6 @@ describe("IO", () => {
          | Error(v) => onDone(expect(v) |> toEqual(84)),
        )
   );
-  */
 
   testAsync("pure unsafeRunAsync", onDone =>
     IO.pure(42)

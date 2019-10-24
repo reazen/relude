@@ -263,18 +263,18 @@ Same as `map`, but operates on the error channel.
 let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
   (e1ToE2, ioA) =>
     switch (ioA) {
-    | Pure(a) => Pure(a)
-    | Throw(e1) => Throw(e1ToE2(e1))
-    | Suspend(getA) => Suspend(getA)
-    | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> mapError(e1ToE2))
+    | Pure(a) => pure(a)
+    | Throw(e1) => throw(e1ToE2(e1))
+    | Suspend(getA) => suspend(getA)
+    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> mapError(e1ToE2))
     | Async(onDoneA) =>
       Async(
         onDone =>
           onDoneA(resultA => resultA |> Result.mapError(e1ToE2) |> onDone),
       )
-    | Map(rToA, ioR) => Map(rToA, ioR |> mapError(e1ToE2))
+    | Map(rToA, ioR) => ioR |> mapError(e1ToE2) |> map(rToA)
     | FlatMap(rToIOA, ioR) =>
-      FlatMap(r => rToIOA(r) |> mapError(e1ToE2), ioR |> mapError(e1ToE2))
+      ioR |> mapError(e1ToE2) |> flatMap(r => rToIOA(r) |> mapError(e1ToE2))
     };
 
 /**
@@ -294,28 +294,22 @@ new `IO.t('a, 'e1)` value. This is much like `flatMap`/`bind` but works for
 the error channel of the `IO`.
 */
 let rec catchError:
-  //'a 'e1 'e2.
-  //('e1 => t('a, 'e2), t('a, 'e1)) => t('a, 'e2)
-  'a 'e1.
-  ('e1 => t('a, 'e1), t('a, 'e1)) => t('a, 'e1)
+  'a 'e1 'e2.
+  ('e1 => t('a, 'e2), t('a, 'e1)) => t('a, 'e2)
  =
   (eToIOA, ioA) =>
     switch (ioA) {
     | Pure(a) => a |> pure
     | Throw(e) => eToIOA(e)
     | Suspend(getA) => suspend(getA)
-    | SuspendIO(getIOA) => getIOA() |> catchError(eToIOA) //suspendIO(() => getIOA() |> catchError(eToIOA))
+    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> catchError(eToIOA))
     | Async(onDoneA) =>
       Async(
         onDone =>
-          onDoneA(resultA =>
-            (
-              switch (resultA) {
-              | Ok(a) => a |> pure
-              | Error(e) => e |> eToIOA
-              }
-            )
-            |> unsafeRunAsync(onDone)
+          onDoneA(
+            fun
+            | Ok(a) => a |> Result.ok |> onDone
+            | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
           ),
       )
     | Map(r0ToA, ioR0) =>
@@ -328,21 +322,18 @@ let rec catchError:
         suspendIO(() => getIOR0() |> map(r0ToA) |> catchError(eToIOA))
       | Async(onDoneR0) =>
         async(onDone =>
-          onDoneR0(resultR0 =>
-            (
-              switch (resultR0) {
-              | Ok(r0) => r0 |> r0ToA |> pure |> catchError(eToIOA)
-              | Error(e) => e |> eToIOA
-              }
-            )
-            |> unsafeRunAsync(onDone)
+          onDoneR0(
+            fun
+            | Ok(r0) => r0 |> r0ToA |> Result.ok |> onDone
+            | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
           )
         )
       | Map(r1ToR0, ioR1) =>
         ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> catchError(eToIOA)
       | FlatMap(r1ToIOR0, ioR1) =>
         ioR1
-        |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToA) |> catchError(eToIOA))
+        |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToA))
+        |> catchError(eToIOA)
       }
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
@@ -354,14 +345,11 @@ let rec catchError:
         suspendIO(() => getIOR0() |> flatMap(r0ToIOA) |> catchError(eToIOA))
       | Async(onDoneR0) =>
         async(onDone =>
-          onDoneR0(resultR0 =>
-            (
-              switch (resultR0) {
-              | Ok(r0) => r0ToIOA(r0) |> catchError(eToIOA)
-              | Error(e) => eToIOA(e)
-              }
-            )
-            |> unsafeRunAsync(onDone)
+          onDoneR0(
+            fun
+            | Ok(r0) =>
+              r0ToIOA(r0) |> catchError(eToIOA) |> unsafeRunAsync(onDone)
+            | Error(e) => eToIOA(e) |> unsafeRunAsync(onDone),
           )
         )
       | Map(r1ToR0, ioR1) =>
@@ -408,16 +396,13 @@ let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
             | Error(e) => e |> eToA |> Result.ok |> onDone,
           )
         )
-
       | Map(r1ToR0, ioR1) =>
         ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> handleError(eToA)
-
       | FlatMap(r1ToIOR0, ioR1) =>
         ioR1
         |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToA))
         |> handleError(eToA)
       }
-
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
       | Pure(r0) => r0ToIOA(r0) |> handleError(eToA)
@@ -456,12 +441,12 @@ let rec bimap:
  =
   (aToB, e1ToE2, io) =>
     switch (io) {
-    | Pure(a) => Pure(aToB(a))
-    | Throw(e1) => Throw(e1ToE2(e1))
-    | Suspend(getA) => Suspend(() => aToB(getA()))
-    | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> bimap(aToB, e1ToE2))
-    | Async(onDone) =>
-      Async(onDone' => onDone(Result.bimap(aToB, e1ToE2) >> onDone'))
+    | Pure(a) => a |> aToB |> pure
+    | Throw(e1) => e1 |> e1ToE2 |> throw
+    | Suspend(getA) => suspend(() => getA() |> aToB)
+    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> bimap(aToB, e1ToE2))
+    | Async(onDoneA) =>
+      Async(onDone => onDoneA(Result.bimap(aToB, e1ToE2) >> onDone))
     | Map(rToA, ioR) => Map(rToA >> aToB, ioR |> mapError(e1ToE2))
     | FlatMap(rToIOA, ioR) =>
       FlatMap(
@@ -525,9 +510,9 @@ Flips the values between the success and error channels.
 let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   ioAE => {
     switch (ioAE) {
-    | Pure(a) => Throw(a)
-    | Throw(e) => Pure(e)
-    | Suspend(getA) => SuspendIO(() => Throw(getA()))
+    | Pure(a) => throw(a)
+    | Throw(e) => pure(e)
+    | Suspend(getA) => suspendIO(() => getA() |> throw)
     | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> flip)
     | Async(onDoneA) =>
       Async(onDoneE => onDoneA(resultA => onDoneE(resultA |> Result.flip)))
@@ -561,7 +546,7 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
           onDoneE =>
             onDoneR0(resultR0 =>
               switch (resultR0) {
-              | Ok(r0) => r0ToIOA(r0) |> flip |> unsafeRunAsync(onDoneE) // TODO: see comment in summonError FlatMap/Async case for "forcing" the IO here
+              | Ok(r0) => r0ToIOA(r0) |> flip |> unsafeRunAsync(onDoneE)
               | Error(e) => onDoneE(Result.ok(e))
               }
             ),
@@ -617,14 +602,7 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
               fun
               | Error(e) => onDone(Result.ok(Result.error(e)))
               | Ok(r0) =>
-                r0ToIOA(r0)
-                |> summonError
-                // TODO: this feels funny to "run" the IO here, but I'm not sure how else to force the IO(a, e) to run so that we can
-                // call the onDone callback with the result.  Before we were just tapping/bitapping the IO and calling onDone in the tap/bitap, but
-                // that (logically?) doesn't do anything, because there's nothing forcing that tap/bitap to actually run - those tap
-                // functions are just locked up in a `IO` `Map` constructor, which doesn't do anything until forced.
-                // If there is a solution to this that doesn't require the IO to be run, I'm all ears.
-                |> unsafeRunAsync(onDone),
+                r0ToIOA(r0) |> summonError |> unsafeRunAsync(onDone),
             ),
         )
       | Map(r1ToR0, ioR1) =>
@@ -696,7 +674,6 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
               r0
               |> r0ToIOResultA
               |> unsummonError
-              // TODO: see comment in summonError FlatMap/Async case about running the IO here
               |> unsafeRunAsync(onDoneResultA)
             | Error(void) => Void.absurd(void),
           ),
