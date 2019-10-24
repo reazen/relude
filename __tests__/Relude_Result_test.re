@@ -222,6 +222,18 @@ describe("Result", () => {
     |> toEqual(Belt.Result.Error(84))
   );
 
+  test("handleError success", () =>
+    expect(Result.pure(42) |> Result.handleError((_e: string) => 84))
+    |> toEqual(Belt.Result.Ok(42))
+  );
+
+  test("handleError failure", () =>
+    expect(
+      Result.error("42") |> Result.handleError(e => int_of_string(e) * 2),
+    )
+    |> toEqual(Belt.Result.Ok(84))
+  );
+
   test("eqBy when eq, both Ok", () =>
     expect(Result.eqBy(Relude_Int.eq, Relude_String.eq, Ok("a"), Ok("a")))
     |> toEqual(true)
