@@ -328,6 +328,7 @@ let rec catchError:
             | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
           )
         )
+
       | Map(r1ToR0, ioR1) =>
         ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> catchError(eToIOA)
       | FlatMap(r1ToIOR0, ioR1) =>
@@ -715,6 +716,98 @@ IO.pure(4) |> IO.withDelay(2000) |> ...
 */
 let withDelay: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
   (millis, io) => delay(millis) |> flatMap(_ => io);
+
+/**
+This will "debounce" an IO so that it will only allow the latest call within some interval to go through.
+All other calls will be cancelled.
+
+Example
+
+```re
+let ioLog = messageToLog => IO.pure() |> IO.map(() => Js.log(messageToLog));
+let debouncedIoLog = IO.debounce(ioLog);
+
+"This message will not get logged" |> debouncedIoLog |> IO.unsafeRunAsync(ignore);
+"This message will also not get logged" |> debouncedIoLog |> IO.unsafeRunAsync(ignore);
+"This message will get logged" |> debouncedIoLog |> IO.unsafeRunAsync(ignore);
+```
+*/
+let debounce:
+  'r 'a 'e.
+  (~immediate: bool=?, ~intervalMs: int=?, 'r => t('a, 'e), 'r) =>
+  t(option('a), 'e)
+ =
+  (~immediate=false, ~intervalMs=150, io) => {
+    let currerntlyDebouncedIO = ref(None);
+    let startDebouncedIO = () => {
+      let debouncedIO = delay(intervalMs);
+      currerntlyDebouncedIO := debouncedIO |> Option.pure;
+      debouncedIO
+      |> map(() => {
+           let shouldRunIO =
+             currerntlyDebouncedIO^ |> Option.fold(false, (===)(debouncedIO));
+           if (shouldRunIO) {
+             currerntlyDebouncedIO := None;
+           };
+           shouldRunIO;
+         });
+    };
+
+    a => {
+      let immediatelyRanIO =
+        switch (immediate, currerntlyDebouncedIO^) {
+        | (true, None) =>
+          suspendIO(() => a |> io |> map(Option.pure)) |> Option.pure
+        | (true, Some(_))
+        | (false, None)
+        | (false, Some(_)) => None
+        };
+      let debouncedIO =
+        startDebouncedIO()
+        |> flatMap(shouldRunIO =>
+             shouldRunIO && immediatelyRanIO |> Option.isNone
+               ? a |> io |> map(Option.pure) : None |> pure
+           );
+
+      immediatelyRanIO |> Option.getOrElse(debouncedIO);
+    };
+  };
+
+/**
+This will "throttle" an IO so that it will only allow subsequent calls to go through after some period of time
+has elapsed.
+
+Example
+
+```re
+let ioLog = messageToLog => IO.pure() |> IO.map(() => Js.log(messageToLog));
+let throttledIoLog = IO.throttled(ioLog);
+
+"This message will get logged" |> throttledIoLog |> IO.unsafeRunAsync(ignore);
+"This message will not get logged" |> throttledIoLog |> IO.unsafeRunAsync(ignore);
+"This message will also not get logged" |> throttledIoLog |> IO.unsafeRunAsync(ignore);
+```
+*/
+let throttle:
+  'r 'a 'e.
+  (~intervalMs: int=?, 'r => t('a, 'e), 'r) => t(option('a), 'e)
+ =
+  (~intervalMs=150, io) => {
+    let currentlyThrottled = ref(false);
+    let startThrottle = () => {
+      currentlyThrottled := true;
+      Js.Global.setTimeout(() => currentlyThrottled := false, intervalMs)
+      |> ignore;
+    };
+
+    a =>
+      if (currentlyThrottled^) {
+        None |> pure;
+      } else {
+        startThrottle();
+        a |> io |> map(Option.pure);
+      };
+  };
 
 /**
 Because this is a bifunctor, we need to use a module functor to lock in the error type,
