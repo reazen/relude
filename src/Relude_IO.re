@@ -18,7 +18,6 @@ This is inspired by the following libraries/articles:
 * purescript-aff discussion (Purescript) - https://github.com/slamdata/purescript-aff/issues/137
  */
 type t('a, 'e) =
-  | Cancel
   | Pure('a): t('a, 'e)
   | Throw('e): t('a, 'e)
   | Suspend(unit => 'a): t('a, 'e)
@@ -92,12 +91,6 @@ function makes the conversion lazy.
 */
 let suspendIO: 'a 'e. (unit => t('a, 'e)) => t('a, 'e) =
   getIO => SuspendIO(getIO);
-
-/**
-Stops further execution of an `IO`
-*/
-let cancelIO: 'a 'e. t('a, 'e) => t('a, 'e) =
-  io => FlatMap(() => io, Cancel);
 
 /**
 Creates an async `IO` value that is run by invoking a callback `Result.t('a, 'e) => unit`
@@ -179,7 +172,6 @@ libraries to denote these types of functions as unsafe.
 let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
   (onDone, ioA) =>
     switch (ioA) {
-    | Cancel => ()
     | Pure(a) => onDone(Result.ok(a))
     | Throw(e) => onDone(Result.error(e))
     | Suspend(getA) => onDone(Result.ok(getA()))
@@ -187,7 +179,6 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
     | Async(onDoneA) => onDoneA(onDone)
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
-      | Cancel => ()
       | Pure(r0) => onDone(Result.ok(r0ToA(r0)))
       | Throw(e) => onDone(Result.error(e))
       | Suspend(getR0) => onDone(Result.ok(r0ToA(getR0())))
@@ -227,7 +218,6 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
       }
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
-      | Cancel => ()
       | Pure(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone)
       | Throw(e) => onDone(Result.error(e))
       | Suspend(getR0) => r0ToIOA(getR0()) |> unsafeRunAsync(onDone)
@@ -273,7 +263,6 @@ Same as `map`, but operates on the error channel.
 let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
   (e1ToE2, ioA) =>
     switch (ioA) {
-    | Cancel => Cancel
     | Pure(a) => pure(a)
     | Throw(e1) => throw(e1ToE2(e1))
     | Suspend(getA) => suspend(getA)
@@ -310,7 +299,6 @@ let rec catchError:
  =
   (eToIOA, ioA) =>
     switch (ioA) {
-    | Cancel => Cancel
     | Pure(a) => a |> pure
     | Throw(e) => eToIOA(e)
     | Suspend(getA) => suspend(getA)
@@ -326,7 +314,6 @@ let rec catchError:
       )
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => r0 |> r0ToA |> pure |> catchError(eToIOA)
       | Throw(e) => eToIOA(e)
       | Suspend(getR0) =>
@@ -351,7 +338,6 @@ let rec catchError:
       }
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => r0 |> r0ToIOA |> catchError(eToIOA)
       | Throw(e) => eToIOA(e)
       | Suspend(getR0) =>
@@ -383,7 +369,6 @@ let rec catchError:
 let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
   (eToA, ioA) =>
     switch (ioA) {
-    | Cancel => Cancel
     | Pure(a) => pure(a)
     | Throw(e) => pure(eToA(e))
     | Suspend(getA) => suspend(getA)
@@ -399,7 +384,6 @@ let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
       )
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => r0 |> r0ToA |> pure
       | Throw(e) => e |> eToA |> pure
       | Suspend(getR0) => suspend(() => getR0() |> r0ToA)
@@ -422,7 +406,6 @@ let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
       }
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => r0ToIOA(r0) |> handleError(eToA)
       | Throw(e) => e |> eToA |> pure
       | Suspend(getR0) =>
@@ -459,7 +442,6 @@ let rec bimap:
  =
   (aToB, e1ToE2, io) =>
     switch (io) {
-    | Cancel => Cancel
     | Pure(a) => a |> aToB |> pure
     | Throw(e1) => e1 |> e1ToE2 |> throw
     | Suspend(getA) => suspend(() => getA() |> aToB)
@@ -529,7 +511,6 @@ Flips the values between the success and error channels.
 let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   ioAE => {
     switch (ioAE) {
-    | Cancel => Cancel
     | Pure(a) => throw(a)
     | Throw(e) => pure(e)
     | Suspend(getA) => suspendIO(() => getA() |> throw)
@@ -538,7 +519,6 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
       Async(onDoneE => onDoneA(resultA => onDoneE(resultA |> Result.flip)))
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => Throw(r0ToA(r0))
       | Throw(e) => Pure(e)
       | Suspend(getR0) => SuspendIO(() => Throw(r0ToA(getR0())))
@@ -557,7 +537,6 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
       }
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => r0ToIOA(r0) |> flip
       | Throw(e) => Pure(e)
       | Suspend(getR0) => SuspendIO(() => r0ToIOA(getR0()) |> flip)
@@ -587,7 +566,6 @@ The error channel becomes `Void.t` because the error has been (re)moved.
 let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
   ioA =>
     switch (ioA) {
-    | Cancel => Cancel
     | Pure(a) => Pure(Result.ok(a))
     | Throw(e) => Pure(Result.error(e))
     | Suspend(getA) => Suspend(() => Result.ok(getA()))
@@ -596,7 +574,6 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
       Async(onDone => onDoneA(result => onDone(Result.ok(result))))
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => Pure(Result.ok(r0ToA(r0)))
       | Throw(e) => Pure(Result.error(e))
       | Suspend(getR0) => Suspend(() => Result.ok(r0ToA(getR0())))
@@ -614,7 +591,6 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
 
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
-      | Cancel => Cancel
       | Pure(r0) => r0ToIOA(r0) |> summonError
       | Throw(e) => Pure(Result.error(e))
       | Suspend(getR0) => SuspendIO(() => r0ToIOA(getR0()) |> summonError)
@@ -644,7 +620,6 @@ Unsummons an error from a success channel `Result.t('a, 'e)` back into the error
 */
 let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
   fun
-  | Cancel => Cancel
   | Pure(resultA) => resultA |> Result.fold(throw, pure)
   | Throw(void) => Void.absurd(void)
   | Suspend(getResultA) =>
@@ -663,7 +638,6 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
     )
   | Map(r0ToResultA, ioR0) =>
     switch (ioR0) {
-    | Cancel => Cancel
     | Pure(r0) => r0ToResultA(r0) |> Result.fold(throw, pure)
     | Throw(absurd) => Void.absurd(absurd)
     | Suspend(getR0) =>
@@ -686,7 +660,6 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
     }
   | FlatMap(r0ToIOResultA, ioR0) =>
     switch (ioR0) {
-    | Cancel => Cancel
     | Pure(r0) => r0ToIOResultA(r0) |> unsummonError
     | Throw(absurd) => Void.absurd(absurd)
     | Suspend(getR0) =>
@@ -761,7 +734,8 @@ let debouncedIoLog = IO.debounce(ioLog);
 */
 let debounce:
   'r 'a 'e.
-  (~immediate: bool=?, ~intervalMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e)
+  (~immediate: bool=?, ~intervalMs: int=?, 'r => t('a, 'e), 'r) =>
+  t(option('a), 'e)
  =
   (~immediate=false, ~intervalMs=150, io) => {
     let currerntlyDebouncedIO = ref(None);
@@ -782,7 +756,8 @@ let debounce:
     a => {
       let immediatelyRanIO =
         switch (immediate, currerntlyDebouncedIO^) {
-        | (true, None) => suspendIO(() => a |> io) |> Option.pure
+        | (true, None) =>
+          suspendIO(() => a |> io |> map(Option.pure)) |> Option.pure
         | (true, Some(_))
         | (false, None)
         | (false, Some(_)) => None
@@ -791,7 +766,7 @@ let debounce:
         startDebouncedIO()
         |> flatMap(shouldRunIO =>
              shouldRunIO && immediatelyRanIO |> Option.isNone
-               ? a |> io : Cancel
+               ? a |> io |> map(Option.pure) : None |> pure
            );
 
       immediatelyRanIO |> Option.getOrElse(debouncedIO);
@@ -815,7 +790,7 @@ let throttledIoLog = IO.throttled(ioLog);
 */
 let throttle:
   'r 'a 'e.
-  (~intervalMs: int=?, 'r => t('a, 'e), 'r) => t('a, 'e)
+  (~intervalMs: int=?, 'r => t('a, 'e), 'r) => t(option('a), 'e)
  =
   (~intervalMs=150, io) => {
     let currentlyThrottled = ref(false);
@@ -827,10 +802,10 @@ let throttle:
 
     a =>
       if (currentlyThrottled^) {
-        Cancel;
+        None |> pure;
       } else {
         startThrottle();
-        a |> io;
+        a |> io |> map(Option.pure);
       };
   };
 
