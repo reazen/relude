@@ -3,6 +3,7 @@ open Expect;
 
 module Int = Relude_Int;
 module List = Relude.List;
+module IO = Relude.IO;
 
 describe("List", () => {
   test("length empty list", () =>
@@ -876,4 +877,43 @@ describe("List", () => {
          ),
        )
   );
+
+  testAsync("List.IO.sequence", onDone => {
+    // Try a bunch of random IOs to seek out problems
+    let io1 = IO.pure(1);
+
+    let io2 = IO.suspend(() => 2);
+
+    let io3 = IO.suspendIO(() => IO.pure(3));
+
+    let io4 =
+      IO.async(onDone =>
+        Js.Global.setTimeout(() => onDone(Belt.Result.Ok(4)), 0) |> ignore
+      );
+    let io5 = io4 |> IO.map(four => four + 1);
+
+    let io6 = io4 |> IO.flatMap(four => IO.pure(four + 2));
+
+    let io7 =
+      io4
+      |> IO.flatMap(four => IO.suspend(() => four + 2))
+      |> IO.flatMap(six =>
+           IO.async(onDone => onDone(Belt.Result.Ok(six + 1)))
+         );
+
+    let io8 =
+      io7
+      |> IO.flatMap(seven =>
+           Relude.Js.Promise.toIOLazy(() => Js.Promise.resolve(seven + 1))
+         );
+
+    let ios = [io1, io2, io3, io4, io5, io6, io7, io8];
+
+    List.IO.sequence(ios)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok([1, 2, 3, 4, 5, 6, 7, 8]) => onDone(pass)
+         | _ => onDone(fail("fail")),
+       );
+  });
 });
