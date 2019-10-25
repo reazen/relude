@@ -907,12 +907,23 @@ describe("List", () => {
            Relude.Js.Promise.toIOLazy(() => Js.Promise.resolve(seven + 1))
          );
 
-    let ios = [io1, io2, io3, io4, io5, io6, io7, io8];
+    let io9 = IO.throw(9) |> IO.flip;
+
+    let io10 =
+      io7
+      |> IO.summonError
+      |> IO.unsummonError
+      |> IO.flip
+      |> IO.flip
+      |> IO.withDelay(0)
+      |> IO.flatMap(seven => IO.suspend(() => seven + 3));
+
+    let ios = [io1, io2, io3, io4, io5, io6, io7, io8, io9, io10];
 
     List.IO.sequence(ios)
     |> IO.unsafeRunAsync(
          fun
-         | Ok([1, 2, 3, 4, 5, 6, 7, 8]) => onDone(pass)
+         | Ok([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) => onDone(pass)
          | _ => onDone(fail("fail")),
        );
   });
