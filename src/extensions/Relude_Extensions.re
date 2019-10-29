@@ -2,7 +2,6 @@ module Alt = Relude_Extensions_Alt;
 module Alternative = Relude_Extensions_Alternative;
 module Applicative = Relude_Extensions_Applicative;
 module Apply = Relude_Extensions_Apply;
-module Array = Relude_Extensions_Array;
 module Bifoldable = Relude_Extensions_Bifoldable;
 module Bifunctor = Relude_Extensions_Bifunctor;
 module Bitraversable = Relude_Extensions_Bitraversable;

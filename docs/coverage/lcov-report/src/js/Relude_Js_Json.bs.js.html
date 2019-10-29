@@ -1332,7 +1332,7 @@ var Relude_Result = require("../Relude_Result.bs.js");
 var Relude_Function = require("../Relude_Function.bs.js");
 var Relude_NonEmpty = require("../Relude_NonEmpty.bs.js");
 var Relude_Validation = require("../Relude_Validation.bs.js");
-var Relude_Extensions_Array = require("../extensions/Relude_Extensions_Array.bs.js");
+var Relude_Array_Specializations = require("../array/Relude_Array_Specializations.bs.js");
 &nbsp;
 var $great$great = Relude_Function.Infix.$great$great;
 &nbsp;
@@ -1489,7 +1489,7 @@ var Errors = {
 &nbsp;
 var ValidationE = Relude_Validation.WithErrors(Relude_NonEmpty.$$Array.SemigroupAny)(Type);
 &nbsp;
-var ArrayValidationE = Relude_Extensions_Array.Validation.WithErrors(Relude_NonEmpty.$$Array.SemigroupAny)(Type);
+var ArrayValidationE = Relude_Array_Specializations.Validation.WithErrors(Relude_NonEmpty.$$Array.SemigroupAny)(Type);
 &nbsp;
 function validateNull(json) {
   return Relude_Validation.fromOptionLazy((function (param) {
