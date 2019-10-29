@@ -14,7 +14,7 @@ describe("Debounce", () => {
       runCount := runCount^ + 1;
     };
 
-    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=false, f);
+    let debounced = Debounce.debounce(~delayMS=200, ~leading=false, f);
 
     let isScheduled1 = debounced.isScheduled();
 
@@ -62,7 +62,7 @@ describe("Debounce", () => {
       runCount := runCount^ + 1;
     };
 
-    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=true, f);
+    let debounced = Debounce.debounce(~delayMS=200, ~leading=true, f);
 
     debounced.f();
     debounced.f();
@@ -92,7 +92,7 @@ describe("Debounce", () => {
       runCount := runCount^ + 1;
     };
 
-    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=false, f);
+    let debounced = Debounce.debounce(~delayMS=200, ~leading=false, f);
 
     let runCount1 = runCount^;
 
@@ -121,7 +121,7 @@ describe("Debounce", () => {
       runCount := runCount^ + 1;
     };
 
-    let debounced = Debounce.Js.debounce(~delayMS=200, ~leading=false, f);
+    let debounced = Debounce.debounce(~delayMS=200, ~leading=false, f);
 
     let runCount1 = runCount^;
 

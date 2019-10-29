@@ -13,7 +13,7 @@ describe("Timer", () => {
     };
 
     let wasRun1 = wasRun^;
-    Timer.Js.delay(~delayMS=50, f) |> ignore;
+    Timer.delay(~delayMS=50, f) |> ignore;
 
     Jest.advanceTimersByTime(40);
     let wasRun2 = wasRun^;
@@ -34,7 +34,7 @@ describe("Timer", () => {
     };
 
     let runCount1 = runCount^; // 0 (0 hits)
-    Timer.Js.repeat(~delayMS=50, f) |> ignore;
+    Timer.repeat(~delayMS=50, f) |> ignore;
 
     Jest.advanceTimersByTime(40); // 40 (0 hits)
     let runCount2 = runCount^;
@@ -65,7 +65,7 @@ describe("Timer", () => {
     };
 
     let runCount1 = runCount^; // 0 (0 hits)
-    Timer.Js.repeatTimes(~delayMS=50, ~times=3, f) |> ignore;
+    Timer.repeatTimes(~delayMS=50, ~times=3, f) |> ignore;
 
     Jest.advanceTimersByTime(40); // 40 (0 hits)
     let runCount2 = runCount^;

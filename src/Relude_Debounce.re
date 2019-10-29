@@ -1,3 +1,8 @@
+// TODO: someday we should abstract away the use of Js.Global timeout from this
+
+/**
+ * The data returned form the debounce function
+ */
 type debounced = {
   cancel: unit => unit,
   flush: unit => unit,
@@ -33,18 +38,12 @@ type debounced = {
  * - f - the debounced function to be used by the caller
  */
 let debounce =
-    (
-      ~setTimeout: (unit => unit, int) => 'timerId,
-      ~clearTimeout: 'timerId => unit,
-      ~delayMS: int,
-      ~leading: bool=false,
-      f: unit => unit,
-    )
-    : debounced => {
+    (~delayMS: int, ~leading: bool=false, f: unit => unit): debounced => {
   let timerId = ref(None);
 
   let cancel = () => {
-    timerId^ |> Relude_Option.forEach(timerId => clearTimeout(timerId));
+    timerId^
+    |> Relude_Option.forEach(timerId => Js.Global.clearTimeout(timerId));
     timerId := None;
   };
 
@@ -52,7 +51,7 @@ let debounce =
     cancel();
     timerId :=
       Some(
-        setTimeout(
+        Js.Global.setTimeout(
           () => {
             f();
             timerId := None;
@@ -73,21 +72,13 @@ let debounce =
 
   let doLeading = ref(leading);
 
-  let debounced = () => {
+  let debounced = () =>
     if (doLeading^) {
       doLeading := false;
       f();
+    } else {
+      schedule();
     };
-    schedule();
-  };
 
   {f: debounced, flush, cancel, isScheduled};
 };
-
-module Js = {
-  let setTimeout = Js.Global.setTimeout;
-
-  let clearTimeout = Js.Global.clearTimeout;
-
-  let debounce = debounce(~setTimeout, ~clearTimeout);
-} /* TODO: might make sense to have a requestAnimationFrame version of this*/;
