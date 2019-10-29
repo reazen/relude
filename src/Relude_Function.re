@@ -242,6 +242,127 @@ let flatMap: 'a 'b 'r. (('a, 'r) => 'b, 'r => 'a, 'r) => 'b =
   (f, fa) => bind(fa, f);
 
 /**
+ * `memoize0` takes a `unit => 'a` function and returns a new function
+ * which once called, will store the result produced and return that cached
+ * result for each successive call.
+ */
+let memoize0 = (f: unit => 'a): (unit => 'a) => {
+  let cached = ref(None);
+  () => {
+    switch (cached^) {
+    | Some(result) => result
+    | None =>
+      let result = f();
+      cached := Some(result);
+      result;
+    };
+  };
+};
+
+/**
+ * `memoize1` takes a `'a => 'b` function and returns a new `'a => 'b` function
+ * which once called, stores the result produced by the given function in
+ * a closure-based cache, using a cache key created by the function `makeKey`
+ *
+ * All successive calls to teh function for input values that resolve to the same
+ * cache key will return the cached result.
+ */
+let memoize1 = (~makeKey: 'a => string, f: 'a => 'b): ('a => 'b) => {
+  let cache = ref(Belt.Map.String.empty);
+  input => {
+    let key = makeKey(input);
+    let resultOpt = Belt.Map.String.get(cache^, key);
+    switch (resultOpt) {
+    | Some(result) => result
+    | None =>
+      let result = f(input);
+      cache := Belt.Map.String.set(cache^, key, result);
+      result;
+    };
+  };
+};
+
+/**
+ * Takes a function and returns a new function which when called, will allow the first `times`
+ * calls to invoke the given function, and any successive calls will be suppressed and the last
+ * result will be returned.
+ */
+let before = (~times: int, f: unit => 'a): (unit => 'a) => {
+  let callCount = ref(0);
+  let lastResultOpt = ref(None);
+  () => {
+    switch (lastResultOpt^) {
+    | Some(lastResult) =>
+      if (callCount^ < times) {
+        let result = f();
+        lastResultOpt := Some(result);
+        callCount := callCount^ + 1;
+        result;
+      } else {
+        lastResult;
+      }
+    | None =>
+      let result = f();
+      lastResultOpt := Some(result);
+      callCount := callCount^ + 1;
+      result;
+    };
+  };
+};
+
+/**
+ * Takes a function and returns a new function that when called, will suppress the first `times` invocations
+ */
+let after = (~times: int, f: unit => 'a): (unit => option('a)) => {
+  let callCount = ref(0);
+  () =>
+    if (callCount^ < times) {
+      callCount := callCount^ + 1;
+      None;
+    } else {
+      Some(f());
+    };
+};
+
+/**
+ * Takes a function and returns a new function which will invoke the given function once, and any successive calls
+ * will be suppressed, returning the value of the first call.
+ */
+let once = (f: unit => 'a): (unit => 'a) => {
+  let lastResultOpt = ref(None);
+  () => {
+    switch (lastResultOpt^) {
+    | Some(lastResult) => lastResult
+    | None =>
+      let result = f();
+      lastResultOpt := Some(result);
+      result;
+    };
+  };
+};
+
+/**
+ * Takes a function from `'a => 'b` and a function from `'i => 'a` to modify the input, and a function `'b => 'o` to modify
+ * the output, and returns a new function `'i => 'o`
+ */
+let wrap:
+  //'i 'a 'b 'o. // TODO: not sure how to make this universal quantification work
+  (~before: 'i => 'a, ~after: 'b => 'o, 'a => 'b, 'i) => 'o =
+  (~before: 'i => 'a, ~after: 'b => 'o, f: 'a => 'b, input: 'i) => {
+    after(f(before(input)));
+  };
+
+/**
+ * Takes a predicate function, and returns a new predicate function which
+ * negates the given predicate.
+ */
+let negate = (f: 'a => bool): ('a => bool) => {
+  a => {
+    !f(a);
+  };
+};
+
+/**
   The `Infix` submodule provides two infix operators
   for function composition. To use it, you should
 
