@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">59.54% </span>
+        <span class="strong">61.27% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>103/173</span>
+        <span class='fraction'>106/173</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">23.81% </span>
+        <span class="strong">26.19% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>10/42</span>
+        <span class='fraction'>11/42</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">59.54% </span>
+        <span class="strong">61.27% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>103/173</span>
+        <span class='fraction'>106/173</span>
       </div>
     </div>
     <p class="quiet">
@@ -874,9 +874,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
@@ -1351,10 +1351,10 @@ function <span class="fstat-no" title="function not covered" >traverse$1(</span>
 <span class="cstat-no" title="statement not covered" >  return Curry._2(TraverseIO.traverse, f, list);</span>
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >sequence$1(</span>xs) {
-  var IoE = <span class="cstat-no" title="statement not covered" >Relude_IO.WithError({ });</span>
-  var TraverseIO = <span class="cstat-no" title="statement not covered" >Relude_List_Instances.Traversable(IoE.Applicative);</span>
-<span class="cstat-no" title="statement not covered" >  return Curry._1(TraverseIO.sequence, xs);</span>
+function sequence$1(xs) {
+  var IoE = Relude_IO.WithError({ });
+  var TraverseIO = Relude_List_Instances.Traversable(IoE.Applicative);
+  return Curry._1(TraverseIO.sequence, xs);
 }
 &nbsp;
 var IO = {

@@ -68,4 +68,97 @@ describe("Function", () => {
   test("uncurry5", () =>
     expect(Function.uncurry5(f5, (1, 2, 3, 4, 5))) |> toEqual(15)
   );
+
+  test("memoize0", () => {
+    let calls = ref(0);
+    let f = () => {
+      calls := calls^ + 1;
+      string_of_int(calls^);
+    };
+    let memoized = Function.memoize0(f);
+    let result1 = memoized();
+    let result2 = memoized();
+    let result3 = memoized();
+    expect((calls^, result1, result2, result3))
+    |> toEqual((1, "1", "1", "1"));
+  });
+
+  test("memoize1", () => {
+    let calls = ref([]);
+    let f = (i: int) => {
+      calls := [i, ...calls^];
+      string_of_int(i);
+    };
+    let memoized = Function.memoize1(~makeKey=string_of_int, f);
+    let result1 = memoized(11);
+    let result2 = memoized(11);
+    let result3 = memoized(22);
+    let result4 = memoized(22);
+    let result5 = memoized(33);
+    let result6 = memoized(33);
+    expect((calls^, result1, result2, result3, result4, result5, result6))
+    |> toEqual(([33, 22, 11], "11", "11", "22", "22", "33", "33"));
+  });
+
+  test("before", () => {
+    let calls = ref(0);
+    let f = () => {
+      calls := calls^ + 1;
+      calls^;
+    };
+    let before = Function.before(~times=3, f);
+    let result1 = before();
+    let result2 = before();
+    let result3 = before();
+    let result4 = before();
+    let result5 = before();
+    expect((calls^, result1, result2, result3, result4, result5))
+    |> toEqual((3, 1, 2, 3, 3, 3));
+  });
+
+  test("after", () => {
+    let calls = ref(0);
+    let f = () => {
+      calls := calls^ + 1;
+      calls^;
+    };
+    let after = Function.after(~times=3, f);
+    let result1 = after();
+    let result2 = after();
+    let result3 = after();
+    let result4 = after();
+    let result5 = after();
+    expect((calls^, result1, result2, result3, result4, result5))
+    |> toEqual((2, None, None, None, Some(1), Some(2)));
+  });
+
+  test("once", () => {
+    let calls = ref(0);
+    let f = () => {
+      calls := calls^ + 1;
+      calls^;
+    };
+    let once = Function.once(f);
+    let result1 = once();
+    let result2 = once();
+    let result3 = once();
+    expect((calls^, result1, result2, result3)) |> toEqual((1, 1, 1, 1));
+  });
+
+  test("wrap", () => {
+    let f = a => string_of_int(a * 10);
+    let before = a => a + 4;
+    let after = str => str ++ "!";
+    let f = Function.wrap(~before, ~after, f);
+    let result = f(22);
+    expect(result) |> toEqual("260!");
+  });
+
+  test("negate", () => {
+    let f = str => str |> Relude.String.length == 0;
+    let g = Function.negate(f);
+    let resultF = f("");
+    let resultG = g("");
+    expect((resultF, resultG)) |> toEqual((true, false));
+  });
 });
