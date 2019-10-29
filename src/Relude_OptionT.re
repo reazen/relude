@@ -26,6 +26,10 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     (aToB, OptionT(mOptionA)) =>
       OptionT(M.map(optionA => Relude_Option.map(aToB, optionA), mOptionA));
 
+  let subflatMap: 'a 'b. ('a => option('b), t('a)) => t('b) =
+    (aToB, OptionT(mOptionA)) =>
+      OptionT(M.map(optionA => Relude_Option.flatMap(aToB, optionA), mOptionA));
+
   module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
@@ -74,6 +78,9 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
         ),
       );
     };
+  
+  let semiflatMap: 'a 'b. ('a => M.t('b), t('a)) => t('b) =
+    (aToMB, optionTA) => bind(optionTA, a => liftF(aToMB(a)));
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;

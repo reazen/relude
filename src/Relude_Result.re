@@ -538,6 +538,19 @@ let catchError: 'a 'e1 'e2. ('e1 => t('a, 'e2), t('a, 'e1)) => t('a, 'e2) =
     };
 
 /**
+ * `handleError(f, r)` converts errors into successful values, and returns a
+ * Result where the error channel is voided, to indicate that the error has
+ * been handled
+ */
+let handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
+  (eToA, fa) => {
+    switch (fa) {
+    | Ok(_) as res => res
+    | Error(e) => Ok(eToA(e))
+    };
+  };
+
+/**
   `recover(goodValue, result)` returns `result` if it is
   of the form `Ok(..)`. If `result` is of the form `Error(..)`,
   `recover` returns `Ok(goodValue)`.

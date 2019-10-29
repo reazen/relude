@@ -82,4 +82,28 @@ describe("ResultT", () => {
          | _ => onDone(fail("fail")),
        )
   );
+
+  testAsync("subflatMap", onDone =>
+    ResultIOE.pure(2)
+    |> ResultIOE.subflatMap(a => Result.pure(a + 3))
+    |> ResultIOE.map(a => (expect(a) |> toEqual(5)))
+    |> ResultIOE.runResultT
+    |> IO.unsafeRunAsync(
+         fun
+         | Belt.Result.Ok(Belt.Result.Ok(assertion)) => onDone(assertion)
+         | _ => onDone(fail("fail")),
+       )
+  );
+
+  testAsync("semiflatMap", onDone =>
+    ResultIOE.pure(2)
+    |> ResultIOE.semiflatMap(a => IO.pure(a + 3))
+    |> ResultIOE.map(a => expect(a) |> toEqual(5))
+    |> ResultIOE.runResultT
+    |> IO.unsafeRunAsync(
+         fun
+         | Belt.Result.Ok(Belt.Result.Ok(assertion)) => onDone(assertion)
+         | _ => onDone(fail("fail")),
+       )
+  );
 });
