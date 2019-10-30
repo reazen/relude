@@ -77,12 +77,28 @@ describe("String", () => {
     expect(Str.concat("a", "b")) |> toEqual("ab")
   );
 
+  test("concatNamed", () =>
+    expect(Str.concatNamed(~prefix="abc", "def")) |> toEqual("abcdef")
+  );
+
   test("concatArray", () =>
     expect(Str.concatArray([|"a", "b"|])) |> toEqual("ab")
   );
 
   test("concatList", () =>
     expect(Str.concatList(["foo", " ", "bar"])) |> toEqual("foo bar")
+  );
+
+  test("guard true", () =>
+    expect(Str.guard(true, "hi")) |> toEqual("hi")
+  );
+
+  test("guard false", () =>
+    expect(Str.guard(false, "hi")) |> toEqual("")
+  );
+
+  test("power", () =>
+    expect(Str.power("hi", 4)) |> toEqual("hihihihi")
   );
 
   test("make", () =>

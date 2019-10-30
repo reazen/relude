@@ -5,7 +5,39 @@ module AsyncData = Relude.AsyncData;
 module Int = Relude.Int;
 module String = Relude.String;
 
-describe("AsyncData state checks", () => {
+describe("AsyncData", () => {
+  test("isEmpty init", () =>
+    expect(AsyncData.init |> AsyncData.isEmpty) |> toEqual(true)
+  );
+
+  test("isEmpty loading", () =>
+    expect(AsyncData.loading |> AsyncData.isEmpty) |> toEqual(true)
+  );
+
+  test("isEmpty reloading", () =>
+    expect(AsyncData.reloading(42) |> AsyncData.isEmpty) |> toEqual(false)
+  );
+
+  test("isEmpty complete", () =>
+    expect(AsyncData.complete(42) |> AsyncData.isEmpty) |> toEqual(false)
+  );
+
+  test("isNotEmpty init", () =>
+    expect(AsyncData.init |> AsyncData.isNotEmpty) |> toEqual(false)
+  );
+
+  test("isNotEmpty loading", () =>
+    expect(AsyncData.loading |> AsyncData.isNotEmpty) |> toEqual(false)
+  );
+
+  test("isNotEmpty reloading", () =>
+    expect(AsyncData.reloading(42) |> AsyncData.isNotEmpty) |> toEqual(true)
+  );
+
+  test("isNotEmpty complete", () =>
+    expect(AsyncData.complete(42) |> AsyncData.isNotEmpty) |> toEqual(true)
+  );
+
   test("isInit when Init", () =>
     expect(AsyncData.isInit(Init)) |> toEqual(true)
   );
@@ -186,6 +218,104 @@ describe("AsyncData state checks", () => {
     expect(AsyncData.getValue(Reloading(1))) |> toEqual(Some(1))
   );
 
+  test("map Init", () =>
+    expect(AsyncData.init |> AsyncData.map(i => i + 1))
+    |> toEqual(AsyncData.init)
+  );
+
+  test("map Loading", () =>
+    expect(AsyncData.loading |> AsyncData.map(i => i + 1))
+    |> toEqual(AsyncData.loading)
+  );
+
+  test("map Reloading", () =>
+    expect(AsyncData.reloading(42) |> AsyncData.map(i => i + 1))
+    |> toEqual(AsyncData.reloading(43))
+  );
+
+  test("map Complete", () =>
+    expect(AsyncData.complete(42) |> AsyncData.map(i => i + 1))
+    |> toEqual(AsyncData.complete(43))
+  );
+
+  test("tap Init", () => {
+    let count = ref(0);
+    let f = () => {
+      count := count^ + 1;
+    };
+    AsyncData.init |> AsyncData.tap(f, () => (), _ => (), _ => ()) |> ignore;
+    expect(count^) |> toEqual(1);
+  });
+
+  test("tap Loading", () => {
+    let count = ref(0);
+    let f = () => {
+      count := count^ + 1;
+    };
+    AsyncData.loading
+    |> AsyncData.tap(() => (), f, _ => (), _ => ())
+    |> ignore;
+    expect(count^) |> toEqual(1);
+  });
+
+  test("tap Reloading", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncData.reloading(42)
+    |> AsyncData.tap(() => (), () => (), f, _ => ())
+    |> ignore;
+    expect(count^) |> toEqual(43);
+  });
+
+  test("tap Complete", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncData.complete(42)
+    |> AsyncData.tap(() => (), () => (), _ => (), f)
+    |> ignore;
+    expect(count^) |> toEqual(43);
+  });
+
+  test("tapInit", () => {
+    let count = ref(0);
+    let f = () => {
+      count := count^ + 1;
+    };
+    AsyncData.init |> AsyncData.tapInit(f) |> ignore;
+    expect(count^) |> toEqual(1);
+  });
+
+  test("tapLoading", () => {
+    let count = ref(0);
+    let f = () => {
+      count := count^ + 1;
+    };
+    AsyncData.loading |> AsyncData.tapLoading(f) |> ignore;
+    expect(count^) |> toEqual(1);
+  });
+
+  test("tapReloading", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncData.reloading(42) |> AsyncData.tapReloading(f) |> ignore;
+    expect(count^) |> toEqual(43);
+  });
+
+  test("tapComplete", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncData.complete(42) |> AsyncData.tapComplete(f) |> ignore;
+    expect(count^) |> toEqual(43);
+  });
+
   test("fold when Init", () =>
     expect(AsyncData.fold(1, 2, a => a + 3, a => a + 4, Init)) |> toEqual(1)
   );
@@ -283,8 +413,6 @@ describe("AsyncData state checks", () => {
     |> toEqual(12)
   );
 
-  // some sanity checks for equality
-
   test("eqBy false for Init vs Loading", () =>
     expect(AsyncData.eqBy((_, _) => true, Init, Loading)) |> toEqual(false)
   );
@@ -303,9 +431,11 @@ describe("AsyncData state checks", () => {
     expect(AsyncData.eqBy(Int.eq, Complete(0), Complete(1)))
     |> toEqual(false)
   );
-});
 
-describe("AsyncData apply", () => {
+  test("pure", () =>
+    expect(AsyncData.pure(42)) |> toEqual(AsyncData.complete(42))
+  );
+
   test("map2 Init Init", () =>
     expect(AsyncData.map2((_, _) => (), Init, Init))
     |> toEqual(AsyncData.Init)
@@ -329,5 +459,65 @@ describe("AsyncData apply", () => {
   test("map2 Reloading Complete", () =>
     expect(AsyncData.map2((+), Reloading(10), Complete(20)))
     |> toEqual(AsyncData.Reloading(30))
+  );
+
+  test("bind Init", () =>
+    expect(AsyncData.init->AsyncData.bind(x => AsyncData.complete(x)))
+    |> toEqual(AsyncData.init)
+  );
+
+  test("bind Loading", () =>
+    expect(AsyncData.loading->AsyncData.bind(x => AsyncData.complete(x)))
+    |> toEqual(AsyncData.loading)
+  );
+
+  test("bind Reloading", () =>
+    expect(
+      AsyncData.reloading(42)
+      ->AsyncData.bind(x => AsyncData.complete(x * 2)),
+    )
+    |> toEqual(AsyncData.complete(84))
+  );
+
+  test("bind Complete", () =>
+    expect(
+      AsyncData.complete(42)
+      ->AsyncData.bind(x => AsyncData.reloading(x * 2)),
+    )
+    |> toEqual(AsyncData.reloading(84))
+  );
+
+  test("alt Loading Init", () =>
+    expect(AsyncData.Infix.(AsyncData.loading <|> AsyncData.init))
+    |> toEqual(AsyncData.loading)
+  );
+
+  test("alt Init Loading", () =>
+    expect(AsyncData.Infix.(AsyncData.init <|> AsyncData.loading))
+    |> toEqual(AsyncData.loading)
+  );
+
+  test("alt Loading Reloading", () =>
+    expect(AsyncData.Infix.(AsyncData.loading <|> AsyncData.reloading(42)))
+    |> toEqual(AsyncData.reloading(42))
+  );
+
+  test("alt Reloading Loading", () =>
+    expect(AsyncData.Infix.(AsyncData.reloading(42) <|> AsyncData.loading))
+    |> toEqual(AsyncData.reloading(42))
+  );
+
+  test("alt Reloading Complete", () =>
+    expect(
+      AsyncData.Infix.(AsyncData.reloading(42) <|> AsyncData.complete(43)),
+    )
+    |> toEqual(AsyncData.complete(43))
+  );
+
+  test("alt Complete Reloading", () =>
+    expect(
+      AsyncData.Infix.(AsyncData.complete(43) <|> AsyncData.reloading(42)),
+    )
+    |> toEqual(AsyncData.complete(43))
   );
 });

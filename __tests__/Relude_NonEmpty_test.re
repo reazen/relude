@@ -21,6 +21,16 @@ describe("NonEmpty.List", () => {
     |> toEqual(NonEmpty.List.make(1, [2, 3, 4, 5]));
   });
 
+  test("concat named", () =>
+    expect(
+      NonEmpty.List.concatNamed(
+        ~prefix=NonEmpty.List.make(1, [2, 3]),
+        NonEmpty.List.make(4, [5, 6]),
+      ),
+    )
+    |> toEqual(NonEmpty.List.make(1, [2, 3, 4, 5, 6]))
+  );
+
   test("foldLeft", () => {
     let ne = NonEmpty.List.make(1, [2, 3, 4, 5]);
     let result =

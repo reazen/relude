@@ -22,7 +22,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>325/325</span>
+        <span class='fraction'>331/331</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -37,7 +37,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>325/325</span>
+        <span class='fraction'>331/331</span>
       </div>
     </div>
     <p class="quiet">
@@ -561,7 +561,16 @@
 <a name='L513'></a><a href='#L513'>513</a>
 <a name='L514'></a><a href='#L514'>514</a>
 <a name='L515'></a><a href='#L515'>515</a>
-<a name='L516'></a><a href='#L516'>516</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L516'></a><a href='#L516'>516</a>
+<a name='L517'></a><a href='#L517'>517</a>
+<a name='L518'></a><a href='#L518'>518</a>
+<a name='L519'></a><a href='#L519'>519</a>
+<a name='L520'></a><a href='#L520'>520</a>
+<a name='L521'></a><a href='#L521'>521</a>
+<a name='L522'></a><a href='#L522'>522</a>
+<a name='L523'></a><a href='#L523'>523</a>
+<a name='L524'></a><a href='#L524'>524</a>
+<a name='L525'></a><a href='#L525'>525</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -926,6 +935,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -1149,9 +1167,15 @@ var concat = Relude_List_Instances.concat;
 &nbsp;
 var SemigroupAny = Relude_List_Instances.SemigroupAny;
 &nbsp;
+var concatNamed = Relude_List_Instances.concatNamed;
+&nbsp;
 var empty = Relude_List_Instances.empty;
 &nbsp;
 var MonoidAny = Relude_List_Instances.MonoidAny;
+&nbsp;
+var guard = Relude_List_Instances.guard;
+&nbsp;
+var power = Relude_List_Instances.power;
 &nbsp;
 var map = Relude_List_Instances.map;
 &nbsp;
@@ -1443,8 +1467,11 @@ var Validation = Relude_List_Specializations.Validation;
 &nbsp;
 exports.concat = concat;
 exports.SemigroupAny = SemigroupAny;
+exports.concatNamed = concatNamed;
 exports.empty = empty;
 exports.MonoidAny = MonoidAny;
+exports.guard = guard;
+exports.power = power;
 exports.map = map;
 exports.Functor = Functor;
 exports.BsFunctorExtensions = BsFunctorExtensions;

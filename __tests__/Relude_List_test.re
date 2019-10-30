@@ -50,6 +50,24 @@ describe("List", () => {
     expect(List.concat([1, 2], [3, 4])) |> toEqual([1, 2, 3, 4])
   );
 
+  test("concatNamed", () =>
+    expect(List.concatNamed(~prefix=[1, 2], [3, 4]))
+    |> toEqual([1, 2, 3, 4])
+  );
+
+  test("guard true", () =>
+    expect(List.guard(true, [1, 2, 3])) |> toEqual([1, 2, 3])
+  );
+
+  test("guard false", () =>
+    expect(List.guard(false, [1, 2, 3])) |> toEqual([])
+  );
+
+  test("power", () =>
+    expect(List.power([1, 2, 3], 3))
+    |> toEqual([1, 2, 3, 1, 2, 3, 1, 2, 3])
+  );
+
   test("cons", () =>
     expect(List.cons(1, [2, 3])) |> toEqual([1, 2, 3])
   );

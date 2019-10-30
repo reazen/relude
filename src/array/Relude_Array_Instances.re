@@ -8,6 +8,7 @@ module SemigroupAny:
   type t('a) = array('a);
   let append = concat;
 };
+include Relude_Extensions_SemigroupAny.SemigroupAnyExtensions(SemigroupAny);
 
 /**
  * Returns an empty array.  Warning: arrays are mutable so this value cannot be shared.
@@ -18,6 +19,7 @@ module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = array('a) = 
   include SemigroupAny;
   let empty = empty;
 };
+include Relude_Extensions_MonoidAny.MonoidAnyExtensions(MonoidAny);
 
 /**
  * Applies a pure function to each value in the array

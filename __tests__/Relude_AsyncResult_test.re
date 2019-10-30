@@ -4,7 +4,7 @@ open Expect;
 module AsyncData = Relude.AsyncData;
 module AsyncResult = Relude.AsyncResult;
 
-describe("AsyncResult constructors", () => {
+describe("AsyncResult", () => {
   test("Init", () =>
     expect(AsyncResult.init) |> toEqual(AsyncData.init)
   );
@@ -22,9 +22,7 @@ describe("AsyncResult constructors", () => {
     expect(AsyncResult.error("Fail"))
     |> toEqual(AsyncData.complete(Belt.Result.Error("Fail")))
   );
-});
 
-describe("AsyncResult state checks", () => {
   test("isOk when Loading", () =>
     expect(AsyncResult.(loading |> isOk)) |> toEqual(false)
   );
@@ -61,8 +59,36 @@ describe("AsyncResult state checks", () => {
     expect(AsyncResult.(ok(1) |> isError)) |> toEqual(false)
   );
 
+  test("isReloadingOk when Complete Ok", () =>
+    expect(AsyncResult.(completeOk(1) |> isReloadingOk)) |> toEqual(false)
+  );
+
+  test("isReloadingOk when Reloading Ok", () =>
+    expect(AsyncResult.(reloadingOk(1) |> isReloadingOk)) |> toEqual(true)
+  );
+
+  test("isReloadingOk when Complete Error", () =>
+    expect(AsyncResult.(completeError("fail") |> isReloadingOk))
+    |> toEqual(false)
+  );
+
+  test("isReloadingError when Complete Ok", () =>
+    expect(AsyncResult.(completeOk(1) |> isReloadingError))
+    |> toEqual(false)
+  );
+
+  test("isReloadingError when Reloading Ok", () =>
+    expect(AsyncResult.(reloadingOk(1) |> isReloadingError))
+    |> toEqual(false)
+  );
+
+  test("isReloadingError when Reloading Error", () =>
+    expect(AsyncResult.(reloadingError("fail") |> isReloadingError))
+    |> toEqual(true)
+  );
+
   test("isCompleteOk when Complete Ok", () =>
-    expect(AsyncResult.(ok(1) |> isCompleteOk)) |> toEqual(true)
+    expect(AsyncResult.(completeOk(1) |> isCompleteOk)) |> toEqual(true)
   );
 
   test("isCompleteOk when Reloading Ok", () =>
@@ -70,7 +96,26 @@ describe("AsyncResult state checks", () => {
   );
 
   test("isCompleteOk when Complete Error", () =>
-    expect(AsyncResult.(error("fail") |> isCompleteOk)) |> toEqual(false)
+    expect(AsyncResult.(completeError("fail") |> isCompleteOk))
+    |> toEqual(false)
+  );
+
+  test("isCompleteError when Complete Ok", () =>
+    expect(AsyncResult.(completeOk(1) |> isCompleteError)) |> toEqual(false)
+  );
+
+  test("isCompleteError when Reloading Ok", () =>
+    expect(AsyncResult.(reloadingOk(1) |> isCompleteError))
+    |> toEqual(false)
+  );
+
+  test("isCompleteError when Complete Error", () =>
+    expect(AsyncResult.(completeError("fail") |> isCompleteError))
+    |> toEqual(true)
+  );
+
+  test("getOk when Init", () =>
+    expect(AsyncResult.(init |> getOk)) |> toEqual(None)
   );
 
   test("getOk when Reloading Ok", () =>
@@ -89,12 +134,8 @@ describe("AsyncResult state checks", () => {
     expect(AsyncResult.(error("fail") |> getOk)) |> toEqual(None)
   );
 
-  test("getCompleteOk when Reloading Ok", () =>
-    expect(AsyncResult.(reloadingOk(1) |> getCompleteOk)) |> toEqual(None)
-  );
-
-  test("getCompleteOk when Complete Ok", () =>
-    expect(AsyncResult.(ok(1) |> getCompleteOk)) |> toEqual(Some(1))
+  test("getError when Init", () =>
+    expect(AsyncResult.(init |> getError)) |> toEqual(None)
   );
 
   test("getError when Reloading Error", () =>
@@ -115,6 +156,14 @@ describe("AsyncResult state checks", () => {
     expect(AsyncResult.(ok(1) |> getError)) |> toEqual(None)
   );
 
+  test("getCompleteOk when Reloading Ok", () =>
+    expect(AsyncResult.(reloadingOk(1) |> getCompleteOk)) |> toEqual(None)
+  );
+
+  test("getCompleteOk when Complete Ok", () =>
+    expect(AsyncResult.(ok(1) |> getCompleteOk)) |> toEqual(Some(1))
+  );
+
   test("getCompleteError when Complete Error", () =>
     expect(AsyncResult.(error("fail") |> getCompleteError))
     |> toEqual(Some("fail"))
@@ -123,6 +172,85 @@ describe("AsyncResult state checks", () => {
   test("getCompleteError when Reloading Error", () =>
     expect(AsyncResult.(reloadingError("fail") |> getCompleteError))
     |> toEqual(None)
+  );
+
+  test("getReloadingOk when Reloading Ok", () =>
+    expect(AsyncResult.(reloadingOk(1) |> getReloadingOk))
+    |> toEqual(Some(1))
+  );
+
+  test("getReloadingOk when Complete Ok", () =>
+    expect(AsyncResult.(completeOk(1) |> getReloadingOk)) |> toEqual(None)
+  );
+
+  test("getReloadingError when Complete Error", () =>
+    expect(AsyncResult.(completeError("fail") |> getReloadingError))
+    |> toEqual(None)
+  );
+
+  test("getReloadingError when Reloading Error", () =>
+    expect(AsyncResult.(reloadingError("fail") |> getReloadingError))
+    |> toEqual(Some("fail"))
+  );
+
+  test("map Init", () =>
+    expect(AsyncResult.init |> AsyncResult.map(i => i + 1))
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("map Loading", () =>
+    expect(AsyncResult.loading |> AsyncResult.map(i => i + 1))
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("map Reloading Ok", () =>
+    expect(AsyncResult.reloadingOk(42) |> AsyncResult.map(i => i + 1))
+    |> toEqual(AsyncResult.reloadingOk(43))
+  );
+
+  test("map Reloading Error", () =>
+    expect(AsyncResult.reloadingError(42) |> AsyncResult.map(i => i + 1))
+    |> toEqual(AsyncResult.reloadingError(42))
+  );
+
+  test("map Complete Ok", () =>
+    expect(AsyncResult.completeOk(42) |> AsyncResult.map(i => i + 1))
+    |> toEqual(AsyncResult.completeOk(43))
+  );
+
+  test("map Complete Error", () =>
+    expect(AsyncResult.completeError(42) |> AsyncResult.map(i => i + 1))
+    |> toEqual(AsyncResult.completeError(42))
+  );
+
+  test("mapError Init", () =>
+    expect(AsyncResult.init |> AsyncResult.mapError(i => i + 1))
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("mapError Loading", () =>
+    expect(AsyncResult.loading |> AsyncResult.mapError(i => i + 1))
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("mapError Reloading Ok", () =>
+    expect(AsyncResult.reloadingOk(42) |> AsyncResult.mapError(i => i + 1))
+    |> toEqual(AsyncResult.reloadingOk(42))
+  );
+
+  test("mapError Reloading Error", () =>
+    expect(AsyncResult.reloadingError(42) |> AsyncResult.mapError(i => i + 1))
+    |> toEqual(AsyncResult.reloadingError(43))
+  );
+
+  test("mapError Complete Ok", () =>
+    expect(AsyncResult.completeOk(42) |> AsyncResult.mapError(i => i + 1))
+    |> toEqual(AsyncResult.completeOk(42))
+  );
+
+  test("mapError Complete Error", () =>
+    expect(AsyncResult.completeError(42) |> AsyncResult.mapError(i => i + 1))
+    |> toEqual(AsyncResult.completeError(43))
   );
 
   test("eqBy different constructors", () =>

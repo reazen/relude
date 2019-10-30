@@ -9,6 +9,7 @@ module SemigroupAny:
   type t('a) = list('a);
   let append = concat;
 };
+include Relude_Extensions_SemigroupAny.SemigroupAnyExtensions(SemigroupAny);
 
 /**
  * Creates an empty list.
@@ -19,6 +20,7 @@ module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = list('a) = {
   include SemigroupAny;
   let empty = empty;
 };
+include Relude_Extensions_MonoidAny.MonoidAnyExtensions(MonoidAny);
 
 /**
  * Maps a pure function over a list
@@ -81,6 +83,7 @@ module Plus: BsAbstract.Interface.PLUS with type t('a) = list('a) = {
   let map = map;
   let alt = alt;
 };
+include Relude_Extensions_Plus.PlusExtensions(Plus);
 
 module Alternative:
   BsAbstract.Interface.ALTERNATIVE with type t('a) = list('a) = {
@@ -88,6 +91,7 @@ module Alternative:
   let apply = apply;
   let pure = pure;
 };
+include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
 
 /**
  * Folds a list from left-to-right into a single value using an accumulator

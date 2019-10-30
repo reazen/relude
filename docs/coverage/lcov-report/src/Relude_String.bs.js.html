@@ -22,7 +22,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>212/212</span>
+        <span class='fraction'>214/214</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -37,7 +37,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>212/212</span>
+        <span class='fraction'>214/214</span>
       </div>
     </div>
     <p class="quiet">
@@ -468,7 +468,10 @@
 <a name='L420'></a><a href='#L420'>420</a>
 <a name='L421'></a><a href='#L421'>421</a>
 <a name='L422'></a><a href='#L422'>422</a>
-<a name='L423'></a><a href='#L423'>423</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L423'></a><a href='#L423'>423</a>
+<a name='L424'></a><a href='#L424'>424</a>
+<a name='L425'></a><a href='#L425'>425</a>
+<a name='L426'></a><a href='#L426'>426</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
@@ -535,7 +538,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
@@ -817,6 +820,9 @@
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
@@ -964,14 +970,14 @@ var Semigroup = {
   append: concat
 };
 &nbsp;
-Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
+var include = Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 &nbsp;
 var Monoid = {
   append: concat,
   empty: empty
 };
 &nbsp;
-var include = Relude_Extensions_Monoid.MonoidExtensions(Monoid);
+var include$1 = Relude_Extensions_Monoid.MonoidExtensions(Monoid);
 &nbsp;
 function concatArray(array) {
   return Relude_Array_Instances.foldLeft((function (acc, str) {
@@ -1080,7 +1086,7 @@ var Eq = {
   eq: eq
 };
 &nbsp;
-var include$1 = Relude_Extensions_Eq.EqExtensions(Eq);
+var include$2 = Relude_Extensions_Eq.EqExtensions(Eq);
 &nbsp;
 var compare = String$BsAbstract.Ord.compare;
 &nbsp;
@@ -1089,7 +1095,7 @@ var Ord = {
   compare: compare
 };
 &nbsp;
-var include$2 = Relude_Extensions_Ord.OrdExtensions(Ord);
+var include$3 = Relude_Extensions_Ord.OrdExtensions(Ord);
 &nbsp;
 var $$Map = Relude_Map.WithOrd(Ord);
 &nbsp;
@@ -1200,43 +1206,45 @@ function toFloat(v) {
 &nbsp;
 var isNotEmpty = isNonEmpty;
 &nbsp;
-var BsMonoidExtensions = include.BsMonoidExtensions;
+var concatNamed = include.concatNamed;
 &nbsp;
-var guard = include.guard;
+var BsMonoidExtensions = include$1.BsMonoidExtensions;
 &nbsp;
-var power = include.power;
+var guard = include$1.guard;
 &nbsp;
-var notEq = include$1.notEq;
+var power = include$1.power;
 &nbsp;
-var compareAsInt = include$2.compareAsInt;
+var notEq = include$2.notEq;
 &nbsp;
-var min = include$2.min;
+var compareAsInt = include$3.compareAsInt;
 &nbsp;
-var max = include$2.max;
+var min = include$3.min;
 &nbsp;
-var lessThan = include$2.lessThan;
+var max = include$3.max;
 &nbsp;
-var lessThanOrEq = include$2.lessThanOrEq;
+var lessThan = include$3.lessThan;
 &nbsp;
-var greaterThan = include$2.greaterThan;
+var lessThanOrEq = include$3.lessThanOrEq;
 &nbsp;
-var greaterThanOrEq = include$2.greaterThanOrEq;
+var greaterThan = include$3.greaterThan;
 &nbsp;
-var lt = include$2.lt;
+var greaterThanOrEq = include$3.greaterThanOrEq;
 &nbsp;
-var lte = include$2.lte;
+var lt = include$3.lt;
 &nbsp;
-var gt = include$2.gt;
+var lte = include$3.lte;
 &nbsp;
-var gte = include$2.gte;
+var gt = include$3.gt;
 &nbsp;
-var clamp = include$2.clamp;
+var gte = include$3.gte;
 &nbsp;
-var between = include$2.between;
+var clamp = include$3.clamp;
 &nbsp;
-var OrdRingExtensions = include$2.OrdRingExtensions;
+var between = include$3.between;
 &nbsp;
-var Named = include$2.Named;
+var OrdRingExtensions = include$3.OrdRingExtensions;
+&nbsp;
+var Named = include$3.Named;
 &nbsp;
 exports.empty = empty;
 exports.length = length;
@@ -1250,6 +1258,7 @@ exports.isNonWhitespace = isNonWhitespace;
 exports.toNonWhitespace = toNonWhitespace;
 exports.concat = concat;
 exports.Semigroup = Semigroup;
+exports.concatNamed = concatNamed;
 exports.Monoid = Monoid;
 exports.BsMonoidExtensions = BsMonoidExtensions;
 exports.guard = guard;
@@ -1311,7 +1320,7 @@ exports.fromInt = fromInt;
 exports.toInt = toInt;
 exports.fromFloat = fromFloat;
 exports.toFloat = toFloat;
-/*  Not a pure module */
+/* include Not a pure module */
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->

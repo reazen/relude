@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.1% </span>
+        <span class="strong">96.27% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>222/231</span>
+        <span class='fraction'>232/241</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>4/9</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.1% </span>
+        <span class="strong">96.27% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>222/231</span>
+        <span class='fraction'>232/241</span>
       </div>
     </div>
     <p class="quiet">
@@ -471,7 +471,22 @@
 <a name='L423'></a><a href='#L423'>423</a>
 <a name='L424'></a><a href='#L424'>424</a>
 <a name='L425'></a><a href='#L425'>425</a>
-<a name='L426'></a><a href='#L426'>426</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L426'></a><a href='#L426'>426</a>
+<a name='L427'></a><a href='#L427'>427</a>
+<a name='L428'></a><a href='#L428'>428</a>
+<a name='L429'></a><a href='#L429'>429</a>
+<a name='L430'></a><a href='#L430'>430</a>
+<a name='L431'></a><a href='#L431'>431</a>
+<a name='L432'></a><a href='#L432'>432</a>
+<a name='L433'></a><a href='#L433'>433</a>
+<a name='L434'></a><a href='#L434'>434</a>
+<a name='L435'></a><a href='#L435'>435</a>
+<a name='L436'></a><a href='#L436'>436</a>
+<a name='L437'></a><a href='#L437'>437</a>
+<a name='L438'></a><a href='#L438'>438</a>
+<a name='L439'></a><a href='#L439'>439</a>
+<a name='L440'></a><a href='#L440'>440</a>
+<a name='L441'></a><a href='#L441'>441</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">22x</span>
@@ -487,17 +502,23 @@
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -802,6 +823,15 @@
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-yes">22x</span>
@@ -910,12 +940,16 @@ var Relude_Extensions_Apply = require("../extensions/Relude_Extensions_Apply.bs.
 var Relude_Extensions_Monad = require("../extensions/Relude_Extensions_Monad.bs.js");
 var Relude_Extensions_Functor = require("../extensions/Relude_Extensions_Functor.bs.js");
 var Relude_Extensions_Foldable = require("../extensions/Relude_Extensions_Foldable.bs.js");
+var Relude_Extensions_MonoidAny = require("../extensions/Relude_Extensions_MonoidAny.bs.js");
 var Relude_Extensions_Alternative = require("../extensions/Relude_Extensions_Alternative.bs.js");
 var Relude_Extensions_Applicative = require("../extensions/Relude_Extensions_Applicative.bs.js");
+var Relude_Extensions_SemigroupAny = require("../extensions/Relude_Extensions_SemigroupAny.bs.js");
 &nbsp;
 var SemigroupAny = {
   append: Belt_Array.concat
 };
+&nbsp;
+var include = Relude_Extensions_SemigroupAny.SemigroupAnyExtensions(SemigroupAny);
 &nbsp;
 var empty = /* array */[];
 &nbsp;
@@ -924,13 +958,15 @@ var MonoidAny = {
   empty: empty
 };
 &nbsp;
+var include$1 = Relude_Extensions_MonoidAny.MonoidAnyExtensions(MonoidAny);
+&nbsp;
 var map = Array$BsAbstract.Functor.map;
 &nbsp;
 var Functor = {
   map: map
 };
 &nbsp;
-var include = Relude_Extensions_Functor.FunctorExtensions(Functor);
+var include$2 = Relude_Extensions_Functor.FunctorExtensions(Functor);
 &nbsp;
 var apply = Array$BsAbstract.Apply.apply;
 &nbsp;
@@ -939,7 +975,7 @@ var Apply = {
   apply: apply
 };
 &nbsp;
-var include$1 = Relude_Extensions_Apply.ApplyExtensions(Apply);
+var include$3 = Relude_Extensions_Apply.ApplyExtensions(Apply);
 &nbsp;
 function pure(a) {
   return /* array */[a];
@@ -951,7 +987,7 @@ var Applicative = {
   pure: pure
 };
 &nbsp;
-var include$2 = Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+var include$4 = Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 &nbsp;
 var bind = Array$BsAbstract.Monad.flat_map;
 &nbsp;
@@ -962,7 +998,7 @@ var Monad = {
   flat_map: bind
 };
 &nbsp;
-var include$3 = Relude_Extensions_Monad.MonadExtensions(Monad);
+var include$5 = Relude_Extensions_Monad.MonadExtensions(Monad);
 &nbsp;
 var alt = Array$BsAbstract.Alt.alt;
 &nbsp;
@@ -1040,9 +1076,9 @@ var Foldable = {
   Fold_Map_Plus: Foldable_Fold_Map_Plus
 };
 &nbsp;
-var include$4 = Relude_Extensions_Foldable.FoldableExtensions(Foldable);
+var include$6 = Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 &nbsp;
-var intercalate = include$4.intercalate;
+var intercalate = include$6.intercalate;
 &nbsp;
 function eqBy(innerEq, _xs, _ys) {
   while(true) {
@@ -1104,119 +1140,125 @@ var IsoList = {
 &nbsp;
 var concat = Belt_Array.concat;
 &nbsp;
-var BsFunctorExtensions = include.BsFunctorExtensions;
+var concatNamed = include.concatNamed;
 &nbsp;
-var flipMap = include.flipMap;
+var guard = include$1.guard;
 &nbsp;
-var $$void = include.$$void;
+var power = include$1.power;
 &nbsp;
-var voidRight = include.voidRight;
+var BsFunctorExtensions = include$2.BsFunctorExtensions;
 &nbsp;
-var voidLeft = include.voidLeft;
+var flipMap = include$2.flipMap;
 &nbsp;
-var flap = include.flap;
+var $$void = include$2.$$void;
 &nbsp;
-var BsApplyExtensions = include$1.BsApplyExtensions;
+var voidRight = include$2.voidRight;
 &nbsp;
-var applyFirst = include$1.applyFirst;
+var voidLeft = include$2.voidLeft;
 &nbsp;
-var applySecond = include$1.applySecond;
+var flap = include$2.flap;
 &nbsp;
-var map2 = include$1.map2;
+var BsApplyExtensions = include$3.BsApplyExtensions;
 &nbsp;
-var map3 = include$1.map3;
+var applyFirst = include$3.applyFirst;
 &nbsp;
-var map4 = include$1.map4;
+var applySecond = include$3.applySecond;
 &nbsp;
-var map5 = include$1.map5;
+var map2 = include$3.map2;
 &nbsp;
-var tuple2 = include$1.tuple2;
+var map3 = include$3.map3;
 &nbsp;
-var tuple3 = include$1.tuple3;
+var map4 = include$3.map4;
 &nbsp;
-var tuple4 = include$1.tuple4;
+var map5 = include$3.map5;
 &nbsp;
-var tuple5 = include$1.tuple5;
+var tuple2 = include$3.tuple2;
 &nbsp;
-var mapTuple2 = include$1.mapTuple2;
+var tuple3 = include$3.tuple3;
 &nbsp;
-var mapTuple3 = include$1.mapTuple3;
+var tuple4 = include$3.tuple4;
 &nbsp;
-var mapTuple4 = include$1.mapTuple4;
+var tuple5 = include$3.tuple5;
 &nbsp;
-var mapTuple5 = include$1.mapTuple5;
+var mapTuple2 = include$3.mapTuple2;
 &nbsp;
-var BsApplicativeExtensions = include$2.BsApplicativeExtensions;
+var mapTuple3 = include$3.mapTuple3;
 &nbsp;
-var liftA1 = include$2.liftA1;
+var mapTuple4 = include$3.mapTuple4;
 &nbsp;
-var BsMonadExtensions = include$3.BsMonadExtensions;
+var mapTuple5 = include$3.mapTuple5;
 &nbsp;
-var flatMap = include$3.flatMap;
+var BsApplicativeExtensions = include$4.BsApplicativeExtensions;
 &nbsp;
-var flatten = include$3.flatten;
+var liftA1 = include$4.liftA1;
 &nbsp;
-var composeKleisli = include$3.composeKleisli;
+var BsMonadExtensions = include$5.BsMonadExtensions;
 &nbsp;
-var flipComposeKleisli = include$3.flipComposeKleisli;
+var flatMap = include$5.flatMap;
 &nbsp;
-var liftM1 = include$3.liftM1;
+var flatten = include$5.flatten;
 &nbsp;
-var when_ = include$3.when_;
+var composeKleisli = include$5.composeKleisli;
 &nbsp;
-var unless = include$3.unless;
+var flipComposeKleisli = include$5.flipComposeKleisli;
 &nbsp;
-var BsFoldableExtensions = include$4.BsFoldableExtensions;
+var liftM1 = include$5.liftM1;
 &nbsp;
-var any = include$4.any;
+var when_ = include$5.when_;
 &nbsp;
-var all = include$4.all;
+var unless = include$5.unless;
 &nbsp;
-var containsBy = include$4.containsBy;
+var BsFoldableExtensions = include$6.BsFoldableExtensions;
 &nbsp;
-var contains = include$4.contains;
+var any = include$6.any;
 &nbsp;
-var indexOfBy = include$4.indexOfBy;
+var all = include$6.all;
 &nbsp;
-var indexOf = include$4.indexOf;
+var containsBy = include$6.containsBy;
 &nbsp;
-var minBy = include$4.minBy;
+var contains = include$6.contains;
 &nbsp;
-var min = include$4.min;
+var indexOfBy = include$6.indexOfBy;
 &nbsp;
-var maxBy = include$4.maxBy;
+var indexOf = include$6.indexOf;
 &nbsp;
-var max = include$4.max;
+var minBy = include$6.minBy;
 &nbsp;
-var countBy = include$4.countBy;
+var min = include$6.min;
 &nbsp;
-var length = include$4.length;
+var maxBy = include$6.maxBy;
 &nbsp;
-var forEach = include$4.forEach;
+var max = include$6.max;
 &nbsp;
-var forEachWithIndex = include$4.forEachWithIndex;
+var countBy = include$6.countBy;
 &nbsp;
-var find = include$4.find;
+var length = include$6.length;
 &nbsp;
-var findWithIndex = include$4.findWithIndex;
+var forEach = include$6.forEach;
 &nbsp;
-var toArray = include$4.toArray;
+var forEachWithIndex = include$6.forEachWithIndex;
 &nbsp;
-var FoldableSemigroupExtensions = include$4.FoldableSemigroupExtensions;
+var find = include$6.find;
 &nbsp;
-var FoldableMonoidExtensions = include$4.FoldableMonoidExtensions;
+var findWithIndex = include$6.findWithIndex;
 &nbsp;
-var foldMap = include$4.foldMap;
+var toArray = include$6.toArray;
 &nbsp;
-var foldWithMonoid = include$4.foldWithMonoid;
+var FoldableSemigroupExtensions = include$6.FoldableSemigroupExtensions;
 &nbsp;
-var FoldableApplicativeExtensions = include$4.FoldableApplicativeExtensions;
+var FoldableMonoidExtensions = include$6.FoldableMonoidExtensions;
 &nbsp;
-var FoldableMonadExtensions = include$4.FoldableMonadExtensions;
+var foldMap = include$6.foldMap;
 &nbsp;
-var FoldableEqExtensions = include$4.FoldableEqExtensions;
+var foldWithMonoid = include$6.foldWithMonoid;
 &nbsp;
-var FoldableOrdExtensions = include$4.FoldableOrdExtensions;
+var FoldableApplicativeExtensions = include$6.FoldableApplicativeExtensions;
+&nbsp;
+var FoldableMonadExtensions = include$6.FoldableMonadExtensions;
+&nbsp;
+var FoldableEqExtensions = include$6.FoldableEqExtensions;
+&nbsp;
+var FoldableOrdExtensions = include$6.FoldableOrdExtensions;
 &nbsp;
 var Traversable = 0;
 &nbsp;
@@ -1228,8 +1270,11 @@ var toList = Belt_List.fromArray;
 &nbsp;
 exports.concat = concat;
 exports.SemigroupAny = SemigroupAny;
+exports.concatNamed = concatNamed;
 exports.empty = empty;
 exports.MonoidAny = MonoidAny;
+exports.guard = guard;
+exports.power = power;
 exports.map = map;
 exports.Functor = Functor;
 exports.BsFunctorExtensions = BsFunctorExtensions;

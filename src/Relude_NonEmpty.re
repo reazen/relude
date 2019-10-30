@@ -86,6 +86,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     type nonrec t('a) = t('a);
     let append = concat;
   };
+  include Relude_Extensions_SemigroupAny.SemigroupAnyExtensions(SemigroupAny);
 
   module MagmaAny: BsAbstract.Interface.MAGMA_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);

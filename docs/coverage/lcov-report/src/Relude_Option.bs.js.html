@@ -620,7 +620,8 @@
 <a name='L572'></a><a href='#L572'>572</a>
 <a name='L573'></a><a href='#L573'>573</a>
 <a name='L574'></a><a href='#L574'>574</a>
-<a name='L575'></a><a href='#L575'>575</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L575'></a><a href='#L575'>575</a>
+<a name='L576'></a><a href='#L576'>576</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
@@ -871,6 +872,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1441,15 +1443,16 @@ function <span class="fstat-no" title="function not covered" >show(</span>showA,
 &nbsp;
 function <span class="fstat-no" title="function not covered" >WithSemigroup(</span>S) {
   var Semigroup = <span class="cstat-no" title="statement not covered" >Option$BsAbstract.Semigroup(S);</span>
-<span class="cstat-no" title="statement not covered" >  Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);</span>
+  var include = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);</span>
   var Monoid = <span class="cstat-no" title="statement not covered" >Option$BsAbstract.Monoid(S);</span>
-  var include = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monoid.MonoidExtensions(Monoid);</span>
+  var include$1 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monoid.MonoidExtensions(Monoid);</span>
 <span class="cstat-no" title="statement not covered" >  return {</span>
           Semigroup: Semigroup,
+          concatNamed: include.concatNamed,
           Monoid: Monoid,
-          BsMonoidExtensions: include.BsMonoidExtensions,
-          guard: include.guard,
-          power: include.power
+          BsMonoidExtensions: include$1.BsMonoidExtensions,
+          guard: include$1.guard,
+          power: include$1.power
         };
 }
 &nbsp;

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for src/extensions/Relude_Extensions_Semigroup.bs.js</title>
+    <title>Code coverage report for src/extensions/Relude_Extensions_SemigroupAny.bs.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -16,7 +16,7 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../../index.html">All files</a> / <a href="index.html">src/extensions</a> Relude_Extensions_Semigroup.bs.js
+      <a href="../../index.html">All files</a> / <a href="index.html">src/extensions</a> Relude_Extensions_SemigroupAny.bs.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
@@ -71,13 +71,13 @@
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -89,14 +89,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
 var Curry = require("bs-platform/lib/js/curry.js");
 &nbsp;
-function SemigroupExtensions(S) {
+function SemigroupAnyExtensions(S) {
   var concatNamed = function (prefix, suffix) {
     return Curry._2(S.append, prefix, suffix);
   };
@@ -105,15 +105,15 @@ function SemigroupExtensions(S) {
         };
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >SemigroupInfix(</span>S) {
+function <span class="fstat-no" title="function not covered" >SemigroupAnyInfix(</span>S) {
   var $pipe$plus$pipe = <span class="cstat-no" title="statement not covered" >S.append;</span>
 <span class="cstat-no" title="statement not covered" >  return {</span>
           $pipe$plus$pipe: $pipe$plus$pipe
         };
 }
 &nbsp;
-exports.SemigroupExtensions = SemigroupExtensions;
-exports.SemigroupInfix = SemigroupInfix;
+exports.SemigroupAnyExtensions = SemigroupAnyExtensions;
+exports.SemigroupAnyInfix = SemigroupAnyInfix;
 /* No side effect */
 &nbsp;</pre></td></tr>
 </table></pre>
