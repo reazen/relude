@@ -829,6 +829,28 @@ describe("IO examples", () => {
          | Error(_) => onDone(fail("Failed")),
        )
   );
+
+  testAsync("example cond", onDone =>
+    IO.pure("hello")
+    |> IO.cond(a => a |> String.length == 5, "is five", "boom explosions")
+    |> IO.map(a => expect(a) |> toEqual("is five"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | _ => onDone(fail("fail")),
+       )
+  );
+
+  testAsync("condError", onDone =>
+    IO.pure("hello world")
+    |> IO.condError(a => a |> String.length == 5, "string is too long")
+    |> IO.mapError(a => expect(a) |> toEqual("string is too long"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("fail"))
+         | Error(assertion)=> onDone(assertion)
+       )
+  );
 });
 
 let testFilePath = FS.testFilePath("Eff_test.txt");

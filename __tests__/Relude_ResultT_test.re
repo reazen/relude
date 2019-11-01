@@ -7,8 +7,11 @@ module ResultT = Relude.ResultT;
 
 type error = {message: string};
 
-module Error: BsAbstract.Interface.TYPE = {
+module Error = {
   type t = error;
+  module Type: BsAbstract.Interface.TYPE with type t = t = {
+    type nonrec t = t;
+  }
 };
 
 module IOE = IO.WithError(Error);
@@ -104,6 +107,31 @@ describe("ResultT", () => {
          fun
          | Belt.Result.Ok(Belt.Result.Ok(assertion)) => onDone(assertion)
          | _ => onDone(fail("fail")),
+       )
+  );
+
+  testAsync("cond", onDone =>
+    ResultIOE.pure(500)
+    |> ResultIOE.cond(a => 9000 > a, 100, {message: "It's over 9000"})
+    |> ResultIOE.map(a => expect(a) |> toEqual(100))
+    |> ResultIOE.runResultT
+    |> IO.unsafeRunAsync(
+         fun
+         | Belt.Result.Ok(Belt.Result.Ok(assertion)) => onDone(assertion)
+         | _ => onDone(fail("fail")),
+       )
+  );
+
+  testAsync("condError", onDone =>
+    ResultIOE.pure(10000)
+    |> ResultIOE.condError(a => 9000 > a, {message: "It's over 9000"})
+    |> ResultIOE.map(a => expect(a) |> toEqual(100))
+    |> ResultIOE.mapError(e => expect(e.message) |> toEqual("It's over 9000"))
+    |> ResultIOE.runResultT
+    |> IO.unsafeRunAsync(
+         fun
+         | Belt.Result.Ok(Belt.Result.Error(assertion)) => onDone(assertion)
+         |_ => onDone(fail("fail"))
        )
   );
 });
