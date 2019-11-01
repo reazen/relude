@@ -156,6 +156,20 @@ let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
   (ioF, ioA) => ioF |> flatMap(f => ioA |> map(f));
 
 /**
+ Conditional map.
+ If the condition is satisfied, return the given `'a` in lifted into a successful IO, otherwise,
+ return the given `e` Lifted to the error side.
+ */
+let cond: 'a 'e. ('a => bool, 'a, 'e, t('a, 'e)) => t('a, 'e) =
+  (f, newA, err, ioA) => flatMap(a => f(a)? pure(newA) : throw(err), ioA);
+
+/**
+ As `cond`, but only maps the 'e side when the condition fails.
+ */
+let condError: 'a 'e. ('a => bool, 'e, t('a, 'e)) => t('a, 'e) =
+  (f, err, ioA) => flatMap(a => f(a)? pure(a) : throw(err), ioA);
+
+/**
 Unsafely runs the `IO.t('a, 'e)` to produce a final `Result.t('a, 'e)`, which is provided to the caller via
 a callback of type `Result.t('a, 'e) => unit`.
 

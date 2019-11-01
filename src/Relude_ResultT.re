@@ -39,7 +39,17 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
 
   let subflatMap: 'a 'b 'e. ('a => Result.t('b, 'e),  t('a, 'e)) => t('b, 'e) =
     (aToB, ResultT(mResultA)) =>
-      ResultT(M.map(optionA => Result.flatMap(aToB, optionA), mResultA));
+      ResultT(M.map(resultA => Result.flatMap(aToB, resultA), mResultA));
+      
+  let cond: 'a 'e. ('a => bool, 'a, 'e,  t('a, 'e)) => t('a, 'e) =
+    (aToBool, success, err, ResultT(mResultA)) =>
+      ResultT(M.map(resultA => Result.flatMap(a => 
+        aToBool(a) ? Result.pure(success) : Result.error(err), resultA), mResultA));
+
+  let condError: 'a 'b 'e. ('a => bool, 'e,  t('a, 'e)) => t('a, 'e) =
+    (aToBool, err, ResultT(mResultA)) =>
+      ResultT(M.map(resultA => Result.flatMap(a => 
+        aToBool(a) ? Result.pure(a) : Result.error(err), resultA), mResultA));
 
   let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) = withResultT;
 
@@ -93,6 +103,8 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let liftF = liftF;
     let subflatMap = subflatMap;
     let semiflatMap = semiflatMap;
+    let cond = cond;
+    let condError = condError;
 
     module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
       type nonrec t('a) = t('a, E.t);
