@@ -6,19 +6,18 @@ module IO = Relude_IO;
 module WithError = (ERR: BsAbstract.Interface.TYPE) => {
   module IOE = IO.WithError(ERR);
   module M = IOE.MonadError;
-
   type t('r, 'a) =
     | RIO('r => M.t('a));
 
   let make: 'r 'a. ('r => M.t('a)) => t('r, 'a) = rToMA => RIO(rToMA);
 
-  let runReaderT: 'r 'a. ('r, t('r, 'a)) => M.t('a) =
+  let runRIO: 'r 'a. ('r, t('r, 'a)) => M.t('a) =
     (r, RIO(rToMA)) => rToMA(r);
 
-  let mapReaderT: 'r 'a 'b. (M.t('a) => M.t('b), t('r, 'a)) => t('r, 'b) =
+  let mapRIO: 'r 'a 'b. (M.t('a) => M.t('b), t('r, 'a)) => t('r, 'b) =
     (maToMB, RIO(rToMA)) => RIO(maToMB << rToMA);
 
-  let withReaderT: 'r1 'r2 'a. ('r2 => 'r1, t('r1, 'a)) => t('r2, 'a) =
+  let withRIO: 'r1 'r2 'a. ('r2 => 'r1, t('r1, 'a)) => t('r2, 'a) =
     (r2ToR1, RIO(r1ToMA)) => RIO(r1ToMA << r2ToR1);
 
   let ask: 'r. t('r, 'r) = RIO(r => M.pure(r));
@@ -49,17 +48,22 @@ module WithError = (ERR: BsAbstract.Interface.TYPE) => {
               rToMB(r);
             },
           ),
-      )
+      );
 
   let semiflatMap: 'r 'a 'b. ('a => M.t('b), t('r, 'a)) => t('r, 'b) =
-    (aToMA, RIO(rToMA)) =>
-      RIO(
-        r =>
-          M.flat_map(
-            rToMA(r),
-            a => aToMA(a),
-          ),
-      );
+    (aToMA, RIO(rToMA)) => RIO(r => M.flat_map(rToMA(r), a => aToMA(a)));
+
+  let catchError: 'r 'a 'b. (M.e => M.t('a), t('r, 'a)) => t('r, 'a) = {
+    (eToMa, RIO(rToMA)) => RIO(r => M.catchError(eToMa, rToMA(r)));
+  };
+
+  let throwError: 'r 'a 'b. M.e => t('r, 'a) = {
+    e => RIO(_ => M.throwError(e));
+  };
+
+  let mapError: 'r 'a 'b. (M.e => M.e, t('r, 'a)) => t('r, 'a) = {
+    (eToE, RIO(rToMA)) => RIO(r => IOE.mapError(eToE, rToMA(r)));
+  };
 
   /**
    * Locks in the reader environment type, so that we can implement
@@ -69,9 +73,9 @@ module WithError = (ERR: BsAbstract.Interface.TYPE) => {
     type nonrec t('a) = t(R.t, 'a);
 
     let make = make;
-    let runReaderT = runReaderT;
-    let mapReaderT = mapReaderT;
-    let withReaderT = withReaderT;
+    let runRIO = runRIO;
+    let mapRIO = mapRIO;
+    let withRIO = withRIO;
     let ask = ask;
     let asks = asks;
     let local = local;
