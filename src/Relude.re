@@ -34,6 +34,7 @@ module Reader = Relude_ReaderT.Reader;
 module ReaderT = Relude_ReaderT;
 module Result = Relude_Result;
 module ResultT = Relude_ResultT;
+module RIO = Relude_RIO;
 module RWST = Relude_RWST;
 module Sequence = Relude_Sequence;
 module SequenceZipper = Relude_SequenceZipper;

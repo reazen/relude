@@ -53,6 +53,7 @@ module NonEmptyArray = Relude_NonEmpty.Array;
 module NonEmptyList = Relude_NonEmpty.List;
 module Option = Relude_Option;
 module OptionT = Relude_OptionT;
+module RIO = Relude_RIO;
 module RJs = Relude_Js;
 module ReaderT = Relude_ReaderT;
 module Result = Relude_Result;
