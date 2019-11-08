@@ -11,9 +11,14 @@ module type MAP = {
   let isEmpty: t('value) => bool;
   let contains: (key, t('value)) => bool;
   let compareInt: (('value, 'value) => int, t('value), t('value)) => int;
-  let compare:
-    (('value, 'value) => int, t('value), t('value)) =>
+  let compareBy:
+    (
+      ('value, 'value) => BsAbstract.Interface.ordering,
+      t('value),
+      t('value)
+    ) =>
     BsAbstract.Interface.ordering;
+
   let eqBy: (('value, 'value) => bool, t('value), t('value)) => bool;
   let find: ((key, 'value) => bool, t('value)) => option((key, 'value));
   let forEach: ((key, 'value) => unit, t('value)) => unit;
@@ -110,13 +115,14 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   /**
    * Compare the ordering of two maps, given a comparator function capable of
    * comparing each value in the map. `compare` expects the provided function to
-   * return an int (TODO) representing the comparison, and `compare` itself will
+   * return an `ordering` representing the comparison, and `compare` itself will
    * return an `ordering` value.
    */
-  // TODO: make the comparator return an `ordering`
-  // TODO: rename to `compareBy` and add a `compare` that works with modules
-  let compare = (comparator, a, b) =>
-    compareInt(comparator, a, b) |> Relude_Ordering.fromInt;
+  let compareBy = (comparator, a, b) =>
+    compareInt((a, b) => Relude_Ordering.toInt(comparator(a, b)), a, b)
+    |> Relude_Ordering.fromInt;
+
+  // TODO: add a `compare` that works with modules
 
   /**
    * Given an equality function capable of testing values for equality,
@@ -272,7 +278,7 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   /**
    * Given a list of keys, remove each from the map, returning a new copy.
    */
-  // TODO: list
+  // TODO: we tend to prefer lists by default, but this wants an array
   let removeMany = keys => Belt.Map.removeMany(_, keys);
 
   /**
