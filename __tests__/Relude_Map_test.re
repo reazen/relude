@@ -12,6 +12,26 @@ describe("StringMap", () => {
     expect(StringMap.isEmpty(empty)) |> toEqual(true)
   );
 
+  test("set (add new key)", () =>
+    expect(StringMap.set("a", 0, empty) |> StringMap.get("a"))
+    |> toEqual(Some(0))
+  );
+
+  test("set (overwrite exising key)", () =>
+    expect(StringMap.set("a", "a", abcdef) |> StringMap.get("a"))
+    |> toEqual(Some("a"))
+  );
+
+  test("set (is immutable)", () => {
+    let _ = StringMap.set("a", 1, empty);
+    expect(StringMap.length(empty)) |> toEqual(0);
+  });
+
+  test("singleton", () =>
+    expect(StringMap.(singleton("foo", 3) |> get("foo")))
+    |> toEqual(Some(3))
+  );
+
   test("contains (false)", () =>
     expect(StringMap.contains("foo", empty)) |> toEqual(false)
   );
@@ -191,19 +211,4 @@ describe("StringMap", () => {
     expect(StringMap.removeMany([|"a", "b", "x", "y", "z"|], zyx))
     |> toEqual(empty)
   );
-
-  test("set (add new key)", () =>
-    expect(StringMap.set("a", 0, empty) |> StringMap.get("a"))
-    |> toEqual(Some(0))
-  );
-
-  test("set (overwrite exising key)", () =>
-    expect(StringMap.set("a", "a", abcdef) |> StringMap.get("a"))
-    |> toEqual(Some("a"))
-  );
-
-  test("set (is immutable)", () => {
-    let _ = StringMap.set("a", 1, empty);
-    expect(StringMap.length(empty)) |> toEqual(0);
-  });
 });

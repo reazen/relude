@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">56.38% </span>
+        <span class="strong">57.73% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>53/94</span>
+        <span class='fraction'>56/97</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">40.48% </span>
+        <span class="strong">41.86% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>17/42</span>
+        <span class='fraction'>18/43</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">56.38% </span>
+        <span class="strong">57.73% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>53/94</span>
+        <span class='fraction'>56/97</span>
       </div>
     </div>
     <p class="quiet">
@@ -231,7 +231,12 @@
 <a name='L183'></a><a href='#L183'>183</a>
 <a name='L184'></a><a href='#L184'>184</a>
 <a name='L185'></a><a href='#L185'>185</a>
-<a name='L186'></a><a href='#L186'>186</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
@@ -243,12 +248,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">43x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
@@ -285,7 +297,7 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -297,9 +309,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
@@ -374,6 +383,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -436,6 +446,13 @@ function WithOrd(M) {
   var make = function (param) {
     return Belt_Map.make(Comparable);
   };
+  var set = function (key, value, __x) {
+    return Belt_Map.set(__x, key, value);
+  };
+  var singleton = function (key, value) {
+    var __x = Belt_Map.make(Comparable);
+    return Belt_Map.set(__x, key, value);
+  };
   var contains = function (key, __x) {
     return Belt_Map.has(__x, key);
   };
@@ -480,9 +497,6 @@ function WithOrd(M) {
   };
   var removeMany = function (keys, __x) {
     return Belt_Map.removeMany(__x, keys);
-  };
-  var set = function (key, value, __x) {
-    return Belt_Map.set(__x, key, value);
   };
   var update = <span class="fstat-no" title="function not covered" >fu</span>nction (key, updateFn, __x) {
 <span class="cstat-no" title="statement not covered" >    return Belt_Map.update(__x, key, updateFn);</span>
@@ -561,6 +575,8 @@ function WithOrd(M) {
   return {
           Comparable: { },
           make: make,
+          set: set,
+          singleton: singleton,
           isEmpty: Belt_Map.isEmpty,
           contains: contains,
           compareInt: compareInt,
@@ -586,7 +602,6 @@ function WithOrd(M) {
           getOrElse: getOrElse,
           remove: remove,
           removeMany: removeMany,
-          set: set,
           update: update,
           merge: merge,
           mergeMany: mergeMany,
