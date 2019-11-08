@@ -23,10 +23,14 @@ module type MAP = {
   let length: t('value) => int;
   let toArray: t('value) => array((key, 'value));
   let fromArray: array((key, 'value)) => t('value);
+  let fromValueArray: ('value => key, array('value)) => t('value);
   let toList: t('value) => list((key, 'value));
   let fromList: list((key, 'value)) => t('value);
-  let keys: t('value) => array(key);
-  let values: t('value) => array('value);
+  let fromValueList: ('value => key, list('value)) => t('value);
+  let keys: t('value) => list(key);
+  let keyArray: t('value) => array(key);
+  let values: t('value) => list('value);
+  let valueArray: t('value) => array('value);
   let minKey: t('value) => option(key);
   let maxKey: t('value) => option(key);
   let min: t('value) => option((key, 'value));
@@ -173,6 +177,17 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   let fromArray = Belt.Map.fromArray(_, ~id=(module Comparable));
 
   /**
+   * Convert an array of values into a map, using the provided function from
+   * value to key. This is useful when your value type can already be uniquely
+   * identified (and that identifier can be ordered).
+   */
+  let fromValueArray = toKey =>
+    Relude_Array_Instances.foldLeft(
+      (map, v) => set(toKey(v), v, map),
+      make(),
+    );
+
+  /**
    * Convert a map to an associated list (a list of key/value tuples). Note that
    * the resulting list will be sorted according to the ordering of the key
    * type, not necessarily in the order in which values were added to the map.
@@ -186,16 +201,35 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
     Belt.Map.fromArray(lst |> Belt.List.toArray, ~id=(module Comparable));
 
   /**
+   * Convert a list of values into a map, using the provided function from
+   * value to key. This is useful when your value type can already be uniquely
+   * identified (and that identifier can be ordered).
+   */
+  let fromValueList = toKey =>
+    Relude_List_Instances.foldLeft(
+      (map, v) => set(toKey(v), v, map),
+      make(),
+    );
+
+  /**
    * Return a sorted array containing each key in the map.
    */
-  // TODO: list is generally the Relude-preferred default
-  let keys = Belt.Map.keysToArray;
+  let keyArray = Belt.Map.keysToArray;
+
+  /**
+   * Return a sorted list containing each key in the map
+   */
+  let keys = map => keyArray(map) |> Belt.List.fromArray;
 
   /**
    * Return an array of each value (sorted by key) in the map.
    */
-  // TODO: again, prefer list here
-  let values = Belt.Map.valuesToArray;
+  let valueArray = Belt.Map.valuesToArray;
+
+  /**
+   * Return a list of each value (sorted by key) in the map.
+   */
+  let values = map => valueArray(map) |> Belt.List.fromArray;
 
   /**
    * Optionally find the smallest key, using the key ordering.

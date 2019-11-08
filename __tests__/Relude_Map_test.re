@@ -124,20 +124,50 @@ describe("StringMap", () => {
     |> toEqual([|("x", 9), ("y", 3), ("z", 5)|])
   );
 
+  test("fromValueArray", () => {
+    let map =
+      StringMap.fromValueArray(
+        fst,
+        [|("a", "b"), ("b", "c"), ("a", "d")|],
+      );
+    expect(StringMap.get("a", map)) |> toEqual(Some(("a", "d")));
+  });
+
+  test("fromValueList", () => {
+    let map = StringMap.fromValueList(fst, [("a", 0), ("b", 1)]);
+    expect(StringMap.get("a", map)) |> toEqual(Some(("a", 0)));
+  });
+
+  test("keyArray (empty)", () =>
+    expect(StringMap.keyArray(empty)) |> toEqual([||])
+  );
+
+  test("keyArray (zyx)", () =>
+    expect(StringMap.keyArray(zyx)) |> toEqual([|"x", "y", "z"|])
+  );
+
   test("keys (empty)", () =>
-    expect(StringMap.keys(empty)) |> toEqual([||])
+    expect(StringMap.keys(empty)) |> toEqual([])
   );
 
   test("keys (zyx)", () =>
-    expect(StringMap.keys(zyx)) |> toEqual([|"x", "y", "z"|])
+    expect(StringMap.keys(zyx)) |> toEqual(["x", "y", "z"])
+  );
+
+  test("valueArray (empty)", () =>
+    expect(StringMap.valueArray(empty)) |> toEqual([||])
+  );
+
+  test("valueArray (zyx)", () =>
+    expect(StringMap.valueArray(zyx)) |> toEqual([|9, 3, 5|])
   );
 
   test("values (empty)", () =>
-    expect(StringMap.values(empty)) |> toEqual([||])
+    expect(StringMap.values(empty)) |> toEqual([])
   );
 
   test("values (zyx)", () =>
-    expect(StringMap.values(zyx)) |> toEqual([|9, 3, 5|])
+    expect(StringMap.values(zyx)) |> toEqual([9, 3, 5])
   );
 
   test("minKey (empty)", () =>
