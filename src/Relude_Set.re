@@ -39,9 +39,7 @@ module type SET = {
   let split: (value, t) => ((t, t), bool);
 };
 
-module WithOrd =
-       (M: BsAbstract.Interface.ORD)
-       : (SET with type value = M.t) => {
+module WithOrd = (M: BsAbstract.Interface.ORD) : (SET with type value = M.t) => {
   module Comparable =
     Belt.Id.MakeComparable({
       type t = M.t;
@@ -77,6 +75,6 @@ module WithOrd =
   let maximum = Belt.Set.maximum;
   let get = flip(Belt.Set.get);
   let getOrElse = (value, default, t) =>
-    t |> get(value) |> Relude_Option.getOrElse(default);
+    t |> get(value) |> Relude_Option_Base.getOrElse(default);
   let split = flip(Belt.Set.split);
 };

@@ -1,6 +1,5 @@
 module Function = Relude_Function;
 module JsExn = Relude_Js_Exn;
-module Option = Relude_Option;
 module Result = Relude_Result;
 module Void = Relude_Void;
 
@@ -108,7 +107,7 @@ Because the option is already evaluated, no effort is made to suspend any effect
 */
 let fromOption: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
   (getError, option) =>
-    option |> Option.foldLazy(() => throw(getError()), pure);
+    option |> Relude_Option_Base.foldLazy(() => throw(getError()), pure);
 
 /**
 Converts an `Result.t('a, 'e)` to an `IO.t('a, 'e)
@@ -161,13 +160,14 @@ let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
  return the given `e` Lifted to the error side.
  */
 let cond: 'a 'e. ('a => bool, 'a, 'e, t('a, 'e)) => t('a, 'e) =
-  (f, newA, err, ioA) => flatMap(a => f(a)? pure(newA) : throw(err), ioA);
+  (f, newA, err, ioA) =>
+    flatMap(a => f(a) ? pure(newA) : throw(err), ioA);
 
 /**
  As `cond`, but only maps the 'e side when the condition fails.
  */
 let condError: 'a 'e. ('a => bool, 'e, t('a, 'e)) => t('a, 'e) =
-  (f, err, ioA) => flatMap(a => f(a)? pure(a) : throw(err), ioA);
+  (f, err, ioA) => flatMap(a => f(a) ? pure(a) : throw(err), ioA);
 
 /**
 Unsafely runs the `IO.t('a, 'e)` to produce a final `Result.t('a, 'e)`, which is provided to the caller via
@@ -755,11 +755,12 @@ let debounce:
     let currerntlyDebouncedIO = ref(None);
     let startDebouncedIO = () => {
       let debouncedIO = delay(intervalMs);
-      currerntlyDebouncedIO := debouncedIO |> Option.pure;
+      currerntlyDebouncedIO := debouncedIO |> Relude_Option_Instances.pure;
       debouncedIO
       |> map(() => {
            let shouldRunIO =
-             currerntlyDebouncedIO^ |> Option.fold(false, (===)(debouncedIO));
+             currerntlyDebouncedIO^
+             |> Relude_Option_Base.fold(false, (===)(debouncedIO));
            if (shouldRunIO) {
              currerntlyDebouncedIO := None;
            };
@@ -771,7 +772,8 @@ let debounce:
       let immediatelyRanIO =
         switch (immediate, currerntlyDebouncedIO^) {
         | (true, None) =>
-          suspendIO(() => a |> io |> map(Option.pure)) |> Option.pure
+          suspendIO(() => a |> io |> map(Relude_Option_Instances.pure))
+          |> Relude_Option_Instances.pure
         | (true, Some(_))
         | (false, None)
         | (false, Some(_)) => None
@@ -779,11 +781,11 @@ let debounce:
       let debouncedIO =
         startDebouncedIO()
         |> flatMap(shouldRunIO =>
-             shouldRunIO && immediatelyRanIO |> Option.isNone
-               ? a |> io |> map(Option.pure) : None |> pure
+             shouldRunIO && immediatelyRanIO |> Relude_Option_Base.isNone
+               ? a |> io |> map(Relude_Option_Instances.pure) : None |> pure
            );
 
-      immediatelyRanIO |> Option.getOrElse(debouncedIO);
+      immediatelyRanIO |> Relude_Option_Base.getOrElse(debouncedIO);
     };
   };
 
@@ -819,7 +821,7 @@ let throttle:
         None |> pure;
       } else {
         startThrottle();
-        a |> io |> map(Option.pure);
+        a |> io |> map(Relude_Option_Instances.pure);
       };
   };
 

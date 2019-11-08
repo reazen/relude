@@ -89,7 +89,7 @@ let tail: 'a. list('a) => option(list('a)) =
  * Gets all but the first items in the list, or [] if the list is empty.
  */
 let tailOrEmpty: 'a. list('a) => list('a) =
-  xs => tail(xs) |> Relude_Option.getOrElse([]);
+  xs => tail(xs) |> Relude_Option_Base.getOrElse([]);
 
 /**
  * Gets all but the last item in the list, or None if the list is empty
@@ -98,7 +98,8 @@ let rec init: 'a. list('a) => option(list('a)) =
   fun
   | [] => None
   | [_] => Some([])
-  | [x, ...xs] => Some(cons(x, Relude_Option.getOrElse([], init(xs))));
+  | [x, ...xs] =>
+    Some(cons(x, Relude_Option_Base.getOrElse([], init(xs))));
 
 /**
  * Gets all but the last item in the list, or [] if the list is empty
@@ -146,7 +147,7 @@ let takeExactly: 'a. (int, list('a)) => option(list('a)) =
       | [y, ...ys] => go([y, ...acc], count - 1, ys)
       };
     if (i >= 0) {
-      go([], i, xs) |> Relude_Option.map(reverse);
+      go([], i, xs) |> Relude_Option_Instances.map(reverse);
     } else {
       None;
     };
@@ -226,7 +227,8 @@ let filterNotWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) =
 let mapOption: 'a 'b. ('a => option('b), list('a)) => list('b) =
   (f, xs) =>
     Relude_List_Instances.foldLeft(
-      (acc, curr) => Relude_Option.fold(acc, v => [v, ...acc], f(curr)),
+      (acc, curr) =>
+        Relude_Option_Base.fold(acc, v => [v, ...acc], f(curr)),
       [],
       xs,
     )
