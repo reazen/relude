@@ -42,6 +42,7 @@ module Set = Relude_Set;
 module State = Relude_StateT.State;
 module StateT = Relude_StateT;
 module String = Relude_String;
+module StringMap = Relude_StringMap;
 module Throttle = Relude_Throttle;
 module Timer = Relude_Timer;
 module Tuple = Relude_Tuple;
