@@ -3,7 +3,7 @@
   "description": "Alternative standard library (prelude) for ReasonML",
   "homepage": "https://github.com/reazen/relude",
   "bugs": "https://github.com/reazen/relude/issues",
-  "version": "0.36.1",
+  "version": "0.37.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/reazen/relude.git"
