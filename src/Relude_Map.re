@@ -6,6 +6,8 @@ module type MAP = {
   };
   type t('value) = Belt.Map.t(Comparable.t, 'value, Comparable.identity);
   let make: unit => t('value);
+  let set: (key, 'value, t('value)) => t('value);
+  let singleton: (key, 'value) => t('value);
   let isEmpty: t('value) => bool;
   let contains: (key, t('value)) => bool;
   let compareInt: (('value, 'value) => int, t('value), t('value)) => int;
@@ -33,7 +35,6 @@ module type MAP = {
   let getOrElse: (key, 'value, t('value)) => 'value;
   let remove: (key, t('value)) => t('value);
   let removeMany: (array(key), t('value)) => t('value);
-  let set: (key, 'value, t('value)) => t('value);
   let update:
     (key, option('value) => option('value), t('value)) => t('value);
   let merge:
@@ -68,6 +69,21 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
    * Construct a new, empty map.
    */
   let make = () => Belt.Map.make(~id=(module Comparable));
+
+  /**
+   * Set the value to the provided value at the given key in the map. This will
+   * add a new key if the map doesn't currently have the provided key, or it
+   * will replace the value if the key exists.
+   *
+   * As with other operations that "change" a map, the original map is not
+   * mutated; instead a new immutable copy is returned.
+   */
+  let set = (key, value) => Belt.Map.set(_, key, value);
+
+  /**
+   * Contruct a new map from the provided key and value.
+   */
+  let singleton = (key, value) => make() |> set(key, value);
 
   /**
    * Determine whether a map is empty.
@@ -224,16 +240,6 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
    */
   // TODO: list
   let removeMany = keys => Belt.Map.removeMany(_, keys);
-
-  /**
-   * Set the value to the provided value at the given key in the map. This will
-   * add a new key if the map doesn't currently have the provided key, or it
-   * will replace the value if the key exists.
-   *
-   * As with other operations that "change" a map, the original map is not
-   * mutated; instead a new immutable copy is returned.
-   */
-  let set = (key, value) => Belt.Map.set(_, key, value);
 
   /**
    * At the given key, set or remove the value using the provided update
