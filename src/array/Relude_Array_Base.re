@@ -261,7 +261,7 @@ let mapOption: 'a 'b. ('a => option('b), array('a)) => array('b) =
   (f, xs) =>
     Relude_Array_Instances.foldLeft(
       (acc, curr) =>
-        Relude_Option.fold(
+        Relude_Option_Base.fold(
           acc,
           v => Relude_Array_Instances.concat(acc, [|v|]),
           f(curr),

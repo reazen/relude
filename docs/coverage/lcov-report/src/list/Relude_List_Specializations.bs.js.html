@@ -1008,7 +1008,6 @@ var Curry = require("bs-platform/lib/js/curry.js");
 var Relude_IO = require("../Relude_IO.bs.js");
 var Relude_Int = require("../Relude_Int.bs.js");
 var Relude_Float = require("../Relude_Float.bs.js");
-var Relude_Option = require("../Relude_Option.bs.js");
 var Relude_Result = require("../Relude_Result.bs.js");
 var Relude_String = require("../Relude_String.bs.js");
 var Int$BsAbstract = require("bs-abstract/lib/js/src/implementations/Int.bs.js");
@@ -1018,6 +1017,7 @@ var Float$BsAbstract = require("bs-abstract/lib/js/src/implementations/Float.bs.
 var Relude_List_Base = require("./Relude_List_Base.bs.js");
 var Relude_Validation = require("../Relude_Validation.bs.js");
 var Relude_List_Instances = require("./Relude_List_Instances.bs.js");
+var Relude_Option_Instances = require("../option/Relude_Option_Instances.bs.js");
 &nbsp;
 function <span class="fstat-no" title="function not covered" >ListEqExtensions(</span>E) {
   var include = <span class="cstat-no" title="statement not covered" >Curry._1(Relude_List_Instances.FoldableEqExtensions, E);</span>
@@ -1299,7 +1299,7 @@ var Float = {
   product: product$1
 };
 &nbsp;
-var include$7 = Relude_List_Instances.Traversable(Relude_Option.Applicative);
+var include$7 = Relude_List_Instances.Traversable(Relude_Option_Instances.Applicative);
 &nbsp;
 var Option_map = include$7.map;
 &nbsp;

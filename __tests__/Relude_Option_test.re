@@ -5,6 +5,67 @@ module Int = Relude.Int;
 module Option = Relude.Option;
 
 describe("Option", () => {
+  test("some", () =>
+    expect(Option.some("foo")) |> toEqual(Some("foo"))
+  );
+
+  test("orElse (primary is none)", () =>
+    expect(None |> Option.orElse(~fallback=Some(1))) |> toEqual(Some(1))
+  );
+
+  test("orElse (primary is some)", () =>
+    expect(Some(3) |> Option.orElse(~fallback=Some(1)))
+    |> toEqual(Some(3))
+  );
+
+  test("tap (none)", () => {
+    let x = ref(1);
+    let _ = Option.tap(v => x := x^ + v, None);
+    expect(x^) |> toEqual(1);
+  });
+
+  test("tap (some)", () => {
+    let x = ref(1);
+    let _ = Option.tap(v => x := x^ + v, Some(3));
+    expect(x^) |> toEqual(4);
+  });
+
+  test("tapSome (none)", () => {
+    let x = ref(1);
+    let _ = Option.tapSome(v => x := x^ + v, None);
+    expect(x^) |> toEqual(1);
+  });
+
+  test("tapSome (some)", () => {
+    let x = ref(1);
+    let _ = Option.tapSome(v => x := x^ + v, Some(-1));
+    expect(x^) |> toEqual(0);
+  });
+
+  test("tapNone (some)", () => {
+    let x = ref(0);
+    let _ = Option.tapNone(() => x := 3, Some(1));
+    expect(x^) |> toEqual(0);
+  });
+
+  test("tapNone (none)", () => {
+    let x = ref(0);
+    let _ = Option.tapNone(() => x := 3, None);
+    expect(x^) |> toEqual(3);
+  });
+
+  test("bitap (some)", () => {
+    let x = ref(0);
+    let _ = Option.bitap(() => x := 3, v => x := v, Some(1));
+    expect(x^) |> toEqual(1);
+  });
+
+  test("bitap (none)", () => {
+    let x = ref(0);
+    let _ = Option.bitap(() => x := 3, v => x := v, None);
+    expect(x^) |> toEqual(3);
+  });
+
   test("foldLazy maps value when option is Some", () =>
     expect(Option.foldLazy(_ => "", string_of_int, Some(1)))
     |> toEqual("1")
@@ -267,5 +328,31 @@ describe("Option", () => {
 
   test("eq is false when one value is Some and one is None", () =>
     expect(Option.eq((module Int.Eq), None, Some(1))) |> toEqual(false)
+  );
+});
+
+describe("Option Specializations", () => {
+  test("String.eq (both none)", () =>
+    expect(Option.String.eq(None, None)) |> toEqual(true)
+  );
+
+  test("String.eq (one none, one some)", () =>
+    expect(Option.String.eq(None, Some("a"))) |> toEqual(false)
+  );
+
+  test("String.eq (both some, same value)", () =>
+    expect(Option.String.eq(Some("a"), Some("a"))) |> toEqual(true)
+  );
+
+  test("String.eq (both some, different value)", () =>
+    expect(Option.String.eq(Some("a"), Some("b"))) |> toEqual(false)
+  );
+
+  test("Int.eq", () =>
+    expect(Option.Int.eq(Some(1), None)) |> toEqual(false)
+  );
+
+  test("Float.eq", () =>
+    expect(Option.Float.eq(Some(3.14), Some(3.14))) |> toEqual(true)
   );
 });
