@@ -4,11 +4,66 @@
 [![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)
 [![Coveralls](https://img.shields.io/coveralls/github/reazen/relude.svg)](https://coveralls.io/github/reazen/relude)
 
-Relude is a **ReasonML**/**BuckleScript**/**OCaml** standard library replacement ("prelude") written in [ReasonML](https://reasonml.github.io/), targeting compilation to **JavaScript** via the [BuckleScript](https://bucklescript.github.io/) compiler.
+Relude is a **ReasonML**/**BuckleScript**/**OCaml** standard library
+replacement ("prelude") written in [ReasonML](https://reasonml.github.io/),
+targeting compilation to **JavaScript** via the
+[BuckleScript](https://bucklescript.github.io/) compiler.
 
-Relude aims to provide a robust collection of modules, types, and functions built on top of reusable typeclass-style abstractions, with a focus on day-to-day practical use.  Relude has its foundation on the math concepts found in most modern pure functional languages, but our goal is to make the library as easy-to-use as a library like [Lodash](https://lodash.com/docs) for those who don't know or care about the underlying abstractions.  This is made possible by OCaml's module system and the foundational work that has gone into [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract), on which much of Relude is based.
+Relude aims to provide a robust collection of modules, types, and functions
+built on top of reusable typeclass-style abstractions, with a focus on
+day-to-day practical use. Relude has its foundation on the math concepts
+found in most modern pure functional languages, but our goal is to make the
+library as easy-to-use as a library like [Lodash](https://lodash.com/docs)
+for those who don't know or care about the underlying abstractions. This is
+made possible by OCaml's module system and the foundational work that has
+gone into [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract), on
+which much of Relude is based.
 
 The API of Relude is inspired by [PureScript's Prelude](https://pursuit.purescript.org/packages/purescript-prelude), as well as other FP ecosystems including Scala, Haskell, and Elm.
+
+Relude is currently at a 0.x version as the API and library organization
+settles, but we feel the library is quite stable and comprehensive, and is
+in-use in production at several companies that we know about. The main Relude
+authors use the library every day and the development is driven by actual
+application needs and use-cases, but all backed by the abstractions and
+principles we love from languages like Haskell/PureScript/Scala/etc. We're
+not trying to re-create Haskell in OCaml/ReasonML - we just want to have some
+of the abstractions available to us in a pragmatic format.
+
+That said, we feel the library is usable by all ReasonML users, not just
+experts. There will be some learning involved, but we hope to aid that with
+blog posts and more documentation, and answering questions or trying to give
+advice (if we feel qualified). The beauty of using these common abstractions
+is that we don't have to take the full responsibility for explaining
+everything from scratch, as there are countless other resources and FP
+experts out there to help too.
+
+The documentation is currently incomplete - we're hoping a simple, modern,
+and BuckleScript-friendly tool will soon surface to aid with the generation
+of API docs from source code. We are currently working on more documentation
+on how to use these things in more of a blog/tutorial style ([Andy's blog is
+here (and is very new)](https://andywhite.xyz/posts), and Michael's blog is
+coming soon). In the meantime, we highly suggest just perusing the [source
+code](https://github.com/reazen/relude/tree/master/src) and the
+[tests](https://github.com/reazen/relude/tree/master/__tests__), as we feel
+they are intuitively organized and commented. The more abstract concepts
+are lacking in explanation, but there should be lots of examples in
+the code and tests, and external resources are also valuable in learning
+these concepts, as we tried to keep the implementations inline with the rest
+of the typed FP community.
+
+The API is comprehensive in terms of the tools you likely need for day-to-day
+application development - we have utilities for all the core data types
+(`string`, `int`, `float`, `list`, `array`, `option`, `Result`, functions,
+tuples etc.), some of our own types (`AsyncResult`, `AsyncData`, `Ior`,
+`Validation`, `ListZipper`, `Void`, etc.), a general purpose bi-functor `IO`
+effect type, basic monad transformers, and a typeclass-based extension system
+to grant all of our types with consistent and principled extensions and
+operators.
+
+The ideas and concepts in this library come from the rich history of category
+theory, abstract algebra, and typed functional programming libraries like
+Haskell, Scala, PureScript, and many others, and we are just humble students.
 
 ## Quick links
 
@@ -43,7 +98,7 @@ Below are some libraries which may be coming soon to the `Relude` ecosystem:
 
 - `relude-color` - a color manipulation library
 - `relude-rationaljs-future` - an interop library for [rationaljs/future](https://github.com/RationalJS/future)
-- And many more!
+- See https://github.com/reazen/relude/issues/24 for more discussion
 
 ## Contact
 
@@ -51,3 +106,9 @@ Below are some libraries which may be coming soon to the `Relude` ecosystem:
 - Find us on the [ReasonML Discord Chat](https://discordapp.com/channels/235176658175262720/235176658175262720)
     - `mulmus#4010`
     - `whitehouse3001#3245`
+
+## Contributing
+
+We are very open to contributions and for community help - just let us know
+what you'd like to do, and if you want to discuss the approach before jumping
+in.
