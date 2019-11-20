@@ -488,6 +488,47 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
        );
 
 /**
+ * Returns a new `IO` that when run, will attempt the `IO` given as the first argument,
+ * and if it fails, will attempt the `IO` given as the second argument. The second `IO`
+ * is only run if the first fails.
+ * 
+ * The <|> operator version of `alt` can be accessed via the `IO.WithError` module functor,
+ * like this:
+ * 
+ * ```reason
+ * module IOE = IO.WithError({ type t = string; });
+ * 
+ * let a = ref(false);
+ * let b = ref(false);
+ * 
+ * IOE.Infix.(
+ *   IO.suspend(() => a := true)
+ *   <|> IO.suspend(() => b := true) // this effect won't run in this case, because the previous IO succeeds
+ *   |> IO.unsafeRunAsync(...)
+ * );
+ * ```
+ */
+let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
+  (io1, io2) => io1 |> catchError(_ => io2);
+
+/**
+ * Returns a new `IO` that when run, will attempt the `IO` given as the second, un-labeled argument,
+ * and if it fails, will attempt the `IO` given as the first argument with the label ~fallback.
+ * 
+ * This is intended to be used with the `|>` pipe operator, like this:
+ * 
+ * ```reason
+ * IO.suspend(() => a := true)
+ * |> IO.orElse(~fallback=IO.suspend(() => b := true))
+ * |> IO.unsafeRunAsync(...)
+ * ```
+ */
+let orElse: 'a 'e. (~fallback: t('a, 'e), t('a, 'e)) => t('a, 'e) =
+  (~fallback, io) => {
+    alt(io, fallback);
+  };
+
+/**
 Lifts a side-effect function that might throw an exception into a suspended `IO.t('a, exn)` value.
 
 The `exn` type is OCaml's extensible error type.
@@ -886,10 +927,19 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   let catchError = MonadError.catchError;
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
+  module Alt: BsAbstract.Interface.ALT  with type t('a) = t('a, E.t) = {
+    include Functor;
+    let alt = alt;
+  };
+  let alt = alt;
+  let orElse = orElse;
+  include Relude_Extensions_Alt.AltExtensions(Alt);
+
   module Infix = {
     include Relude_Extensions_Functor.FunctorInfix(Functor);
     include Relude_Extensions_Bifunctor.BifunctorInfix(Bifunctor);
     include Relude_Extensions_Apply.ApplyInfix(Apply);
     include Relude_Extensions_Monad.MonadInfix(Monad);
+    include Relude_Extensions_Alt.AltInfix(Alt);
   };
 };

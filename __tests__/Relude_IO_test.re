@@ -582,6 +582,126 @@ describe("IO", () => {
        )
   );
 
+  testAsync("alt success success", onDone => {
+    let a = ref(false);
+    let b = ref(false);
+
+    IO.alt(IO.suspend(() => a := true), IO.suspend(() => b := true))
+    |> IO.bimap(
+         _ => expect((a^, b^)) |> toEqual((true, false)),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       );
+  });
+
+  testAsync("alt fail success", onDone => {
+    let a = ref(false);
+    let b = ref(false);
+
+    IO.alt(
+      IO.suspendIO(() => {
+        a := true;
+        IO.throw("Failed!");
+      }),
+      IO.suspend(() => b := true),
+    )
+    |> IO.bimap(
+         _ => expect((a^, b^)) |> toEqual((true, true)),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       );
+  });
+
+  testAsync("orElse success success", onDone => {
+    let a = ref(false);
+    let b = ref(false);
+    IO.suspend(() => a := true)
+    |> IO.orElse(~fallback=IO.suspend(() => b := true))
+    |> IO.bimap(
+         _ => expect((a^, b^)) |> toEqual((true, false)),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       );
+  });
+
+  testAsync("orElse fail success", onDone => {
+    let a = ref(false);
+    let b = ref(false);
+    IO.suspendIO(() => {
+      a := true;
+      IO.throw("Failed!");
+    })
+    |> IO.orElse(~fallback=IO.suspend(() => b := true))
+    |> IO.bimap(
+         _ => expect((a^, b^)) |> toEqual((true, true)),
+         _ => fail("Failed"),
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       );
+  });
+
+  testAsync("<|> alt operator success success", onDone => {
+    let a = ref(false);
+    let b = ref(false);
+    module IOE =
+      IO.WithError({
+        type t = string;
+      });
+    IOE.Infix.(
+      IO.suspend(() => a := true)
+      <|> IO.suspend(() => b := true)
+      |> IO.bimap(
+           _ => expect((a^, b^)) |> toEqual((true, false)),
+           _ => fail("Failed"),
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+  });
+
+  testAsync("<|> alt operator fail success", onDone => {
+    let a = ref(false);
+    let b = ref(false);
+    module IOE =
+      IO.WithError({
+        type t = string;
+      });
+    IOE.Infix.(
+      IO.suspendIO(() => {
+        a := true;
+        IO.throw("Darn");
+      })
+      <|> IO.suspend(() => b := true)
+      |> IO.bimap(
+           _ => expect((a^, b^)) |> toEqual((true, true)),
+           _ => fail("Failed"),
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+  });
+
   testAsync("tries unsafeRunAsync", onDone =>
     IO.tries(throwJSError)
     |> IO.unsafeRunAsync(
@@ -859,7 +979,7 @@ describe("IO examples", () => {
     |> IO.unsafeRunAsync(
          fun
          | Ok(_) => onDone(fail("fail"))
-         | Error(assertion)=> onDone(assertion)
+         | Error(assertion) => onDone(assertion),
        )
   );
 });
