@@ -20,4 +20,10 @@ module ApplicativeExtensions = (A: BsAbstract.Interface.APPLICATIVE) => {
    * is true, the effect is not run.
    */
   let unless: (bool, A.t(unit)) => A.t(unit) = BsApplicativeExtensions.unless;
+
+  let rec all: 'a. list(A.t('a)) => A.t(list('a)) =
+    fun
+    | [x, ...xs] =>
+      xs |> all |> A.apply(x |> A.map((result, rest) => [result, ...rest]))
+    | [] => A.pure([]);
 };
