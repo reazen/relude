@@ -787,6 +787,17 @@ describe("IO", () => {
          |> onDone
        );
   });
+
+  testAsync("all", onDone =>
+    [IO.pure(1), IO.pure(2), IO.pure(3)]
+    |> IOAppError.all
+    |> IO.bimap(a => expect(a) |> toEqual([1, 2, 3]), _ => fail("Failed"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
 });
 
 describe("IO examples", () => {
