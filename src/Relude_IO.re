@@ -19,8 +19,6 @@ This is inspired by the following libraries/articles:
 type t('a, 'e) =
   | Pure('a): t('a, 'e)
   | Throw('e): t('a, 'e)
-  | Suspend(unit => 'a): t('a, 'e)
-  | SuspendIO(unit => t('a, 'e)): t('a, 'e)
   | Async((Result.t('a, 'e) => unit) => unit): t('a, 'e)
   | Map('r => 'a, t('r, 'e)): t('a, 'e)
   | FlatMap('r => t('a, 'e), t('r, 'e)): t('a, 'e);
@@ -60,36 +58,6 @@ let throw: 'a 'e. 'e => t('a, 'e) = e => Throw(e);
 Wraps a non-succeeding, strictly-evaluated error value in an `IO`
 */
 let throwWithVoid: 'e. 'e => t(Void.t, 'e) = e => Throw(e);
-
-/**
-Wraps a lazily-evaluated value in an `IO`
-*/
-let suspend: 'a 'e. (unit => 'a) => t('a, 'e) = getA => Suspend(getA);
-
-/**
-Wraps a non-failing, lazily-evaluated value in an `IO`
-*/
-let suspendWithVoid: 'a. (unit => 'a) => t('a, Void.t) =
-  getA => Suspend(getA);
-
-/**
-Wraps a lazily-evaluated error in an `IO`
-*/
-let suspendThrow: 'a 'e. (unit => 'e) => t('a, 'e) =
-  getError => SuspendIO(() => Throw(getError()));
-
-/**
-Wraps a lazily-evaluated `IO` value in an `IO`
-
-This can be useful if you are dealing with an effectful value that is
-normally eagerly or strictly evaluated, like a
-`Result`/`option`/`Js.Promise`/etc. In this case, you would typically convert
-the effectful value into an `IO` using one of the other functions in `IO`
-like `pure` or `throw`, but doing this strict conversion inside a `suspendIO`
-function makes the conversion lazy.
-*/
-let suspendIO: 'a 'e. (unit => t('a, 'e)) => t('a, 'e) =
-  getIO => SuspendIO(getIO);
 
 /**
 Creates an async `IO` value that is run by invoking a callback `Result.t('a, 'e) => unit`
@@ -170,6 +138,35 @@ let condError: 'a 'e. ('a => bool, 'e, t('a, 'e)) => t('a, 'e) =
   (f, err, ioA) => flatMap(a => f(a) ? pure(a) : throw(err), ioA);
 
 /**
+  Wraps a lazily-evaluated value in an `IO`
+  */
+let suspend: 'a 'e. (unit => 'a) => t('a, 'e) = getA => pure() |> map(getA);
+
+/**
+  Wraps a non-failing, lazily-evaluated value in an `IO`
+  */
+let suspendWithVoid: 'a. (unit => 'a) => t('a, Void.t) = suspend;
+
+/**
+  Wraps a lazily-evaluated `IO` value in an `IO`
+
+  This can be useful if you are dealing with an effectful value that is
+  normally eagerly or strictly evaluated, like a
+  `Result`/`option`/`Js.Promise`/etc. In this case, you would typically convert
+  the effectful value into an `IO` using one of the other functions in `IO`
+  like `pure` or `throw`, but doing this strict conversion inside a `suspendIO`
+  function makes the conversion lazy.
+  */
+let suspendIO: 'a 'e. (unit => t('a, 'e)) => t('a, 'e) =
+  getIO => pure() |> flatMap(getIO);
+
+/**
+  Wraps a lazily-evaluated error in an `IO`
+  */
+let suspendThrow: 'a 'e. (unit => 'e) => t('a, 'e) =
+  getError => suspendIO(getError >> throw);
+
+/**
 Unsafely runs the `IO.t('a, 'e)` to produce a final `Result.t('a, 'e)`, which is provided to the caller via
 a callback of type `Result.t('a, 'e) => unit`.
 
@@ -188,21 +185,11 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
     switch (ioA) {
     | Pure(a) => onDone(Result.ok(a))
     | Throw(e) => onDone(Result.error(e))
-    | Suspend(getA) => onDone(Result.ok(getA()))
-    | SuspendIO(getIOA) => getIOA() |> unsafeRunAsync(onDone)
     | Async(onDoneA) => onDoneA(onDone)
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
       | Pure(r0) => onDone(Result.ok(r0ToA(r0)))
       | Throw(e) => onDone(Result.error(e))
-      | Suspend(getR0) => onDone(Result.ok(r0ToA(getR0())))
-      | SuspendIO(getIOR0) =>
-        getIOR0()
-        |> unsafeRunAsync(
-             fun
-             | Error(_) as resultE => onDone(resultE)
-             | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
-           )
       | Async(onDoneR0) =>
         onDoneR0(
           fun
@@ -234,14 +221,6 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
       switch (ioR0) {
       | Pure(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone)
       | Throw(e) => onDone(Result.error(e))
-      | Suspend(getR0) => r0ToIOA(getR0()) |> unsafeRunAsync(onDone)
-      | SuspendIO(getIOR0) =>
-        getIOR0()
-        |> unsafeRunAsync(
-             fun
-             | Error(_) as resultE => onDone(resultE)
-             | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
-           )
       | Async(onDoneR0) =>
         onDoneR0(
           fun
@@ -279,8 +258,6 @@ let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     switch (ioA) {
     | Pure(a) => pure(a)
     | Throw(e1) => throw(e1ToE2(e1))
-    | Suspend(getA) => suspend(getA)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> mapError(e1ToE2))
     | Async(onDoneA) =>
       Async(
         onDone =>
@@ -315,8 +292,6 @@ let rec catchError:
     switch (ioA) {
     | Pure(a) => a |> pure
     | Throw(e) => eToIOA(e)
-    | Suspend(getA) => suspend(getA)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> catchError(eToIOA))
     | Async(onDoneA) =>
       Async(
         onDone =>
@@ -330,10 +305,6 @@ let rec catchError:
       switch (ioR0) {
       | Pure(r0) => r0 |> r0ToA |> pure |> catchError(eToIOA)
       | Throw(e) => eToIOA(e)
-      | Suspend(getR0) =>
-        suspendIO(() => getR0() |> r0ToA |> pure |> catchError(eToIOA))
-      | SuspendIO(getIOR0) =>
-        suspendIO(() => getIOR0() |> map(r0ToA) |> catchError(eToIOA))
       | Async(onDoneR0) =>
         async(onDone =>
           onDoneR0(
@@ -354,10 +325,6 @@ let rec catchError:
       switch (ioR0) {
       | Pure(r0) => r0 |> r0ToIOA |> catchError(eToIOA)
       | Throw(e) => eToIOA(e)
-      | Suspend(getR0) =>
-        suspendIO(() => getR0() |> r0ToIOA |> catchError(eToIOA))
-      | SuspendIO(getIOR0) =>
-        suspendIO(() => getIOR0() |> flatMap(r0ToIOA) |> catchError(eToIOA))
       | Async(onDoneR0) =>
         async(onDone =>
           onDoneR0(
@@ -385,8 +352,6 @@ let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
     switch (ioA) {
     | Pure(a) => pure(a)
     | Throw(e) => pure(eToA(e))
-    | Suspend(getA) => suspend(getA)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> handleError(eToA))
     | Async(onDoneA) =>
       Async(
         onDone =>
@@ -400,9 +365,6 @@ let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
       switch (ioR0) {
       | Pure(r0) => r0 |> r0ToA |> pure
       | Throw(e) => e |> eToA |> pure
-      | Suspend(getR0) => suspend(() => getR0() |> r0ToA)
-      | SuspendIO(getIOR0) =>
-        suspendIO(() => getIOR0() |> map(r0ToA) |> handleError(eToA))
       | Async(onDoneR0) =>
         async(onDone =>
           onDoneR0(
@@ -422,12 +384,6 @@ let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
       switch (ioR0) {
       | Pure(r0) => r0ToIOA(r0) |> handleError(eToA)
       | Throw(e) => e |> eToA |> pure
-      | Suspend(getR0) =>
-        SuspendIO(() => getR0() |> r0ToIOA |> handleError(eToA))
-      | SuspendIO(getIOR0) =>
-        suspendIO(() =>
-          getIOR0() |> flatMap(r0 => r0 |> r0ToIOA) |> handleError(eToA)
-        )
       | Async(onDoneR0) =>
         Async(
           onDone =>
@@ -458,8 +414,6 @@ let rec bimap:
     switch (io) {
     | Pure(a) => a |> aToB |> pure
     | Throw(e1) => e1 |> e1ToE2 |> throw
-    | Suspend(getA) => suspend(() => getA() |> aToB)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> bimap(aToB, e1ToE2))
     | Async(onDoneA) =>
       Async(onDone => onDoneA(Result.bimap(aToB, e1ToE2) >> onDone))
     | Map(rToA, ioR) => Map(rToA >> aToB, ioR |> mapError(e1ToE2))
@@ -491,16 +445,16 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
  * Returns a new `IO` that when run, will attempt the `IO` given as the first argument,
  * and if it fails, will attempt the `IO` given as the second argument. The second `IO`
  * is only run if the first fails.
- * 
+ *
  * The <|> operator version of `alt` can be accessed via the `IO.WithError` module functor,
  * like this:
- * 
+ *
  * ```reason
  * module IOE = IO.WithError({ type t = string; });
- * 
+ *
  * let a = ref(false);
  * let b = ref(false);
- * 
+ *
  * IOE.Infix.(
  *   IO.suspend(() => a := true)
  *   <|> IO.suspend(() => b := true) // this effect won't run in this case, because the previous IO succeeds
@@ -514,9 +468,9 @@ let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
 /**
  * Returns a new `IO` that when run, will attempt the `IO` given as the second, un-labeled argument,
  * and if it fails, will attempt the `IO` given as the first argument with the label ~fallback.
- * 
+ *
  * This is intended to be used with the `|>` pipe operator, like this:
- * 
+ *
  * ```reason
  * IO.suspend(() => a := true)
  * |> IO.orElse(~fallback=IO.suspend(() => b := true))
@@ -535,11 +489,10 @@ The `exn` type is OCaml's extensible error type.
 */
 let tries: 'a. (unit => 'a) => t('a, exn) =
   getA =>
-    SuspendIO(
-      () =>
-        try (Pure(getA())) {
-        | exn => Throw(exn)
-        },
+    suspendIO(() =>
+      try (Pure(getA())) {
+      | exn => Throw(exn)
+      }
     );
 
 /**
@@ -550,14 +503,13 @@ unsafely coerced into a `Js.Exn.t`.
 */
 let triesJS: 'a. (unit => 'a) => t('a, Js.Exn.t) =
   getA =>
-    SuspendIO(
-      () =>
-        try (Pure(getA())) {
-        | Js.Exn.Error(jsExn) => Throw(jsExn)
-        | exn =>
-          let jsExn = JsExn.unsafeFromExn(exn);
-          Throw(jsExn);
-        },
+    suspendIO(() =>
+      try (Pure(getA())) {
+      | Js.Exn.Error(jsExn) => Throw(jsExn)
+      | exn =>
+        let jsExn = JsExn.unsafeFromExn(exn);
+        Throw(jsExn);
+      }
     );
 
 /**
@@ -568,17 +520,12 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
     switch (ioAE) {
     | Pure(a) => throw(a)
     | Throw(e) => pure(e)
-    | Suspend(getA) => suspendIO(() => getA() |> throw)
-    | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> flip)
     | Async(onDoneA) =>
       Async(onDoneE => onDoneA(resultA => onDoneE(resultA |> Result.flip)))
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
       | Pure(r0) => Throw(r0ToA(r0))
       | Throw(e) => Pure(e)
-      | Suspend(getR0) => SuspendIO(() => Throw(r0ToA(getR0())))
-      | SuspendIO(getIOR0) =>
-        SuspendIO(() => getIOR0() |> map(r0ToA) |> flip)
       | Async(onDoneR0) =>
         Async(
           onDoneE =>
@@ -594,9 +541,6 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
       switch (ioR0) {
       | Pure(r0) => r0ToIOA(r0) |> flip
       | Throw(e) => Pure(e)
-      | Suspend(getR0) => SuspendIO(() => r0ToIOA(getR0()) |> flip)
-      | SuspendIO(getIOR0) =>
-        SuspendIO(() => getIOR0() |> flatMap(r0ToIOA) |> flip)
       | Async(onDoneR0) =>
         Async(
           onDoneE =>
@@ -623,17 +567,12 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
     switch (ioA) {
     | Pure(a) => Pure(Result.ok(a))
     | Throw(e) => Pure(Result.error(e))
-    | Suspend(getA) => Suspend(() => Result.ok(getA()))
-    | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> summonError)
     | Async(onDoneA) =>
       Async(onDone => onDoneA(result => onDone(Result.ok(result))))
     | Map(r0ToA, ioR0) =>
       switch (ioR0) {
       | Pure(r0) => Pure(Result.ok(r0ToA(r0)))
       | Throw(e) => Pure(Result.error(e))
-      | Suspend(getR0) => Suspend(() => Result.ok(r0ToA(getR0())))
-      | SuspendIO(getIOR0) =>
-        SuspendIO(() => getIOR0() |> map(r0ToA) |> summonError)
       | Async(onDoneR0) =>
         Async(
           onDone =>
@@ -648,9 +587,6 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
       switch (ioR0) {
       | Pure(r0) => r0ToIOA(r0) |> summonError
       | Throw(e) => Pure(Result.error(e))
-      | Suspend(getR0) => SuspendIO(() => r0ToIOA(getR0()) |> summonError)
-      | SuspendIO(getIOR0) =>
-        SuspendIO(() => getIOR0() |> flatMap(r0ToIOA) |> summonError)
       | Async(onDoneR0) =>
         Async(
           onDone =>
@@ -677,10 +613,6 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
   fun
   | Pure(resultA) => resultA |> Result.fold(throw, pure)
   | Throw(void) => Void.absurd(void)
-  | Suspend(getResultA) =>
-    SuspendIO(() => getResultA() |> Result.fold(throw, pure))
-  | SuspendIO(getIOResultA) =>
-    SuspendIO(() => getIOResultA() |> unsummonError)
   | Async(onDoneResultResultA) =>
     Async(
       onDoneResultA =>
@@ -695,10 +627,6 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
     switch (ioR0) {
     | Pure(r0) => r0ToResultA(r0) |> Result.fold(throw, pure)
     | Throw(absurd) => Void.absurd(absurd)
-    | Suspend(getR0) =>
-      SuspendIO(() => getR0() |> r0ToResultA |> Result.fold(throw, pure))
-    | SuspendIO(getIOR0) =>
-      SuspendIO(() => getIOR0() |> map(r0ToResultA) |> unsummonError)
     | Async(onDoneR0) =>
       Async(
         onDoneResultA =>
@@ -717,10 +645,6 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
     switch (ioR0) {
     | Pure(r0) => r0ToIOResultA(r0) |> unsummonError
     | Throw(absurd) => Void.absurd(absurd)
-    | Suspend(getR0) =>
-      SuspendIO(() => getR0() |> r0ToIOResultA |> unsummonError)
-    | SuspendIO(getIOR0) =>
-      SuspendIO(() => getIOR0() |> flatMap(r0ToIOResultA) |> unsummonError)
     | Async(onDoneR0) =>
       Async(
         onDoneResultA =>
@@ -927,7 +851,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   let catchError = MonadError.catchError;
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
-  module Alt: BsAbstract.Interface.ALT  with type t('a) = t('a, E.t) = {
+  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a, E.t) = {
     include Functor;
     let alt = alt;
   };
