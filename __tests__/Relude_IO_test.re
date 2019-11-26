@@ -746,6 +746,76 @@ describe("IO", () => {
        )
   );
 
+  Only.testAsync("parallel", onDone => {
+    Jest.useFakeTimers();
+
+    module IOE =
+      IO.WithError({
+        type t = string;
+      });
+
+    let a = ref(false);
+    let b = ref(false);
+    let c = ref(false);
+
+    let ioA =
+      IO.suspend(() => {
+        a := true;
+        (a^, b^, c^);
+      })
+      |> IO.withDelay(100)
+      |> IO.map(t => {
+           a := false;
+           (t, (a^, b^, c^));
+         });
+
+    let ioB =
+      IO.suspend(() => {
+        b := true;
+        (a^, b^, c^);
+      })
+      |> IO.withDelay(100)
+      |> IO.map(t => {
+           b := false;
+           (t, (a^, b^, c^));
+         });
+
+    let ioC =
+      IO.suspend(() => {
+        c := true;
+        (a^, b^, c^);
+      })
+      |> IO.withDelay(100)
+      |> IO.map(t => {
+           c := false;
+           (t, (a^, b^, c^));
+         });
+
+    let ioAll =
+      (ioA, ioB, ioC)
+      |> IOE.mapTuple3(((a1, _), (b1, _), (c1, _)) =>
+           expect((a1, b1, c1))
+           |> toEqual((
+                (true, false, false),
+                (true, true, false),
+                (true, true, true),
+              ))
+         );
+
+    ioAll
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(_) => onDone(fail("Failed")),
+       );
+
+    // TODO: if running in parallel, we should only need the 50 and 100 lines here
+    Jest.advanceTimersByTime(50);
+    Jest.advanceTimersByTime(100);
+    Jest.advanceTimersByTime(100);
+    Jest.advanceTimersByTime(100);
+  });
+
   testAsync("debounce", onDone => {
     // This will test that when a debounced IO is called, it will only let the most recent one go through
     // after some predetermined amount of time. After that call has gone through the time should reset and
