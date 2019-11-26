@@ -17,6 +17,7 @@ module type SET = {
   let mergeMany: (array(value), t) => t;
   let remove: (value, t) => t;
   let removeMany: (array(value), t) => t;
+  let update: (value, t) => t;
   let union: (t, t) => t;
   let intersect: (t, t) => t;
   let diff: (t, t) => t;
@@ -56,6 +57,7 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (SET with type value = M.t) => 
   let mergeMany = flip(Belt.Set.mergeMany);
   let remove = flip(Belt.Set.remove);
   let removeMany = flip(Belt.Set.removeMany);
+  let update = entry => remove(entry) >> add(entry);
   let union = Belt.Set.union;
   let intersect = Belt.Set.intersect;
   let diff = Belt.Set.diff;
