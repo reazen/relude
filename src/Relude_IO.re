@@ -153,7 +153,7 @@ let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
 Same as `flatMap`, but with the argument order reversed.  Also an alias for the `>>=` "bind" operator.
 */
 let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
-  (ioA, aToIOB) => flatMap(aToIOB, ioA);
+  (ioA, aToIOB) => FlatMap(aToIOB, ioA);
 
 /**
  Conditional map.
@@ -162,13 +162,13 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
  */
 let cond: 'a 'e. ('a => bool, 'a, 'e, t('a, 'e)) => t('a, 'e) =
   (f, newA, err, ioA) =>
-    flatMap(a => f(a) ? pure(newA) : throw(err), ioA);
+    ioA |> flatMap(a => f(a) ? pure(newA) : throw(err));
 
 /**
  As `cond`, but only maps the 'e side when the condition fails.
  */
 let condError: 'a 'e. ('a => bool, 'e, t('a, 'e)) => t('a, 'e) =
-  (f, err, ioA) => flatMap(a => f(a) ? pure(a) : throw(err), ioA);
+  (f, err, ioA) => ioA |> flatMap(a => f(a) ? pure(a) : throw(err));
 
 /**
 Unsafely runs the `IO.t('a, 'e)` to produce a final `Result.t('a, 'e)`, which is provided to the caller via
@@ -188,15 +188,10 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
   (onDone, ioA) =>
     switch (ioA) {
     | Pure(a) => onDone(Result.ok(a))
-
     | Throw(e) => onDone(Result.error(e))
-
     | Suspend(getA) => onDone(Result.ok(getA()))
-
     | SuspendIO(getIOA) => getIOA() |> unsafeRunAsync(onDone)
-
     | Async(onDoneA) => onDoneA(onDone)
-
     | Map(r0ToA, ioR0) =>
       ioR0
       |> unsafeRunAsync(
@@ -204,63 +199,6 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
            | Error(_) as resultE => onDone(resultE)
            | Ok(r0) => onDone(Ok(r0ToA(r0))),
          )
-    /*
-     switch (ioR0) {
-     | Pure(r0) => onDone(Result.ok(r0ToA(r0)))
-
-     | Throw(e) => onDone(Result.error(e))
-
-     | Suspend(getR0) => onDone(Result.ok(r0ToA(getR0())))
-
-     | SuspendIO(getIOR0) =>
-       getIOR0()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
-          )
-
-     | Async(onDoneR0) =>
-       onDoneR0(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
-       )
-
-     | Map(r1ToR0, ioR1) =>
-       ioR1
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r1) => onDone(Result.ok(r0ToA(r1ToR0(r1)))),
-          )
-
-     | Apply(ioR1ToR0, ioR1) =>
-       unsafeRunAsyncPar2(
-         (resultR1ToR0, resultR1) =>
-           onDone(
-             Result.apply(resultR1ToR0, resultR1) |> Result.map(r0ToA),
-           ),
-         ioR1ToR0,
-         ioR1,
-       )
-
-     | FlatMap(r1ToIOR0, ioR1) =>
-       ioR1
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r1) =>
-              r1ToIOR0(r1)
-              |> unsafeRunAsync(
-                   fun
-                   | Error(_) as resultE => onDone(resultE)
-                   | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
-                 ),
-          )
-     }
-     */
-
     | Apply(ioR0ToA, ioR0) =>
       unsafeRunAsyncPar2(
         (resultR0ToA, resultR0) =>
@@ -268,248 +206,6 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
         ioR0ToA,
         ioR0,
       )
-
-    /*
-     switch (ioR0ToA, ioR0) {
-     | (Pure(r0ToA), Pure(r0)) => onDone(Result.ok(r0ToA(r0)))
-
-     | (Pure(_), Throw(e)) => onDone(Error(e))
-
-     | (Pure(r0ToA), Suspend(getR0)) =>
-       onDone(Result.ok(r0ToA(getR0())))
-
-     | (Pure(r0ToA), SuspendIO(getIOR0)) =>
-       getIOR0()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r0) => onDone(Ok(r0ToA(r0))),
-          )
-
-     | (Pure(r0ToA), Async(onDoneR0)) =>
-       onDoneR0(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0) => onDone(Ok(r0ToA(r0))),
-       )
-
-     | (Pure(r0ToA), Map(r1ToR0, ioR1)) =>
-       ioR1
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r1) => onDone(Ok(r1 |> r1ToR0 |> r0ToA)),
-          )
-
-     | (Pure(r0ToA), Apply(ioR1ToR0, ioR1)) =>
-       unsafeRunAsyncPar2(
-         (resultR1ToR0, resultR1) =>
-           onDone(
-             Result.apply(resultR1ToR0, resultR1) |> Result.map(r0ToA),
-           ),
-         ioR1ToR0,
-         ioR1,
-       )
-
-     | (Pure(r0ToA), FlatMap(r1ToIOR0, ioR1)) =>
-       ioR1
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r1) =>
-              r1
-              |> r1ToIOR0
-              |> unsafeRunAsync(
-                   fun
-                   | Error(_) as resultE => onDone(resultE)
-                   | Ok(r0) => onDone(Result.ok(r0ToA(r0))),
-                 ),
-          )
-
-     | (Throw(e), Pure(_)) => onDone(Error(e))
-
-     | (Throw(e), Throw(_)) => onDone(Error(e))
-
-     | (Throw(e), Suspend(_)) => onDone(Error(e))
-
-     | (Throw(e), SuspendIO(_)) => onDone(Error(e))
-
-     | (Throw(e), Async(_)) => onDone(Error(e))
-
-     | (Throw(e), Map(_, _)) => onDone(Error(e))
-
-     | (Throw(e), Apply(_, _)) => onDone(Error(e))
-
-     | (Throw(e), FlatMap(_, _)) => onDone(Error(e))
-
-     | (Suspend(getR0ToA), Pure(r0)) =>
-       onDone(r0 |> getR0ToA() |> Result.ok)
-
-     | (Suspend(_), Throw(e)) => onDone(Error(e))
-
-     | (Suspend(getR0ToA), Suspend(getR0)) =>
-       getR0() |> getR0ToA() |> Result.ok |> onDone
-
-     | (Suspend(getR0ToA), SuspendIO(getIOR0)) =>
-       getIOR0()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r0) => onDone(r0 |> getR0ToA() |> Result.ok),
-          )
-
-     | (Suspend(getR0ToA), Async(onDoneR0)) =>
-       onDoneR0(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0) => r0 |> getR0ToA() |> Result.ok |> onDone,
-       )
-
-     | (Suspend(getR0ToA), Map(r1ToR0, ioR1)) =>
-       ioR1
-       |> map(r1 => r1 |> r1ToR0 |> getR0ToA())
-       |> unsafeRunAsync(onDone)
-
-     | (Suspend(getR0ToA), Apply(ioR1ToR0, ioR1)) =>
-       // TODO: not sure about this
-       ioR1 |> apply(ioR1ToR0) |> map(getR0ToA()) |> unsafeRunAsync(onDone)
-
-     | (Suspend(getR0ToA), FlatMap(r1ToIOR0, ioR1)) =>
-       ioR1
-       |> flatMap(r1 => r1 |> r1ToIOR0 |> map(getR0ToA()))
-       |> unsafeRunAsync(onDone)
-
-     | (SuspendIO(getIOR0ToA), Pure(r0)) =>
-       getIOR0ToA()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r0ToA) => onDone(r0 |> r0ToA |> Result.ok),
-          )
-
-     | (SuspendIO(_), Throw(e)) => onDone(Error(e))
-
-     | (SuspendIO(getIOR0ToA), Suspend(getR0)) =>
-       getIOR0ToA()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r0ToA) => onDone(getR0() |> r0ToA |> Result.ok),
-          )
-
-     | (SuspendIO(getIOR0ToA), SuspendIO(getIOR0)) =>
-       unsafeRunAsyncPar2(
-         (resultR0ToA, resultR0) =>
-           onDone(Result.apply(resultR0ToA, resultR0)),
-         getIOR0ToA(),
-         getIOR0(),
-       )
-
-     | (SuspendIO(getIOR0ToA), Async(onDoneR0)) =>
-       getIOR0ToA()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r0ToA) =>
-              onDoneR0(
-                fun
-                | Error(_) as resultE => onDone(resultE)
-                | Ok(r0) => onDone(r0 |> r0ToA |> Result.ok),
-              ),
-          )
-
-     | (SuspendIO(getIOR0ToA), Map(r1ToR0, ioR1)) =>
-       unsafeRunAsyncPar2(
-         (resultR0ToA, resultR1) =>
-           onDone(
-             Result.apply(resultR0ToA, resultR1 |> Result.map(r1ToR0)),
-           ),
-         getIOR0ToA(),
-         ioR1,
-       )
-
-     | (SuspendIO(getIOR0ToA), Apply(ioR1ToR0, ioR1)) =>
-       unsafeRunAsyncPar3(
-         (resultR0ToA, resultR1ToR0, resultR1) =>
-           onDone(
-             Result.apply(
-               resultR0ToA,
-               resultR1 |> Result.apply(resultR1ToR0),
-             ),
-           ),
-         getIOR0ToA(),
-         ioR1ToR0,
-         ioR1,
-       )
-
-     | (SuspendIO(getIOR0ToA), FlatMap(r1ToIOR0, ioR1)) =>
-       unsafeRunAsyncPar2(
-         (resultR0ToA, resultR1) =>
-           switch (resultR1) {
-           | Error(_) as resultE => onDone(resultE)
-           | Ok(r1) =>
-             r1
-             |> r1ToIOR0
-             |> unsafeRunAsync(
-                  fun
-                  | Error(_) as resultE => onDone(resultE)
-                  | Ok(r0) =>
-                    switch (resultR0ToA) {
-                    | Error(_) as resultE => onDone(resultE)
-                    | Ok(r0ToA) => onDone(Ok(r0ToA(r0)))
-                    },
-                )
-           },
-         getIOR0ToA(),
-         ioR1,
-       )
-
-     | (Async(onDoneR0ToA), Pure(r0)) =>
-       onDoneR0ToA(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0ToA) => onDone(Ok(r0ToA(r0))),
-       )
-
-     | (Async(_), Throw(e)) => onDone(Error(e))
-
-     | (Async(onDoneR0ToA), Suspend(getR0)) =>
-       onDoneR0ToA(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0ToA) => onDone(Ok(r0ToA(getR0()))),
-       )
-
-     | (Async(onDoneR0ToA), SuspendIO(getIOR0)) =>
-       onDoneR0ToA(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0ToA) =>
-           getIOR0()
-           |> unsafeRunAsync(
-                fun
-                | Error(_) as resultE => onDone(resultE)
-                | Ok(r0) => onDone(Ok(r0ToA(r0))),
-              ),
-       )
-
-     | (Async(onDoneR0ToA), Async(onDoneR0)) =>
-       // TODO: not sure about this
-       onDoneR0ToA(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0ToA) =>
-           onDoneR0(
-             fun
-             | Error(_) as resultE => onDone(resultE)
-             | Ok(r0) => onDone(Ok(r0ToA(r0))),
-           ),
-       )
-
-     | _ => failwith("Not implemented")
-     };
-     */
-
     | FlatMap(r0ToIOA, ioR0) =>
       ioR0
       |> unsafeRunAsync(
@@ -524,106 +220,49 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
                   | Ok(a) => onDone(Ok(a)),
                 ),
          )
-    /*
-     switch (ioR0) {
-     | Pure(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone)
-
-     | Throw(e) => onDone(Result.error(e))
-
-     | Suspend(getR0) => r0ToIOA(getR0()) |> unsafeRunAsync(onDone)
-
-     | SuspendIO(getIOR0) =>
-       getIOR0()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
-          )
-
-     | Async(onDoneR0) =>
-       onDoneR0(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
-       )
-
-     | Map(r1ToR0, ioR1) =>
-       ioR1
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r1) => r1 |> r1ToR0 |> r0ToIOA |> unsafeRunAsync(onDone),
-          )
-
-     | Apply(ioR1ToR0, ioR1) =>
-       unsafeRunAsyncPar2(
-         (resultR1ToR0, resultR1) =>
-           switch (Result.apply(resultR1ToR0, resultR1)) {
-           | Error(_) as resultE => onDone(resultE)
-           | Ok(r0) => r0 |> r0ToIOA |> unsafeRunAsync(onDone)
-           },
-         ioR1ToR0,
-         ioR1,
-       )
-
-     | FlatMap(r1ToIOR0, ioR1) =>
-       ioR1
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(r1) =>
-              r1ToIOR0(r1)
-              |> unsafeRunAsync(
-                   fun
-                   | Error(_) as resultE => onDone(resultE)
-                   | Ok(r0) => r0ToIOA(r0) |> unsafeRunAsync(onDone),
-                 ),
-          )
-     }
-     */
     }
 
 /**
- * Runs two IOs in parallel and when both are complete, invokes a callback with the result of each
+ * Runs two IOs in parallel, and invokes the given done callback when all complete
  */
 and unsafeRunAsyncPar2:
   'a 'b 'e.
   ((Result.t('a, 'e), Result.t('b, 'e)) => unit, t('a, 'e), t('b, 'e)) =>
   unit
  =
-  (onDoneBoth, ioA, ioB) => {
+  (onDone, ioA, ioB) => {
     let refA = ref(None);
     let refB = ref(None);
     ioA
     |> unsafeRunAsync(resultA =>
          switch (refB^) {
-         | Some(resultB) =>
-           onDoneBoth(resultA, resultB);
+         | Some(resultB) => onDone(resultA, resultB)
          | None => refA := Some(resultA)
          }
        );
     ioB
     |> unsafeRunAsync(resultB =>
          switch (refA^) {
-         | Some(resultA) =>
-           onDoneBoth(resultA, resultB);
+         | Some(resultA) => onDone(resultA, resultB)
          | None => refB := Some(resultB)
          }
        );
   }
 
+/**
+ * Runs three IOs in parallel, and invokes the given done callback when all complete
+ */
 and unsafeRunAsyncPar3:
   'a 'b 'c 'e.
   (
     (Result.t('a, 'e), Result.t('b, 'e), Result.t('c, 'e)) => unit,
     t('a, 'e),
     t('b, 'e),
-    t('c, 'e),
-    unit
+    t('c, 'e)
   ) =>
   unit
  =
-  (onDoneAll, ioA, ioB, ioC, ()) => {
+  (onDone, ioA, ioB, ioC) => {
     let refA = ref(None);
     let refB = ref(None);
     let refC = ref(None);
@@ -631,7 +270,7 @@ and unsafeRunAsyncPar3:
     |> unsafeRunAsync(resultA =>
          switch (refB^, refC^) {
          | (Some(resultB), Some(resultC)) =>
-           onDoneAll(resultA, resultB, resultC)
+           onDone(resultA, resultB, resultC)
          | _ => refA := Some(resultA)
          }
        );
@@ -639,7 +278,7 @@ and unsafeRunAsyncPar3:
     |> unsafeRunAsync(resultB =>
          switch (refA^, refC^) {
          | (Some(resultA), Some(resultC)) =>
-           onDoneAll(resultA, resultB, resultC)
+           onDone(resultA, resultB, resultC)
          | _ => refB := Some(resultB)
          }
        );
@@ -647,11 +286,262 @@ and unsafeRunAsyncPar3:
     |> unsafeRunAsync(resultC =>
          switch (refA^, refB^) {
          | (Some(resultA), Some(resultB)) =>
-           onDoneAll(resultA, resultB, resultC)
+           onDone(resultA, resultB, resultC)
          | _ => refC := Some(resultC)
          }
        );
   };
+
+let composePure: 'a 'b 'c 'e. ('a => 'b, t('b => 'c, 'e)) => t('a => 'c, 'e) =
+  (aToB, ioBToC) =>
+    switch (ioBToC) {
+    | Pure(bToC) => Pure(aToB >> bToC)
+    | Throw(_) as t => t
+    | Suspend(getBToC) => Suspend(() => aToB >> getBToC())
+    };
+
+let composeThrow: 'a 'b 'c 'e. ('e, t('b => 'c, 'e)) => t('a => 'c, 'e) =
+  (e, ioBToC) =>
+    switch (ioBToC) {
+    | Pure(_) => Throw(e)
+    | Throw(_) => Throw(e)
+    | Suspend(_) => Throw(e)
+    | SuspendIO(_) => Throw(e)
+    | Async(_) => Throw(e)
+    | Map(_, _) => Throw(e)
+    | Apply(_, _) => Throw(e)
+    | FlatMap(_, _) => Throw(e)
+    };
+
+let composeSuspend:
+  'a 'b 'c 'e.
+  ((unit, 'a) => 'b, t('b => 'c, 'e)) => t('a => 'c, 'e)
+ =
+  (getAToB, ioBToC) =>
+    switch (ioBToC) {
+    | Pure(bToC) => Suspend(() => getAToB() >> bToC)
+    | Throw(_) as t => t
+    | Suspend(getBToC) => Suspend(() => aToB >> getBToC())
+    };
+
+/**
+ * Creates a new IO value that contains the composition of functions from two
+ * input IO values.
+ */
+let compose:
+  'a 'b 'c 'e.
+  (t('b => 'c, 'e), t('a => 'b, 'e)) => t('a => 'c, 'e)
+ =
+  (ioBToC, ioAToB) =>
+    switch (ioAToB) {
+    | Pure(aToB) => composePure(aToB, ioBToC)
+    | Throw(e) => composeThrow(e, ioBToC)
+    | Suspend(getAToB) => composeSuspend(getAToB, ioBToC)
+    };
+
+/*
+ switch (ioAToB, ioBToC) {
+ | (Throw(_) as t, _) => t
+
+ | (_, Throw(_) as t) => t
+
+ | (Pure(aToB), Pure(bToC)) => Pure(aToB >> bToC)
+
+ | (Pure(aToB), Suspend(getBToC)) => Suspend(() => aToB >> getBToC())
+
+ | (Pure(aToB), SuspendIO(getIOBToC)) =>
+   SuspendIO(() => getIOBToC() |> map(bToC => aToB >> bToC))
+
+ | (Pure(aToB), Async(onDoneBToC)) =>
+   Async(
+     onDone =>
+       onDoneBToC(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+       ),
+   )
+ | (Pure(aToB), Map(r0ToBToC, ioR0)) =>
+   Map(r0 => aToB >> r0ToBToC(r0), ioR0)
+
+ | (Pure(aToB), Apply(ioR0ToBToC, ioR0)) =>
+   Apply(ioR0ToBToC |> map((r0ToBToC, r0) => aToB >> r0ToBToC(r0)), ioR0)
+
+ | (Pure(aToB), FlatMap(r0ToIOBToC, ioR0)) =>
+   FlatMap(r0 => r0ToIOBToC(r0) |> map(bToC => aToB >> bToC), ioR0)
+
+ | (Suspend(getAToB), Pure(bToC)) => Suspend(() => getAToB() >> bToC)
+
+ | (Suspend(getAToB), Suspend(getBToC)) =>
+   Suspend(() => getAToB() >> getBToC())
+
+ | (Suspend(getAToB), SuspendIO(getIOBToC)) =>
+   SuspendIO(() => getIOBToC() |> map(bToC => getAToB() >> bToC))
+
+ | (Suspend(getAToB), Async(onDoneBToC)) =>
+   Async(
+     onDone =>
+       onDoneBToC(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(bToC) => onDone(Ok(getAToB() >> bToC)),
+       ),
+   )
+
+ | (Suspend(getAToB), Map(r0ToBToC, ioR0)) =>
+   Map(r0 => getAToB() >> r0ToBToC(r0), ioR0)
+
+ | (Suspend(getAToB), Apply(ioR0ToBToC, ioR0)) =>
+   Apply(
+     ioR0ToBToC |> map((r0ToBToC, r0) => getAToB() >> r0ToBToC(r0)),
+     ioR0,
+   )
+
+ | (Suspend(getAToB), FlatMap(r0ToIOBToC, ioR0)) =>
+   FlatMap(r0 => r0ToIOBToC(r0) |> map(bToC => getAToB() >> bToC), ioR0)
+
+ | (SuspendIO(getIOAToB), Pure(bToC)) =>
+   SuspendIO(() => getIOAToB() |> map(aToB => aToB >> bToC))
+
+ | (SuspendIO(getIOAToB), Suspend(getBToC)) =>
+   SuspendIO(() => getIOAToB() |> map(aToB => aToB >> getBToC()))
+
+ | (SuspendIO(getIOAToB), SuspendIO(getIOBToC)) =>
+   SuspendIO(
+     () =>
+       getIOAToB()
+       |> flatMap(aToB => getIOBToC() |> map(bToC => aToB >> bToC)),
+   )
+
+ | (SuspendIO(getIOAToB), Async(onDoneBToC)) =>
+   Async(
+     onDone =>
+       getIOAToB()
+       |> unsafeRunAsync(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) =>
+              onDoneBToC(
+                fun
+                | Error(_) as resultE => onDone(resultE)
+                | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+              ),
+          ),
+   )
+
+ | (SuspendIO(getIOAToB), Map(r0ToBToC, ioR0)) =>
+   // TODO: not sure about impl
+   SuspendIO(
+     () =>
+       getIOAToB()
+       |> flatMap(aToB => ioR0 |> map(r0 => aToB >> r0ToBToC(r0))),
+   )
+
+ | (SuspendIO(getIOAToB), Apply(ioR0ToBToC, ioR0)) =>
+   // TODO: not sure about impl
+   SuspendIO(
+     () =>
+       getIOAToB()
+       |> flatMap(aToB =>
+            ioR0ToBToC
+            |> flatMap(r0ToBToC => ioR0 |> map(r0 => aToB >> r0ToBToC(r0)))
+          ),
+   )
+
+ | (SuspendIO(getIOAToB), FlatMap(r0ToIOBToC, ioR0)) =>
+   SuspendIO(
+     () =>
+       getIOAToB()
+       |> flatMap(aToB =>
+            ioR0
+            |> flatMap(r0 => r0ToIOBToC(r0) |> map(bToC => aToB >> bToC))
+          ),
+   )
+
+ | (Async(onDoneAToB), Pure(bToC)) =>
+   Async(
+     onDone =>
+       onDoneAToB(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(aToB) => onDone(Ok(aToB >> bToC)),
+       ),
+   )
+
+ | (Async(onDoneAToB), Suspend(getBToC)) =>
+   Async(
+     onDone =>
+       onDoneAToB(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(aToB) => onDone(Ok(aToB >> getBToC())),
+       ),
+   )
+
+ | (Async(onDoneAToB), SuspendIO(getIOBToC)) =>
+   Async(
+     onDone =>
+       onDoneAToB(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(aToB) =>
+           getIOBToC()
+           |> unsafeRunAsync(
+                fun
+                | Error(_) as resultE => onDone(resultE)
+                | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+              ),
+       ),
+   )
+
+ | (Async(onDoneAToB), Async(onDoneBToC)) =>
+   Async(
+     onDone =>
+       onDoneAToB(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(aToB) =>
+           onDoneBToC(
+             fun
+             | Error(_) as resultE => onDone(resultE)
+             | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+           ),
+       ),
+   )
+
+ | (Async(onDoneAToB), Map(r0ToBToC, ioR0)) =>
+   Async(
+     onDone =>
+       onDoneAToB(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(aToB) =>
+           ioR0
+           |> map(r0 => aToB >> r0ToBToC(r0))
+           |> unsafeRunAsync(onDone),
+       ),
+   )
+
+ | (Async(onDoneAToB), Apply(ioR0ToBToC, ioR0)) =>
+   Async(
+     onDone =>
+       onDoneAToB(
+         fun
+         | Error(_) as resultE => onDone(resultE)
+         | Ok(aToB) =>
+           ioR0ToBToC
+           |> flatMap(r0ToBToC => ioR0 |> map(r0 => aToB >> r0ToBToC(r0)))
+           |> unsafeRunAsync(onDone),
+       ),
+   )
+ };
+ */
+
+let andThen:
+  'a 'b 'c 'e.
+  (t('a => 'b, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
+ =
+  (ioAToB, ioBToC) => compose(ioBToC, ioAToB);
 
 /**
 Same as `map`, but operates on the error channel.
@@ -726,10 +616,11 @@ let rec catchError:
             | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
           )
         )
-
       | Map(r1ToR0, ioR1) =>
         ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> catchError(eToIOA)
-      | Apply(_, _) => failwith("Not implemented")
+      | Apply(_ioR1ToR0, _ioR1) =>
+        //ioR1 |> apply(ioR1ToR0 |> flatMap(r1ToR0 =>
+        failwith("Not implemented")
       | FlatMap(r1ToIOR0, ioR1) =>
         ioR1
         |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToA))
@@ -771,101 +662,14 @@ let rec catchError:
  * Uses a function to convert an error value to a success value, which serves to "clear" the error
  * in the IO, thereby making the error type `Void.t`.
  */
-let rec handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
-  (eToA, ioA) =>
-    switch (ioA) {
-    | Pure(a) => pure(a)
-    | Throw(e) => pure(eToA(e))
-    | Suspend(getA) => suspend(getA)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> handleError(eToA))
-    | Async(onDoneA) =>
-      Async(
-        onDone =>
-          onDoneA(
-            fun
-            | Ok(a) => a |> Result.ok |> onDone
-            | Error(e) => e |> eToA |> Result.ok |> onDone,
-          ),
-      )
-    | Map(r0ToA, ioR0) =>
-      switch (ioR0) {
-      | Pure(r0) => r0 |> r0ToA |> pure
-      | Throw(e) => e |> eToA |> pure
-      | Suspend(getR0) => suspend(() => getR0() |> r0ToA)
-      | SuspendIO(getIOR0) =>
-        suspendIO(() => getIOR0() |> map(r0ToA) |> handleError(eToA))
-      | Async(onDoneR0) =>
-        async(onDone =>
-          onDoneR0(
-            fun
-            | Ok(r0) => r0 |> r0ToA |> Result.ok |> onDone
-            | Error(e) => e |> eToA |> Result.ok |> onDone,
-          )
-        )
-      | Map(r1ToR0, ioR1) =>
-        ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> handleError(eToA)
-      | Apply(_, _) => failwith("Not implemented")
-      | FlatMap(r1ToIOR0, ioR1) =>
-        ioR1
-        |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToA))
-        |> handleError(eToA)
-      }
-    | Apply(_, _) => failwith("Not implemented")
-    | FlatMap(r0ToIOA, ioR0) =>
-      switch (ioR0) {
-      | Pure(r0) => r0ToIOA(r0) |> handleError(eToA)
-      | Throw(e) => e |> eToA |> pure
-      | Suspend(getR0) =>
-        SuspendIO(() => getR0() |> r0ToIOA |> handleError(eToA))
-      | SuspendIO(getIOR0) =>
-        suspendIO(() =>
-          getIOR0() |> flatMap(r0 => r0 |> r0ToIOA) |> handleError(eToA)
-        )
-      | Async(onDoneR0) =>
-        Async(
-          onDone =>
-            onDoneR0(
-              fun
-              | Ok(r0) =>
-                r0 |> r0ToIOA |> handleError(eToA) |> unsafeRunAsync(onDone)
-              | Error(e) => e |> eToA |> Result.ok |> onDone,
-            ),
-        )
-      | Map(r1ToR0, ioR1) =>
-        ioR1 |> flatMap(r1 => r1 |> r1ToR0 |> r0ToIOA) |> handleError(eToA)
-      | Apply(_, _) => failwith("Not implemented")
-      | FlatMap(r1ToIOR0, ioR1) =>
-        ioR1
-        |> flatMap(r1 => r1 |> r1ToIOR0 |> flatMap(r0 => r0 |> r0ToIOA))
-        |> handleError(eToA)
-      }
-    };
+let handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
+  (eToA, ioA) => ioA |> catchError(e => Pure(eToA(e)));
 
 /**
 Applies functions on both the success and error channels of the `IO`.
 */
-let rec bimap:
-  'a 'b 'e1 'e2.
-  ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2)
- =
-  (aToB, e1ToE2, io) =>
-    switch (io) {
-    | Pure(a) => a |> aToB |> pure
-    | Throw(e1) => e1 |> e1ToE2 |> throw
-    | Suspend(getA) => suspend(() => getA() |> aToB)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> bimap(aToB, e1ToE2))
-    | Async(onDoneA) =>
-      Async(onDone => onDoneA(Result.bimap(aToB, e1ToE2) >> onDone))
-    | Map(rToA, ioR) => Map(rToA >> aToB, ioR |> mapError(e1ToE2))
-    | Apply(ioRToA, ioR) =>
-      Apply(ioRToA |> mapError(e1ToE2), ioR |> mapError(e1ToE2))
-      |> map(aToB)
-    | FlatMap(rToIOA, ioR) =>
-      FlatMap(
-        r => rToIOA(r) |> bimap(aToB, e1ToE2),
-        ioR |> mapError(e1ToE2),
-      )
-    };
+let bimap: 'a 'b 'e1 'e2. ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2) =
+  (aToB, e1ToE2, io) => io |> map(aToB) |> mapError(e1ToE2);
 
 /**
 Same as `tap`, but works on both the success and error channels simultaneously.
@@ -1205,18 +1009,36 @@ let delayWithVoid: int => t(unit, Void.t) =
 /**
 Injects a delay in milliseconds after the given IO.  The value or error from the previous IO is propagated after the delay.
 
+When run, the given IO will be run first, then the delay will be run after the IO finishes.
+
 Example
 
 ```re
-IO.pure(4) |> IO.withDelay(2000) |> ...
+IO.pure(4) |> IO.withDelayAfter(2000) |> ...
 ```
 */
-let withDelay: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
+let withDelayAfter: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
   (millis, io) => io |> flatMap(a => delay(millis) |> map(_ => a));
+
+/**
+ * Alias for withDelayAfter
+ */
+let withDelay = withDelayAfter;
+
+/**
+ * Injects a delay before the given IO.
+ *
+ * When run, the delay will be executed first, then the given IO
+ */
+let withDelayBefore: 'a 'e. (int, t('a, 'e)) => t('a, 'e) =
+  (millis, io) => delay(millis) |> flatMap(_ => io);
 
 /**
 This will "debounce" an IO so that it will only allow the latest call within some interval to go through.
 All other calls will be cancelled.
+
+Note: that the IO produced by this function is not referentially transparent, because
+the IO chain is manipulated at runtime via a mutable ref.
 
 Example
 
@@ -1235,17 +1057,17 @@ let debounce:
   t(option('a), 'e)
  =
   (~immediate=false, ~intervalMs=150, io) => {
-    let currerntlyDebouncedIO = ref(None);
+    let currentlyDebouncedIO = ref(None);
     let startDebouncedIO = () => {
       let debouncedIO = delay(intervalMs);
-      currerntlyDebouncedIO := debouncedIO |> Relude_Option_Instances.pure;
+      currentlyDebouncedIO := debouncedIO |> Relude_Option_Instances.pure;
       debouncedIO
       |> map(() => {
            let shouldRunIO =
-             currerntlyDebouncedIO^
+             currentlyDebouncedIO^
              |> Relude_Option_Base.fold(false, (===)(debouncedIO));
            if (shouldRunIO) {
-             currerntlyDebouncedIO := None;
+             currentlyDebouncedIO := None;
            };
            shouldRunIO;
          });
@@ -1253,7 +1075,7 @@ let debounce:
 
     a => {
       let immediatelyRanIO =
-        switch (immediate, currerntlyDebouncedIO^) {
+        switch (immediate, currentlyDebouncedIO^) {
         | (true, None) =>
           suspendIO(() => a |> io |> map(Relude_Option_Instances.pure))
           |> Relude_Option_Instances.pure
@@ -1275,6 +1097,9 @@ let debounce:
 /**
 This will "throttle" an IO so that it will only allow subsequent calls to go through after some period of time
 has elapsed.
+
+Note: that the IO produced by this function is not referentially transparent, because
+the IO chain is manipulated at runtime via a mutable ref.
 
 Example
 
@@ -1325,8 +1150,15 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     type nonrec t('a, 'e) = t('a, 'e);
     let bimap = bimap;
   };
-  let bimap = Bifunctor.bimap;
+  let bimap = bimap;
   include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
+
+  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a, E.t) = {
+    include Functor;
+    let alt = alt;
+  };
+  let alt = alt;
+  include Relude_Extensions_Alt.AltExtensions(Alt);
 
   module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, E.t) = {
     include Functor;
@@ -1368,14 +1200,6 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   };
   let catchError = MonadError.catchError;
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
-
-  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a, E.t) = {
-    include Functor;
-    let alt = alt;
-  };
-  let alt = alt;
-  let orElse = orElse;
-  include Relude_Extensions_Alt.AltExtensions(Alt);
 
   module Infix = {
     include Relude_Extensions_Functor.FunctorInfix(Functor);
