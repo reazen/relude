@@ -224,6 +224,10 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
 
 /**
  * Runs two IOs in parallel, and invokes the given done callback when all complete
+ *
+ * Note that applicative uses of IO (apply/map2/map3/traverse/etc.) will run
+ * the IOs in parallel, so it's rarely necessary for the end-user to call this
+ * directly.
  */
 and unsafeRunAsyncPar2:
   'a 'b 'e.
@@ -251,6 +255,10 @@ and unsafeRunAsyncPar2:
 
 /**
  * Runs three IOs in parallel, and invokes the given done callback when all complete
+ *
+ * Note that applicative uses of IO (apply/map2/map3/traverse/etc.) will run
+ * the IOs in parallel, so it's rarely necessary for the end-user to call this
+ * directly.
  */
 and unsafeRunAsyncPar3:
   'a 'b 'c 'e.
@@ -292,14 +300,36 @@ and unsafeRunAsyncPar3:
        );
   };
 
+/**
+ * compose specialization for a left-hand-side Pure('a => 'b)
+ */
 let composePure: 'a 'b 'c 'e. ('a => 'b, t('b => 'c, 'e)) => t('a => 'c, 'e) =
   (aToB, ioBToC) =>
     switch (ioBToC) {
     | Pure(bToC) => Pure(aToB >> bToC)
     | Throw(_) as t => t
     | Suspend(getBToC) => Suspend(() => aToB >> getBToC())
+    | SuspendIO(getIOBToC) =>
+      SuspendIO(() => getIOBToC() |> map(bToC => aToB >> bToC))
+    | Async(onDoneBToC) =>
+      Async(
+        onDone =>
+          onDoneBToC(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+          ),
+      )
+    | Map(r0ToBToC, ioR0) => Map(r0 => aToB >> r0ToBToC(r0), ioR0)
+    | Apply(ioR0ToBToC, ioR0) =>
+      Apply(ioR0ToBToC |> map((r0ToBToC, r0) => aToB >> r0ToBToC(r0)), ioR0)
+    | FlatMap(r0ToIOBToC, ioR0) =>
+      FlatMap(r0 => r0ToIOBToC(r0) |> map(bToC => aToB >> bToC), ioR0)
     };
 
+/**
+ * compose specialization for a left-hand-side Throw
+ */
 let composeThrow: 'a 'b 'c 'e. ('e, t('b => 'c, 'e)) => t('a => 'c, 'e) =
   (e, ioBToC) =>
     switch (ioBToC) {
@@ -313,6 +343,9 @@ let composeThrow: 'a 'b 'c 'e. ('e, t('b => 'c, 'e)) => t('a => 'c, 'e) =
     | FlatMap(_, _) => Throw(e)
     };
 
+/**
+ * compose specialization for a left-hand-side Suspend
+ */
 let composeSuspend:
   'a 'b 'c 'e.
   ((unit, 'a) => 'b, t('b => 'c, 'e)) => t('a => 'c, 'e)
@@ -321,12 +354,225 @@ let composeSuspend:
     switch (ioBToC) {
     | Pure(bToC) => Suspend(() => getAToB() >> bToC)
     | Throw(_) as t => t
-    | Suspend(getBToC) => Suspend(() => aToB >> getBToC())
+    | Suspend(getBToC) => Suspend(() => getAToB() >> getBToC())
+    | SuspendIO(getIOBToC) =>
+      SuspendIO(() => getIOBToC() |> map(bToC => getAToB() >> bToC))
+    | Async(onDoneBToC) =>
+      Async(
+        onDone =>
+          onDoneBToC(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(bToC) => onDone(Ok(getAToB() >> bToC)),
+          ),
+      )
+    | Map(r0ToBToC, ioR0) => Map(r0 => getAToB() >> r0ToBToC(r0), ioR0)
+    | Apply(ioR0ToBToC, ioR0) =>
+      Apply(
+        ioR0ToBToC |> map((r0ToBToC, r0) => getAToB() >> r0ToBToC(r0)),
+        ioR0,
+      )
+    | FlatMap(r0ToIOBToC, ioR0) =>
+      FlatMap(r0 => r0ToIOBToC(r0) |> map(bToC => getAToB() >> bToC), ioR0)
     };
 
 /**
+ * compose specialization for a left-hand-side SuspendIO
+ */
+let composeSuspendIO:
+  'a 'b 'c 'e.
+  (unit => t('a => 'b, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
+ =
+  (getIOAToB, ioBToC) =>
+    switch (ioBToC) {
+    | Pure(bToC) => SuspendIO(() => getIOAToB() |> map(aToB => aToB >> bToC))
+    | Throw(_) as t => t
+    | Suspend(getBToC) =>
+      SuspendIO(() => getIOAToB() |> map(aToB => aToB >> getBToC()))
+    | SuspendIO(getIOBToC) =>
+      SuspendIO(
+        () =>
+          getIOAToB()
+          |> flatMap(aToB => getIOBToC() |> map(bToC => aToB >> bToC)),
+      )
+    | Async(onDoneBToC) =>
+      Async(
+        onDone =>
+          getIOAToB()
+          |> unsafeRunAsync(
+               fun
+               | Error(_) as resultE => onDone(resultE)
+               | Ok(aToB) =>
+                 onDoneBToC(
+                   fun
+                   | Error(_) as resultE => onDone(resultE)
+                   | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+                 ),
+             ),
+      )
+    | Map(r0ToBToC, ioR0) =>
+      SuspendIO(
+        () =>
+          getIOAToB()
+          |> flatMap(aToB => ioR0 |> map(r0 => aToB >> r0ToBToC(r0))),
+      )
+    | Apply(ioR0ToBToC, ioR0) =>
+      SuspendIO(
+        () =>
+          getIOAToB()
+          |> flatMap(aToB =>
+               ioR0ToBToC
+               |> flatMap(r0ToBToC => ioR0 |> map(r0 => aToB >> r0ToBToC(r0)))
+             ),
+      )
+    | FlatMap(r0ToIOBToC, ioR0) =>
+      SuspendIO(
+        () =>
+          getIOAToB()
+          |> flatMap(aToB =>
+               ioR0
+               |> flatMap(r0 => r0ToIOBToC(r0) |> map(bToC => aToB >> bToC))
+             ),
+      )
+    };
+
+/**
+ * compose specialization for a left-hand-side Async
+ */
+let composeAsync:
+  'a 'b 'c 'e.
+  ((Result.t('a => 'b, 'e) => unit) => unit, t('b => 'c, 'e)) =>
+  t('a => 'c, 'e)
+ =
+  (onDoneAToB, ioBToC) =>
+    switch (ioBToC) {
+    | Pure(bToC) =>
+      Async(
+        onDone =>
+          onDoneAToB(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) => onDone(Ok(aToB >> bToC)),
+          ),
+      )
+    | Throw(_) as t => t
+    | Suspend(getBToC) =>
+      Async(
+        onDone =>
+          onDoneAToB(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) => onDone(Ok(aToB >> getBToC())),
+          ),
+      )
+    | SuspendIO(getIOBToC) =>
+      Async(
+        onDone =>
+          onDoneAToB(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) =>
+              getIOBToC()
+              |> unsafeRunAsync(
+                   fun
+                   | Error(_) as resultE => onDone(resultE)
+                   | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+                 ),
+          ),
+      )
+    | Async(onDoneBToC) =>
+      Async(
+        onDone =>
+          onDoneAToB(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) =>
+              onDoneBToC(
+                fun
+                | Error(_) as resultE => onDone(resultE)
+                | Ok(bToC) => onDone(Ok(aToB >> bToC)),
+              ),
+          ),
+      )
+    | Map(r0ToBToC, ioR0) =>
+      Async(
+        onDone =>
+          onDoneAToB(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) =>
+              ioR0
+              |> map(r0 => aToB >> r0ToBToC(r0))
+              |> unsafeRunAsync(onDone),
+          ),
+      )
+    | Apply(ioR0ToBToC, ioR0) =>
+      Async(
+        onDone =>
+          onDoneAToB(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) =>
+              ioR0ToBToC
+              |> flatMap(r0ToBToC => ioR0 |> map(r0 => aToB >> r0ToBToC(r0)))
+              |> unsafeRunAsync(onDone),
+          ),
+      )
+    | FlatMap(r0ToIOBToC, ioR0) =>
+      Async(
+        onDone =>
+          onDoneAToB(
+            fun
+            | Error(_) as resultE => onDone(resultE)
+            | Ok(aToB) =>
+              ioR0
+              |> flatMap(r0 => r0ToIOBToC(r0) |> map(bToC => aToB >> bToC))
+              |> unsafeRunAsync(onDone),
+          ),
+      )
+    };
+
+/**
+ * compose specialization for a left-hand-side Map
+ */
+let composeMap:
+  'a 'b 'c 'r0 'e.
+  (('r0, 'a) => 'b, t('r0, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
+ =
+  (r0ToAToB, ioR0, ioBToC) =>
+    ioR0 |> flatMap(r0 => ioBToC |> map(bToC => r0ToAToB(r0) >> bToC));
+
+/**
+ * compose specialization for a left-hand-side Apply
+ */
+let composeApply:
+  'a 'b 'c 'r0 'e.
+  (t(('r0, 'a) => 'b, 'e), t('r0, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
+ =
+  (ioR0ToAToB, ioR0, ioBToC) =>
+    ioR0ToAToB
+    |> flatMap(r0ToAToB =>
+         ioR0 |> flatMap(r0 => ioBToC |> map(bToC => r0ToAToB(r0) >> bToC))
+       );
+
+/**
+ * compose specialization for a left-hand-side FlatMap
+ */
+let composeFlatMap:
+  'a 'b 'c 'r0 'e.
+  ('r0 => t('a => 'b, 'e), t('r0, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
+ =
+  (r0ToIOAToB, ioR0, ioBToC) =>
+    ioR0
+    |> flatMap(r0 =>
+         r0ToIOAToB(r0)
+         |> flatMap(aToB => ioBToC |> map(bToC => aToB >> bToC))
+       );
+
+/**
  * Creates a new IO value that contains the composition of functions from two
- * input IO values.
+ * input IO values. Composition is done from right-to-left with this function - see
+ * andThen for left-to-right.
  */
 let compose:
   'a 'b 'c 'e.
@@ -337,206 +583,23 @@ let compose:
     | Pure(aToB) => composePure(aToB, ioBToC)
     | Throw(e) => composeThrow(e, ioBToC)
     | Suspend(getAToB) => composeSuspend(getAToB, ioBToC)
+    | SuspendIO(getIOAToB) => composeSuspendIO(getIOAToB, ioBToC)
+    | Async(onDoneAToB) => composeAsync(onDoneAToB, ioBToC)
+    | Map(r0ToAToB, ioR0) => composeMap(r0ToAToB, ioR0, ioBToC)
+    | Apply(ioR0ToAToB, ioR0) => composeApply(ioR0ToAToB, ioR0, ioBToC)
+    | FlatMap(r0ToIOAToB, ioR0) => composeFlatMap(r0ToIOAToB, ioR0, ioBToC)
     };
 
-/*
- switch (ioAToB, ioBToC) {
- | (Throw(_) as t, _) => t
-
- | (_, Throw(_) as t) => t
-
- | (Pure(aToB), Pure(bToC)) => Pure(aToB >> bToC)
-
- | (Pure(aToB), Suspend(getBToC)) => Suspend(() => aToB >> getBToC())
-
- | (Pure(aToB), SuspendIO(getIOBToC)) =>
-   SuspendIO(() => getIOBToC() |> map(bToC => aToB >> bToC))
-
- | (Pure(aToB), Async(onDoneBToC)) =>
-   Async(
-     onDone =>
-       onDoneBToC(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(bToC) => onDone(Ok(aToB >> bToC)),
-       ),
-   )
- | (Pure(aToB), Map(r0ToBToC, ioR0)) =>
-   Map(r0 => aToB >> r0ToBToC(r0), ioR0)
-
- | (Pure(aToB), Apply(ioR0ToBToC, ioR0)) =>
-   Apply(ioR0ToBToC |> map((r0ToBToC, r0) => aToB >> r0ToBToC(r0)), ioR0)
-
- | (Pure(aToB), FlatMap(r0ToIOBToC, ioR0)) =>
-   FlatMap(r0 => r0ToIOBToC(r0) |> map(bToC => aToB >> bToC), ioR0)
-
- | (Suspend(getAToB), Pure(bToC)) => Suspend(() => getAToB() >> bToC)
-
- | (Suspend(getAToB), Suspend(getBToC)) =>
-   Suspend(() => getAToB() >> getBToC())
-
- | (Suspend(getAToB), SuspendIO(getIOBToC)) =>
-   SuspendIO(() => getIOBToC() |> map(bToC => getAToB() >> bToC))
-
- | (Suspend(getAToB), Async(onDoneBToC)) =>
-   Async(
-     onDone =>
-       onDoneBToC(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(bToC) => onDone(Ok(getAToB() >> bToC)),
-       ),
-   )
-
- | (Suspend(getAToB), Map(r0ToBToC, ioR0)) =>
-   Map(r0 => getAToB() >> r0ToBToC(r0), ioR0)
-
- | (Suspend(getAToB), Apply(ioR0ToBToC, ioR0)) =>
-   Apply(
-     ioR0ToBToC |> map((r0ToBToC, r0) => getAToB() >> r0ToBToC(r0)),
-     ioR0,
-   )
-
- | (Suspend(getAToB), FlatMap(r0ToIOBToC, ioR0)) =>
-   FlatMap(r0 => r0ToIOBToC(r0) |> map(bToC => getAToB() >> bToC), ioR0)
-
- | (SuspendIO(getIOAToB), Pure(bToC)) =>
-   SuspendIO(() => getIOAToB() |> map(aToB => aToB >> bToC))
-
- | (SuspendIO(getIOAToB), Suspend(getBToC)) =>
-   SuspendIO(() => getIOAToB() |> map(aToB => aToB >> getBToC()))
-
- | (SuspendIO(getIOAToB), SuspendIO(getIOBToC)) =>
-   SuspendIO(
-     () =>
-       getIOAToB()
-       |> flatMap(aToB => getIOBToC() |> map(bToC => aToB >> bToC)),
-   )
-
- | (SuspendIO(getIOAToB), Async(onDoneBToC)) =>
-   Async(
-     onDone =>
-       getIOAToB()
-       |> unsafeRunAsync(
-            fun
-            | Error(_) as resultE => onDone(resultE)
-            | Ok(aToB) =>
-              onDoneBToC(
-                fun
-                | Error(_) as resultE => onDone(resultE)
-                | Ok(bToC) => onDone(Ok(aToB >> bToC)),
-              ),
-          ),
-   )
-
- | (SuspendIO(getIOAToB), Map(r0ToBToC, ioR0)) =>
-   // TODO: not sure about impl
-   SuspendIO(
-     () =>
-       getIOAToB()
-       |> flatMap(aToB => ioR0 |> map(r0 => aToB >> r0ToBToC(r0))),
-   )
-
- | (SuspendIO(getIOAToB), Apply(ioR0ToBToC, ioR0)) =>
-   // TODO: not sure about impl
-   SuspendIO(
-     () =>
-       getIOAToB()
-       |> flatMap(aToB =>
-            ioR0ToBToC
-            |> flatMap(r0ToBToC => ioR0 |> map(r0 => aToB >> r0ToBToC(r0)))
-          ),
-   )
-
- | (SuspendIO(getIOAToB), FlatMap(r0ToIOBToC, ioR0)) =>
-   SuspendIO(
-     () =>
-       getIOAToB()
-       |> flatMap(aToB =>
-            ioR0
-            |> flatMap(r0 => r0ToIOBToC(r0) |> map(bToC => aToB >> bToC))
-          ),
-   )
-
- | (Async(onDoneAToB), Pure(bToC)) =>
-   Async(
-     onDone =>
-       onDoneAToB(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(aToB) => onDone(Ok(aToB >> bToC)),
-       ),
-   )
-
- | (Async(onDoneAToB), Suspend(getBToC)) =>
-   Async(
-     onDone =>
-       onDoneAToB(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(aToB) => onDone(Ok(aToB >> getBToC())),
-       ),
-   )
-
- | (Async(onDoneAToB), SuspendIO(getIOBToC)) =>
-   Async(
-     onDone =>
-       onDoneAToB(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(aToB) =>
-           getIOBToC()
-           |> unsafeRunAsync(
-                fun
-                | Error(_) as resultE => onDone(resultE)
-                | Ok(bToC) => onDone(Ok(aToB >> bToC)),
-              ),
-       ),
-   )
-
- | (Async(onDoneAToB), Async(onDoneBToC)) =>
-   Async(
-     onDone =>
-       onDoneAToB(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(aToB) =>
-           onDoneBToC(
-             fun
-             | Error(_) as resultE => onDone(resultE)
-             | Ok(bToC) => onDone(Ok(aToB >> bToC)),
-           ),
-       ),
-   )
-
- | (Async(onDoneAToB), Map(r0ToBToC, ioR0)) =>
-   Async(
-     onDone =>
-       onDoneAToB(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(aToB) =>
-           ioR0
-           |> map(r0 => aToB >> r0ToBToC(r0))
-           |> unsafeRunAsync(onDone),
-       ),
-   )
-
- | (Async(onDoneAToB), Apply(ioR0ToBToC, ioR0)) =>
-   Async(
-     onDone =>
-       onDoneAToB(
-         fun
-         | Error(_) as resultE => onDone(resultE)
-         | Ok(aToB) =>
-           ioR0ToBToC
-           |> flatMap(r0ToBToC => ioR0 |> map(r0 => aToB >> r0ToBToC(r0)))
-           |> unsafeRunAsync(onDone),
-       ),
-   )
- };
+/**
+ * Operator for IO's compose right-to-left composition function
+ *
+ * (using triple <<< to disambiguate from function compose <<)
  */
+let (<<<) = compose;
 
+/**
+ * Flipped version of compose for left-to-right usage
+ */
 let andThen:
   'a 'b 'c 'e.
   (t('a => 'b, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
@@ -544,15 +607,22 @@ let andThen:
   (ioAToB, ioBToC) => compose(ioBToC, ioAToB);
 
 /**
+ * Operator for IO's andThen left-to-right composition function
+ *
+ * (using triple >>> to disambiguate from function andThen >>)
+ */
+let (>>>) = andThen;
+
+/**
 Same as `map`, but operates on the error channel.
 */
 let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
   (e1ToE2, ioA) =>
     switch (ioA) {
-    | Pure(a) => pure(a)
-    | Throw(e1) => throw(e1ToE2(e1))
-    | Suspend(getA) => suspend(getA)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> mapError(e1ToE2))
+    | Pure(a) => Pure(a)
+    | Throw(e1) => Throw(e1ToE2(e1))
+    | Suspend(getA) => Suspend(getA)
+    | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> mapError(e1ToE2))
     | Async(onDoneA) =>
       Async(
         onDone =>
@@ -560,7 +630,7 @@ let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
       )
     | Map(rToA, ioR) => ioR |> mapError(e1ToE2) |> map(rToA)
     | Apply(ioRToA, ioR) =>
-      apply(ioRToA |> mapError(e1ToE2), ioR |> mapError(e1ToE2))
+      Apply(ioRToA |> mapError(e1ToE2), ioR |> mapError(e1ToE2))
     | FlatMap(rToIOA, ioR) =>
       ioR |> mapError(e1ToE2) |> flatMap(r => rToIOA(r) |> mapError(e1ToE2))
     };
@@ -587,49 +657,55 @@ let rec catchError:
  =
   (eToIOA, ioA) =>
     switch (ioA) {
-    | Pure(a) => a |> pure
+    | Pure(a) => Pure(a)
     | Throw(e) => eToIOA(e)
-    | Suspend(getA) => suspend(getA)
-    | SuspendIO(getIOA) => suspendIO(() => getIOA() |> catchError(eToIOA))
+    | Suspend(getA) => Suspend(getA)
+    | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> catchError(eToIOA))
     | Async(onDoneA) =>
       Async(
         onDone =>
           onDoneA(
             fun
-            | Ok(a) => a |> Result.ok |> onDone
+            | Ok(a) => onDone(Ok(a))
             | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
           ),
       )
-    | Map(r0ToA, ioR0) =>
-      switch (ioR0) {
-      | Pure(r0) => r0 |> r0ToA |> pure |> catchError(eToIOA)
-      | Throw(e) => eToIOA(e)
-      | Suspend(getR0) =>
-        suspendIO(() => getR0() |> r0ToA |> pure |> catchError(eToIOA))
-      | SuspendIO(getIOR0) =>
-        suspendIO(() => getIOR0() |> map(r0ToA) |> catchError(eToIOA))
-      | Async(onDoneR0) =>
-        async(onDone =>
-          onDoneR0(
-            fun
-            | Ok(r0) => r0 |> r0ToA |> Result.ok |> onDone
-            | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
-          )
-        )
-      | Map(r1ToR0, ioR1) =>
-        ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> catchError(eToIOA)
-      | Apply(_ioR1ToR0, _ioR1) =>
-        //ioR1 |> apply(ioR1ToR0 |> flatMap(r1ToR0 =>
-        failwith("Not implemented")
-      | FlatMap(r1ToIOR0, ioR1) =>
-        ioR1
-        |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToA))
-        |> catchError(eToIOA)
-      }
+    | Map(r0ToA, ioR0) => Map(r0ToA, ioR0) |> catchError(eToIOA)
+    /*
+     switch (ioR0) {
+     | Pure(r0) => Pure(r0ToA(r0)) |> catchError(eToIOA)
+     | Throw(e) => eToIOA(e)
+     | Suspend(getR0) =>
+       SuspendIO(() => Pure(r0ToA(getR0())) |> catchError(eToIOA))
+     | SuspendIO(getIOR0) =>
+       SuspendIO(() => getIOR0() |> map(r0ToA) |> catchError(eToIOA))
+     | Async(onDoneR0) =>
+       Async(
+         onDone =>
+           onDoneR0(
+             fun
+             | Ok(r0) => onDone(Ok(r0ToA(r0)))
+             | Error(e) => e |> eToIOA |> unsafeRunAsync(onDone),
+           ),
+       )
+     | Map(r1ToR0, ioR1) =>
+       ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToA) |> catchError(eToIOA)
+     | Apply(ioR1ToR0, ioR1) =>
+       Apply(ioR1ToR0 >>> pure(r0ToA), ioR1) |> catchError(eToIOA)
+     | FlatMap(r1ToIOR0, ioR1) =>
+       ioR1
+       |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToA))
+       |> catchError(eToIOA)
+     }
+     */
     | Apply(ioR0ToA, ioR0) =>
       switch (ioR0) {
       | Pure(r0) => ioR0ToA |> map(r0ToA => r0ToA(r0)) |> catchError(eToIOA)
-      | _ => failwith("Not implemented")
+      | Throw(e) => eToIOA(e)
+      | Suspend(getR0) =>
+        ioR0ToA |> map(r0ToA => r0ToA(getR0())) |> catchError(eToIOA)
+      | SuspendIO(getIOR0) =>
+        Apply(ioR0ToA, getIOR0()) |> catchError(eToIOA)
       }
     | FlatMap(r0ToIOA, ioR0) =>
       switch (ioR0) {
@@ -1201,11 +1277,20 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   let catchError = MonadError.catchError;
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
+  // Not sure if this is valid, but I'll leave it for now
+  module Semigroupoid:
+    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b, E.t) = {
+    type nonrec t('a, 'b) = t('a => 'b, E.t);
+    let compose = compose;
+  };
+  include Relude_Extensions_Semigroupoid.SemigroupoidExtensions(Semigroupoid);
+
   module Infix = {
     include Relude_Extensions_Functor.FunctorInfix(Functor);
     include Relude_Extensions_Bifunctor.BifunctorInfix(Bifunctor);
     include Relude_Extensions_Apply.ApplyInfix(Apply);
     include Relude_Extensions_Monad.MonadInfix(Monad);
     include Relude_Extensions_Alt.AltInfix(Alt);
+    include Relude_Extensions_Semigroupoid.SemigroupoidInfix(Semigroupoid);
   };
 };

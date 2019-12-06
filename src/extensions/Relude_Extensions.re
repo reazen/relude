@@ -16,5 +16,6 @@ module Ord = Relude_Extensions_Ord;
 module Plus = Relude_Extensions_Plus;
 module Ring = Relude_Extensions_Ring;
 module Semigroup = Relude_Extensions_Semigroup;
+module Semigroupoid = Relude_Extensions_Semigroupoid;
 module Semiring = Relude_Extensions_Semiring;
 module Traversable = Relude_Extensions_Traversable;
