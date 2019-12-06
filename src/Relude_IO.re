@@ -195,10 +195,15 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
   (onDone, ioA) =>
     switch (ioA) {
     | Pure(a) => onDone(Result.ok(a))
+
     | Throw(e) => onDone(Result.error(e))
+
     | Suspend(getA) => onDone(Result.ok(getA()))
+
     | SuspendIO(getIOA) => getIOA() |> unsafeRunAsync(onDone)
+
     | Async(onDoneA) => onDoneA(onDone)
+
     | Map(r0ToA, ioR0) =>
       ioR0
       |> unsafeRunAsync(
@@ -206,6 +211,7 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
            | Error(_) as resultE => onDone(resultE)
            | Ok(r0) => onDone(Ok(r0ToA(r0))),
          )
+
     | Apply(ioR0ToA, ioR0) =>
       unsafeRunAsyncPar2(
         (resultR0ToA, resultR0) =>
@@ -213,6 +219,7 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
         ioR0ToA,
         ioR0,
       )
+
     | FlatMap(r0ToIOA, ioR0) =>
       ioR0
       |> unsafeRunAsync(
@@ -319,12 +326,19 @@ let rec compose:
   (ioBToC, ioAToB) =>
     switch (ioAToB) {
     | Pure(aToB) => composePure(aToB, ioBToC)
+
     | Throw(e) => composeThrow(e, ioBToC)
+
     | Suspend(getAToB) => composeSuspend(getAToB, ioBToC)
+
     | SuspendIO(getIOAToB) => composeSuspendIO(getIOAToB, ioBToC)
+
     | Async(onDoneAToB) => composeAsync(onDoneAToB, ioBToC)
+
     | Map(r0ToAToB, ioR0) => composeMap(r0ToAToB, ioR0, ioBToC)
+
     | Apply(ioR0ToAToB, ioR0) => composeApply(ioR0ToAToB, ioR0, ioBToC)
+
     | FlatMap(r0ToIOAToB, ioR0) => composeFlatMap(r0ToIOAToB, ioR0, ioBToC)
     }
 
@@ -1139,29 +1153,32 @@ and summonErrorApply:
   'a 'r0 'e.
   (t('r0 => 'a, 'e), t('r0, 'e)) => t(Result.t('a, 'e), Void.t)
  =
-  (ioR0ToA, ioR0) => {
+  (_ioR0ToA, ioR0) => {
     switch (ioR0) {
-    | Pure(r0) => Pure(Result.ok(r0ToA(r0)))
+    | _ => failwith("Not implemented")
+    /*
+     | Pure(r0) => Pure(Result.ok(r0ToA(r0)))
 
-    | Throw(e) => Pure(Result.error(e))
+     | Throw(e) => Pure(Result.error(e))
 
-    | Suspend(getR0) => Suspend(() => Result.ok(r0ToA(getR0())))
+     | Suspend(getR0) => Suspend(() => Result.ok(r0ToA(getR0())))
 
-    | SuspendIO(getIOR0) =>
-      SuspendIO(() => getIOR0() |> map(r0ToA) |> summonError)
+     | SuspendIO(getIOR0) =>
+       SuspendIO(() => getIOR0() |> map(r0ToA) |> summonError)
 
-    | Async(onDoneR0) =>
-      Async(
-        onDone =>
-          onDoneR0(resR0 => onDone(Result.ok(Result.map(r0ToA, resR0)))),
-      )
+     | Async(onDoneR0) =>
+       Async(
+         onDone =>
+           onDoneR0(resR0 => onDone(Result.ok(Result.map(r0ToA, resR0)))),
+       )
 
-    | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> summonError
+     | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> summonError
 
-    | Apply(_, _) => failwith("Not implemented")
+     | Apply(_, _) => failwith("Not implemented")
 
-    | FlatMap(r1ToIOR0, ioR1) =>
-      ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> map(r0ToA)) |> summonError
+     | FlatMap(r1ToIOR0, ioR1) =>
+       ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> map(r0ToA)) |> summonError
+       */
     };
   }
 
@@ -1169,7 +1186,7 @@ and summonErrorFlatMap:
   'a 'r0 'e.
   ('r0 => t('a, 'e), t('r0, 'e)) => t(Result.t('a, 'e), Void.t)
  =
-  (t0ToIOA, ioR0) => {
+  (r0ToIOA, ioR0) => {
     switch (ioR0) {
     | Pure(r0) => r0ToIOA(r0) |> summonError
 

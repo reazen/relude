@@ -1,3 +1,26 @@
+let (<<) = Relude_Function.Infix.(<<);
+let (>>) = Relude_Function.Infix.(>>);
+
+let compose:
+  'a 'b 'c.
+  (option('b => 'c), option('a => 'b)) => option('a => 'c)
+ =
+  (optionBToC, optionAToB) => {
+    switch (optionAToB, optionBToC) {
+    | (Some(aToB), Some(bToC)) => Some(aToB >> bToC)
+    | (Some(_), None) => None
+    | (None, Some(_)) => None
+    | (None, None) => None
+    };
+  };
+
+module Semigroupoid:
+  BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = option('a => 'b) = {
+  type t('a, 'b) = option('a => 'b);
+  let compose = compose;
+};
+include Relude_Extensions_Semigroupoid.SemigroupoidExtensions(Semigroupoid);
+
 /**
   `map(f, opt)`, when `opt` is `Some(v)`, returns `Some(f(v))`.
   When `opt` is `None`, it returns `None`.
@@ -18,7 +41,6 @@ module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = option('a) = {
   type nonrec t('a) = option('a);
   let map = map;
 };
-
 include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
 /**

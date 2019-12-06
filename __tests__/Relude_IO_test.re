@@ -1074,7 +1074,6 @@ describe("IO parallel", () =>
   })
 );
 
-
 type getError =
   | GetError(string);
 

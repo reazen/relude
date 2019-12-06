@@ -1,3 +1,6 @@
+let (<<) = Relude_Function.Infix.(<<);
+let (>>) = Relude_Function.Infix.(>>);
+
 type t('a, 'e) = Belt.Result.t('a, 'e);
 
 /**
@@ -161,6 +164,24 @@ let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   fun
   | Ok(a) => Error(a)
   | Error(e) => Ok(e);
+
+let compose:
+  'a 'b 'c 'e.
+  (t('b => 'c, 'e), t('a => 'b, 'e)) => t('a => 'c, 'e)
+ =
+  (resultBToC, resultAToB) =>
+    switch (resultAToB, resultBToC) {
+    | (Ok(aToB), Ok(bToC)) => Ok(aToB >> bToC)
+    | (Error(e), Ok(_)) => Error(e)
+    | (Ok(_), Error(e)) => Error(e)
+    | (Error(e), Error(_)) => Error(e)
+    };
+
+let andThen:
+  'a 'b 'c 'e.
+  (t('a => 'b, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
+ =
+  (resultAToB, resultBToC) => compose(resultBToC, resultAToB);
 
 /**
   `map(f, x)` returns `Ok(f(x))` if `x` is of the form `OK(v)`.
@@ -811,6 +832,14 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   let catchError = MonadError.catchError;
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
+  module Semigroupoid:
+    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b, E.t) = {
+    type nonrec t('a, 'b) = t('a => 'b, E.t);
+    let compose = compose;
+  };
+  let compose = compose;
+  include Relude_Extensions_Semigroupoid.SemigroupoidExtensions(Semigroupoid);
+
   module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a, E.t) = {
     include BsAbstract.Result.Foldable(E);
   };
@@ -855,5 +884,6 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
     include Relude_Extensions_Bifunctor.BifunctorInfix(Bifunctor);
     include Relude_Extensions_Apply.ApplyInfix(Apply);
     include Relude_Extensions_Monad.MonadInfix(Monad);
+    include Relude_Extensions_Semigroupoid.SemigroupoidInfix(Semigroupoid);
   };
 };
