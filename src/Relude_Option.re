@@ -3,6 +3,7 @@ include Relude_Option_Base;
 include Relude_Option_Specializations;
 
 module Infix = {
+  include Relude_Extensions_Semigroupoid.SemigroupoidInfix(Semigroupoid);
   include Relude_Extensions_Functor.FunctorInfix(Functor);
   include Relude_Extensions_Alt.AltInfix(Alt);
   include Relude_Extensions_Apply.ApplyInfix(Apply);
