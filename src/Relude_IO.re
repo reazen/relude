@@ -1309,13 +1309,14 @@ and unsummonErrorMap:
 
 and unsummonErrorApply:
   'r0 'a 'e.
-  (t('r0 => Result.t('a, 'e), 'e), t('r0, Void.t)) => t('a, 'e)
+  (t('r0 => Result.t('a, 'e), Void.t), t('r0, Void.t)) => t('a, 'e)
  =
   (ioR0ToResultA, ioR0) => {
     ioR0ToResultA
     |> flatMap(r0ToResultA =>
-         ioR0 |> flatMap(r0 => r0ToResultA(r0) |> Result.fold(throw, pure))
-       );
+         ioR0 |> flatMap(r0 => r0 |> r0ToResultA |> pure)
+       )
+    |> unsummonError;
   }
 
 and unsummonErrorFlatMap:
@@ -1351,13 +1352,9 @@ and unsummonErrorFlatMap:
       ioR1ToR0
       |> flatMap(r1ToR0 =>
            ioR1
-           |> flatMap(r1 =>
-                r1
-                |> r1ToR0
-                |> r0ToIOResultA
-                |> flatMap(resultA => Result.fold(throw, pure))
-              )
+           |> flatMap(r1 => r1 |> r1ToR0 |> r0ToIOResultA |> flatMap(pure))
          )
+      |> unsummonError
 
     | FlatMap(r1ToIOR0, ioR1) =>
       ioR1
