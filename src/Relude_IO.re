@@ -1153,32 +1153,47 @@ and summonErrorApply:
   'a 'r0 'e.
   (t('r0 => 'a, 'e), t('r0, 'e)) => t(Result.t('a, 'e), Void.t)
  =
-  (_ioR0ToA, ioR0) => {
+  (ioR0ToA, ioR0) => {
     switch (ioR0) {
-    | _ => failwith("Not implemented")
-    /*
-     | Pure(r0) => Pure(Result.ok(r0ToA(r0)))
+    | Pure(r0) => ioR0ToA |> map(r0ToA => r0ToA(r0)) |> summonError
 
-     | Throw(e) => Pure(Result.error(e))
+    | Throw(e) => Pure(Result.error(e))
 
-     | Suspend(getR0) => Suspend(() => Result.ok(r0ToA(getR0())))
+    | Suspend(getR0) =>
+      SuspendIO(() => ioR0ToA |> map(r0ToA => r0ToA(getR0())) |> summonError)
 
-     | SuspendIO(getIOR0) =>
-       SuspendIO(() => getIOR0() |> map(r0ToA) |> summonError)
+    | SuspendIO(getIOR0) =>
+      SuspendIO(
+        () =>
+          ioR0ToA |> flatMap(r0ToA => getIOR0() |> map(r0ToA)) |> summonError,
+      )
 
-     | Async(onDoneR0) =>
-       Async(
-         onDone =>
-           onDoneR0(resR0 => onDone(Result.ok(Result.map(r0ToA, resR0)))),
-       )
+    | Async(onDoneR0) =>
+      Async(
+        onDone =>
+          onDoneR0(
+            fun
+            | Error(_) as resultE => onDone(Ok(resultE))
+            | Ok(r0) =>
+              ioR0ToA
+              |> map(r0ToA => r0ToA(r0))
+              |> summonError
+              |> unsafeRunAsync(onDone),
+          ),
+      )
 
-     | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> summonError
+    | Map(r1ToR0, ioR1) =>
+      ioR1 |> apply(pure(r1ToR0) >>> ioR0ToA) |> summonError
 
-     | Apply(_, _) => failwith("Not implemented")
+    | Apply(ioR1ToR0, ioR1) =>
+      ioR1 |> apply(ioR1ToR0 >>> ioR0ToA) |> summonError
 
-     | FlatMap(r1ToIOR0, ioR1) =>
-       ioR1 |> flatMap(r1 => r1ToIOR0(r1) |> map(r0ToA)) |> summonError
-       */
+    | FlatMap(r1ToIOR0, ioR1) =>
+      ioR1
+      |> flatMap(r1 =>
+           r1ToIOR0(r1) |> flatMap(r0 => ioR0ToA |> map(r0ToA => r0ToA(r0)))
+         )
+      |> summonError
     };
   }
 
@@ -1209,7 +1224,10 @@ and summonErrorFlatMap:
 
     | Map(r1ToR0, ioR1) => ioR1 |> flatMap(r1ToR0 >> r0ToIOA) |> summonError
 
-    | Apply(_, _) => failwith("Not implemented")
+    | Apply(ioR1ToR0, ioR1) =>
+      ioR1
+      |> flatMap(r1 => ioR1ToR0 |> flatMap(r1ToR0 => r1 |> r1ToR0 |> r0ToIOA))
+      |> summonError
 
     | FlatMap(r1ToIOR0, ioR1) =>
       ioR1
@@ -1244,7 +1262,17 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
         ),
     )
 
-  | Map(r0ToResultA, ioR0) =>
+  | Map(r0ToResultA, ioR0) => unsummonErrorMap(r0ToResultA, ioR0)
+
+  | Apply(ioR0ToResultA, ioR0) => unsummonErrorApply(ioR0ToResultA, ioR0)
+
+  | FlatMap(r0ToIOResultA, ioR0) => unsummonErrorFlatMap(r0ToIOResultA, ioR0)
+
+and unsummonErrorMap:
+  'r0 'a 'e.
+  ('r0 => Result.t('a, 'e), t('r0, Void.t)) => t('a, 'e)
+ =
+  (r0ToResultA, ioR0) => {
     switch (ioR0) {
     | Pure(r0) => r0ToResultA(r0) |> Result.fold(throw, pure)
 
@@ -1269,37 +1297,32 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
     | Map(r1ToR0, ioR1) =>
       ioR1 |> map(r1 => r1 |> r1ToR0 |> r0ToResultA) |> unsummonError
 
-    | Apply(_ioR1ToR0, _ioR1) =>
-      //ioR1 |> apply(ioR1ToR0) |> map(r0ToResultA) |> unsummonError
-      failwith("Not implemented")
+    | Apply(ioR1ToR0, ioR1) =>
+      ioR1 |> apply(ioR1ToR0 >>> pure(r0ToResultA)) |> unsummonError
 
     | FlatMap(r1ToIOR0, ioR1) =>
       ioR1
       |> flatMap(r1 => r1 |> r1ToIOR0 |> map(r0ToResultA))
       |> unsummonError
-    }
+    };
+  }
 
-  | Apply(_ioR0ToResultA, _ioR0) =>
-    /*
-     switch (ioR0ToResultA, ioR0) {
-     | (Pure(r0ToResultA), Pure(r0)) =>
-       SuspendIO(() => r0 |> r0ToResultA |> Result.fold(throw, pure))
+and unsummonErrorApply:
+  'r0 'a 'e.
+  (t('r0 => Result.t('a, 'e), 'e), t('r0, Void.t)) => t('a, 'e)
+ =
+  (ioR0ToResultA, ioR0) => {
+    ioR0ToResultA
+    |> flatMap(r0ToResultA =>
+         ioR0 |> flatMap(r0 => r0ToResultA(r0) |> Result.fold(throw, pure))
+       );
+  }
 
-     | (Pure(_), Throw(void)) => Throw(Void.absurd(void))
-
-     | (Pure(r0ToResultA), Suspend(getR0)) =>
-       SuspendIO(() => getR0() |> r0ToResultA |> Result.fold(throw, pure))
-
-     | (Pure(r0ToResultA), SuspendIO(getIOR0)) =>
-       SuspendIO(() => getIOR0() |> apply(ioR0ToResultA |> unsummonError))
-
-     | (Pure(r0ToResultA), Map(r1ToR0, ioR1)) =>
-       ioR1 |> map(r1ToR0 >> r0ToResultA) |> unsummonError
-     }
-     */
-    failwith("Not implemented")
-
-  | FlatMap(r0ToIOResultA, ioR0) =>
+and unsummonErrorFlatMap:
+  'r0 'a 'e.
+  ('r0 => t(Result.t('a, 'e), Void.t), t('r0, Void.t)) => t('a, 'e)
+ =
+  (r0ToIOResultA, ioR0) => {
     switch (ioR0) {
     | Pure(r0) => r0ToIOResultA(r0) |> unsummonError
     | Throw(absurd) => Void.absurd(absurd)
@@ -1320,14 +1343,28 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
             | Error(void) => Void.absurd(void),
           ),
       )
+
     | Map(r1ToR0, ioR1) =>
       ioR1 |> flatMap(r1ToR0 >> r0ToIOResultA) |> unsummonError
-    | Apply(_, _) => failwith("Not implemented")
+
+    | Apply(ioR1ToR0, ioR1) =>
+      ioR1ToR0
+      |> flatMap(r1ToR0 =>
+           ioR1
+           |> flatMap(r1 =>
+                r1
+                |> r1ToR0
+                |> r0ToIOResultA
+                |> flatMap(resultA => Result.fold(throw, pure))
+              )
+         )
+
     | FlatMap(r1ToIOR0, ioR1) =>
       ioR1
       |> flatMap(r1 => r1ToIOR0(r1) |> flatMap(r0 => r0ToIOResultA(r0)))
       |> unsummonError
     };
+  };
 
 /**
 Creates an async `IO` that waits for the given millisecond timeout before completing with a unit value.
