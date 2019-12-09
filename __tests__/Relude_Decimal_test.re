@@ -51,23 +51,23 @@ describe("Decimal", () => {
 
   test("normalize", () => {
     let a = Decimal(12345, -2); // 123.45
-    let b = Decimal(23456, 3); // 23456000
+    let b = Decimal(6789, 3); // 6789000
     let result = Decimal.normalize(a, b);
     expect(result)
-    |> toEqual((Decimal(12345, -2), Decimal(2345600000, -2), (-2)));
+    |> toEqual((Decimal(12345, -2), Decimal(678900000, -2), (-2)));
   });
 
   test("add", () => {
     let a = Decimal(12345, -2); // 123.45
-    let b = Decimal(23456, 3); // 23456000
+    let b = Decimal(6789, 3); // 6789000
     let result = Decimal.add(a, b);
-    expect(result) |> toEqual(Decimal(2345612345, -2));
+    expect(result) |> toEqual(Decimal(678912345, -2));
   });
 
   test("subtract", () => {
     let a = Decimal(12345, -2); // 123.45
-    let b = Decimal(23456, 3); // 23456000
+    let b = Decimal(6789, 3); // 6789000
     let result = Decimal.subtract(a, b);
-    expect(result) |> toEqual(Decimal(-2345587655, -2));
+    expect(result) |> toEqual(Decimal(-678887655, -2));
   });
 });
