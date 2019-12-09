@@ -91,6 +91,16 @@ describe("IO basics", () => {
        )
   );
 
+  testAsync("pure apply unsafeRunAsync", onDone =>
+    IO.pure(42)
+    |> IO.apply(IO.pure(a => a * 2))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(value) => onDone(expect(value) |> toEqual(84))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
   testAsync("pure flatMap pure unsafeRunAsync", onDone =>
     IO.pure(42)
     |> IO.flatMap(a => IO.pure(a + 10))
@@ -529,6 +539,17 @@ describe("IO flip", () => {
        )
   );
 
+  testAsync("pure apply flip unsafeRunAsync", onDone =>
+    IO.pure(42)
+    |> IO.apply(IO.pure(a => a + 10))
+    |> IO.flip
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual(52)),
+       )
+  );
+
   testAsync("pure flatMap flip unsafeRunAsync", onDone =>
     IO.pure(42)
     |> IO.flatMap(a => Pure(a + 10))
@@ -685,6 +706,21 @@ describe("IO summonError", () => {
          | Error(assertion) => onDone(assertion),
        )
   );
+
+  testAsync("pure apply summonError bimap unsafeRunAsync", onDone =>
+    IO.pure(42)
+    |> IO.apply(IO.pure(a => a * 2))
+    |> IO.summonError
+    |> IO.bimap(
+         res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+         Relude.Void.absurd,
+       )
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(assertion) => onDone(assertion),
+       )
+  );
 });
 
 describe("IO unsummonError", () => {
@@ -789,6 +825,17 @@ describe("IO unsummonError", () => {
          | Ok(assertion) => onDone(assertion)
          | Error(assertion) => onDone(assertion),
        )
+  );
+
+  testAsync(
+    "pure apply summonError apply unsummonError bimap unsafeRunAsync", onDone =>
+    IO.pure(42)
+    |> IO.apply(IO.pure(a => a * 2))
+    |> IO.summonError
+    |> IO.apply(IO.pure(res => res |> Result.map(a => a * 3)))
+    |> IO.unsummonError
+    |> IO.bimap(a => expect(a) |> toEqual(252), _ => fail("Failed"))
+    |> IO.unsafeRunAsync(res => res |> Result.merge |> onDone)
   );
 });
 
