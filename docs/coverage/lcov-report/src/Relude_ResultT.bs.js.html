@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">51.02% </span>
+        <span class="strong">51.22% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>125/245</span>
+        <span class='fraction'>126/246</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">25% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>26/57</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">51.02% </span>
+        <span class="strong">51.22% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>125/245</span>
+        <span class='fraction'>126/246</span>
       </div>
     </div>
     <p class="quiet">
@@ -673,16 +673,20 @@
 <a name='L625'></a><a href='#L625'>625</a>
 <a name='L626'></a><a href='#L626'>626</a>
 <a name='L627'></a><a href='#L627'>627</a>
-<a name='L628'></a><a href='#L628'>628</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L628'></a><a href='#L628'>628</a>
+<a name='L629'></a><a href='#L629'>629</a>
+<a name='L630'></a><a href='#L630'>630</a>
+<a name='L631'></a><a href='#L631'>631</a>
+<a name='L632'></a><a href='#L632'>632</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -832,6 +836,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1116,6 +1121,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1234,6 +1240,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1294,11 +1302,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -1503,6 +1511,7 @@ function <span class="fstat-no" title="function not covered" >WithMonad(</span>M
             pure: pure,
             BsApplicativeExtensions: include$3.BsApplicativeExtensions,
             liftA1: include$3.liftA1,
+            all: include$3.all,
             Monad: Monad,
             bind: bind,
             BsMonadExtensions: include$4.BsMonadExtensions,
@@ -1730,6 +1739,7 @@ function WithMonadAndError(M) {
                 pure: pure,
                 BsApplicativeExtensions: include$3.BsApplicativeExtensions,
                 liftA1: include$3.liftA1,
+                all: include$3.all,
                 Monad: Monad,
                 bind: bind,
                 BsMonadExtensions: include$4.BsMonadExtensions,
@@ -1852,6 +1862,7 @@ function WithMonadAndError(M) {
       var include_mapTuple5 = include$2.mapTuple5;
       var include_BsApplicativeExtensions = include$3.BsApplicativeExtensions;
       var include_liftA1 = include$3.liftA1;
+      var include_all = include$3.all;
       var include_BsMonadExtensions = include$4.BsMonadExtensions;
       var include_flatMap = include$4.flatMap;
       var include_flatten = include$4.flatten;
@@ -1906,6 +1917,7 @@ function WithMonadAndError(M) {
               pure: pure,
               BsApplicativeExtensions: include_BsApplicativeExtensions,
               liftA1: include_liftA1,
+              all: include_all,
               Monad: Monad,
               bind: bind,
               BsMonadExtensions: include_BsMonadExtensions,

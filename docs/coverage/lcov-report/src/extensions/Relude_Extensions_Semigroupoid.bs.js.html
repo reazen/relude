@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for src/extensions/Relude_Extensions_Alt.bs.js</title>
+    <title>Code coverage report for src/extensions/Relude_Extensions_Semigroupoid.bs.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -16,13 +16,13 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../../index.html">All files</a> / <a href="index.html">src/extensions</a> Relude_Extensions_Alt.bs.js
+      <a href="../../index.html">All files</a> / <a href="index.html">src/extensions</a> Relude_Extensions_Semigroupoid.bs.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">87.5% </span>
+        <span class="strong">81.82% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>7/8</span>
+        <span class='fraction'>9/11</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">66.67% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>2/3</span>
+        <span class='fraction'>2/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">87.5% </span>
+        <span class="strong">81.82% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>7/8</span>
+        <span class='fraction'>9/11</span>
       </div>
     </div>
     <p class="quiet">
@@ -69,22 +69,38 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">104x</span>
+<span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">104x</span>
+<span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">43x</span>
-<span class="cline-any cline-yes">43x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -96,24 +112,32 @@
 &nbsp;
 var Curry = require("bs-platform/lib/js/curry.js");
 &nbsp;
-function AltExtensions(A) {
-  var orElse = <span class="fstat-no" title="function not covered" >fu</span>nction (fallback, init) {
-<span class="cstat-no" title="statement not covered" >    return Curry._2(A.alt, init, fallback);</span>
+function SemigroupoidExtensions(S) {
+  var andThen = <span class="fstat-no" title="function not covered" >fu</span>nction (aToB, bToC) {
+<span class="cstat-no" title="statement not covered" >    return Curry._2(S.compose, bToC, aToB);</span>
   };
   return {
-          orElse: orElse
+          andThen: andThen
         };
 }
 &nbsp;
-function AltInfix(A) {
-  var $less$pipe$great = A.alt;
+function SemigroupoidInfix(S) {
+  var andThen = <span class="fstat-no" title="function not covered" >fu</span>nction (aToB, bToC) {
+<span class="cstat-no" title="statement not covered" >    return Curry._2(S.compose, bToC, aToB);</span>
+  };
+  var SE = {
+    andThen: andThen
+  };
+  var $less$less$less = S.compose;
   return {
-          $less$pipe$great: $less$pipe$great
+          SE: SE,
+          $less$less$less: $less$less$less,
+          $great$great$great: andThen
         };
 }
 &nbsp;
-exports.AltExtensions = AltExtensions;
-exports.AltInfix = AltInfix;
+exports.SemigroupoidExtensions = SemigroupoidExtensions;
+exports.SemigroupoidInfix = SemigroupoidInfix;
 /* No side effect */
 &nbsp;</pre></td></tr>
 </table></pre>
