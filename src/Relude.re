@@ -9,6 +9,7 @@ module Debounce = Relude_Debounce;
 module Decimal = Relude_Decimal;
 module Extensions = Relude_Extensions;
 module Float = Relude_Float;
+module Free = Relude_Free;
 module Function = Relude_Function;
 module Globals = Relude_Globals;
 module HList = Relude_HList;

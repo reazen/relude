@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">89.96% </span>
+        <span class="strong">89.87% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>215/239</span>
+        <span class='fraction'>213/237</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">55.56% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>10/19</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">89.96% </span>
+        <span class="strong">89.87% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>215/239</span>
+        <span class='fraction'>213/237</span>
       </div>
     </div>
     <p class="quiet">
@@ -470,9 +470,7 @@
 <a name='L422'></a><a href='#L422'>422</a>
 <a name='L423'></a><a href='#L423'>423</a>
 <a name='L424'></a><a href='#L424'>424</a>
-<a name='L425'></a><a href='#L425'>425</a>
-<a name='L426'></a><a href='#L426'>426</a>
-<a name='L427'></a><a href='#L427'>427</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L425'></a><a href='#L425'>425</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
@@ -565,12 +563,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -989,16 +985,14 @@ var Monad = {
 var include$4 = Relude_Extensions_Monad.MonadExtensions(Monad);
 &nbsp;
 function foldLeft(fn, $$default) {
-  var partial_arg = Option$BsAbstract.Foldable.fold_left;
   return (function (param) {
-      return partial_arg(fn, $$default, param);
+      return Option$BsAbstract.Foldable.fold_left(fn, $$default, param);
     });
 }
 &nbsp;
 function foldRight(fn, $$default) {
-  var partial_arg = Option$BsAbstract.Foldable.fold_right;
   return (function (param) {
-      return partial_arg(fn, $$default, param);
+      return Option$BsAbstract.Foldable.fold_right(fn, $$default, param);
     });
 }
 &nbsp;
@@ -1161,7 +1155,7 @@ var when_ = include$4.when_;
 &nbsp;
 var unless = include$4.unless;
 &nbsp;
-var Foldable = 0;
+var Foldable = /* alias */0;
 &nbsp;
 var BsFoldableExtensions = include$5.BsFoldableExtensions;
 &nbsp;
@@ -1219,17 +1213,17 @@ var FoldableEqExtensions = include$5.FoldableEqExtensions;
 &nbsp;
 var FoldableOrdExtensions = include$5.FoldableOrdExtensions;
 &nbsp;
-var Alt = 0;
+var Alt = /* alias */0;
 &nbsp;
 var orElse = include$6.orElse;
 &nbsp;
-var Plus = 0;
+var Plus = /* alias */0;
 &nbsp;
-var Alternative = 0;
+var Alternative = /* alias */0;
 &nbsp;
 var Traversable = Option$BsAbstract.Traversable;
 &nbsp;
-var Show = 0;
+var Show = /* alias */0;
 &nbsp;
 exports.$less$less = $less$less;
 exports.$great$great = $great$great;

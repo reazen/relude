@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">84.59% </span>
+        <span class="strong">84.85% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>247/292</span>
+        <span class='fraction'>252/297</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">75% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>45/60</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">58.1% </span>
+        <span class="strong">58.88% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>61/105</span>
+        <span class='fraction'>63/107</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">84.59% </span>
+        <span class="strong">84.85% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>247/292</span>
+        <span class='fraction'>252/297</span>
       </div>
     </div>
     <p class="quiet">
@@ -682,9 +682,19 @@
 <a name='L634'></a><a href='#L634'>634</a>
 <a name='L635'></a><a href='#L635'>635</a>
 <a name='L636'></a><a href='#L636'>636</a>
-<a name='L637'></a><a href='#L637'>637</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L637'></a><a href='#L637'>637</a>
+<a name='L638'></a><a href='#L638'>638</a>
+<a name='L639'></a><a href='#L639'>639</a>
+<a name='L640'></a><a href='#L640'>640</a>
+<a name='L641'></a><a href='#L641'>641</a>
+<a name='L642'></a><a href='#L642'>642</a>
+<a name='L643'></a><a href='#L643'>643</a>
+<a name='L644'></a><a href='#L644'>644</a>
+<a name='L645'></a><a href='#L645'>645</a>
+<a name='L646'></a><a href='#L646'>646</a>
+<a name='L647'></a><a href='#L647'>647</a>
+<a name='L648'></a><a href='#L648'>648</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -854,6 +864,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
@@ -1328,7 +1350,6 @@ var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var Relude_List = require("../Relude_List.bs.js");
 var Relude_Array = require("../Relude_Array.bs.js");
 var Relude_Option = require("../Relude_Option.bs.js");
-var Relude_Result = require("../Relude_Result.bs.js");
 var Relude_Function = require("../Relude_Function.bs.js");
 var Relude_NonEmpty = require("../Relude_NonEmpty.bs.js");
 var Relude_Validation = require("../Relude_Validation.bs.js");
@@ -1484,12 +1505,24 @@ var Errors = {
   pure: pure,
   make: make,
   map: Relude_Validation.mapErrorsNea,
-  SemigroupAny: 0
+  SemigroupAny: /* alias */0
 };
 &nbsp;
-var ValidationE = Relude_Validation.WithErrors(Relude_NonEmpty.$$Array.SemigroupAny)(Type);
+var partial_arg$2 = Relude_NonEmpty.$$Array.SemigroupAny;
 &nbsp;
-var ArrayValidationE = Relude_Array_Specializations.Validation.WithErrors(Relude_NonEmpty.$$Array.SemigroupAny)(Type);
+var partial_arg$3 = Relude_Validation.WithErrors;
+&nbsp;
+var ValidationE = (function (param) {
+      return partial_arg$3(partial_arg$2, param);
+    })(Type);
+&nbsp;
+var partial_arg$4 = Relude_NonEmpty.$$Array.SemigroupAny;
+&nbsp;
+var partial_arg$5 = Relude_Array_Specializations.Validation.WithErrors;
+&nbsp;
+var ArrayValidationE = (function (param) {
+      return partial_arg$5(partial_arg$4, param);
+    })(Type);
 &nbsp;
 function validateNull(json) {
   return Relude_Validation.fromOptionLazy((function (param) {
@@ -1843,19 +1876,19 @@ var DSL = {
   JD: JD
 };
 &nbsp;
-var $$Array = 0;
+var $$Array = /* alias */0;
 &nbsp;
-var List = 0;
+var List = /* alias */0;
 &nbsp;
-var NonEmptyList = 0;
+var NonEmptyList = /* alias */0;
 &nbsp;
-var NonEmptyArray = 0;
+var NonEmptyArray = /* alias */0;
 &nbsp;
-var $$Option = 0;
+var $$Option = /* alias */0;
 &nbsp;
-var Result = 0;
+var Result = /* alias */0;
 &nbsp;
-var Validation = 0;
+var Validation = /* alias */0;
 &nbsp;
 var toBool = Js_json.decodeBoolean;
 &nbsp;
@@ -1867,7 +1900,7 @@ var toArrayOfJson = Js_json.decodeArray;
 &nbsp;
 var toDictOfJson = Js_json.decodeObject;
 &nbsp;
-var TraversableE = 0;
+var TraversableE = /* alias */0;
 &nbsp;
 var validateObjectAtIndex = validateJsonAtIndex;
 &nbsp;

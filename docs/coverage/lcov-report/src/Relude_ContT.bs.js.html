@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">53.6% </span>
+        <span class="strong">53.41% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>134/250</span>
+        <span class='fraction'>133/249</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">36.67% </span>
+        <span class="strong">35.59% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>22/60</span>
+        <span class='fraction'>21/59</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">53.6% </span>
+        <span class="strong">53.41% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>134/250</span>
+        <span class='fraction'>133/249</span>
       </div>
     </div>
     <p class="quiet">
@@ -716,9 +716,7 @@
 <a name='L668'></a><a href='#L668'>668</a>
 <a name='L669'></a><a href='#L669'>669</a>
 <a name='L670'></a><a href='#L670'>670</a>
-<a name='L671'></a><a href='#L671'>671</a>
-<a name='L672'></a><a href='#L672'>672</a>
-<a name='L673'></a><a href='#L673'>673</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L671'></a><a href='#L671'>671</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -899,7 +897,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1158,7 +1155,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1570,314 +1566,312 @@ function <span class="fstat-no" title="function not covered" >WithMonad(</span>M
         };
 }
 &nbsp;
-function WithMonadAndResult(M) {
-  return (function (R) {
-      var make = function (onDone) {
-        return /* ContT */[onDone];
-      };
-      var runContT = function (k, param) {
-        return Curry._1(param[0], k);
-      };
-      var mapContT = <span class="fstat-no" title="function not covered" >fu</span>nction (f, param) {
-        var m = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >        return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (k) {</span>
-<span class="cstat-no" title="statement not covered" >                    return Curry._1(f, Curry._1(m, k));</span>
-                  })];
-      };
-      var withContT = <span class="fstat-no" title="function not covered" >fu</span>nction (f, param) {
-        var m = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >        return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (k) {</span>
-<span class="cstat-no" title="statement not covered" >                    return Curry._1(m, Curry._1(f, k));</span>
-                  })];
-      };
-      var map = function (aToB, param) {
-        var aToMRToMR = param[0];
-        return /* ContT */[(function (bToMR) {
-                    return Curry._1(aToMRToMR, (function (a) {
-                                  return Curry._1(bToMR, Curry._1(aToB, a));
-                                }));
-                  })];
-      };
-      var apply = function (param, param$1) {
-        var aToMRToMR = param$1[0];
-        var aToBToMRToMR = param[0];
-        return /* ContT */[(function (bToMR) {
-                    return Curry._1(aToBToMRToMR, (function (aToB) {
-                                  return Curry._1(aToMRToMR, (function (a) {
-                                                return Curry._1(bToMR, Curry._1(aToB, a));
-                                              }));
-                                }));
-                  })];
-      };
-      var pure = <span class="fstat-no" title="function not covered" >fu</span>nction (a) {
-<span class="cstat-no" title="statement not covered" >        return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (aToMR) {</span>
-<span class="cstat-no" title="statement not covered" >                    return Curry._1(aToMR, a);</span>
-                  })];
-      };
-      var bind = <span class="fstat-no" title="function not covered" >fu</span>nction (param, aToContTB) {
-        var aToMRToMR = <span class="cstat-no" title="statement not covered" >param[0];</span>
-<span class="cstat-no" title="statement not covered" >        return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (bToMR) {</span>
-<span class="cstat-no" title="statement not covered" >                    return Curry._1(aToMRToMR, (<span class="fstat-no" title="function not covered" >fu</span>nction (a) {</span>
-                                  var match = <span class="cstat-no" title="statement not covered" >Curry._1(aToContTB, a);</span>
-<span class="cstat-no" title="statement not covered" >                                  return Curry._1(match[0], bToMR);</span>
-                                }));
-                  })];
-      };
-      var WithResult = <span class="fstat-no" title="function not covered" >fu</span>nction (R) {
-        var Functor = <span class="cstat-no" title="statement not covered" >{</span>
-          map: map
-        };
-        var include = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorExtensions(Functor);</span>
-        var Apply = <span class="cstat-no" title="statement not covered" >{</span>
-          map: map,
-          apply: apply
-        };
-        var include$1 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyExtensions(Apply);</span>
-        var Applicative = <span class="cstat-no" title="statement not covered" >{</span>
-          map: map,
-          apply: apply,
-          pure: pure
-        };
-        var include$2 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);</span>
-        var Monad = <span class="cstat-no" title="statement not covered" >{</span>
+function WithMonadAndResult(M, R) {
+  var make = function (onDone) {
+    return /* ContT */[onDone];
+  };
+  var runContT = function (k, param) {
+    return Curry._1(param[0], k);
+  };
+  var mapContT = <span class="fstat-no" title="function not covered" >fu</span>nction (f, param) {
+    var m = <span class="cstat-no" title="statement not covered" >param[0];</span>
+<span class="cstat-no" title="statement not covered" >    return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (k) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(f, Curry._1(m, k));</span>
+              })];
+  };
+  var withContT = <span class="fstat-no" title="function not covered" >fu</span>nction (f, param) {
+    var m = <span class="cstat-no" title="statement not covered" >param[0];</span>
+<span class="cstat-no" title="statement not covered" >    return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (k) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(m, Curry._1(f, k));</span>
+              })];
+  };
+  var map = function (aToB, param) {
+    var aToMRToMR = param[0];
+    return /* ContT */[(function (bToMR) {
+                return Curry._1(aToMRToMR, (function (a) {
+                              return Curry._1(bToMR, Curry._1(aToB, a));
+                            }));
+              })];
+  };
+  var apply = function (param, param$1) {
+    var aToMRToMR = param$1[0];
+    var aToBToMRToMR = param[0];
+    return /* ContT */[(function (bToMR) {
+                return Curry._1(aToBToMRToMR, (function (aToB) {
+                              return Curry._1(aToMRToMR, (function (a) {
+                                            return Curry._1(bToMR, Curry._1(aToB, a));
+                                          }));
+                            }));
+              })];
+  };
+  var pure = <span class="fstat-no" title="function not covered" >fu</span>nction (a) {
+<span class="cstat-no" title="statement not covered" >    return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (aToMR) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(aToMR, a);</span>
+              })];
+  };
+  var bind = <span class="fstat-no" title="function not covered" >fu</span>nction (param, aToContTB) {
+    var aToMRToMR = <span class="cstat-no" title="statement not covered" >param[0];</span>
+<span class="cstat-no" title="statement not covered" >    return /* ContT */[(<span class="fstat-no" title="function not covered" >fu</span>nction (bToMR) {</span>
+<span class="cstat-no" title="statement not covered" >                return Curry._1(aToMRToMR, (<span class="fstat-no" title="function not covered" >fu</span>nction (a) {</span>
+                              var match = <span class="cstat-no" title="statement not covered" >Curry._1(aToContTB, a);</span>
+<span class="cstat-no" title="statement not covered" >                              return Curry._1(match[0], bToMR);</span>
+                            }));
+              })];
+  };
+  var WithResult = <span class="fstat-no" title="function not covered" >fu</span>nction (R) {
+    var Functor = <span class="cstat-no" title="statement not covered" >{</span>
+      map: map
+    };
+    var include = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorExtensions(Functor);</span>
+    var Apply = <span class="cstat-no" title="statement not covered" >{</span>
+      map: map,
+      apply: apply
+    };
+    var include$1 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyExtensions(Apply);</span>
+    var Applicative = <span class="cstat-no" title="statement not covered" >{</span>
+      map: map,
+      apply: apply,
+      pure: pure
+    };
+    var include$2 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);</span>
+    var Monad = <span class="cstat-no" title="statement not covered" >{</span>
+      map: map,
+      apply: apply,
+      pure: pure,
+      flat_map: bind
+    };
+    var include$3 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadExtensions(Monad);</span>
+    var include$4 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorInfix(Functor);</span>
+    var include$5 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyInfix(Apply);</span>
+    var include$6 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadInfix(Monad);</span>
+    var Infix_FunctorExtensions = <span class="cstat-no" title="statement not covered" >include$4.FunctorExtensions;</span>
+    var Infix_$less$dollar$great = <span class="cstat-no" title="statement not covered" >include$4.$less$$great;</span>
+    var Infix_$less$hash$great = <span class="cstat-no" title="statement not covered" >include$4.$less$hash$great;</span>
+    var Infix_$less$dollar = <span class="cstat-no" title="statement not covered" >include$4.$less$;</span>
+    var Infix_$$great = <span class="cstat-no" title="statement not covered" >include$4.$$great;</span>
+    var Infix_$less$at$great = <span class="cstat-no" title="statement not covered" >include$4.$less$at$great;</span>
+    var Infix_ApplyExtensions = <span class="cstat-no" title="statement not covered" >include$5.ApplyExtensions;</span>
+    var Infix_$less$star$great = <span class="cstat-no" title="statement not covered" >include$5.$less$star$great;</span>
+    var Infix_$less$star = <span class="cstat-no" title="statement not covered" >include$5.$less$star;</span>
+    var Infix_$star$great = <span class="cstat-no" title="statement not covered" >include$5.$star$great;</span>
+    var Infix_MonadExtensions = <span class="cstat-no" title="statement not covered" >include$6.MonadExtensions;</span>
+    var Infix_$great$great$eq = <span class="cstat-no" title="statement not covered" >include$6.$great$great$eq;</span>
+    var Infix_$eq$less$less = <span class="cstat-no" title="statement not covered" >include$6.$eq$less$less;</span>
+    var Infix_$great$eq$great = <span class="cstat-no" title="statement not covered" >include$6.$great$eq$great;</span>
+    var Infix_$less$eq$less = <span class="cstat-no" title="statement not covered" >include$6.$less$eq$less;</span>
+    var Infix = <span class="cstat-no" title="statement not covered" >{</span>
+      FunctorExtensions: Infix_FunctorExtensions,
+      $less$$great: Infix_$less$dollar$great,
+      $less$hash$great: Infix_$less$hash$great,
+      $less$: Infix_$less$dollar,
+      $$great: Infix_$$great,
+      $less$at$great: Infix_$less$at$great,
+      ApplyExtensions: Infix_ApplyExtensions,
+      $less$star$great: Infix_$less$star$great,
+      $less$star: Infix_$less$star,
+      $star$great: Infix_$star$great,
+      MonadExtensions: Infix_MonadExtensions,
+      $great$great$eq: Infix_$great$great$eq,
+      $eq$less$less: Infix_$eq$less$less,
+      $great$eq$great: Infix_$great$eq$great,
+      $less$eq$less: Infix_$less$eq$less
+    };
+<span class="cstat-no" title="statement not covered" >    return {</span>
+            make: make,
+            runContT: runContT,
+            mapContT: mapContT,
+            withContT: withContT,
+            map: map,
+            apply: apply,
+            pure: pure,
+            bind: bind,
+            Functor: Functor,
+            BsFunctorExtensions: include.BsFunctorExtensions,
+            flipMap: include.flipMap,
+            $$void: include.$$void,
+            voidRight: include.voidRight,
+            voidLeft: include.voidLeft,
+            flap: include.flap,
+            Apply: Apply,
+            BsApplyExtensions: include$1.BsApplyExtensions,
+            applyFirst: include$1.applyFirst,
+            applySecond: include$1.applySecond,
+            map2: include$1.map2,
+            map3: include$1.map3,
+            map4: include$1.map4,
+            map5: include$1.map5,
+            tuple2: include$1.tuple2,
+            tuple3: include$1.tuple3,
+            tuple4: include$1.tuple4,
+            tuple5: include$1.tuple5,
+            mapTuple2: include$1.mapTuple2,
+            mapTuple3: include$1.mapTuple3,
+            mapTuple4: include$1.mapTuple4,
+            mapTuple5: include$1.mapTuple5,
+            Applicative: Applicative,
+            BsApplicativeExtensions: include$2.BsApplicativeExtensions,
+            liftA1: include$2.liftA1,
+            all: include$2.all,
+            Monad: Monad,
+            BsMonadExtensions: include$3.BsMonadExtensions,
+            flatMap: include$3.flatMap,
+            flatten: include$3.flatten,
+            composeKleisli: include$3.composeKleisli,
+            flipComposeKleisli: include$3.flipComposeKleisli,
+            liftM1: include$3.liftM1,
+            when_: include$3.when_,
+            unless: include$3.unless,
+            Infix: Infix
+          };
+  };
+  var WithMonad = {
+    make: make,
+    runContT: runContT,
+    mapContT: mapContT,
+    withContT: withContT,
+    map: map,
+    apply: apply,
+    pure: pure,
+    bind: bind,
+    WithResult: WithResult
+  };
+  var Functor = {
+    map: map
+  };
+  var include = Relude_Extensions_Functor.FunctorExtensions(Functor);
+  var Apply = {
+    map: map,
+    apply: apply
+  };
+  var include$1 = Relude_Extensions_Apply.ApplyExtensions(Apply);
+  var Applicative = {
+    map: map,
+    apply: apply,
+    pure: pure
+  };
+  var include$2 = Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+  var Monad = {
+    map: map,
+    apply: apply,
+    pure: pure,
+    flat_map: bind
+  };
+  var include$3 = Relude_Extensions_Monad.MonadExtensions(Monad);
+  var include$4 = Relude_Extensions_Functor.FunctorInfix(Functor);
+  var include$5 = Relude_Extensions_Apply.ApplyInfix(Apply);
+  var include$6 = Relude_Extensions_Monad.MonadInfix(Monad);
+  var Infix_FunctorExtensions = include$4.FunctorExtensions;
+  var Infix_$less$dollar$great = include$4.$less$$great;
+  var Infix_$less$hash$great = include$4.$less$hash$great;
+  var Infix_$less$dollar = include$4.$less$;
+  var Infix_$$great = include$4.$$great;
+  var Infix_$less$at$great = include$4.$less$at$great;
+  var Infix_ApplyExtensions = include$5.ApplyExtensions;
+  var Infix_$less$star$great = include$5.$less$star$great;
+  var Infix_$less$star = include$5.$less$star;
+  var Infix_$star$great = include$5.$star$great;
+  var Infix_MonadExtensions = include$6.MonadExtensions;
+  var Infix_$great$great$eq = include$6.$great$great$eq;
+  var Infix_$eq$less$less = include$6.$eq$less$less;
+  var Infix_$great$eq$great = include$6.$great$eq$great;
+  var Infix_$less$eq$less = include$6.$less$eq$less;
+  var Infix = {
+    FunctorExtensions: Infix_FunctorExtensions,
+    $less$$great: Infix_$less$dollar$great,
+    $less$hash$great: Infix_$less$hash$great,
+    $less$: Infix_$less$dollar,
+    $$great: Infix_$$great,
+    $less$at$great: Infix_$less$at$great,
+    ApplyExtensions: Infix_ApplyExtensions,
+    $less$star$great: Infix_$less$star$great,
+    $less$star: Infix_$less$star,
+    $star$great: Infix_$star$great,
+    MonadExtensions: Infix_MonadExtensions,
+    $great$great$eq: Infix_$great$great$eq,
+    $eq$less$less: Infix_$eq$less$less,
+    $great$eq$great: Infix_$great$eq$great,
+    $less$eq$less: Infix_$less$eq$less
+  };
+  var include_BsFunctorExtensions = include.BsFunctorExtensions;
+  var include_flipMap = include.flipMap;
+  var include_void = include.$$void;
+  var include_voidRight = include.voidRight;
+  var include_voidLeft = include.voidLeft;
+  var include_flap = include.flap;
+  var include_BsApplyExtensions = include$1.BsApplyExtensions;
+  var include_applyFirst = include$1.applyFirst;
+  var include_applySecond = include$1.applySecond;
+  var include_map2 = include$1.map2;
+  var include_map3 = include$1.map3;
+  var include_map4 = include$1.map4;
+  var include_map5 = include$1.map5;
+  var include_tuple2 = include$1.tuple2;
+  var include_tuple3 = include$1.tuple3;
+  var include_tuple4 = include$1.tuple4;
+  var include_tuple5 = include$1.tuple5;
+  var include_mapTuple2 = include$1.mapTuple2;
+  var include_mapTuple3 = include$1.mapTuple3;
+  var include_mapTuple4 = include$1.mapTuple4;
+  var include_mapTuple5 = include$1.mapTuple5;
+  var include_BsApplicativeExtensions = include$2.BsApplicativeExtensions;
+  var include_liftA1 = include$2.liftA1;
+  var include_all = include$2.all;
+  var include_BsMonadExtensions = include$3.BsMonadExtensions;
+  var include_flatMap = include$3.flatMap;
+  var include_flatten = include$3.flatten;
+  var include_composeKleisli = include$3.composeKleisli;
+  var include_flipComposeKleisli = include$3.flipComposeKleisli;
+  var include_liftM1 = include$3.liftM1;
+  var include_when_ = include$3.when_;
+  var include_unless = include$3.unless;
+  return {
+          WithMonad: WithMonad,
+          make: make,
+          runContT: runContT,
+          mapContT: mapContT,
+          withContT: withContT,
           map: map,
           apply: apply,
           pure: pure,
-          flat_map: bind
+          bind: bind,
+          Functor: Functor,
+          BsFunctorExtensions: include_BsFunctorExtensions,
+          flipMap: include_flipMap,
+          $$void: include_void,
+          voidRight: include_voidRight,
+          voidLeft: include_voidLeft,
+          flap: include_flap,
+          Apply: Apply,
+          BsApplyExtensions: include_BsApplyExtensions,
+          applyFirst: include_applyFirst,
+          applySecond: include_applySecond,
+          map2: include_map2,
+          map3: include_map3,
+          map4: include_map4,
+          map5: include_map5,
+          tuple2: include_tuple2,
+          tuple3: include_tuple3,
+          tuple4: include_tuple4,
+          tuple5: include_tuple5,
+          mapTuple2: include_mapTuple2,
+          mapTuple3: include_mapTuple3,
+          mapTuple4: include_mapTuple4,
+          mapTuple5: include_mapTuple5,
+          Applicative: Applicative,
+          BsApplicativeExtensions: include_BsApplicativeExtensions,
+          liftA1: include_liftA1,
+          all: include_all,
+          Monad: Monad,
+          BsMonadExtensions: include_BsMonadExtensions,
+          flatMap: include_flatMap,
+          flatten: include_flatten,
+          composeKleisli: include_composeKleisli,
+          flipComposeKleisli: include_flipComposeKleisli,
+          liftM1: include_liftM1,
+          when_: include_when_,
+          unless: include_unless,
+          Infix: Infix
         };
-        var include$3 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadExtensions(Monad);</span>
-        var include$4 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Functor.FunctorInfix(Functor);</span>
-        var include$5 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Apply.ApplyInfix(Apply);</span>
-        var include$6 = <span class="cstat-no" title="statement not covered" >Relude_Extensions_Monad.MonadInfix(Monad);</span>
-        var Infix_FunctorExtensions = <span class="cstat-no" title="statement not covered" >include$4.FunctorExtensions;</span>
-        var Infix_$less$dollar$great = <span class="cstat-no" title="statement not covered" >include$4.$less$$great;</span>
-        var Infix_$less$hash$great = <span class="cstat-no" title="statement not covered" >include$4.$less$hash$great;</span>
-        var Infix_$less$dollar = <span class="cstat-no" title="statement not covered" >include$4.$less$;</span>
-        var Infix_$$great = <span class="cstat-no" title="statement not covered" >include$4.$$great;</span>
-        var Infix_$less$at$great = <span class="cstat-no" title="statement not covered" >include$4.$less$at$great;</span>
-        var Infix_ApplyExtensions = <span class="cstat-no" title="statement not covered" >include$5.ApplyExtensions;</span>
-        var Infix_$less$star$great = <span class="cstat-no" title="statement not covered" >include$5.$less$star$great;</span>
-        var Infix_$less$star = <span class="cstat-no" title="statement not covered" >include$5.$less$star;</span>
-        var Infix_$star$great = <span class="cstat-no" title="statement not covered" >include$5.$star$great;</span>
-        var Infix_MonadExtensions = <span class="cstat-no" title="statement not covered" >include$6.MonadExtensions;</span>
-        var Infix_$great$great$eq = <span class="cstat-no" title="statement not covered" >include$6.$great$great$eq;</span>
-        var Infix_$eq$less$less = <span class="cstat-no" title="statement not covered" >include$6.$eq$less$less;</span>
-        var Infix_$great$eq$great = <span class="cstat-no" title="statement not covered" >include$6.$great$eq$great;</span>
-        var Infix_$less$eq$less = <span class="cstat-no" title="statement not covered" >include$6.$less$eq$less;</span>
-        var Infix = <span class="cstat-no" title="statement not covered" >{</span>
-          FunctorExtensions: Infix_FunctorExtensions,
-          $less$$great: Infix_$less$dollar$great,
-          $less$hash$great: Infix_$less$hash$great,
-          $less$: Infix_$less$dollar,
-          $$great: Infix_$$great,
-          $less$at$great: Infix_$less$at$great,
-          ApplyExtensions: Infix_ApplyExtensions,
-          $less$star$great: Infix_$less$star$great,
-          $less$star: Infix_$less$star,
-          $star$great: Infix_$star$great,
-          MonadExtensions: Infix_MonadExtensions,
-          $great$great$eq: Infix_$great$great$eq,
-          $eq$less$less: Infix_$eq$less$less,
-          $great$eq$great: Infix_$great$eq$great,
-          $less$eq$less: Infix_$less$eq$less
-        };
-<span class="cstat-no" title="statement not covered" >        return {</span>
-                make: make,
-                runContT: runContT,
-                mapContT: mapContT,
-                withContT: withContT,
-                map: map,
-                apply: apply,
-                pure: pure,
-                bind: bind,
-                Functor: Functor,
-                BsFunctorExtensions: include.BsFunctorExtensions,
-                flipMap: include.flipMap,
-                $$void: include.$$void,
-                voidRight: include.voidRight,
-                voidLeft: include.voidLeft,
-                flap: include.flap,
-                Apply: Apply,
-                BsApplyExtensions: include$1.BsApplyExtensions,
-                applyFirst: include$1.applyFirst,
-                applySecond: include$1.applySecond,
-                map2: include$1.map2,
-                map3: include$1.map3,
-                map4: include$1.map4,
-                map5: include$1.map5,
-                tuple2: include$1.tuple2,
-                tuple3: include$1.tuple3,
-                tuple4: include$1.tuple4,
-                tuple5: include$1.tuple5,
-                mapTuple2: include$1.mapTuple2,
-                mapTuple3: include$1.mapTuple3,
-                mapTuple4: include$1.mapTuple4,
-                mapTuple5: include$1.mapTuple5,
-                Applicative: Applicative,
-                BsApplicativeExtensions: include$2.BsApplicativeExtensions,
-                liftA1: include$2.liftA1,
-                all: include$2.all,
-                Monad: Monad,
-                BsMonadExtensions: include$3.BsMonadExtensions,
-                flatMap: include$3.flatMap,
-                flatten: include$3.flatten,
-                composeKleisli: include$3.composeKleisli,
-                flipComposeKleisli: include$3.flipComposeKleisli,
-                liftM1: include$3.liftM1,
-                when_: include$3.when_,
-                unless: include$3.unless,
-                Infix: Infix
-              };
-      };
-      var WithMonad = {
-        make: make,
-        runContT: runContT,
-        mapContT: mapContT,
-        withContT: withContT,
-        map: map,
-        apply: apply,
-        pure: pure,
-        bind: bind,
-        WithResult: WithResult
-      };
-      var Functor = {
-        map: map
-      };
-      var include = Relude_Extensions_Functor.FunctorExtensions(Functor);
-      var Apply = {
-        map: map,
-        apply: apply
-      };
-      var include$1 = Relude_Extensions_Apply.ApplyExtensions(Apply);
-      var Applicative = {
-        map: map,
-        apply: apply,
-        pure: pure
-      };
-      var include$2 = Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
-      var Monad = {
-        map: map,
-        apply: apply,
-        pure: pure,
-        flat_map: bind
-      };
-      var include$3 = Relude_Extensions_Monad.MonadExtensions(Monad);
-      var include$4 = Relude_Extensions_Functor.FunctorInfix(Functor);
-      var include$5 = Relude_Extensions_Apply.ApplyInfix(Apply);
-      var include$6 = Relude_Extensions_Monad.MonadInfix(Monad);
-      var Infix_FunctorExtensions = include$4.FunctorExtensions;
-      var Infix_$less$dollar$great = include$4.$less$$great;
-      var Infix_$less$hash$great = include$4.$less$hash$great;
-      var Infix_$less$dollar = include$4.$less$;
-      var Infix_$$great = include$4.$$great;
-      var Infix_$less$at$great = include$4.$less$at$great;
-      var Infix_ApplyExtensions = include$5.ApplyExtensions;
-      var Infix_$less$star$great = include$5.$less$star$great;
-      var Infix_$less$star = include$5.$less$star;
-      var Infix_$star$great = include$5.$star$great;
-      var Infix_MonadExtensions = include$6.MonadExtensions;
-      var Infix_$great$great$eq = include$6.$great$great$eq;
-      var Infix_$eq$less$less = include$6.$eq$less$less;
-      var Infix_$great$eq$great = include$6.$great$eq$great;
-      var Infix_$less$eq$less = include$6.$less$eq$less;
-      var Infix = {
-        FunctorExtensions: Infix_FunctorExtensions,
-        $less$$great: Infix_$less$dollar$great,
-        $less$hash$great: Infix_$less$hash$great,
-        $less$: Infix_$less$dollar,
-        $$great: Infix_$$great,
-        $less$at$great: Infix_$less$at$great,
-        ApplyExtensions: Infix_ApplyExtensions,
-        $less$star$great: Infix_$less$star$great,
-        $less$star: Infix_$less$star,
-        $star$great: Infix_$star$great,
-        MonadExtensions: Infix_MonadExtensions,
-        $great$great$eq: Infix_$great$great$eq,
-        $eq$less$less: Infix_$eq$less$less,
-        $great$eq$great: Infix_$great$eq$great,
-        $less$eq$less: Infix_$less$eq$less
-      };
-      var include_BsFunctorExtensions = include.BsFunctorExtensions;
-      var include_flipMap = include.flipMap;
-      var include_void = include.$$void;
-      var include_voidRight = include.voidRight;
-      var include_voidLeft = include.voidLeft;
-      var include_flap = include.flap;
-      var include_BsApplyExtensions = include$1.BsApplyExtensions;
-      var include_applyFirst = include$1.applyFirst;
-      var include_applySecond = include$1.applySecond;
-      var include_map2 = include$1.map2;
-      var include_map3 = include$1.map3;
-      var include_map4 = include$1.map4;
-      var include_map5 = include$1.map5;
-      var include_tuple2 = include$1.tuple2;
-      var include_tuple3 = include$1.tuple3;
-      var include_tuple4 = include$1.tuple4;
-      var include_tuple5 = include$1.tuple5;
-      var include_mapTuple2 = include$1.mapTuple2;
-      var include_mapTuple3 = include$1.mapTuple3;
-      var include_mapTuple4 = include$1.mapTuple4;
-      var include_mapTuple5 = include$1.mapTuple5;
-      var include_BsApplicativeExtensions = include$2.BsApplicativeExtensions;
-      var include_liftA1 = include$2.liftA1;
-      var include_all = include$2.all;
-      var include_BsMonadExtensions = include$3.BsMonadExtensions;
-      var include_flatMap = include$3.flatMap;
-      var include_flatten = include$3.flatten;
-      var include_composeKleisli = include$3.composeKleisli;
-      var include_flipComposeKleisli = include$3.flipComposeKleisli;
-      var include_liftM1 = include$3.liftM1;
-      var include_when_ = include$3.when_;
-      var include_unless = include$3.unless;
-      return {
-              WithMonad: WithMonad,
-              make: make,
-              runContT: runContT,
-              mapContT: mapContT,
-              withContT: withContT,
-              map: map,
-              apply: apply,
-              pure: pure,
-              bind: bind,
-              Functor: Functor,
-              BsFunctorExtensions: include_BsFunctorExtensions,
-              flipMap: include_flipMap,
-              $$void: include_void,
-              voidRight: include_voidRight,
-              voidLeft: include_voidLeft,
-              flap: include_flap,
-              Apply: Apply,
-              BsApplyExtensions: include_BsApplyExtensions,
-              applyFirst: include_applyFirst,
-              applySecond: include_applySecond,
-              map2: include_map2,
-              map3: include_map3,
-              map4: include_map4,
-              map5: include_map5,
-              tuple2: include_tuple2,
-              tuple3: include_tuple3,
-              tuple4: include_tuple4,
-              tuple5: include_tuple5,
-              mapTuple2: include_mapTuple2,
-              mapTuple3: include_mapTuple3,
-              mapTuple4: include_mapTuple4,
-              mapTuple5: include_mapTuple5,
-              Applicative: Applicative,
-              BsApplicativeExtensions: include_BsApplicativeExtensions,
-              liftA1: include_liftA1,
-              all: include_all,
-              Monad: Monad,
-              BsMonadExtensions: include_BsMonadExtensions,
-              flatMap: include_flatMap,
-              flatten: include_flatten,
-              composeKleisli: include_composeKleisli,
-              flipComposeKleisli: include_flipComposeKleisli,
-              liftM1: include_liftM1,
-              when_: include_when_,
-              unless: include_unless,
-              Infix: Infix
-            };
-    });
 }
 &nbsp;
 function make(onDone) {

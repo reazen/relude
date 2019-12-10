@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.3% </span>
+        <span class="strong">97.1% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>234/243</span>
+        <span class='fraction'>234/241</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>4/9</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">96.3% </span>
+        <span class="strong">97.1% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>234/243</span>
+        <span class='fraction'>234/241</span>
       </div>
     </div>
     <p class="quiet">
@@ -487,9 +487,7 @@
 <a name='L439'></a><a href='#L439'>439</a>
 <a name='L440'></a><a href='#L440'>440</a>
 <a name='L441'></a><a href='#L441'>441</a>
-<a name='L442'></a><a href='#L442'>442</a>
-<a name='L443'></a><a href='#L443'>443</a>
-<a name='L444'></a><a href='#L444'>444</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L442'></a><a href='#L442'>442</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
@@ -670,7 +668,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -687,7 +684,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1111,9 +1107,8 @@ function eq(eqA, xs, ys) {
 }
 &nbsp;
 function <span class="fstat-no" title="function not covered" >Eq(</span>EqA) {
-  var partial_arg = <span class="cstat-no" title="statement not covered" >EqA.eq;</span>
   var eq = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param, param$1) {</span>
-<span class="cstat-no" title="statement not covered" >    return eqBy(partial_arg, param, param$1);</span>
+<span class="cstat-no" title="statement not covered" >    return eqBy(EqA.eq, param, param$1);</span>
   };
 <span class="cstat-no" title="statement not covered" >  return {</span>
           eq: eq
@@ -1130,9 +1125,8 @@ function <span class="fstat-no" title="function not covered" >show(</span>showA,
 }
 &nbsp;
 function <span class="fstat-no" title="function not covered" >Show(</span>ShowA) {
-  var partial_arg = <span class="cstat-no" title="statement not covered" >ShowA.show;</span>
   var show = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >fu</span>nction (param) {</span>
-<span class="cstat-no" title="statement not covered" >    return showBy(partial_arg, param);</span>
+<span class="cstat-no" title="statement not covered" >    return showBy(ShowA.show, param);</span>
   };
 <span class="cstat-no" title="statement not covered" >  return {</span>
           show: show
@@ -1268,9 +1262,9 @@ var FoldableEqExtensions = include$7.FoldableEqExtensions;
 &nbsp;
 var FoldableOrdExtensions = include$7.FoldableOrdExtensions;
 &nbsp;
-var Traversable = 0;
+var Traversable = /* alias */0;
 &nbsp;
-var Ord = 0;
+var Ord = /* alias */0;
 &nbsp;
 var fromList = Belt_List.toArray;
 &nbsp;

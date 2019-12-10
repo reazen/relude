@@ -22,7 +22,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>13/13</span>
+        <span class='fraction'>10/10</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -37,7 +37,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>13/13</span>
+        <span class='fraction'>10/10</span>
       </div>
     </div>
     <p class="quiet">
@@ -76,20 +76,14 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">196x</span>
-<span class="cline-any cline-yes">196x</span>
-<span class="cline-any cline-yes">196x</span>
-<span class="cline-any cline-yes">196x</span>
-<span class="cline-any cline-yes">196x</span>
+<span class="cline-any cline-yes">186x</span>
+<span class="cline-any cline-yes">186x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -101,7 +95,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">196x</span>
+<span class="cline-any cline-yes">186x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -110,7 +104,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 &nbsp;
@@ -119,9 +113,6 @@ var Functions$BsAbstract = require("bs-abstract/lib/js/src/functions/Functions.b
 &nbsp;
 function ApplicativeExtensions(A) {
   var BsApplicativeExtensions = Functions$BsAbstract.Applicative(A);
-  var liftA1 = BsApplicativeExtensions.liftA1;
-  var when_ = BsApplicativeExtensions.when_;
-  var unless = BsApplicativeExtensions.unless;
   var all = function (param) {
     if (param) {
       return Curry._2(A.apply, Curry._2(A.map, (function (result, rest) {
@@ -136,9 +127,9 @@ function ApplicativeExtensions(A) {
   };
   return {
           BsApplicativeExtensions: BsApplicativeExtensions,
-          liftA1: liftA1,
-          when_: when_,
-          unless: unless,
+          liftA1: BsApplicativeExtensions.liftA1,
+          when_: BsApplicativeExtensions.when_,
+          unless: BsApplicativeExtensions.unless,
           all: all
         };
 }

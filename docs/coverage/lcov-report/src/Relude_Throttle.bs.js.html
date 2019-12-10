@@ -97,7 +97,13 @@
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
 <a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -106,7 +112,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -119,6 +129,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -156,45 +168,51 @@ var Relude_Option = require("./Relude_Option.bs.js");
 &nbsp;
 function throttle(delayMS, $staropt$star, f) {
   var leading = $staropt$star !== undefined ? $staropt$star : <span class="branch-1 cbranch-no" title="branch not covered" >false;</span>
-  var isThrottled = /* record */[/* contents */false];
-  var timerId = /* record */[/* contents */undefined];
+  var isThrottled = {
+    contents: false
+  };
+  var timerId = {
+    contents: undefined
+  };
   var cancel = function (param) {
     Curry._2(Relude_Option.forEach, (<span class="fstat-no" title="function not covered" >fu</span>nction (timerId) {
 <span class="cstat-no" title="statement not covered" >            clearTimeout(timerId);</span>
 <span class="cstat-no" title="statement not covered" >            return /* () */0;</span>
-          }), timerId[0]);
-    timerId[0] = undefined;
+          }), timerId.contents);
+    timerId.contents = undefined;
     return /* () */0;
   };
   var isThrottled$1 = <span class="fstat-no" title="function not covered" >fu</span>nction (param) {
-<span class="cstat-no" title="statement not covered" >    return isThrottled[0];</span>
+<span class="cstat-no" title="statement not covered" >    return isThrottled.contents;</span>
   };
-  var doLeading = /* record */[/* contents */leading];
+  var doLeading = {
+    contents: leading
+  };
   var throttled = function (param) {
-    if (doLeading[0]) {
-      doLeading[0] = false;
+    if (doLeading.contents) {
+      doLeading.contents = false;
       return Curry._1(f, /* () */0);
     } else {
-      if (isThrottled[0]) {
+      if (isThrottled.contents) {
         return /* () */0;
       } else {
         cancel(/* () */0);
-        isThrottled[0] = true;
+        isThrottled.contents = true;
         Curry._1(f, /* () */0);
-        timerId[0] = Caml_option.some(setTimeout((function (param) {
-                    isThrottled[0] = false;
-                    timerId[0] = undefined;
+        timerId.contents = Caml_option.some(setTimeout((function (param) {
+                    isThrottled.contents = false;
+                    timerId.contents = undefined;
                     return /* () */0;
                   }), delayMS));
         return /* () */0;
       }
     }
   };
-  return /* record */[
-          /* cancel */cancel,
-          /* isThrottled */isThrottled$1,
-          /* f */throttled
-        ];
+  return {
+          cancel: cancel,
+          isThrottled: isThrottled$1,
+          f: throttled
+        };
 }
 &nbsp;
 exports.throttle = throttle;

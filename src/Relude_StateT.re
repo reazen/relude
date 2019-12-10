@@ -114,6 +114,8 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     };
 
   module WithState = (S: BsAbstract.Interface.TYPE) => {
+    type nonrec t('a) = t('a, S.t);
+
     let runStateT = runStateT;
     let evalStateT = evalStateT;
     let execStateT = execStateT;
@@ -125,14 +127,14 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let modify = modify;
     let modify_ = modify_;
 
-    module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, S.t) = {
-      type nonrec t('a) = t('a, S.t);
+    module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+      type nonrec t('a) = t('a);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, S.t) = {
+    module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
       include Functor;
       let apply = apply;
     };
@@ -140,14 +142,14 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
     module Applicative:
-      BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, S.t) = {
+      BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
       include Apply;
       let pure = pure;
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, S.t) = {
+    module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
       include Applicative;
       let flat_map = bind;
     };
