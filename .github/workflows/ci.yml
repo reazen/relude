@@ -11,7 +11,6 @@ jobs:
         node-version: [12.x]
 
     steps:
-
     - name: Checkout
       uses: actions/checkout@v1
       
@@ -19,6 +18,14 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Dependency cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-
       
     - name: npm install
       run: npm install
