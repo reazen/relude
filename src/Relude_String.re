@@ -386,6 +386,19 @@ let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List_Instances.foldRight(f, init, toList(str));
 
 /**
+ * Show function for string (identity)
+ */
+let show: string => string = a => a;
+
+/**
+ * SHOW module for string
+ */
+module Show: BsAbstract.Interface.SHOW with type t = string = {
+  type t = string;
+  let show = show;
+};
+
+/**
   `eq(s1, s2)` is a synonym for `s1 == s2`
 */
 let eq: (string, string) => bool = (a, b) => a == b;
@@ -711,7 +724,7 @@ let fromInt: int => string = string_of_int;
 */
 let toInt: string => option(int) =
   v =>
-    try (Some(int_of_string(v))) {
+    try(Some(int_of_string(v))) {
     | _ => None
     };
 
@@ -746,6 +759,6 @@ let fromFloat: float => string = Js.Float.toString;
 */
 let toFloat: string => option(float) =
   v =>
-    try (Some(float_of_string(v))) {
+    try(Some(float_of_string(v))) {
     | _ => None
     };
