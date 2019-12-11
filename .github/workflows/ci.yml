@@ -1,6 +1,6 @@
 name: CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -11,7 +11,9 @@ jobs:
         node-version: [12.x]
 
     steps:
-    - uses: actions/checkout@v1
+
+    - name: Checkout
+      uses: actions/checkout@v1
       
     - name: Setup Node.js
       uses: actions/setup-node@v1
@@ -21,5 +23,5 @@ jobs:
     - name: npm install
       run: npm install
       
-    - name: npm run cleantest
-      run: npm run cleantest
+    - name: npm run cleancoverage
+      run: npm run cleancoverage
