@@ -271,10 +271,28 @@ let eq =
   Eq.eq(fa1, fa2);
 };
 
-module Eq = (EqA: BsAbstract.Interface.EQ) => {
-  type t = list(EqA.t);
-  let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
-};
+module Eq: BsAbstract.Option.EQ_F =
+  (EqA: BsAbstract.Interface.EQ) => {
+    type t = option(EqA.t);
+    let eq = (xs: t, ys: t) => eqBy(EqA.eq, xs, ys);
+  };
+
+// TODO: the actual implementation should come from upstream... currently
+// waiting on a bs-abstract release
+module type ORD_F = (O: BsAbstract.Interface.ORD) =>
+  BsAbstract.Interface.ORD with type t = option(O.t);
+
+module Ord: ORD_F =
+  (O: BsAbstract.Interface.ORD) => {
+    include Eq(O);
+    let compare = (a, b) =>
+      switch (a, b) {
+      | (Some(a'), Some(b')) => O.compare(a', b')
+      | (None, None) => `equal_to
+      | (None, Some(_)) => `less_than
+      | (Some(_), None) => `greater_than
+      };
+  };
 
 /**
  * Converts the option to a string using the given show function
