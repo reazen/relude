@@ -1,5 +1,4 @@
-let (<<) = Relude_Function.Infix.(<<);
-let (>>) = Relude_Function.Infix.(>>);
+open Relude_Function.Infix;
 
 type t('a, 'e) = Belt.Result.t('a, 'e);
 
@@ -683,7 +682,7 @@ let eqBy:
 */
 let tries: 'a. (unit => 'a) => t('a, exn) =
   fn =>
-    try (Ok(fn())) {
+    try(Ok(fn())) {
     | exn => Error(exn)
     };
 

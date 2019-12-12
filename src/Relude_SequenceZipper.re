@@ -1,5 +1,3 @@
-let id = Relude_Function.id;
-
 /**
  * Creates a Zipper using the given SEQUENCE as the backing implementation
  *
@@ -150,7 +148,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    */
   let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
     (Zipper(l1, f1, r1), Zipper(l2, f2, r2)) =>
-      Zipper(S.zipWith(id, l1, l2), f1(f2), S.zipWith(id, r1, r2));
+      Zipper(S.zipWith(a => a, l1, l2), f1(f2), S.zipWith(a => a, r1, r2));
 
   module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
     include Functor;

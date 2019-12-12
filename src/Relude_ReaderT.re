@@ -1,5 +1,4 @@
-let (>>) = Relude_Function.Infix.(>>);
-let (<<) = Relude_Function.Infix.(<<);
+open Relude_Function.Infix;
 
 // TODO: not sure whether to just make this functor include the "Env" type R here along with the Monad, or
 // have it nested inside.  I have a convenience variant called WithMonadAndEnv, but maybe that should

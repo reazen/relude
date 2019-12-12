@@ -1,4 +1,5 @@
 
+module Animation = Relude_Js_Animation;
 module Console = Relude_Js_Console;
 module Exn = Relude_Js_Exn;
 module Json = Relude_Js_Json;

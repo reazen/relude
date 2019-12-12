@@ -1,4 +1,4 @@
-let (<<) = Relude_Function.Infix.(<<);
+open Relude_Function.Infix;
 
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   /**

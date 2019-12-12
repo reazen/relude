@@ -1,5 +1,4 @@
-let flip = Relude_Function.flip;
-let (>>) = Relude_Function.Infix.(>>);
+open Relude_Function.Infix;
 
 module type SET = {
   type value;
@@ -52,11 +51,11 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (SET with type value = M.t) => 
   let fromArray = Belt.Set.fromArray(_, ~id=(module Comparable));
   let fromList = Belt.List.toArray >> fromArray;
   let isEmpty = Belt.Set.isEmpty;
-  let contains = flip(Belt.Set.has);
-  let add = flip(Belt.Set.add);
-  let mergeMany = flip(Belt.Set.mergeMany);
-  let remove = flip(Belt.Set.remove);
-  let removeMany = flip(Belt.Set.removeMany);
+  let contains = Relude_Function.flip(Belt.Set.has);
+  let add = Relude_Function.flip(Belt.Set.add);
+  let mergeMany = Relude_Function.flip(Belt.Set.mergeMany);
+  let remove = Relude_Function.flip(Belt.Set.remove);
+  let removeMany = Relude_Function.flip(Belt.Set.removeMany);
   let update = entry => remove(entry) >> add(entry);
   let union = Belt.Set.union;
   let intersect = Belt.Set.intersect;
@@ -64,19 +63,19 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (SET with type value = M.t) => 
   let subset = Belt.Set.subset;
   let compare = Belt.Set.cmp;
   let eq = Belt.Set.eq;
-  let forEach = flip(Belt.Set.forEach);
+  let forEach = Relude_Function.flip(Belt.Set.forEach);
   let foldLeft = (fn, acc) => Belt.Set.reduce(_, acc, fn);
-  let all = flip(Belt.Set.every);
-  let any = flip(Belt.Set.some);
-  let filter = flip(Belt.Set.keep);
-  let partition = flip(Belt.Set.partition);
+  let all = Relude_Function.flip(Belt.Set.every);
+  let any = Relude_Function.flip(Belt.Set.some);
+  let filter = Relude_Function.flip(Belt.Set.keep);
+  let partition = Relude_Function.flip(Belt.Set.partition);
   let length = Belt.Set.size;
   let toArray = Belt.Set.toArray;
   let toList = Belt.Set.toList;
   let minimum = Belt.Set.minimum;
   let maximum = Belt.Set.maximum;
-  let get = flip(Belt.Set.get);
+  let get = Relude_Function.flip(Belt.Set.get);
   let getOrElse = (value, default, t) =>
     t |> get(value) |> Relude_Option_Base.getOrElse(default);
-  let split = flip(Belt.Set.split);
+  let split = Relude_Function.flip(Belt.Set.split);
 };

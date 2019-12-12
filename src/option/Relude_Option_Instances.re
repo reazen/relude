@@ -1,5 +1,4 @@
-let (<<) = Relude_Function.Infix.(<<);
-let (>>) = Relude_Function.Infix.(>>);
+open Relude_Function.Infix;
 
 let compose:
   'a 'b 'c.

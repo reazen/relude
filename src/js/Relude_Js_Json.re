@@ -2,15 +2,7 @@
  * Relude.Js.Json contains helper functions for dealing with Js.Json.t values
  */;
 
-module Array = Relude_Array;
-module List = Relude_List;
-module NonEmptyList = Relude_NonEmpty.List;
-module NonEmptyArray = Relude_NonEmpty.Array;
-module Option = Relude_Option;
-module Result = Relude_Result;
-module Validation = Relude_Validation;
-let (>>) = Relude_Function.Infix.(>>);
-let (<<) = Relude_Function.Infix.(<<);
+ open Relude_Function.Infix;
 
 /**
 Type alias for Js.Json.t.
@@ -112,13 +104,13 @@ let fromArrayOfJsonBy: 'a. ('a => json, array('a)) => json =
 /**
 Creates a Js.Json.t array value from an list of Js.Json.t values
 */
-let fromListOfJson: list(json) => json = List.toArray >> fromArrayOfJson;
+let fromListOfJson: list(json) => json = Relude_List.toArray >> fromArrayOfJson;
 
 /**
 Creates a Js.Json.t array value from an list of values that can be converted to Js.Json.t values with the given function
 */
 let fromListOfJsonBy: 'a. ('a => json, list('a)) => json =
-  (f, items) => List.map(f, items) |> fromListOfJson;
+  (f, items) => Relude_List.map(f, items) |> fromListOfJson;
 
 /**
 Creates a Js.Json.t object value from a Js.Dict containing Js.Json.t values.
@@ -134,7 +126,7 @@ let fromArrayOfDictOfJson: array(dict) => json = Js.Json.objectArray;
 Creates a Js.Json.t array value from an list of Js.Dict.t(Js.Json.t) values.
 */
 let fromListOfDictOfJson: list(dict) => json =
-  List.toArray >> Js.Json.objectArray;
+  Relude_List.toArray >> Js.Json.objectArray;
 
 /**
 Creates a Js.Json.t object value from an array of key/value (string/Js.Json.t) tuples.
@@ -162,7 +154,7 @@ let fromListOfKeyValueTuples: list((Js.Dict.key, json)) => json =
 Attempts to decode the given Js.Json.t value as a null.  Returns `Some(())` if it is a `null`, otherwise `None`.
 */
 let toNull: json => option(unit) =
-  json => json |> Js.Json.decodeNull |> Option.void;
+  json => json |> Js.Json.decodeNull |> Relude_Option.void;
 
 /**
 Attempts to decode the given `Js.Json.t` value as a `boolean`
@@ -178,7 +170,7 @@ let toString: json => option(string) = Js.Json.decodeString;
 Attempts to decode the given `Js.Json.t` value as an `int`
 */
 let toInt: json => option(int) =
-  json => json |> Js.Json.decodeNumber |> Option.map(int_of_float);
+  json => json |> Js.Json.decodeNumber |> Relude_Option.map(int_of_float);
 
 /**
 Attempts to decode the given `Js.Json.t` value as a `float`
@@ -194,7 +186,7 @@ let toArrayOfJson: json => option(array(json)) = Js.Json.decodeArray;
 Attempts to decode the given `Js.Json.t` value as an array of `Js.Json.t` values, with a fallback.
 */
 let toArrayOfJsonOrElse: (array(json), json) => array(json) =
-  (default, json) => json |> toArrayOfJson |> Option.getOrElse(default);
+  (default, json) => json |> toArrayOfJson |> Relude_Option.getOrElse(default);
 
 /**
 Attempts to decode the given `Js.Json.t` value as an array of `Js.Json.t` values, with a fallback of an empty array.
@@ -205,13 +197,13 @@ let toArrayOfJsonOrEmpty = toArrayOfJsonOrElse([||]);
 Attempts to decode the given `Js.Json.t` value as a list of `Js.Json.t` values.
 */
 let toListOfJson: json => option(list(json)) =
-  json => json |> toArrayOfJson |> Option.map(Array.toList);
+  json => json |> toArrayOfJson |> Relude_Option.map(Relude_Array.toList);
 
 /**
 Attempts to decode the given `Js.Json.t` value as an list of `Js.Json.t` values, with a fallback.
 */
 let toListOfJsonOrElse = (default, json) =>
-  json |> toListOfJson |> Option.getOrElse(default);
+  json |> toListOfJson |> Relude_Option.getOrElse(default);
 
 /**
 Attempts to decode the given `Js.Json.t` value as a list of `Js.Json.t` values, with a fallback of an empty list.
@@ -227,7 +219,7 @@ let toDictOfJson: json => option(dict) = Js.Json.decodeObject;
 Attempts to decode the given `Js.Json.t` value as a `Js.Dict.t(Js.Json.t)` with a fallback.
  */
 let toDictOfJsonOrElse = (default, json) =>
-  json |> toDictOfJson |> Option.getOrElse(default);
+  json |> toDictOfJson |> Relude_Option.getOrElse(default);
 
 /**
 Attempts to decode the given `Js.Json.t` value as a `Js.Dict.t(Js.Json.t)` with a fallback of an empty `Js.Dict`.
@@ -264,18 +256,18 @@ module Error = {
 
 module Errors = {
   // I'm standardizing on NonEmptyArray as the error collector type... this was an arbitrary decision between List and Array
-  type t = NonEmptyArray.t(Error.t);
+  type t = Relude_NonEmpty.Array.t(Error.t);
 
-  let pure = NonEmptyArray.pure;
-  let make = NonEmptyArray.make;
-  let map = Validation.mapErrorsNea;
+  let pure = Relude_NonEmpty.Array.pure;
+  let make = Relude_NonEmpty.Array.make;
+  let map = Relude_Validation.mapErrorsNea;
 
-  module SemigroupAny = NonEmptyArray.SemigroupAny;
+  module SemigroupAny = Relude_NonEmpty.Array.SemigroupAny;
 };
 
-module ValidationE = Validation.WithErrors(Errors.SemigroupAny, Error.Type);
+module ValidationE = Relude_Validation.WithErrors(Errors.SemigroupAny, Error.Type);
 module ArrayValidationE =
-  Array.Validation.WithErrors(Errors.SemigroupAny, Error.Type);
+  Relude_Array.Validation.WithErrors(Errors.SemigroupAny, Error.Type);
 module TraversableE = ArrayValidationE.Traversable;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -285,50 +277,50 @@ module TraversableE = ArrayValidationE.Traversable;
 /**
  * Validates that the given Js.Json.t value is a null
  */
-let validateNull: json => Validation.t(unit, Errors.t) =
+let validateNull: json => Relude_Validation.t(unit, Errors.t) =
   json =>
     toNull(json)
-    |> Validation.fromOptionLazy(_ =>
+    |> Relude_Validation.fromOptionLazy(_ =>
          Errors.pure("JSON value is not a null: " ++ show(json))
        );
 
 /**
  * Validates that the given Js.Json.t value is a bool
  */
-let validateBool: json => Validation.t(bool, Errors.t) =
+let validateBool: json => Relude_Validation.t(bool, Errors.t) =
   json =>
     toBool(json)
-    |> Validation.fromOptionLazy(_ =>
+    |> Relude_Validation.fromOptionLazy(_ =>
          Errors.pure("JSON value is not a bool: " ++ show(json))
        );
 
 /**
  * Validates that the given Js.Json.t value is a string
  */
-let validateString: json => Validation.t(string, Errors.t) =
+let validateString: json => Relude_Validation.t(string, Errors.t) =
   json =>
     toString(json)
-    |> Validation.fromOptionLazy(_ =>
+    |> Relude_Validation.fromOptionLazy(_ =>
          Errors.pure("JSON value is not a string: " ++ show(json))
        );
 
 /**
  * Validates that the given Js.Json.t value is an int
  */
-let validateInt: json => Validation.t(int, Errors.t) =
+let validateInt: json => Relude_Validation.t(int, Errors.t) =
   json =>
     toInt(json)
-    |> Validation.fromOptionLazy(_ =>
+    |> Relude_Validation.fromOptionLazy(_ =>
          Errors.pure("JSON value is not an int: " ++ show(json))
        );
 
 /**
  * Validates that the given Js.Json.t value is a float
  */
-let validateFloat: json => Validation.t(float, Errors.t) =
+let validateFloat: json => Relude_Validation.t(float, Errors.t) =
   json =>
     toFloat(json)
-    |> Validation.fromOptionLazy(_ =>
+    |> Relude_Validation.fromOptionLazy(_ =>
          Errors.pure("JSON value is not a float: " ++ show(json))
        );
 
@@ -340,20 +332,20 @@ let validateFloat: json => Validation.t(float, Errors.t) =
 let validateOptional =
     (
       ~errorAsNone=false,
-      validate: json => Validation.t('a, Errors.t),
+      validate: json => Relude_Validation.t('a, Errors.t),
       json: json,
     )
-    : Validation.t(option('a), Errors.t) =>
+    : Relude_Validation.t(option('a), Errors.t) =>
   switch (validateNull(json)) {
   | VOk () => VOk(None)
   | VError(_) =>
     // It was not a null, so try the real validation function
     switch (validate(json)) {
-    | VOk(a) => Validation.pure(Some(a))
+    | VOk(a) => Relude_Validation.pure(Some(a))
     | VError(_) as e =>
       // The value was not null, and the real validation failed - decide if we ignore the error or return it
       if (errorAsNone) {
-        Validation.pure(None);
+        Relude_Validation.pure(None);
       } else {
         e;
       }
@@ -370,7 +362,7 @@ let validateOptional =
  */
 let getJsonAtIndex: (int, json) => option(json) =
   (index, json) => {
-    toArrayOfJson(json) |> Option.flatMap(Array.at(index));
+    toArrayOfJson(json) |> Relude_Option.flatMap(Relude_Array.at(index));
   };
 
 /**
@@ -378,13 +370,13 @@ let getJsonAtIndex: (int, json) => option(json) =
  * at the given index and validate it with the given validation function.
  */
 let validateJsonAtIndex:
-  (int, json => Validation.t('a, Errors.t), json) =>
-  Validation.t('a, Errors.t) =
+  (int, json => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t('a, Errors.t) =
   (index, validateItem, json) => {
     getJsonAtIndex(index, json)
-    |> Option.foldLazy(
+    |> Relude_Option.foldLazy(
          _ =>
-           Validation.error(
+           Relude_Validation.error(
              Errors.pure(
                string_of_int(index)
                ++ " was not found in JSON: "
@@ -398,13 +390,13 @@ let validateJsonAtIndex:
 /**
  * Validates that the given Js.Json.t value is an array with a null at the given index
  */
-let validateNullAtIndex: (int, json) => Validation.t(unit, Errors.t) =
+let validateNullAtIndex: (int, json) => Relude_Validation.t(unit, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateNull(json)
-        |> Validation.mapErrorsNea(error =>
+        |> Relude_Validation.mapErrorsNea(error =>
              string_of_int(index) ++ ": " ++ error
            ),
       json,
@@ -413,52 +405,52 @@ let validateNullAtIndex: (int, json) => Validation.t(unit, Errors.t) =
 /**
  * Validates that the given Js.Json.t value is an array with a bool at the given index.
  */
-let validateBoolAtIndex: (int, json) => Validation.t(bool, Errors.t) =
+let validateBoolAtIndex: (int, json) => Relude_Validation.t(bool, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateBool(json)
-        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
+        |> Relude_Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
 /**
  * Validates that the given Js.Json.t value is an array with an int at the given index.
  */
-let validateIntAtIndex: (int, json) => Validation.t(int, Errors.t) =
+let validateIntAtIndex: (int, json) => Relude_Validation.t(int, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateInt(json)
-        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
+        |> Relude_Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
 /**
  * Validates that the given Js.Json.t value is an array with a float at the given index.
  */
-let validateFloatAtIndex: (int, json) => Validation.t(float, Errors.t) =
+let validateFloatAtIndex: (int, json) => Relude_Validation.t(float, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateFloat(json)
-        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
+        |> Relude_Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
 /**
  * Validates that the given Js.Json.t value is an array with a string at the given index.
  */
-let validateStringAtIndex: (int, json) => Validation.t(string, Errors.t) =
+let validateStringAtIndex: (int, json) => Relude_Validation.t(string, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
       index,
       json =>
         validateString(json)
-        |> Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
+        |> Relude_Validation.mapErrorsNea(e => string_of_int(index) ++ ": " ++ e),
       json,
     );
 
@@ -475,10 +467,10 @@ let validateOptionalAtIndex =
       ~nullAsNone=true,
       ~errorAsNone=false,
       index: int,
-      validate: json => Validation.t('a, Errors.t),
+      validate: json => Relude_Validation.t('a, Errors.t),
       json: json,
     )
-    : Validation.t(option('a), Errors.t) =>
+    : Relude_Validation.t(option('a), Errors.t) =>
   switch (getJsonAtIndex(index, json)) {
   | Some(json) =>
     // We got JSON at the index, see if it's null
@@ -486,9 +478,9 @@ let validateOptionalAtIndex =
     | VOk () =>
       // The value was null, see if we treat that as a None or an error
       if (nullAsNone) {
-        Validation.pure(None);
+        Relude_Validation.pure(None);
       } else {
-        Validation.error(
+        Relude_Validation.error(
           Errors.pure(
             string_of_int(index)
             ++ " had a null value in JSON: "
@@ -499,10 +491,10 @@ let validateOptionalAtIndex =
     | VError(_) =>
       // The value was not null, try to validate it, and see if we treat an error as None or return it
       switch (validate(json)) {
-      | VOk(a) => Validation.pure(Some(a))
+      | VOk(a) => Relude_Validation.pure(Some(a))
       | VError(_) as e =>
         if (errorAsNone) {
-          Validation.pure(None);
+          Relude_Validation.pure(None);
         } else {
           e;
         }
@@ -511,9 +503,9 @@ let validateOptionalAtIndex =
   | None =>
     // There was no JSON at the index, see if we treat this as None or an error
     if (missingAsNone) {
-      Validation.ok(None);
+      Relude_Validation.ok(None);
     } else {
-      Validation.error(
+      Relude_Validation.error(
         Errors.pure(
           "No value was found at index " ++ string_of_int(index) ++ " for JSON: " ++ show(json),
         ),
@@ -527,23 +519,23 @@ let validateOptionalAtIndex =
  */
 let validateArrayOfJson:
   'a 'e.
-  ((int, json) => Validation.t('a, Errors.t), json) =>
-  Validation.t(array('a), Errors.t)
+  ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t(array('a), Errors.t)
  =
   (validateItem, json) => {
     json
     |> toArrayOfJson
-    |> Option.foldLazy(
+    |> Relude_Option.foldLazy(
          () =>
-           Validation.error(
+           Relude_Validation.error(
              Errors.pure("JSON value is not an array: " ++ show(json)),
            ),
          jsonValues =>
            jsonValues
-           |> Array.zipWithIndex
+           |> Relude_Array.zipWithIndex
            |> TraversableE.traverse(((json, index)) =>
                 validateItem(index, json)
-                |> Validation.mapErrorsNea(e =>
+                |> Relude_Validation.mapErrorsNea(e =>
                      string_of_int(index) ++ ": " ++ e
                    )
               ),
@@ -556,28 +548,28 @@ let validateArrayOfJson:
  */
 let validateArrayOfJsonAsList:
   'a 'e.
-  ((int, json) => Validation.t('a, Errors.t), json) =>
-  Validation.t(list('a), Errors.t)
+  ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t(list('a), Errors.t)
  =
   (validateItem, json) => {
     json
     |> toArrayOfJson
-    |> Option.foldLazy(
+    |> Relude_Option.foldLazy(
          () =>
-           Validation.error(
+           Relude_Validation.error(
              Errors.pure("JSON value is not an array: " ++ show(json)),
            ),
          arrayOfJson =>
            arrayOfJson
-           |> Array.zipWithIndex
+           |> Relude_Array.zipWithIndex
            |> TraversableE.traverse(((json, index)) =>
                 validateItem(index, json)
-                |> Validation.mapErrorsNea(e =>
+                |> Relude_Validation.mapErrorsNea(e =>
                      string_of_int(index) ++ ": " ++ e
                    )
               ),
        )
-    |> Validation.map(Array.toList);
+    |> Relude_Validation.map(Relude_Array.toList);
   };
 
 /**
@@ -586,14 +578,14 @@ let validateArrayOfJsonAsList:
  */
 let validateArrayAtIndex:
   'a.
-  (int, (int, json) => Validation.t('a, Errors.t), json) =>
-  Validation.t(array('a), Errors.t)
+  (int, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t(array('a), Errors.t)
  =
   (index, validateItem, json) =>
     getJsonAtIndex(index, json)
-    |> Option.foldLazy(
+    |> Relude_Option.foldLazy(
          _ =>
-           Validation.error(
+           Relude_Validation.error(
              Errors.pure(
                string_of_int(index)
                ++ " was not found in JSON: "
@@ -609,8 +601,8 @@ let validateArrayAtIndex:
  */
 let validateObjectAtIndex:
   'a.
-  (int, json => Validation.t('a, Errors.t), json) =>
-  Validation.t('a, Errors.t)
+  (int, json => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t('a, Errors.t)
  = validateJsonAtIndex;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -623,7 +615,7 @@ let validateObjectAtIndex:
  */
 let getJsonForKey: (string, json) => option(json) =
   (key, json) => {
-    toDictOfJson(json) |> Option.flatMap(dict => Js.Dict.get(dict, key));
+    toDictOfJson(json) |> Relude_Option.flatMap(dict => Js.Dict.get(dict, key));
   };
 
 /**
@@ -631,13 +623,13 @@ let getJsonForKey: (string, json) => option(json) =
  * given key using the given validation function.
  */
 let validateJsonForKey:
-  (string, json => Validation.t('a, Errors.t), json) =>
-  Validation.t('a, Errors.t) =
+  (string, json => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t('a, Errors.t) =
   (key, validateItem, json) => {
     getJsonForKey(key, json)
-    |> Option.foldLazy(
+    |> Relude_Option.foldLazy(
          _ =>
-           Validation.error(
+           Relude_Validation.error(
              Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
            ),
          json => validateItem(json),
@@ -647,60 +639,60 @@ let validateJsonForKey:
 /**
  * Validates the given Js.Json.t value is an object with a null at the given key.
  */
-let validateNullForKey: (string, json) => Validation.t(unit, Errors.t) =
+let validateNullForKey: (string, json) => Relude_Validation.t(unit, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
       json =>
-        validateNull(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
+        validateNull(json) |> Relude_Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
 /**
  * Validates the given Js.Json.t value is an object with a bool at the given key.
  */
-let validateBoolForKey: (string, json) => Validation.t(bool, Errors.t) =
+let validateBoolForKey: (string, json) => Relude_Validation.t(bool, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
       json =>
-        validateBool(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
+        validateBool(json) |> Relude_Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
 /**
  * Validates the given Js.Json.t value is an object with an int at the given key.
  */
-let validateIntForKey: (string, json) => Validation.t(int, Errors.t) =
+let validateIntForKey: (string, json) => Relude_Validation.t(int, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
       json =>
-        validateInt(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
+        validateInt(json) |> Relude_Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
 /**
  * Validates the given Js.Json.t value is an object with a float at the given key.
  */
-let validateFloatForKey: (string, json) => Validation.t(float, Errors.t) =
+let validateFloatForKey: (string, json) => Relude_Validation.t(float, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
       json =>
-        validateFloat(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
+        validateFloat(json) |> Relude_Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
 /**
  * Validates the given Js.Json.t value is an object with a string at the given key.
  */
-let validateStringForKey: (string, json) => Validation.t(string, Errors.t) =
+let validateStringForKey: (string, json) => Relude_Validation.t(string, Errors.t) =
   (key, json) =>
     validateJsonForKey(
       key,
       json =>
-        validateString(json) |> Validation.mapErrorsNea(e => key ++ ": " ++ e),
+        validateString(json) |> Relude_Validation.mapErrorsNea(e => key ++ ": " ++ e),
       json,
     );
 
@@ -717,10 +709,10 @@ let validateOptionalForKey =
       ~nullAsNone=true,
       ~errorAsNone=false,
       key: string,
-      validate: json => Validation.t('a, Errors.t),
+      validate: json => Relude_Validation.t('a, Errors.t),
       json: json,
     )
-    : Validation.t(option('a), Errors.t) =>
+    : Relude_Validation.t(option('a), Errors.t) =>
   // Try to get the JSON for the key
   switch (getJsonForKey(key, json)) {
   | Some(json) =>
@@ -729,9 +721,9 @@ let validateOptionalForKey =
     | VOk () =>
       // The value was null - see if we treat this as a None or an error
       if (nullAsNone) {
-        Validation.pure(None);
+        Relude_Validation.pure(None);
       } else {
-        Validation.error(
+        Relude_Validation.error(
           Errors.pure(
             key ++ " contained a null value in JSON: " ++ show(json),
           ),
@@ -740,10 +732,10 @@ let validateOptionalForKey =
     | VError(_) =>
       // The value was not null - try to decode and see if we treat an error as None or as an error
       switch (validate(json)) {
-      | VOk(a) => Validation.pure(Some(a))
+      | VOk(a) => Relude_Validation.pure(Some(a))
       | VError(_) as e =>
         if (errorAsNone) {
-          Validation.pure(None);
+          Relude_Validation.pure(None);
         } else {
           e;
         }
@@ -752,9 +744,9 @@ let validateOptionalForKey =
   | None =>
     // No JSON found for key - see if we treat that as a None or an error
     if (missingAsNone) {
-      Validation.ok(None);
+      Relude_Validation.ok(None);
     } else {
-      Validation.error(
+      Relude_Validation.error(
         Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
       );
     }
@@ -766,14 +758,14 @@ let validateOptionalForKey =
  */
 let validateArrayForKey:
   'a.
-  (string, (int, json) => Validation.t('a, Errors.t), json) =>
-  Validation.t(array('a), Errors.t)
+  (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t(array('a), Errors.t)
  =
   (key, validateItem, json) =>
     getJsonForKey(key, json)
-    |> Option.foldLazy(
+    |> Relude_Option.foldLazy(
          _ =>
-           Validation.error(
+           Relude_Validation.error(
              Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
            ),
          json => validateArrayOfJson(validateItem, json),
@@ -785,14 +777,14 @@ let validateArrayForKey:
  */
 let validateListForKey:
   'a.
-  (string, (int, json) => Validation.t('a, Errors.t), json) =>
-  Validation.t(list('a), Errors.t)
+  (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t(list('a), Errors.t)
  =
   (key, validateItem, json) =>
     getJsonForKey(key, json)
-    |> Option.foldLazy(
+    |> Relude_Option.foldLazy(
          _ =>
-           Validation.error(
+           Relude_Validation.error(
              Errors.pure(key ++ " was not found in JSON: " ++ show(json)),
            ),
          json => validateArrayOfJsonAsList(validateItem, json),
@@ -804,8 +796,8 @@ let validateListForKey:
  */
 let validateObjectForKey:
   'a.
-  (string, json => Validation.t('a, Errors.t), json) =>
-  Validation.t('a, Errors.t)
+  (string, json => Relude_Validation.t('a, Errors.t), json) =>
+  Relude_Validation.t('a, Errors.t)
  = validateJsonForKey;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -926,27 +918,27 @@ module DSL = {
     /**
      * Validates the given Js.Json.t value is a null
      */
-    let null: json => Validation.t(unit, Errors.t) = validateNull;
+    let null: json => Relude_Validation.t(unit, Errors.t) = validateNull;
 
     /**
      * Validates the given Js.Json.t value is a bool
      */
-    let bool: json => Validation.t(bool, Errors.t) = validateBool;
+    let bool: json => Relude_Validation.t(bool, Errors.t) = validateBool;
 
     /**
      * Validates the given Js.Json.t value as a string
      */
-    let int: json => Validation.t(int, Errors.t) = validateInt;
+    let int: json => Relude_Validation.t(int, Errors.t) = validateInt;
 
     /**
      * Validates the given Js.Json.t value as a float
      */
-    let float: json => Validation.t(float, Errors.t) = validateFloat;
+    let float: json => Relude_Validation.t(float, Errors.t) = validateFloat;
 
     /**
      * Validates the given Js.Json.t value as a string
      */
-    let string: json => Validation.t(string, Errors.t) = validateString;
+    let string: json => Relude_Validation.t(string, Errors.t) = validateString;
 
     /**
      * Validates that the given Js.Json.t value is either null or can be validated using the given function.
@@ -957,10 +949,10 @@ module DSL = {
     let opt =
         (
           ~errorAsNone=false,
-          validate: json => Validation.t('a, Errors.t),
+          validate: json => Relude_Validation.t('a, Errors.t),
           json: json,
         )
-        : Validation.t(option('a), Errors.t) =>
+        : Relude_Validation.t(option('a), Errors.t) =>
       validateOptional(~errorAsNone, validate, json);
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -977,34 +969,34 @@ module DSL = {
     */
     let jsonAt:
       'a.
-      (int, json => Validation.t('a, Errors.t), json) =>
-      Validation.t('a, Errors.t)
+      (int, json => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t('a, Errors.t)
      = validateJsonAtIndex;
 
     /**
      * Validates a null value at the given index of a Js.Json.t array value
     */
-    let nullAt: (int, json) => Validation.t(unit, Errors.t) = validateNullAtIndex;
+    let nullAt: (int, json) => Relude_Validation.t(unit, Errors.t) = validateNullAtIndex;
 
     /**
      * Validates a bool value at the given index of a Js.Json.t array value
      */
-    let boolAt: (int, json) => Validation.t(bool, Errors.t) = validateBoolAtIndex;
+    let boolAt: (int, json) => Relude_Validation.t(bool, Errors.t) = validateBoolAtIndex;
 
     /**
      * Validates a string value at the given index of a Js.Json.t array value
      */
-    let stringAt: (int, json) => Validation.t(string, Errors.t) = validateStringAtIndex;
+    let stringAt: (int, json) => Relude_Validation.t(string, Errors.t) = validateStringAtIndex;
 
     /**
      * Validates an int value at the given index of a Js.Json.t array value
      */
-    let intAt: (int, json) => Validation.t(int, Errors.t) = validateIntAtIndex;
+    let intAt: (int, json) => Relude_Validation.t(int, Errors.t) = validateIntAtIndex;
 
     /**
      * Validates a float value at the given index of a Js.Json.t array value
      */
-    let floatAt: (int, json) => Validation.t(float, Errors.t) = validateFloatAtIndex;
+    let floatAt: (int, json) => Relude_Validation.t(float, Errors.t) = validateFloatAtIndex;
 
     /**
      * Validates that the Js.Json.t value at the given index is either null or can be validated using the given function.
@@ -1019,10 +1011,10 @@ module DSL = {
           ~nullAsNone=true,
           ~errorAsNone=false,
           index: int,
-          validate: json => Validation.t('a, Errors.t),
+          validate: json => Relude_Validation.t('a, Errors.t),
           json: json,
         )
-        : Validation.t(option('a), Errors.t) =>
+        : Relude_Validation.t(option('a), Errors.t) =>
       validateOptionalAtIndex(
         ~missingAsNone,
         ~nullAsNone,
@@ -1037,8 +1029,8 @@ module DSL = {
      */
     let arrayAt:
       'a.
-      (int, (int, json) => Validation.t('a, Errors.t), json) =>
-      Validation.t(array('a), Errors.t)
+      (int, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t(array('a), Errors.t)
      = validateArrayAtIndex;
 
     /**
@@ -1046,8 +1038,8 @@ module DSL = {
      */
     let objectAt:
       'a.
-      (int, json => Validation.t('a, Errors.t), json) =>
-      Validation.t('a, Errors.t)
+      (int, json => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t('a, Errors.t)
      = validateObjectAtIndex;
 
     /**
@@ -1055,8 +1047,8 @@ module DSL = {
      */
     let array:
       'a.
-      ((int, json) => Validation.t('a, Errors.t), json) =>
-      Validation.t(array('a), Errors.t)
+      ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t(array('a), Errors.t)
      = validateArrayOfJson;
 
     /**
@@ -1064,8 +1056,8 @@ module DSL = {
      */
     let list:
       'a.
-      ((int, json) => Validation.t('a, Errors.t), json) =>
-      Validation.t(list('a), Errors.t)
+      ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t(list('a), Errors.t)
      = validateArrayOfJsonAsList;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -1082,34 +1074,34 @@ module DSL = {
      */
     let jsonFor:
       'a.
-      (string, json => Validation.t('a, Errors.t), json) =>
-      Validation.t('a, Errors.t)
+      (string, json => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t('a, Errors.t)
      = validateJsonForKey;
 
     /**
      * Validates a null for the given key of a Js.Json.t object value
      */
-    let nullFor: (string, json) => Validation.t(unit, Errors.t) = validateNullForKey;
+    let nullFor: (string, json) => Relude_Validation.t(unit, Errors.t) = validateNullForKey;
 
     /**
      * Validates a bool for the given key of a Js.Json.t object value
      */
-    let boolFor: (string, json) => Validation.t(bool, Errors.t) = validateBoolForKey;
+    let boolFor: (string, json) => Relude_Validation.t(bool, Errors.t) = validateBoolForKey;
 
     /**
      * Validates a string for the given key of a Js.Json.t object value
      */
-    let stringFor: (string, json) => Validation.t(string, Errors.t) = validateStringForKey;
+    let stringFor: (string, json) => Relude_Validation.t(string, Errors.t) = validateStringForKey;
 
     /**
      * Validates an int for the given key of a Js.Json.t object value
      */
-    let intFor: (string, json) => Validation.t(int, Errors.t) = validateIntForKey;
+    let intFor: (string, json) => Relude_Validation.t(int, Errors.t) = validateIntForKey;
 
     /**
      * Validates a float for the given key of a Js.Json.t object value
      */
-    let floatFor: (string, json) => Validation.t(float, Errors.t) = validateFloatForKey;
+    let floatFor: (string, json) => Relude_Validation.t(float, Errors.t) = validateFloatForKey;
 
     /**
      * Validates that the Js.Json.t value at the given key is either null or can be validated using the given function.
@@ -1124,10 +1116,10 @@ module DSL = {
           ~nullAsNone=true,
           ~errorAsNone=false,
           key: string,
-          validate: json => Validation.t('a, Errors.t),
+          validate: json => Relude_Validation.t('a, Errors.t),
           json: json,
         )
-        : Validation.t(option('a), Errors.t) =>
+        : Relude_Validation.t(option('a), Errors.t) =>
       validateOptionalForKey(
         ~missingAsNone,
         ~nullAsNone,
@@ -1142,8 +1134,8 @@ module DSL = {
      */
     let arrayFor:
       'a.
-      (string, (int, json) => Validation.t('a, Errors.t), json) =>
-      Validation.t(array('a), Errors.t)
+      (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t(array('a), Errors.t)
      = validateArrayForKey;
 
     /**
@@ -1151,8 +1143,8 @@ module DSL = {
      */
     let listFor:
       'a.
-      (string, (int, json) => Validation.t('a, Errors.t), json) =>
-      Validation.t(list('a), Errors.t)
+      (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
+      Relude_Validation.t(list('a), Errors.t)
      = validateListForKey;
 
     /**
