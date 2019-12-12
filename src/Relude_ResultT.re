@@ -1,33 +1,31 @@
-module Result = Relude_Result;
-
 /**
  * Creates a ResultT Monad with the given outer Monad module.
  */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   type t('a, 'e) =
-    | ResultT(M.t(Result.t('a, 'e)));
+    | ResultT(M.t(Belt.Result.t('a, 'e)));
 
-  let make: 'a 'e. M.t(Result.t('a, 'e)) => t('a, 'e) =
+  let make: 'a 'e. M.t(Belt.Result.t('a, 'e)) => t('a, 'e) =
     mResult => ResultT(mResult);
 
-  let runResultT: 'a 'e. t('a, 'e) => M.t(Result.t('a, 'e)) =
+  let runResultT: 'a 'e. t('a, 'e) => M.t(Belt.Result.t('a, 'e)) =
     (ResultT(mResult)) => mResult;
 
   let withResultT: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     (e1ToE2, ResultT(mResultE1)) =>
       ResultT(
-        M.map(resultE1 => Result.mapError(e1ToE2, resultE1), mResultE1),
+        M.map(resultE1 => Relude_Result.mapError(e1ToE2, resultE1), mResultE1),
       );
 
   let mapResultT:
     'a 'b 'e.
-    (M.t(Result.t('a, 'e)) => M.t(Result.t('b, 'e)), t('a, 'e)) =>
+    (M.t(Belt.Result.t('a, 'e)) => M.t(Belt.Result.t('b, 'e)), t('a, 'e)) =>
     t('b, 'e)
    =
     (mResultAToMResultB, ResultT(mResultA)) =>
       ResultT(mResultAToMResultB(mResultA));
 
-  let fromResult: 'a 'e. Result.t('a, 'e) => t('a, 'e) =
+  let fromResult: 'a 'e. Belt.Result.t('a, 'e) => t('a, 'e) =
     result => ResultT(M.pure(result));
 
   let liftF: 'a 'e. M.t('a) => t('a, 'e) =
@@ -35,21 +33,21 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
 
   let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     (aToB, ResultT(mResultA)) =>
-      ResultT(M.map(resultA => Result.map(aToB, resultA), mResultA));
+      ResultT(M.map(resultA => Relude_Result.map(aToB, resultA), mResultA));
 
-  let subflatMap: 'a 'b 'e. ('a => Result.t('b, 'e),  t('a, 'e)) => t('b, 'e) =
+  let subflatMap: 'a 'b 'e. ('a => Belt.Result.t('b, 'e),  t('a, 'e)) => t('b, 'e) =
     (aToB, ResultT(mResultA)) =>
-      ResultT(M.map(resultA => Result.flatMap(aToB, resultA), mResultA));
+      ResultT(M.map(resultA => Relude_Result.flatMap(aToB, resultA), mResultA));
       
   let cond: 'a 'e. ('a => bool, 'a, 'e,  t('a, 'e)) => t('a, 'e) =
     (aToBool, success, err, ResultT(mResultA)) =>
-      ResultT(M.map(resultA => Result.flatMap(a => 
-        aToBool(a) ? Result.pure(success) : Result.error(err), resultA), mResultA));
+      ResultT(M.map(resultA => Relude_Result.flatMap(a => 
+        aToBool(a) ? Relude_Result.pure(success) : Relude_Result.error(err), resultA), mResultA));
 
   let condError: 'a 'b 'e. ('a => bool, 'e,  t('a, 'e)) => t('a, 'e) =
     (aToBool, err, ResultT(mResultA)) =>
-      ResultT(M.map(resultA => Result.flatMap(a => 
-        aToBool(a) ? Result.pure(a) : Result.error(err), resultA), mResultA));
+      ResultT(M.map(resultA => Relude_Result.flatMap(a => 
+        aToBool(a) ? Relude_Result.pure(a) : Relude_Result.error(err), resultA), mResultA));
 
   let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) = withResultT;
 
@@ -57,7 +55,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     (aToB, e1ToE2, ResultT(mResultAE1)) => {
       ResultT(
         M.map(
-          resultAE1 => Result.bimap(aToB, e1ToE2, resultAE1),
+          resultAE1 => Relude_Result.bimap(aToB, e1ToE2, resultAE1),
           mResultAE1,
         ),
       );
@@ -68,14 +66,14 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
       ResultT(
         M.apply(
           M.map(
-            (resultAToB, resultA) => Result.apply(resultAToB, resultA),
+            (resultAToB, resultA) => Relude_Result.apply(resultAToB, resultA),
             mResultAToB,
           ),
           mResultA,
         ),
       );
 
-  let pure: 'a 'e. 'a => t('a, 'e) = a => ResultT(M.pure(Result.ok(a)));
+  let pure: 'a 'e. 'a => t('a, 'e) = a => ResultT(M.pure(Relude_Result.ok(a)));
 
   let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     (ResultT(mResultA), aToResultTB) => {

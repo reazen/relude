@@ -1,9 +1,4 @@
-module Function = Relude_Function;
-module JsExn = Relude_Js_Exn;
-module Result = Relude_Result;
-module Void = Relude_Void;
-let (<<) = Function.Infix.(<<);
-let (>>) = Function.Infix.(>>);
+open Relude_Function.Infix;
 
 /**
 IO is a bi-functor effect type that supports both synchronous and asynchronous effects, with explicit error handling.
@@ -20,7 +15,7 @@ type t('a, 'e) =
   | Throw('e): t('a, 'e)
   | Suspend(unit => 'a): t('a, 'e)
   | SuspendIO(unit => t('a, 'e)): t('a, 'e)
-  | Async((Result.t('a, 'e) => unit) => unit): t('a, 'e)
+  | Async((Belt.Result.t('a, 'e) => unit) => unit): t('a, 'e)
   | Map('r => 'a, t('r, 'e)): t('a, 'e)
   | Apply(t('r => 'a, 'e), t('r, 'e)): t('a, 'e)
   | FlatMap('r => t('a, 'e), t('r, 'e)): t('a, 'e);
@@ -37,7 +32,7 @@ Wraps a non-failing, strictly-evaluated value in an `IO`
 
 Prefer `suspend` for values that are expensive to construct or may have side-effects.
 */
-let pureWithVoid: 'a. 'a => t('a, Void.t) = a => Pure(a);
+let pureWithVoid: 'a. 'a => t('a, Relude_Void.t) = a => Pure(a);
 
 /**
 Wraps a strictly-evaluated unit value `()` in an `IO`
@@ -47,7 +42,7 @@ let unit: 'e. t(unit, 'e) = Pure();
 /**
 Wraps a non-failing, strictly-evaluated unit value `()` in an `IO`
 */
-let unitWithVoid: t(unit, Void.t) = Pure();
+let unitWithVoid: t(unit, Relude_Void.t) = Pure();
 
 /**
 Wraps a strictly-evaluated error value in an `IO`
@@ -59,7 +54,7 @@ let throw: 'a 'e. 'e => t('a, 'e) = e => Throw(e);
 /**
 Wraps a non-succeeding, strictly-evaluated error value in an `IO`
 */
-let throwWithVoid: 'e. 'e => t(Void.t, 'e) = e => Throw(e);
+let throwWithVoid: 'e. 'e => t(Relude_Void.t, 'e) = e => Throw(e);
 
 /**
 Wraps a lazily-evaluated value in an `IO`
@@ -69,7 +64,7 @@ let suspend: 'a 'e. (unit => 'a) => t('a, 'e) = getA => Suspend(getA);
 /**
 Wraps a non-failing, lazily-evaluated value in an `IO`
 */
-let suspendWithVoid: 'a. (unit => 'a) => t('a, Void.t) =
+let suspendWithVoid: 'a. (unit => 'a) => t('a, Relude_Void.t) =
   getA => Suspend(getA);
 
 /**
@@ -97,7 +92,7 @@ Creates an async `IO` value that is run by invoking a callback `Result.t('a, 'e)
 This is useful for lifting other types of async effects into `IO`, like `Js.Promise` or
 a Node.js-style callback API.
 */
-let async: 'a 'e. ((Result.t('a, 'e) => unit) => unit) => t('a, 'e) =
+let async: 'a 'e. ((Belt.Result.t('a, 'e) => unit) => unit) => t('a, 'e) =
   onDone => Async(onDone);
 
 /**
@@ -114,8 +109,8 @@ Converts an `Result.t('a, 'e)` to an `IO.t('a, 'e)
 
 Because the result is already evaluated, no effort is made to suspend any effects.
 */
-let fromResult: 'a 'e. Result.t('a, 'e) => t('a, 'e) =
-  res => res |> Result.fold(throw, pure);
+let fromResult: 'a 'e. Belt.Result.t('a, 'e) => t('a, 'e) =
+  res => res |> Relude_Result.fold(throw, pure);
 
 /**
 Applies a function `a => `b on an `IO.t('a, 'e)` to produce an `IO.t('b, 'e)`
@@ -191,12 +186,12 @@ The function uses the term "unsafe" because calling this function causes all of 
 to actually be executed.  It is not "unsafe" in that it can throw an exception - it is just a convention in FP
 libraries to denote these types of functions as unsafe.
 */
-let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
+let rec unsafeRunAsync: 'a 'e. (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => unit =
   (onDone, ioA) =>
     switch (ioA) {
-    | Pure(a) => onDone(Result.ok(a))
-    | Throw(e) => onDone(Result.error(e))
-    | Suspend(getA) => onDone(Result.ok(getA()))
+    | Pure(a) => onDone(Belt.Result.Ok(a))
+    | Throw(e) => onDone(Belt.Result.Error(e))
+    | Suspend(getA) => onDone(Belt.Result.Ok(getA()))
     | SuspendIO(getIOA) => getIOA() |> unsafeRunAsync(onDone)
     | Async(onDoneA) => onDoneA(onDone)
     | Map(r0ToA, ioR0) =>
@@ -209,7 +204,7 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
     | Apply(ioR0ToA, ioR0) =>
       unsafeRunAsyncPar2(
         (resultR0ToA, resultR0) =>
-          onDone(Result.apply(resultR0ToA, resultR0)),
+          onDone(Relude_Result.apply(resultR0ToA, resultR0)),
         ioR0ToA,
         ioR0,
       )
@@ -238,7 +233,7 @@ let rec unsafeRunAsync: 'a 'e. (Result.t('a, 'e) => unit, t('a, 'e)) => unit =
  */
 and unsafeRunAsyncPar2:
   'a 'b 'e.
-  ((Result.t('a, 'e), Result.t('b, 'e)) => unit, t('a, 'e), t('b, 'e)) =>
+  ((Belt.Result.t('a, 'e), Belt.Result.t('b, 'e)) => unit, t('a, 'e), t('b, 'e)) =>
   unit
  =
   (onDone, ioA, ioB) => {
@@ -270,7 +265,7 @@ and unsafeRunAsyncPar2:
 and unsafeRunAsyncPar3:
   'a 'b 'c 'e.
   (
-    (Result.t('a, 'e), Result.t('b, 'e), Result.t('c, 'e)) => unit,
+    (Belt.Result.t('a, 'e), Belt.Result.t('b, 'e), Belt.Result.t('c, 'e)) => unit,
     t('a, 'e),
     t('b, 'e),
     t('c, 'e)
@@ -470,7 +465,7 @@ and composeSuspendIO:
  */
 and composeAsync:
   'a 'b 'c 'e.
-  ((Result.t('a => 'b, 'e) => unit) => unit, t('b => 'c, 'e)) =>
+  ((Belt.Result.t('a => 'b, 'e) => unit) => unit, t('b => 'c, 'e)) =>
   t('a => 'c, 'e)
  =
   (onDoneAToB, ioBToC) =>
@@ -634,7 +629,7 @@ let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     | Async(onDoneA) =>
       Async(
         onDone =>
-          onDoneA(resultA => resultA |> Result.mapError(e1ToE2) |> onDone),
+          onDoneA(resultA => resultA |> Relude_Result.mapError(e1ToE2) |> onDone),
       )
     | Map(rToA, ioR) => ioR |> mapError(e1ToE2) |> map(rToA)
     | Apply(ioRToA, ioR) =>
@@ -880,7 +875,7 @@ let triesJS: 'a. (unit => 'a) => t('a, Js.Exn.t) =
         try (Pure(getA())) {
         | Js.Exn.Error(jsExn) => Throw(jsExn)
         | exn =>
-          let jsExn = JsExn.unsafeFromExn(exn);
+          let jsExn = Relude_Js_Exn.unsafeFromExn(exn);
           Throw(jsExn);
         },
     );
@@ -896,7 +891,7 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
     | Suspend(getA) => suspendIO(() => getA() |> throw)
     | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> flip)
     | Async(onDoneA) =>
-      Async(onDone => onDoneA(resultA => onDone(resultA |> Result.flip)))
+      Async(onDone => onDoneA(resultA => onDone(resultA |> Relude_Result.flip)))
     | Map(r0ToA, ioR0) => flipMap(r0ToA, ioR0)
     | Apply(ioR0ToA, ioR0) => flipApply(ioR0ToA, ioR0)
     | FlatMap(r0ToIOA, ioR0) => flipFlatMap(r0ToIOA, ioR0)
@@ -914,7 +909,7 @@ and flipMap: 'a 'r0 'e. ('r0 => 'a, t('r0, 'e)) => t('e, 'a) =
       Async(
         onDone =>
           onDoneR0(resultR0 =>
-            onDone(resultR0 |> Result.map(r0ToA) |> Result.flip)
+            onDone(resultR0 |> Relude_Result.map(r0ToA) |> Relude_Result.flip)
           ),
       )
     | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> flip
@@ -968,7 +963,7 @@ and flipFlatMap: 'a 'r0 'e. ('r0 => t('a, 'e), t('r0, 'e)) => t('e, 'a) =
           onDoneR0(resultR0 =>
             switch (resultR0) {
             | Ok(r0) => r0ToIOA(r0) |> flip |> unsafeRunAsync(onDone)
-            | Error(e) => onDone(Result.ok(e))
+            | Error(e) => onDone(Belt.Result.Ok(e))
             }
           ),
       )
@@ -985,15 +980,15 @@ and flipFlatMap: 'a 'r0 'e. ('r0 => t('a, 'e), t('r0, 'e)) => t('e, 'a) =
 Summons an error of type `'e` from the error channel into the success channel as a `Result.t('a, 'e)`.
 The error channel becomes `Void.t` because the error has been (re)moved.
 */
-let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
+let rec summonError: 'a 'e. t('a, 'e) => t(Belt.Result.t('a, 'e), Relude_Void.t) =
   ioA =>
     switch (ioA) {
-    | Pure(a) => Pure(Result.ok(a))
-    | Throw(e) => Pure(Result.error(e))
-    | Suspend(getA) => Suspend(() => Result.ok(getA()))
+    | Pure(a) => Pure(Belt.Result.Ok(a))
+    | Throw(e) => Pure(Belt.Result.Error(e))
+    | Suspend(getA) => Suspend(() => Belt.Result.Ok(getA()))
     | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> summonError)
     | Async(onDoneA) =>
-      Async(onDone => onDoneA(result => onDone(Result.ok(result))))
+      Async(onDone => onDoneA(result => onDone(Belt.Result.Ok(result))))
     | Map(r0ToA, ioR0) => summonErrorMap(r0ToA, ioR0)
     | Apply(ioR0ToA, ioR0) => summonErrorApply(ioR0ToA, ioR0)
     | FlatMap(r0ToIOA, ioR0) => summonErrorFlatMap(r0ToIOA, ioR0)
@@ -1001,19 +996,19 @@ let rec summonError: 'a 'e. t('a, 'e) => t(Result.t('a, 'e), Void.t) =
 
 and summonErrorMap:
   'a 'r0 'e.
-  ('r0 => 'a, t('r0, 'e)) => t(Result.t('a, 'e), Void.t)
+  ('r0 => 'a, t('r0, 'e)) => t(Belt.Result.t('a, 'e), Relude_Void.t)
  =
   (r0ToA, ioR0) => {
     switch (ioR0) {
-    | Pure(r0) => Pure(Result.ok(r0ToA(r0)))
-    | Throw(e) => Pure(Result.error(e))
-    | Suspend(getR0) => Suspend(() => Result.ok(r0ToA(getR0())))
+    | Pure(r0) => Pure(Belt.Result.Ok(r0ToA(r0)))
+    | Throw(e) => Pure(Belt.Result.Error(e))
+    | Suspend(getR0) => Suspend(() => Belt.Result.Ok(r0ToA(getR0())))
     | SuspendIO(getIOR0) =>
       SuspendIO(() => getIOR0() |> map(r0ToA) |> summonError)
     | Async(onDoneR0) =>
       Async(
         onDone =>
-          onDoneR0(resR0 => onDone(Result.ok(Result.map(r0ToA, resR0)))),
+          onDoneR0(resR0 => onDone(Belt.Result.Ok(Relude_Result.map(r0ToA, resR0)))),
       )
     | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> summonError
     | Apply(ioR1ToR0, ioR1) =>
@@ -1025,12 +1020,12 @@ and summonErrorMap:
 
 and summonErrorApply:
   'a 'r0 'e.
-  (t('r0 => 'a, 'e), t('r0, 'e)) => t(Result.t('a, 'e), Void.t)
+  (t('r0 => 'a, 'e), t('r0, 'e)) => t(Belt.Result.t('a, 'e), Relude_Void.t)
  =
   (ioR0ToA, ioR0) => {
     switch (ioR0) {
     | Pure(r0) => ioR0ToA |> map(r0ToA => r0ToA(r0)) |> summonError
-    | Throw(e) => Pure(Result.error(e))
+    | Throw(e) => Pure(Belt.Result.Error(e))
     | Suspend(getR0) =>
       SuspendIO(() => ioR0ToA |> map(r0ToA => r0ToA(getR0())) |> summonError)
     | SuspendIO(getIOR0) =>
@@ -1066,12 +1061,12 @@ and summonErrorApply:
 
 and summonErrorFlatMap:
   'a 'r0 'e.
-  ('r0 => t('a, 'e), t('r0, 'e)) => t(Result.t('a, 'e), Void.t)
+  ('r0 => t('a, 'e), t('r0, 'e)) => t(Belt.Result.t('a, 'e), Relude_Void.t)
  =
   (r0ToIOA, ioR0) => {
     switch (ioR0) {
     | Pure(r0) => r0ToIOA(r0) |> summonError
-    | Throw(e) => Pure(Result.error(e))
+    | Throw(e) => Pure(Belt.Result.Error(e))
     | Suspend(getR0) => SuspendIO(() => r0ToIOA(getR0()) |> summonError)
     | SuspendIO(getIOR0) =>
       SuspendIO(() => getIOR0() |> flatMap(r0ToIOA) |> summonError)
@@ -1080,7 +1075,7 @@ and summonErrorFlatMap:
         onDone =>
           onDoneR0(
             fun
-            | Error(e) => onDone(Result.ok(Result.error(e)))
+            | Error(e) => onDone(Belt.Result.Ok(Belt.Result.Error(e)))
             | Ok(r0) => r0ToIOA(r0) |> summonError |> unsafeRunAsync(onDone),
           ),
       )
@@ -1099,13 +1094,13 @@ and summonErrorFlatMap:
 /**
 Unsummons an error from a success channel `Result.t('a, 'e)` back into the error channel of the `IO`.
 */
-let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
+let rec unsummonError: 'a 'e. t(Belt.Result.t('a, 'e), Relude_Void.t) => t('a, 'e) =
   ioResultA =>
     switch (ioResultA) {
-    | Pure(resultA) => resultA |> Result.fold(throw, pure)
-    | Throw(void) => Void.absurd(void)
+    | Pure(resultA) => resultA |> Relude_Result.fold(throw, pure)
+    | Throw(void) => Relude_Void.absurd(void)
     | Suspend(getResultA) =>
-      SuspendIO(() => getResultA() |> Result.fold(throw, pure))
+      SuspendIO(() => getResultA() |> Relude_Result.fold(throw, pure))
     | SuspendIO(getIOResultA) =>
       SuspendIO(() => getIOResultA() |> unsummonError)
     | Async(onDoneResultResultA) =>
@@ -1114,7 +1109,7 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
           onDoneResultResultA(resultResultA =>
             switch (resultResultA) {
             | Ok(resultA) => onDoneResultA(resultA)
-            | Error(void) => Void.absurd(void)
+            | Error(void) => Relude_Void.absurd(void)
             }
           ),
       )
@@ -1126,14 +1121,14 @@ let rec unsummonError: 'a 'e. t(Result.t('a, 'e), Void.t) => t('a, 'e) =
 
 and unsummonErrorMap:
   'r0 'a 'e.
-  ('r0 => Result.t('a, 'e), t('r0, Void.t)) => t('a, 'e)
+  ('r0 => Belt.Result.t('a, 'e), t('r0, Relude_Void.t)) => t('a, 'e)
  =
   (r0ToResultA, ioR0) => {
     switch (ioR0) {
-    | Pure(r0) => r0ToResultA(r0) |> Result.fold(throw, pure)
-    | Throw(void) => Void.absurd(void)
+    | Pure(r0) => r0ToResultA(r0) |> Relude_Result.fold(throw, pure)
+    | Throw(void) => Relude_Void.absurd(void)
     | Suspend(getR0) =>
-      SuspendIO(() => getR0() |> r0ToResultA |> Result.fold(throw, pure))
+      SuspendIO(() => getR0() |> r0ToResultA |> Relude_Result.fold(throw, pure))
     | SuspendIO(getIOR0) =>
       SuspendIO(() => getIOR0() |> map(r0ToResultA) |> unsummonError)
     | Async(onDoneR0) =>
@@ -1142,7 +1137,7 @@ and unsummonErrorMap:
           onDoneR0(
             fun
             | Ok(r0) => onDoneResultA(r0ToResultA(r0))
-            | Error(void) => Void.absurd(void),
+            | Error(void) => Relude_Void.absurd(void),
           ),
       )
     | Map(r1ToR0, ioR1) =>
@@ -1158,7 +1153,7 @@ and unsummonErrorMap:
 
 and unsummonErrorApply:
   'r0 'a 'e.
-  (t('r0 => Result.t('a, 'e), Void.t), t('r0, Void.t)) => t('a, 'e)
+  (t('r0 => Belt.Result.t('a, 'e), Relude_Void.t), t('r0, Relude_Void.t)) => t('a, 'e)
  =
   (ioR0ToResultA, ioR0) => {
     ioR0ToResultA
@@ -1170,12 +1165,12 @@ and unsummonErrorApply:
 
 and unsummonErrorFlatMap:
   'r0 'a 'e.
-  ('r0 => t(Result.t('a, 'e), Void.t), t('r0, Void.t)) => t('a, 'e)
+  ('r0 => t(Belt.Result.t('a, 'e), Relude_Void.t), t('r0, Relude_Void.t)) => t('a, 'e)
  =
   (r0ToIOResultA, ioR0) => {
     switch (ioR0) {
     | Pure(r0) => r0ToIOResultA(r0) |> unsummonError
-    | Throw(absurd) => Void.absurd(absurd)
+    | Throw(absurd) => Relude_Void.absurd(absurd)
     | Suspend(getR0) =>
       SuspendIO(() => getR0() |> r0ToIOResultA |> unsummonError)
     | SuspendIO(getIOR0) =>
@@ -1190,7 +1185,7 @@ and unsummonErrorFlatMap:
               |> r0ToIOResultA
               |> unsummonError
               |> unsafeRunAsync(onDoneResultA)
-            | Error(void) => Void.absurd(void),
+            | Error(void) => Relude_Void.absurd(void),
           ),
       )
     | Map(r1ToR0, ioR1) =>
@@ -1215,16 +1210,16 @@ Creates an async `IO` that waits for the given millisecond timeout before comple
 let delay: 'e. int => t(unit, 'e) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Result.ok()), millis) |> ignore
+      Js.Global.setTimeout(_ => onDone(Belt.Result.Ok()), millis) |> ignore
     );
 
 /**
 Creates an async non-failing `IO` that waits for the given millisecond timeout before completing with a unit value.
 */
-let delayWithVoid: int => t(unit, Void.t) =
+let delayWithVoid: int => t(unit, Relude_Void.t) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Result.ok()), millis) |> ignore
+      Js.Global.setTimeout(_ => onDone(Belt.Result.Ok()), millis) |> ignore
     );
 
 /**

@@ -1,10 +1,7 @@
-let (>>) = Relude_Function.Infix.(>>);
-let (<<) = Relude_Function.Infix.(<<);
-
-module IO = Relude_IO;
+open Relude_Function.Infix;
 
 module WithError = (ERR: BsAbstract.Interface.TYPE) => {
-  module IOE = IO.WithError(ERR);
+  module IOE = Relude_IO.WithError(ERR);
   module M = IOE.MonadError;
   type t('r, 'a) =
     | RIO('r => M.t('a));
