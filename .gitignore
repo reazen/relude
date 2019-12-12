@@ -17,3 +17,4 @@ npm-debug.log
 # Project files
 # TODO: remove the tests that create these files
 **/testUtils/**/*.txt
+/docs/coverage
