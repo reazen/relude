@@ -120,8 +120,20 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
 
   /**
    * Gets the length of the foldable.
+   * 
+   * Alias of size/count
    */
   let length: 'a. F.t('a) => int = xs => countBy(_ => true, xs);
+
+  /**
+   * Alias for length/count
+   */
+  let size: 'a. F.t('a) => int = length;
+
+  /**
+   * Alias for length/size
+   */
+  let count: 'a. F.t('a) => int = length;
 
   /**
    * Runs a side-effect function for each item in the foldable.

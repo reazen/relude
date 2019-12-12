@@ -64,6 +64,7 @@ module Set = Relude_Set;
 module StateT = Relude_StateT;
 module String = Relude_String;
 module StringMap = Relude_StringMap;
+module Tree = Relude_Tree;
 module Tuple = Relude_Tuple;
 module Validation = Relude_Validation;
 module Void = Relude_Void;
