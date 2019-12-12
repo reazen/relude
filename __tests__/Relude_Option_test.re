@@ -348,6 +348,28 @@ describe("Option Specializations", () => {
     expect(Option.String.eq(Some("a"), Some("b"))) |> toEqual(false)
   );
 
+  test("String.compare (both none)", () =>
+    expect(Option.String.compare(None, None)) |> toEqual(`equal_to)
+  );
+
+  test("String.compare (none less than some)", () =>
+    expect(Option.String.compare(None, Some("a"))) |> toEqual(`less_than)
+  );
+
+  test("String.compare (some is greater than none)", () =>
+    expect(Option.String.compare(Some(""), None)) |> toEqual(`greater_than)
+  );
+
+  test("String.compare (both some, same value)", () =>
+    expect(Option.String.compare(Some("hi"), Some("hi")))
+    |> toEqual(`equal_to)
+  );
+
+  test("String.compare (both some, different value)", () =>
+    expect(Option.String.compare(Some("b"), Some("a")))
+    |> toEqual(`greater_than)
+  );
+
   test("Int.eq", () =>
     expect(Option.Int.eq(Some(1), None)) |> toEqual(false)
   );

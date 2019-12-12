@@ -3,16 +3,25 @@ module OptionEqExtensions = (E: BsAbstract.Interface.EQ) => {
     Relude_Option_Instances.eqBy(E.eq);
 };
 
+module OptionOrdExtensions = (O: BsAbstract.Interface.ORD) => {
+  module OptionOrd = Relude_Option_Instances.Ord(O);
+
+  let compare = OptionOrd.compare;
+};
+
 module String = {
   include OptionEqExtensions(Relude_String.Eq);
+  include OptionOrdExtensions(Relude_String.Ord);
 };
 
 module Int = {
   include OptionEqExtensions(Relude_Int.Eq);
+  include OptionOrdExtensions(Relude_Int.Ord);
 };
 
 module Float = {
   include OptionEqExtensions(Relude_Float.Eq);
+  include OptionOrdExtensions(Relude_Float.Ord);
 };
 
 module IO = {
