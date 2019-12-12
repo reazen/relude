@@ -38,6 +38,12 @@ jobs:
     - name: npm run cleancoverage
       run: npm run cleancoverage
 
-    - name: npm run coveralls (only on mainline master)
-      if: github.repository == 'reazen/relude' && github.ref == 'refs/heads/master'
-      run: npm run coveralls
+    #- name: npm run coveralls (only on mainline master)
+      #if: github.repository == 'reazen/relude' && github.ref == 'refs/heads/master'
+      #run: npm run coveralls
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        path-to-lcov: ./docs/coverage/lcov.info
+        github-token: ${{ secrets.GITHUB_TOKEN }}
