@@ -11,11 +11,6 @@ jobs:
         node-version: [12.x]
 
     steps:
-    - name: "Info"
-      run: |
-        echo ${{ github.repository }}
-        echo ${{ github.ref }}
-
     - name: Checkout
       uses: actions/checkout@v1
       
@@ -24,6 +19,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    # TODO: not sure if this actually does anything useful
     - name: Cache ~/.npm 
       uses: actions/cache@v1
       with:
@@ -37,10 +33,6 @@ jobs:
       
     - name: npm run cleancoverage
       run: npm run cleancoverage
-
-    #- name: npm run coveralls (only on mainline master)
-      #if: github.repository == 'reazen/relude' && github.ref == 'refs/heads/master'
-      #run: npm run coveralls
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
