@@ -11,6 +11,11 @@ jobs:
         node-version: [12.x]
 
     steps:
+    - name: "Info"
+      run: |
+        echo ${{ github.repo }}
+        echo ${{ github.ref }}
+
     - name: Checkout
       uses: actions/checkout@v1
       
