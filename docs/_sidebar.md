@@ -4,7 +4,6 @@
   - [Conventions](Conventions.md)
   - [Status](Status.md)
   - [Developer info](Developers.md)
-  - [Test coverage](https://reazen.github.io/relude/coverage/lcov-report/index.html)
   - [FAQ](FAQ.md)
 
 - Typeclasses

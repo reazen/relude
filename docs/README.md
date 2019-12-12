@@ -72,7 +72,6 @@ Haskell, Scala, PureScript, and many others, and we are just humble students.
 - [Conventions](Conventions.md)
 - [Status](Status.md)
 - [Developer info](Developers.md)
-- [Test coverage](https://reazen.github.io/relude/coverage/lcov-report/index.html)
 - [FAQ](FAQ.md)
 - [Typeclasses](typeclasses/Introduction.md)
 - [API](api/Introduction.md)

@@ -10,7 +10,7 @@ We welcome contributions, bug fixes, features requests (or implementations), doc
 * Build: `npm run build`
 * Watch: `npm run watch`
 * Test: `npm run test`
-* Test coverage: `npm run coverage`
+* Coverage: `npm run coverage`
 * Docs: `npm run docs` (run the docs server)
 * Clean & build: `npm run cleanbuild`
 * Clean & watch: `npm run cleanwatch`
