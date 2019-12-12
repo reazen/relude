@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: "Info"
       run: |
-        echo ${{ github.repo }}
+        echo ${{ github.repository }}
         echo ${{ github.ref }}
 
     - name: Checkout
@@ -24,7 +24,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Dependency cache
+    - name: Cache ~/.npm 
       uses: actions/cache@v1
       with:
         path: ~/.npm
@@ -37,3 +37,7 @@ jobs:
       
     - name: npm run cleancoverage
       run: npm run cleancoverage
+
+    - name: npm run coveralls (only on mainline master)
+      if: github.repository == 'reazen/relude' && github.ref == 'refs/heads/master'
+      run: npm run coveralls
