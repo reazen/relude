@@ -320,9 +320,20 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
 /**
  * A NonEmpty implemented using a list as the tail sequence
  */
-module List = WithSequence(Relude_Sequence.List);
+module List = {
+  include WithSequence(Relude_Sequence.List);
+};
 
 /**
  * A NonEmpty implemented using an array as the tail sequence
  */
-module Array = WithSequence(Relude_Sequence.Array);
+module Array = {
+  include WithSequence(Relude_Sequence.Array);
+
+  let toNonEmptyList: 'a. t('a) => List.t('a) =
+    (NonEmpty(h, tailArray)) =>
+      NonEmpty(h, Belt.List.fromArray(tailArray));
+
+  let fromNonEmptyList: 'a. List.t('a) => t('a) =
+    (NonEmpty(h, tailList)) => NonEmpty(h, Belt.List.toArray(tailList));
+};
