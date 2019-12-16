@@ -374,6 +374,32 @@ module Show: SHOW_F =
     let show = tree => showBy(ShowA.show, tree);
   };
 
+let showPrettyBy: 'a. ('a => string, t('a)) => string =
+  (showA, tree) => {
+    let rec showPrettyByWithIndent: 'a. (int, 'a => string, t('a)) => string =
+      (level, showA, tree) => {
+        let indent =
+          if (level > 0) {
+            Relude_String.repeat(level - 1, "   ") ++ "|- ";
+          } else {
+            "";
+          };
+        let childrenStr =
+          tree
+          |> getChildren
+          |> Relude_List.map(showPrettyByWithIndent(level + 1, showA))
+          |> Relude_List.String.joinWith("");
+        indent ++ showA(tree |> getValue) ++ "\n" ++ childrenStr;
+      };
+    showPrettyByWithIndent(0, showA, tree);
+  };
+
+module ShowPretty: SHOW_F =
+  (ShowA: BsAbstract.Interface.SHOW) => {
+    type nonrec t = t(ShowA.t);
+    let show = showPrettyBy(ShowA.show);
+  };
+
 /**
  * Compares two trees for quality using the given function
  */

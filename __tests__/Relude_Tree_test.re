@@ -217,11 +217,14 @@ describe("Tree", () => {
     let f = tree => tree |> Tree.foldLeft((+), 0);
     let actual = Tree.extend(f, testTree2);
     let expected =
-      Tree.make(199, [
-        Tree.make(45, [Tree.pure(21), Tree.pure(22)]),
-        Tree.make(66, [Tree.pure(31), Tree.pure(32)]),
-        Tree.make(87, [Tree.pure(41), Tree.pure(42)]),
-      ]);
+      Tree.make(
+        199,
+        [
+          Tree.make(45, [Tree.pure(21), Tree.pure(22)]),
+          Tree.make(66, [Tree.pure(31), Tree.pure(32)]),
+          Tree.make(87, [Tree.pure(41), Tree.pure(42)]),
+        ],
+      );
     expect(actual) |> toEqual(expected);
   });
 
@@ -336,6 +339,43 @@ describe("Tree", () => {
     module Show = Tree.Show(Relude_Int.Show);
     expect(testTree1 |> Show.show)
     |> toEqual("Tree 1 [Tree 2 [], Tree 3 []]");
+  });
+
+  test("showPrettyBy", () => {
+    let tree =
+      Tree.make(
+        1,
+        [
+          Tree.make(
+            2,
+            [
+              Tree.make(21, [Tree.pure(211), Tree.pure(212)]),
+              Tree.make(22, []),
+            ],
+          ),
+          Tree.make(
+            3,
+            [
+              Tree.pure(31),
+              Tree.make(32, [Tree.pure(321), Tree.pure(322)]),
+            ],
+          ),
+        ],
+      );
+    let actual = tree |> showPrettyBy(string_of_int);
+    let expected = "1
+|- 2
+   |- 21
+      |- 211
+      |- 212
+   |- 22
+|- 3
+   |- 31
+   |- 32
+      |- 321
+      |- 322
+";
+    expect(actual) |> toEqual(expected);
   });
 
   test("eqBy", () => {
