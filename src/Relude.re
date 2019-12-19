@@ -47,6 +47,7 @@ module StringMap = Relude_StringMap;
 module Throttle = Relude_Throttle;
 module Timer = Relude_Timer;
 module Tree = Relude_Tree;
+module TreeZipper = Relude_TreeZipper;
 module Tuple = Relude_Tuple;
 module Unsafe = Relude_Unsafe;
 module Validation = Relude_Validation;
