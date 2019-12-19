@@ -580,6 +580,11 @@ let splitArray = (~delimiter: string, input: string): array(string) =>
   Js.String.split(delimiter, input);
 
 /**
+ * Alias for splitArray
+ */
+let splitAsArray = splitArray;
+
+/**
   `splitList(delimiter, str)` splits the given `str`
   at every occurrence of `delimiter` and returns a list
   of the resulting substrings.
@@ -594,6 +599,11 @@ let splitArray = (~delimiter: string, input: string): array(string) =>
 */
 let splitList = (~delimiter: string, input: string): list(string) =>
   splitArray(~delimiter, input) |> Relude_List_Instances.fromArray;
+
+/**
+ * Alias for splitlist
+ */
+let splitAsList = splitList;
 
 /**
   `splitAt(index, str)` splits the string at the given index,
@@ -628,6 +638,48 @@ let splitAt: (int, string) => (string, string) =
 let mapChars: (string => string, string) => string =
   (f, str) =>
     toList(str) |> Relude_List_Instances.foldMap((module Monoid), f);
+
+/**
+ * Pads the string to `targetLength` using `padWith` as a repeated padding on the left side of the `input` string
+ */
+let padStart: (~targetLength: int, ~padWith: string=?, string) => string =
+  (~targetLength, ~padWith=" ", input) => {
+    let inputLength = input |> length;
+    let padWithLength = padWith |> length;
+    if (inputLength >= targetLength) {
+      // Input already longer than target
+      input;
+    } else if (padWithLength == 0) {
+      // padWith is empty, can't do anything
+      input;
+    } else {
+      let padLength = targetLength - inputLength;
+      let padTimes = padLength / padWithLength + 1; // Add one so we get one extra, which we'll truncate
+      let pad = repeat(padTimes, padWith) |> slice(0, padLength);
+      pad ++ input;
+    };
+  };
+
+/**
+ * Pads the string to `targetLength` using `padWith` as a repeated padding on the right side of the `input` string
+ */
+let padEnd: (~targetLength: int, ~padWith: string=?, string) => string =
+  (~targetLength, ~padWith=" ", input) => {
+    let inputLength = input |> length;
+    let padWithLength = padWith |> length;
+    if (inputLength >= targetLength) {
+      // Input already longer than target
+      input;
+    } else if (padWithLength == 0) {
+      // padWith is empty, can't do anything
+      input;
+    } else {
+      let padLength = targetLength - inputLength;
+      let padTimes = padLength / padWithLength + 1; // Add one so we get one extra, which we'll truncate
+      let pad = repeat(padTimes, padWith) |> slice(0, padLength);
+      input ++ pad;
+    };
+  };
 
 /**
   `replaceFirst(target, newValue, str)` replaces the first occurrence of `target` with
