@@ -297,6 +297,36 @@ describe("String", () => {
     expect(Str.mapChars(s => s ++ s, "abc")) |> toEqual("aabbcc")
   );
 
+  testAll(
+    "padStart",
+    [
+      ("abc", "", 10, "abc"),
+      ("abc", " ", 10, "       abc"),
+      ("abc", "foo", 10, "foofoofabc"),
+      ("abc", "123456", 6, "123abc"),
+      ("abc", "0", 8, "00000abc"),
+      ("abc", " ", 1, "abc"),
+    ],
+    ((input, padWith, targetLength, expected)) => {
+    expect(input |> Str.padStart(~targetLength, ~padWith))
+    |> toEqual(expected)
+  });
+
+  testAll(
+    "padEnd",
+    [
+      ("abc", "", 10, "abc"),
+      ("abc", " ", 10, "abc       "),
+      ("abc", "foo", 10, "abcfoofoof"),
+      ("abc", "123456", 6, "abc123"),
+      ("abc", "0", 8, "abc00000"),
+      ("abc", " ", 1, "abc"),
+    ],
+    ((input, padWith, targetLength, expected)) => {
+    expect(input |> Str.padEnd(~targetLength, ~padWith))
+    |> toEqual(expected)
+  });
+
   test("fromInt", () =>
     expect(Str.fromInt(-20)) |> toEqual("-20")
   );
