@@ -12,7 +12,7 @@ let ifElse: (unit => 'a, unit => 'a, bool) => 'a =
 
 /**
  * Negates the bool value
- * 
+ *
  * Not named `not`, because refmt rewrites this as (!)
  */
 let inverse: bool => bool = (!);
@@ -60,39 +60,135 @@ let xnor: (bool, bool) => bool = (a, b) => !xor(a, b);
 let implies: (bool, bool) => bool = (a, b) => !a || b;
 
 /**
+ * Compares two booleans for equality
+ */
+let eq: (bool, bool) => bool =
+  (a, b) =>
+    switch (a, b) {
+    | (true, true) => true
+    | (false, false) => true
+    | (true, false) => false
+    | (false, true) => false
+    };
+
+/**
  * EQ instance for booleans
  */
-module Eq = BsAbstract.Bool.Eq;
+module Eq: BsAbstract.Interface.EQ with type t = bool = {
+  type t = bool;
+  let eq = eq;
+};
 
 /**
  * Compares two booleans for equality
  */
-let eq: (bool, bool) => bool = Eq.eq;
+let compare: (bool, bool) => BsAbstract.Interface.ordering =
+  (a, b) =>
+    switch (a, b) {
+    | (true, true) => `equal_to
+    | (false, false) => `equal_to
+    | (true, false) => `greater_than
+    | (false, true) => `less_than
+    };
 
 /**
  * ORD instance for booleans
  */
-module Ord = BsAbstract.Bool.Ord;
-
-/**
- * Compares two booleans for equality
- */
-let compare: (bool, bool) => BsAbstract.Interface.ordering = Ord.compare;
-
-/**
- * SHOW instance for booleans
- */
-module Show = BsAbstract.Bool.Show;
+module Ord: BsAbstract.Interface.ORD with type t = bool = {
+  include Eq;
+  let compare = compare;
+};
 
 /**
  * Converts a boolean value to a string
  */
-let show: bool => string = Show.show;
+let show: bool => string = b => b ? "true" : "false";
 
-module Conjunctive = BsAbstract.Bool.Conjunctive;
+/**
+ * SHOW instance for booleans
+ */
+module Show: BsAbstract.Interface.SHOW with type t = bool = {
+  type t = bool;
+  let show = show;
+};
+
+module Conjunctive = {
+  module Magma: BsAbstract.Interface.MAGMA with type t = bool = {
+    type t = bool;
+    let append = (&&);
+  };
+
+  module MedialMagma: BsAbstract.Interface.MEDIAL_MAGMA with type t = bool = Magma;
+
+  module Semigroup: BsAbstract.Interface.SEMIGROUP with type t = bool = Magma;
+  include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
+
+  module Monoid: BsAbstract.Interface.MONOID with type t = bool = {
+    include Semigroup;
+    let empty = true;
+  };
+  include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
+};
+
 module And = Conjunctive;
-module Disjunctive = BsAbstract.Bool.Disjunctive;
-module Or = Disjunctive;
-/* TODO: include other modules from BsAbstract? */
 
-module Infix = BsAbstract.Bool.Infix;
+module Disjunctive = {
+  module Magma: BsAbstract.Interface.MAGMA with type t = bool = {
+    type t = bool;
+    let append = (||);
+  };
+
+  module MedialMagma: BsAbstract.Interface.MEDIAL_MAGMA with type t = bool = Magma;
+
+  module Semigroup: BsAbstract.Interface.SEMIGROUP with type t = bool = Magma;
+  include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
+
+  module Monoid: BsAbstract.Interface.MONOID with type t = bool = {
+    include Semigroup;
+    let empty = false;
+  };
+  include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
+};
+
+module Or = Disjunctive;
+
+module Bounded: BsAbstract.Interface.BOUNDED with type t = bool = {
+  include Ord;
+  let top = true;
+  let bottom = false;
+};
+include Relude_Extensions_Bounded.BoundedExtensions(Bounded);
+
+module Enum: Relude_Interface.ENUM with type t = bool = {
+  include Ord;
+  let pred =
+    fun
+    | true => Some(false)
+    | false => None;
+  let succ =
+    fun
+    | true => None
+    | false => Some(true);
+};
+include Relude_Extensions_Enum.EnumExtensions(Enum);
+
+module BoundedEnum: Relude_Interface.BOUNDED_ENUM with type t = bool = {
+  include Bounded;
+  include (Enum: Relude_Interface.ENUM with type t := t);
+  let cardinality = 2;
+  let fromEnum =
+    fun
+    | false => 0
+    | true => 1;
+  let toEnum =
+    fun
+    | 0 => Some(false)
+    | 1 => Some(true)
+    | _ => None;
+};
+include Relude_Extensions_BoundedEnum.BoundedEnumExtensions(BoundedEnum);
+
+module Infix = {
+  include Relude_Extensions_Eq.EqInfix(Eq);
+  include Relude_Extensions_Ord.OrdInfix(Ord);
+};

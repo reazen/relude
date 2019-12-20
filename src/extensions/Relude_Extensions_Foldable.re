@@ -73,7 +73,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
         (min, x) =>
           switch (min) {
           | None => Some(x)
-          | Some(y) => Some(Relude_Extensions_Ord.minBy(f, x, y))
+          | Some(y) => Some(Relude_Ord.minBy(f, x, y))
           },
         None,
         xs,

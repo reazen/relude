@@ -1,11 +1,56 @@
+type eq('a) = ('a, 'a) => bool;
+
 /**
  * Extensions for any EQ
  */
 module EqExtensions = (Eq: BsAbstract.Interface.EQ) => {
   /**
+   * Creates a new equality function by contramapping the given conversion function
+   */
+  let eqWithConversion: 'b. ('b => Eq.t) => eq('b) =
+    bToA => Relude_Eq.by(bToA, Eq.eq);
+
+  /**
    * Indicates if the two items are not equal
    */
-  let notEq: (Eq.t, Eq.t) => bool = (a, b) => !Eq.eq(a, b);
+  let notEq = Eq.eq |> Relude_Eq.invert;
+
+  /**
+   * Alias for notEq
+   */
+  let eqInverted = notEq;
+
+  /**
+   * An Eq module which is the inverse of the given Eq module
+   */
+  module EqInverted: BsAbstract.Interface.EQ with type t = Eq.t = {
+    type t = Eq.t;
+    let eq = eqInverted;
+  };
+
+  module type EQ_BY_F =
+    (A: Relude_Interface.ARROW with type b = Eq.t) =>
+     BsAbstract.Interface.EQ with type t = A.a;
+
+  /**
+   * Creates a new Eq for a type b, given an Eq for type a and a Arrow for `b => a`
+   *
+   * Example:
+   * ```
+   * // Create an Eq for User, given an Eq for string and a function from User => string
+   * module UserEq = String.EqBy({
+   *   type a = User.t,
+   *   type b = string;
+   *   let f = user => user.email;
+   * });
+   * ```
+   */
+  module EqBy: EQ_BY_F =
+    (A: Relude_Interface.ARROW with type b = Eq.t) => {
+      type t = A.a;
+
+      let eq: (t, t) => bool = (b1, b2) => Eq.eq(A.f(b1), A.f(b2));
+    };
 };
 
 /**

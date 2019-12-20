@@ -1,0 +1,1 @@
+module BoundedEnumExtensions = (BE: Relude_Interface.BOUNDED_ENUM) => {};

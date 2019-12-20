@@ -4,6 +4,22 @@
 module type TYPE_ANY = {type t('a);};
 
 /**
+ * Module type which captures a simple a => b function
+ */
+module type ARROW = {
+  type a;
+  type b;
+  let f: a => b;
+};
+
+/**
+ * Module type functor which captures a simple a => b function
+ */
+module type ARROW_F =
+  (A: BsAbstract.Interface.TYPE, B: BsAbstract.Interface.TYPE) =>
+   ARROW with type a = A.t and type b = B.t;
+
+/**
  * Module type signature for a module that represents a sequence of values and related functions.
  */
 module type SEQUENCE = {
@@ -93,4 +109,42 @@ module type MONAD_THROW = {
 module type MONAD_ERROR = {
   include MONAD_THROW;
   let catchError: (e => t('a), t('a)) => t('a);
+};
+
+/**
+ * Represents types that have a lower bound, like strings or positive ints
+ */
+module type LOWER_BOUNDED = {
+  type t;
+  let bottom: t;
+};
+
+/**
+ * Represents types that have an upper bound
+ */
+module type UPPER_BOUNDED = {
+  type t;
+  let top: t;
+};
+
+/**
+ * Module type which describes a type that can be ordered and for which we can determine
+ * a lawful chain of successors and predecessors
+ */
+module type ENUM = {
+  include BsAbstract.Interface.ORD;
+  let succ: t => option(t);
+  let pred: t => option(t);
+};
+
+/**
+ * Module type which describes a type that can be ordered and for which we can determine
+ * a lawful chain of successors and predecessors, and there is a top and bottom bound.
+ */
+module type BOUNDED_ENUM = {
+  include BsAbstract.Interface.BOUNDED;
+  include ENUM with type t := t;
+  let cardinality: int;
+  let fromEnum: t => int;
+  let toEnum: int => option(t);
 };

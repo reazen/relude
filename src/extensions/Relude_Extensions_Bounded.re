@@ -1,0 +1,1 @@
+module BoundedExtensions = (B: BsAbstract.Interface.BOUNDED) => {};

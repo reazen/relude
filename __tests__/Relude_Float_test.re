@@ -129,41 +129,41 @@ describe("Float", () => {
   );
 
   test("named lessThan (smaller)", () =>
-    expect(Float.Named.lessThan(~compareTo=3.15, 3.14)) |> toEqual(true)
+    expect(Float.OrdNamed.lessThan(~compareTo=3.15, 3.14)) |> toEqual(true)
   );
 
   test("named lessThan (equal)", () =>
-    expect(Float.Named.lessThan(~compareTo=3.14, 3.14)) |> toEqual(false)
+    expect(Float.OrdNamed.lessThan(~compareTo=3.14, 3.14)) |> toEqual(false)
   );
 
   test("named lessThanOrEq (smaller)", () =>
-    expect(Float.Named.lessThanOrEq(~compareTo=2.0, 1.0)) |> toEqual(true)
+    expect(Float.OrdNamed.lessThanOrEq(~compareTo=2.0, 1.0)) |> toEqual(true)
   );
 
   test("named lessThanOrEq (larger)", () =>
-    expect(Float.Named.lessThanOrEq(~compareTo=0.0, 3.0)) |> toEqual(false)
+    expect(Float.OrdNamed.lessThanOrEq(~compareTo=0.0, 3.0)) |> toEqual(false)
   );
 
   test("named greaterThan (larger)", () =>
-    expect(Float.Named.greaterThan(~compareTo=0.1, 1.0)) |> toEqual(true)
+    expect(Float.OrdNamed.greaterThan(~compareTo=0.1, 1.0)) |> toEqual(true)
   );
 
   test("named greaterThan (equal)", () =>
-    expect(Float.Named.greaterThan(~compareTo=1.0, 1.0)) |> toEqual(false)
+    expect(Float.OrdNamed.greaterThan(~compareTo=1.0, 1.0)) |> toEqual(false)
   );
 
   test("named greaterThanOrEq (eq)", () =>
-    expect(Float.Named.greaterThanOrEq(~compareTo=0.0, 0.0))
+    expect(Float.OrdNamed.greaterThanOrEq(~compareTo=0.0, 0.0))
     |> toEqual(true)
   );
 
   test("named greaterThanOrEq (larger)", () =>
-    expect(Float.Named.greaterThanOrEq(~compareTo=0.0, 1.0))
+    expect(Float.OrdNamed.greaterThanOrEq(~compareTo=0.0, 1.0))
     |> toEqual(true)
   );
 
   test("named greaterThanOrEq (smaller)", () =>
-    expect(Float.Named.greaterThanOrEq(~compareTo=2.0, 1.0))
+    expect(Float.OrdNamed.greaterThanOrEq(~compareTo=2.0, 1.0))
     |> toEqual(false)
   );
 

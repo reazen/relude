@@ -1,253 +1,121 @@
-open BsAbstract.Interface;
+type ordering = BsAbstract.Interface.ordering;
+type compare('a) = ('a, 'a) => ordering;
 
-/**
- * Compares two values using the given compare function
- */
-let compareAsIntBy: 'a. (('a, 'a) => ordering, 'a, 'a) => int =
-  (compare, a, b) => compare(a, b) |> Relude_Ordering.toInt;
+module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
+  let compareWithConversion: ('b => O.t) => compare('b) =
+    bToA => Relude_Ord.by(bToA, O.compare);
 
-/**
- * Compares two values using the given ORD module
- */
-let compareAsInt =
-    (type a, ord: (module ORD with type t = a), a: a, b: a): int => {
-  module Ord = (val ord);
-  compareAsIntBy(Ord.compare, a, b);
-};
+  let compareReversed = O.compare |> Relude_Ord.reverse;
 
-/**
- * Finds the minimum of two values using the given compare function
- */
-let minBy: 'a. (('a, 'a) => ordering, 'a, 'a) => 'a =
-  (compare, a, b) =>
-    switch (compare(a, b)) {
-    | `greater_than => b
-    | `less_than
-    | `equal_to => a
-    };
-
-/**
- * Finds the minimum of two values using the given ORD module
- */
-let min = (type a, ord: (module ORD with type t = a), a, b) => {
-  module Ord = (val ord);
-  minBy(Ord.compare, a, b);
-};
-
-/**
- * Finds the maximum of two values using the given compare function
- */
-let maxBy: 'a. (('a, 'a) => ordering, 'a, 'a) => 'a =
-  (compare, a, b) =>
-    switch (compare(a, b)) {
-    | `less_than => b
-    | `greater_than
-    | `equal_to => a
-    };
-
-/**
- * Finds the maximum of two values using the given ORD module
- */
-let max = (type a, ord: (module ORD with type t = a), a, b) => {
-  module Ord = (val ord);
-  maxBy(Ord.compare, a, b);
-};
-
-/**
- * Indicates if the item on the left is less than the item on the right using the given compare function
- */
-let lessThanBy: 'a. (('a, 'a) => ordering, 'a, 'a) => bool =
-  (compare, a, b) => compare(a, b) == `less_than;
-
-/**
- * Alias for `lessThanBy`
- */
-let ltBy = lessThanBy;
-
-/**
- * Indicates if the item on the left is less than the item on the right using the given ORD module
- */
-let lessThan = (type a, ord: (module ORD with type t = a), a, b) => {
-  module Ord = (val ord);
-  lessThanBy(Ord.compare, a, b);
-};
-
-/**
- * Alias for `lessThan`
- */
-let lt = lessThan;
-
-/**
- * Indicates if the item on the left is less than or equal to the item on the right using the given compare function
- */
-let lessThanOrEqBy: 'a. (('a, 'a) => ordering, 'a, 'a) => bool =
-  (compare, a, b) => compare(a, b) != `greater_than;
-
-/**
- * Alias for lessThanOrEqBy`
- */
-let lteBy = lessThanOrEqBy;
-
-/**
- * Indicates if the item on the left is less than or equal to the item on the right using the given ORD module
- */
-let lessThanOrEq = (type a, ord: (module ORD with type t = a), a, b) => {
-  module Ord = (val ord);
-  lessThanOrEqBy(Ord.compare, a, b);
-};
-
-/**
- * Alias for `lessThanOrEq`
- */
-let lte = lessThanOrEq;
-
-/**
- * Indicates if the item on the left is greater than the item on the right using the given compare function
- */
-let greaterThanBy: 'a. (('a, 'a) => ordering, 'a, 'a) => bool =
-  (compare, a, b) => compare(a, b) == `greater_than;
-
-/**
- * Alias for `greaterThanBy`
- */
-let gtBy = greaterThanBy;
-
-/**
- * Indicates if the item on the left is greater than the item on the right using the given ORD module
- */
-let greaterThan = (type a, ord: (module ORD with type t = a), a, b) => {
-  module Ord = (val ord);
-  greaterThanBy(Ord.compare, a, b);
-};
-
-/**
- * Alias for `greaterThan`
- */
-let gt = greaterThan;
-
-/**
- * Indicates if the item on the left is greater than or equal to the item on the right using the given compare function
- */
-let greaterThanOrEqBy: 'a. (('a, 'a) => ordering, 'a, 'a) => bool =
-  (compare, a, b) => compare(a, b) != `less_than;
-
-/**
- * Alias for `greaterThanOrEqBy`
- */
-let gteBy = greaterThanOrEqBy;
-
-/**
- * Indicates if the item on the left is greater than or equal to the item on the right using the given ORD module
- */
-let greaterThanOrEq = (type a, ord: (module ORD with type t = a), a, b) => {
-  module Ord = (val ord);
-  greaterThanOrEqBy(Ord.compare, a, b);
-};
-
-/**
- * Alias for `greaterThanOrEq`
- */
-let gte = greaterThanOrEq;
-
-/**
-  Ensure a provided value falls between a max and min (inclusive). Note that if
-  the provided min is greater than the provided max, the max is always returned.
-  This is considered an incorrect use of `clamp`.
-
-  ```
-  let clamp = clampBy(Int.compare);
-  clamp(~min=0, ~max=5, 3) == 3;
-  clamp(~min=0, ~max=5, 0) == 0;
-  clamp(~min=0, ~max=3, 4) == 3;
-  clamp(~min=1, ~max=0, 2) == 0; // don't do this
-  ```
- */
-let clampBy: 'a. (('a, 'a) => ordering, ~min: 'a, ~max: 'a, 'a) => 'a =
-  (compare, ~min, ~max, v) => minBy(compare, max, maxBy(compare, min, v));
-
-let clamp = (type a, ord: (module ORD with type t = a), ~min: a, ~max: a, x) => {
-  module Ord = (val ord);
-  clampBy(Ord.compare, ~min, ~max, x);
-};
-
-/**
-  Determine whether a provided value falls between a min and max.
- */
-let betweenBy: 'a. (('a, 'a) => ordering, ~min: 'a, ~max: 'a, 'a) => bool =
-  (compare, ~min, ~max, v) =>
-    greaterThanOrEqBy(compare, v, min) && lessThanOrEqBy(compare, v, max);
-
-let between = (type a, ord: (module ORD with type t = a), ~min: a, ~max: a, x) => {
-  module Ord = (val ord);
-  betweenBy(Ord.compare, ~min, ~max, x);
-};
-
-/**
-  Absolute value: if x is gte zero, return zero, otherwise negate x.
- */
-let abs =
-    (
-      type a,
-      ord: (module ORD with type t = a),
-      ring: (module RING with type t = a),
-      x,
-    ) => {
-  module Ring = (val ring);
-  gte(ord, x, Ring.zero) ? x : Ring.subtract(Ring.zero, x);
-};
-
-/**
-  Sign function, evaluates to one for values >= zero, and negative one for
-  values less than zero.
- */
-let signum =
-    (
-      type a,
-      ord: (module ORD with type t = a),
-      ring: (module RING with type t = a),
-      x,
-    )
-    : a => {
-  module Ring = (val ring);
-  Ring.(gte(ord, x, zero) ? one : subtract(zero, one));
-};
-
-module OrdExtensions = (O: ORD) => {
-  let compareAsInt = (a, b) => compareAsIntBy(O.compare, a, b);
-  let min = (a, b) => minBy(O.compare, a, b);
-  let max = (a, b) => maxBy(O.compare, a, b);
-  let lessThan = (a, b) => lessThanBy(O.compare, a, b);
-  let lessThanOrEq = (a, b) => lessThanOrEqBy(O.compare, a, b);
-  let greaterThan = (a, b) => greaterThanBy(O.compare, a, b);
-  let greaterThanOrEq = (a, b) => greaterThanOrEqBy(O.compare, a, b);
-  let lt = lessThan;
-  let lte = lessThanOrEq;
-  let gt = greaterThan;
-  let gte = greaterThanOrEq;
-  let clamp = (~min, ~max, v) => clampBy(O.compare, ~min, ~max, v);
-  let between = (~min, ~max, v) => betweenBy(O.compare, ~min, ~max, v);
-
-  module OrdRingExtensions = (R: RING with type t = O.t) => {
-    let abs = v => abs((module O), (module R), v);
-    let signum = v => signum((module O), (module R), v);
+  /**
+   * Creates a new Ord module which is the reverse of the given Ord
+   */
+  module OrdReversed: BsAbstract.Interface.ORD with type t = O.t = {
+    type t = O.t;
+    let eq = O.eq;
+    let compare = compareReversed;
   };
 
-  module Named = {
-    let lessThan = (~compareTo, a) => lessThanBy(O.compare, a, compareTo);
+  let compareAsInt: (O.t, O.t) => int =
+    (a, b) => Relude_Ord.compareAsIntBy(O.compare, a, b);
+
+  let min: (O.t, O.t) => O.t = (a, b) => Relude_Ord.minBy(O.compare, a, b);
+
+  let max: (O.t, O.t) => O.t = (a, b) => Relude_Ord.maxBy(O.compare, a, b);
+
+  let lessThan: (O.t, O.t) => bool =
+    (a, b) => Relude_Ord.lessThanBy(O.compare, a, b);
+
+  let lt: (O.t, O.t) => bool = lessThan;
+
+  let lessThanOrEq: (O.t, O.t) => bool =
+    (a, b) => Relude_Ord.lessThanOrEqBy(O.compare, a, b);
+
+  let lte: (O.t, O.t) => bool = lessThanOrEq;
+
+  let greaterThan: (O.t, O.t) => bool =
+    (a, b) => Relude_Ord.greaterThanBy(O.compare, a, b);
+
+  let gt: (O.t, O.t) => bool = greaterThan;
+
+  let greaterThanOrEq: (O.t, O.t) => bool =
+    (a, b) => Relude_Ord.greaterThanOrEqBy(O.compare, a, b);
+
+  let gte: (O.t, O.t) => bool = greaterThanOrEq;
+
+  let clamp: (~min: O.t, ~max: O.t, O.t) => O.t =
+    (~min, ~max, v) => Relude_Ord.clampBy(O.compare, ~min, ~max, v);
+
+  let between: (~min: O.t, ~max: O.t, O.t) => bool =
+    (~min, ~max, v) => Relude_Ord.betweenBy(O.compare, ~min, ~max, v);
+
+  module OrdRingExtensions = (R: BsAbstract.Interface.RING with type t = O.t) => {
+    let abs: R.t => R.t = v => Relude_Ord.abs((module O), (module R), v);
+
+    let signum: R.t => R.t =
+      v => Relude_Ord.signum((module O), (module R), v);
+  };
+
+  /**
+   * OrdNamed contains versions of the comparison functions that have a named argument
+   * to disambiguate what's on the lhs vs. rhs of the comparison.  The ~compareTo values
+   * are on the rhs.
+   *
+   * Example:
+   * ```
+   * // 10 < 100
+   * let result = 10 |> Int.OrdNamed.lessThan(~compareTo=100);
+   * ```
+   */
+  module OrdNamed = {
+    let lessThan = (~compareTo, a) =>
+      Relude_Ord.lessThanBy(O.compare, a, compareTo);
+
     let lessThanOrEq = (~compareTo, a) =>
-      lessThanOrEqBy(O.compare, a, compareTo);
+      Relude_Ord.lessThanOrEqBy(O.compare, a, compareTo);
+
     let greaterThan = (~compareTo, a) =>
-      greaterThanBy(O.compare, a, compareTo);
+      Relude_Ord.greaterThanBy(O.compare, a, compareTo);
+
     let greaterThanOrEq = (~compareTo, a) =>
-      greaterThanOrEqBy(O.compare, a, compareTo);
+      Relude_Ord.greaterThanOrEqBy(O.compare, a, compareTo);
+
     let lt = lessThan;
+
     let lte = lessThanOrEq;
+
     let gt = greaterThan;
+
     let gte = greaterThanOrEq;
   };
+
+  module type ORD_BY_F =
+    (A: Relude_Interface.ARROW with type b = O.t) =>
+     BsAbstract.Interface.ORD with type t = A.a;
+
+  /**
+   * Creates an ORD for type b given this ORD of type a and an ARROW `b => a` to act as the contravariant
+   *
+   * Example:
+   * ```
+   * // Create an Ord for a user using an Ord for string and a function from User => string
+   * module UserOrd = String.OrdBy({
+   *   type a = User.t;
+   *   type b = string;
+   *   let f = user => user.email;
+   * });
+   * ```
+   */
+  module OrdBy: ORD_BY_F =
+    (A: Relude_Interface.ARROW with type b = O.t) => {
+      include Relude_Extensions_Eq.EqExtensions(O); // Get the EqBy module functor, so we can get the EQ bits using the Arrow
+      include EqBy(A); // Get the type t and eq functions using the Arrow
+      let compare: (t, t) => ordering =
+        (b1, b2) => O.compare(A.f(b1), A.f(b2));
+    };
 };
 
-module OrdInfix = (O: ORD) => {
+module OrdInfix = (O: BsAbstract.Interface.ORD) => {
   module OrdExtensions = OrdExtensions(O);
 
   // Note: if we want to change these, try for consistency with EQ operators
