@@ -1043,4 +1043,46 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(13)
   );
+
+  test("foldByValueLazy Init", () =>
+    AsyncResult.init
+    |> AsyncResult.foldByValueLazy(() => 1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(1)
+  );
+
+  test("foldByValueLazy Loading", () =>
+    AsyncResult.loading
+    |> AsyncResult.foldByValueLazy(() => 1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(1)
+  );
+
+  test("foldByValueLazy Reloading Ok", () =>
+    AsyncResult.reloadingOk(10)
+    |> AsyncResult.foldByValueLazy(() => 1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(12)
+  );
+
+  test("foldByValueLazy Reloading Error", () =>
+    AsyncResult.reloadingError(10)
+    |> AsyncResult.foldByValueLazy(() => 1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(13)
+  );
+
+  test("foldByValueLazy Complete Ok", () =>
+    AsyncResult.completeOk(10)
+    |> AsyncResult.foldByValueLazy(() => 1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(12)
+  );
+
+  test("foldByValueLazy Complete Error", () =>
+    AsyncResult.completeError(10)
+    |> AsyncResult.foldByValueLazy(() => 1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(13)
+  );
 });
