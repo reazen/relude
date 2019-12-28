@@ -729,4 +729,48 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(AsyncResult.completeError("error"))
   );
+
+  test("bind Init", () =>
+    AsyncResult.bind(AsyncResult.init, a => AsyncResult.reloadingOk(a))
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("bind Loading", () =>
+    AsyncResult.bind(AsyncResult.loading, a => AsyncResult.reloadingOk(a))
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("bind Reloading Ok", () =>
+    AsyncResult.bind(AsyncResult.reloadingOk(1), a =>
+      AsyncResult.reloadingError(a + 1)
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError(2))
+  );
+
+  test("bind Reloading Error", () =>
+    AsyncResult.bind(AsyncResult.reloadingError(1), a =>
+      AsyncResult.reloadingOk(a + 1)
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError(1))
+  );
+
+  test("bind Complete Ok", () =>
+    AsyncResult.bind(AsyncResult.completeOk(1), a =>
+      AsyncResult.completeError(a + 1)
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError(2))
+  );
+
+  test("bind Complete Error", () =>
+    AsyncResult.bind(AsyncResult.completeError(1), a =>
+      AsyncResult.completeOk(a + 1)
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError(1))
+  );
 });
