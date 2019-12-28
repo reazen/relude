@@ -773,4 +773,46 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(AsyncResult.completeError(1))
   );
+
+  test("flatMap Init", () =>
+    AsyncResult.init
+    |> AsyncResult.flatMap(a => AsyncResult.reloadingOk(a))
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("flatMap Loading", () =>
+    AsyncResult.loading
+    |> AsyncResult.flatMap(a => AsyncResult.reloadingOk(a))
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("flatMap Reloading Ok", () =>
+    AsyncResult.reloadingOk(1)
+    |> AsyncResult.flatMap(a => AsyncResult.reloadingError(a + 1))
+    |> expect
+    |> toEqual(AsyncResult.reloadingError(2))
+  );
+
+  test("flatMap Reloading Error", () =>
+    AsyncResult.reloadingError(1)
+    |> AsyncResult.flatMap(a => AsyncResult.reloadingOk(a + 1))
+    |> expect
+    |> toEqual(AsyncResult.reloadingError(1))
+  );
+
+  test("flatMap Complete Ok", () =>
+    AsyncResult.completeOk(1)
+    |> AsyncResult.flatMap(a => AsyncResult.completeError(a + 1))
+    |> expect
+    |> toEqual(AsyncResult.completeError(2))
+  );
+
+  test("flatMap Complete Error", () =>
+    AsyncResult.completeError(1)
+    |> AsyncResult.flatMap(a => AsyncResult.completeOk(a + 1))
+    |> expect
+    |> toEqual(AsyncResult.completeError(1))
+  );
 });
