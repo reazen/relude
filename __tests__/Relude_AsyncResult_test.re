@@ -450,4 +450,283 @@ describe("AsyncResult", () => {
     AsyncResult.completeError(10) |> AsyncResult.tapError(f) |> ignore;
     expect(count^) |> toEqual(11);
   });
+
+  test("apply Init & Init = Init", () =>
+    AsyncResult.apply(AsyncResult.init, AsyncResult.init)
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("apply Init & Loading = Loading", () =>
+    AsyncResult.apply(AsyncResult.init, AsyncResult.loading)
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("apply Init & Reloading Ok = Init", () =>
+    AsyncResult.apply(AsyncResult.init, AsyncResult.reloadingOk("ok"))
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("apply Init & Reloading Error = Reloading Error", () =>
+    AsyncResult.apply(AsyncResult.init, AsyncResult.reloadingError("error"))
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Init & Complete Ok = Init", () =>
+    AsyncResult.apply(AsyncResult.init, AsyncResult.completeOk("ok"))
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("apply Init & Complete Error = Complete Error", () =>
+    AsyncResult.apply(AsyncResult.init, AsyncResult.completeError("error"))
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Loading & Init = Loading", () =>
+    AsyncResult.apply(AsyncResult.loading, AsyncResult.init)
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("apply Loading & Loading = Loading", () =>
+    AsyncResult.apply(AsyncResult.loading, AsyncResult.loading)
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("apply Loading & Reloading Ok = Init", () =>
+    AsyncResult.apply(AsyncResult.loading, AsyncResult.reloadingOk("ok"))
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("apply Loading & Reloading Error = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.loading,
+      AsyncResult.reloadingError("error"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Loading & Complete Ok = Init", () =>
+    AsyncResult.apply(AsyncResult.loading, AsyncResult.completeOk("ok"))
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("apply Loading & Complete Error = Complete Error", () =>
+    AsyncResult.apply(
+      AsyncResult.loading,
+      AsyncResult.completeError("error"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Reloading Ok & Init = Init", () =>
+    AsyncResult.apply(AsyncResult.reloadingOk(() => "ok"), AsyncResult.init)
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("apply Reloading Error & Init = Init", () =>
+    AsyncResult.apply(AsyncResult.reloadingError("error"), AsyncResult.init)
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Reloading Ok & Loading = Loading", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingOk(() => "ok"),
+      AsyncResult.loading,
+    )
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("apply Reloading Error & Loading = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingError("error"),
+      AsyncResult.loading,
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Reloading Ok & Reloading Ok = Reloading Ok", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingOk(r => r ++ "ok"),
+      AsyncResult.reloadingOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingOk("okok"))
+  );
+
+  test("apply Reloading Ok & Reloading Error = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingOk(() => "ok"),
+      AsyncResult.reloadingError("error"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Reloading Error & Reloading Ok = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingError("error"),
+      AsyncResult.reloadingOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Reloading Error & Reloading Error = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingError("error"),
+      AsyncResult.reloadingError("error_2"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Reloading Ok & Complete Ok = Reloading Ok", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingOk(r => r ++ "ok"),
+      AsyncResult.completeOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingOk("okok"))
+  );
+
+  test("apply Reloading Ok & Complete Error = Complete Erro", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingOk(r => r ++ "ok"),
+      AsyncResult.completeError("error"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Reloading Error & Complete Ok = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingError("error"),
+      AsyncResult.completeOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Reloading Error & Complete Error = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.reloadingError("error"),
+      AsyncResult.completeError("error_2"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Complete Ok & Init = Init", () =>
+    AsyncResult.apply(AsyncResult.completeOk(() => "ok"), AsyncResult.init)
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("apply Complete Error & Init = Complete Error", () =>
+    AsyncResult.apply(AsyncResult.completeError("error"), AsyncResult.init)
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Complete Ok & Loading = Loading", () =>
+    AsyncResult.apply(AsyncResult.completeOk(() => "ok"), AsyncResult.loading)
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("apply Complete Error & Loading = Complete Error", () =>
+    AsyncResult.apply(
+      AsyncResult.completeError("error"),
+      AsyncResult.loading,
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Complete Ok & Reloading Ok = Reloading Ok", () =>
+    AsyncResult.apply(
+      AsyncResult.completeOk(r => r ++ "ok"),
+      AsyncResult.reloadingOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingOk("okok"))
+  );
+
+  test("apply Complete Ok & Reloading Error = Reloading Error", () =>
+    AsyncResult.apply(
+      AsyncResult.completeOk(r => r ++ "ok"),
+      AsyncResult.reloadingError("error"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.reloadingError("error"))
+  );
+
+  test("apply Complete Error & Reloading Ok = Complete Error", () =>
+    AsyncResult.apply(
+      AsyncResult.completeError("error"),
+      AsyncResult.reloadingOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Complete Error & Reloading Error = Complete Error", () =>
+    AsyncResult.apply(
+      AsyncResult.completeError("error"),
+      AsyncResult.reloadingError("error_2"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Complete Ok & Complete Ok = Complete Ok", () =>
+    AsyncResult.apply(
+      AsyncResult.completeOk(r => r ++ "ok"),
+      AsyncResult.completeOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeOk("okok"))
+  );
+
+  test("apply Complete Ok & Complete Error = Complete Error", () =>
+    AsyncResult.apply(
+      AsyncResult.completeOk(r => r ++ "ok"),
+      AsyncResult.completeError("error"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Complete Error & Complete Ok = Complete Error", () =>
+    AsyncResult.apply(
+      AsyncResult.completeError("error"),
+      AsyncResult.completeOk("ok"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
+
+  test("apply Complete Error & Complete Error = Complete Error", () =>
+    AsyncResult.apply(
+      AsyncResult.completeError("error"),
+      AsyncResult.completeError("error_2"),
+    )
+    |> expect
+    |> toEqual(AsyncResult.completeError("error"))
+  );
 });
