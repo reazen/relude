@@ -6,6 +6,11 @@ module AsyncResult = Relude.AsyncResult;
 module Option = Relude.Option;
 module Result = Relude.Result;
 
+module AsyncResultS =
+  AsyncResult.WithError({
+    type t = string;
+  });
+
 describe("AsyncResult", () => {
   test("Init", () =>
     expect(AsyncResult.init) |> toEqual(AsyncData.init)
@@ -1155,4 +1160,36 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(AsyncData.complete(10))
   );
+
+  test("WithError Init", () => {
+    open AsyncResultS.Infix;
+    let f = a => a + 1;
+    let ok = AsyncResult.init;
+    let actual = f <$> ok;
+    expect(actual) |> toEqual(AsyncResult.init);
+  });
+
+  test("WithError Loading", () => {
+    open AsyncResultS.Infix;
+    let f = a => a +1 ;
+    let ok = AsyncResult.loading;
+    let actual = f <$> ok;
+    expect(actual) |> toEqual(AsyncResult.loading);
+  });
+
+  test("WithError Reloading Ok", () => {
+    open AsyncResultS.Infix;
+    let f = a => a + 1;
+    let ok = AsyncResult.reloadingOk(10);
+    let actual = f <$> ok;
+    expect(actual) |> toEqual(AsyncResult.reloadingOk(11));
+  });
+
+  test("WithError Reloading Error", () => {
+    open AsyncResultS.Infix;
+    let f = a => a + 1;
+    let ok = AsyncResult.reloadingError("error");
+    let actual = f <$> ok;
+    expect(actual) |> toEqual(AsyncResult.reloadingError("error"));
+  });
 });
