@@ -1001,4 +1001,46 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(4)
   );
+
+  test("foldByValue Init", () =>
+    AsyncResult.init
+    |> AsyncResult.foldByValue(1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(1)
+  );
+
+  test("foldByValue Loading", () =>
+    AsyncResult.loading
+    |> AsyncResult.foldByValue(1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(1)
+  );
+
+  test("foldByValue Reloading Ok", () =>
+    AsyncResult.reloadingOk(10)
+    |> AsyncResult.foldByValue(1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(12)
+  );
+
+  test("foldByValue Reloading Error", () =>
+    AsyncResult.reloadingError(10)
+    |> AsyncResult.foldByValue(1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(13)
+  );
+
+  test("foldByValue Complete Ok", () =>
+    AsyncResult.completeOk(10)
+    |> AsyncResult.foldByValue(1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(12)
+  );
+
+  test("foldByValue Complete Error", () =>
+    AsyncResult.completeError(10)
+    |> AsyncResult.foldByValue(1, ok => ok + 2, error => error + 3)
+    |> expect
+    |> toEqual(13)
+  );
 });
