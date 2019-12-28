@@ -815,4 +815,46 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(AsyncResult.completeError(1))
   );
+
+  test("flatten Init", () =>
+    AsyncResult.init
+    |> AsyncResult.flatten
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("flatten Loading", () =>
+    AsyncResult.loading
+    |> AsyncResult.flatten
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("flatten Reloading Ok", () =>
+    AsyncResult.reloadingOk(AsyncResult.reloadingOk(2))
+    |> AsyncResult.flatten
+    |> expect
+    |> toEqual(AsyncResult.reloadingOk(2))
+  );
+
+  test("flatten Reloading Error", () =>
+    AsyncResult.reloadingError(AsyncResult.reloadingOk(2))
+    |> AsyncResult.flatten
+    |> expect
+    |> toEqual(AsyncResult.reloadingError(AsyncResult.reloadingOk(2)))
+  );
+
+  test("flatten Complete Ok", () =>
+    AsyncResult.completeOk(AsyncResult.completeOk(2))
+    |> AsyncResult.flatten
+    |> expect
+    |> toEqual(AsyncResult.completeOk(2))
+  );
+
+  test("flatten Complete Error", () =>
+    AsyncResult.completeError(AsyncResult.completeOk(2))
+    |> AsyncResult.flatten
+    |> expect
+    |> toEqual(AsyncResult.completeError(AsyncResult.completeOk(2)))
+  );
 });
