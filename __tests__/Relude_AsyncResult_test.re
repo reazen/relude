@@ -1085,4 +1085,74 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(13)
   );
+
+  test("fromAsyncData Init", () =>
+    AsyncData.init
+    |> AsyncResult.fromAsyncData
+    |> expect
+    |> toEqual(AsyncResult.init)
+  );
+
+  test("fromAsyncData Loading", () =>
+    AsyncData.loading
+    |> AsyncResult.fromAsyncData
+    |> expect
+    |> toEqual(AsyncResult.loading)
+  );
+
+  test("fromAsyncData Reloading", () =>
+    AsyncData.reloading(10)
+    |> AsyncResult.fromAsyncData
+    |> expect
+    |> toEqual(AsyncResult.reloadingOk(10))
+  );
+
+  test("fromAsyncData Complete", () =>
+    AsyncData.complete(10)
+    |> AsyncResult.fromAsyncData
+    |> expect
+    |> toEqual(AsyncResult.completeOk(10))
+  );
+
+  test("toAsyncData Init", () =>
+    AsyncResult.init
+    |> AsyncResult.toAsyncData
+    |> expect
+    |> toEqual(AsyncData.init)
+  );
+
+  test("toAsyncData Loading", () =>
+    AsyncResult.loading
+    |> AsyncResult.toAsyncData
+    |> expect
+    |> toEqual(AsyncData.loading)
+  );
+
+  test("toAsyncData Reloading Ok", () =>
+    AsyncResult.reloadingOk(10)
+    |> AsyncResult.toAsyncData
+    |> expect
+    |> toEqual(AsyncData.reloading(10))
+  );
+
+  test("toAsyncData Reloading Error", () =>
+    AsyncResult.reloadingError(10)
+    |> AsyncResult.toAsyncData
+    |> expect
+    |> toEqual(AsyncData.reloading(10))
+  );
+
+  test("toAsyncData Complete Ok", () =>
+    AsyncResult.completeOk(10)
+    |> AsyncResult.toAsyncData
+    |> expect
+    |> toEqual(AsyncData.complete(10))
+  );
+
+  test("toAsyncData Complete Error", () =>
+    AsyncResult.completeError(10)
+    |> AsyncResult.toAsyncData
+    |> expect
+    |> toEqual(AsyncData.complete(10))
+  );
 });
