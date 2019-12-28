@@ -857,4 +857,76 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(AsyncResult.completeError(AsyncResult.completeOk(2)))
   );
+
+  test("fold Init", () =>
+    AsyncResult.init
+    |> AsyncResult.fold(
+         1,
+         2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(1)
+  );
+
+  test("fold Loading", () =>
+    AsyncResult.loading
+    |> AsyncResult.fold(
+         1,
+         2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(2)
+  );
+
+  test("fold Reloading Ok", () =>
+    AsyncResult.reloadingOk(10)
+    |> AsyncResult.fold(
+         1,
+         2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(13)
+  );
+
+  test("fold Reloading Error", () =>
+    AsyncResult.reloadingError(10)
+    |> AsyncResult.fold(
+         1,
+         2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(3)
+  );
+
+  test("fold Complete Ok", () =>
+    AsyncResult.completeOk(10)
+    |> AsyncResult.fold(
+         1,
+         2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(14)
+  );
+
+  test("fold Complete Error", () =>
+    AsyncResult.completeError(10)
+    |> AsyncResult.fold(
+         1,
+         2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(4)
+  );
 });
