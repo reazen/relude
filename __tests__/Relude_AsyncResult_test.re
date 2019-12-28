@@ -342,4 +342,71 @@ describe("AsyncResult", () => {
     |> ignore;
     expect(count^) |> toEqual(11);
   });
+
+  test("tapOk init", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncResult.init
+    |> AsyncResult.tapOk(f)
+    |> ignore;
+    expect(count^) |> toEqual(0);
+  });
+
+  test("tapOk loading", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncResult.loading
+    |> AsyncResult.tapOk(f)
+    |> ignore;
+    expect(count^) |> toEqual(0);
+  });
+
+  test("tapOk reloadingOk", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncResult.reloadingOk(10)
+    |> AsyncResult.tapOk(f)
+    |> ignore;
+    expect(count^) |> toEqual(11);
+  });
+
+  test("tapOk reloadingError", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncResult.reloadingError(10)
+    |> AsyncResult.tapOk(f)
+    |> ignore;
+    expect(count^) |> toEqual(0);
+  });
+
+  test("tapOk completeOk", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncResult.completeOk(10)
+    |> AsyncResult.tapOk(f)
+    |> ignore;
+    expect(count^) |> toEqual(11);
+  });
+
+  test("tapOk completeError", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + a + 1;
+    };
+    AsyncResult.completeError(10)
+    |> AsyncResult.tapOk(f)
+    |> ignore;
+    expect(count^) |> toEqual(0);
+  });
+
 });
