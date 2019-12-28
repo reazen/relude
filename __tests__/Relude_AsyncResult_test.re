@@ -929,4 +929,76 @@ describe("AsyncResult", () => {
     |> expect
     |> toEqual(4)
   );
+
+  test("foldLazy Init", () =>
+    AsyncResult.init
+    |> AsyncResult.foldLazy(
+         () => 1,
+         () => 2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(1)
+  );
+
+  test("foldLazy Loading", () =>
+    AsyncResult.loading
+    |> AsyncResult.foldLazy(
+         () => 1,
+         () => 2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(2)
+  );
+
+  test("foldLazy Reloading Ok", () =>
+    AsyncResult.reloadingOk(10)
+    |> AsyncResult.foldLazy(
+         () => 1,
+         () => 2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(13)
+  );
+
+  test("foldLazy Reloading Error", () =>
+    AsyncResult.reloadingError(10)
+    |> AsyncResult.foldLazy(
+         () => 1,
+         () => 2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(3)
+  );
+
+  test("foldLazy Complete Ok", () =>
+    AsyncResult.completeOk(10)
+    |> AsyncResult.foldLazy(
+         () => 1,
+         () => 2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(14)
+  );
+
+  test("foldLazy Complete Error", () =>
+    AsyncResult.completeError(10)
+    |> AsyncResult.foldLazy(
+         () => 1,
+         () => 2,
+         r => (r |> Result.getOrElse(0)) + 3,
+         r => (r |> Result.getOrElse(0)) + 4,
+       )
+    |> expect
+    |> toEqual(4)
+  );
 });
