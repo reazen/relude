@@ -3,6 +3,8 @@ open Expect;
 
 module AsyncData = Relude.AsyncData;
 module AsyncResult = Relude.AsyncResult;
+module Option = Relude.Option;
+module Result = Relude.Result;
 
 describe("AsyncResult", () => {
   test("Init", () =>
@@ -239,7 +241,9 @@ describe("AsyncResult", () => {
   );
 
   test("mapError Reloading Error", () =>
-    expect(AsyncResult.reloadingError(42) |> AsyncResult.mapError(i => i + 1))
+    expect(
+      AsyncResult.reloadingError(42) |> AsyncResult.mapError(i => i + 1),
+    )
     |> toEqual(AsyncResult.reloadingError(43))
   );
 
@@ -276,4 +280,66 @@ describe("AsyncResult", () => {
     )
     |> toEqual(true)
   );
+
+  test("tapByValue init", () => {
+    let count = ref(0);
+    let f = () => {
+      count := count^ + 1;
+    };
+    AsyncResult.init |> AsyncResult.tapByValue(f, _ => ()) |> ignore;
+    expect(count^) |> toEqual(1);
+  });
+
+  test("tapByValue loading", () => {
+    let count = ref(0);
+    let f = () => {
+      count := count^ + 1;
+    };
+    AsyncResult.loading |> AsyncResult.tapByValue(f, _ => ()) |> ignore;
+    expect(count^) |> toEqual(1);
+  });
+
+  test("tapByValue reloadingOk", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + (a |> Result.getOk |> Option.getOrElse(-1)) + 1;
+    };
+    AsyncResult.reloadingOk(10)
+    |> AsyncResult.tapByValue(() => (), f)
+    |> ignore;
+    expect(count^) |> toEqual(11);
+  });
+
+  test("tapByValue reloadingError", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + (a |> Result.getError |> Option.getOrElse(-1)) + 1;
+    };
+    AsyncResult.reloadingError(10)
+    |> AsyncResult.tapByValue(() => (), f)
+    |> ignore;
+    expect(count^) |> toEqual(11);
+  });
+
+  test("tapByValue completeOk", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + (a |> Result.getOk |> Option.getOrElse(-1)) + 1;
+    };
+    AsyncResult.completeOk(10)
+    |> AsyncResult.tapByValue(() => (), f)
+    |> ignore;
+    expect(count^) |> toEqual(11);
+  });
+
+  test("tapByValue completeError", () => {
+    let count = ref(0);
+    let f = a => {
+      count := count^ + (a |> Result.getError |> Option.getOrElse(-1)) + 1;
+    };
+    AsyncResult.completeError(10)
+    |> AsyncResult.tapByValue(() => (), f)
+    |> ignore;
+    expect(count^) |> toEqual(11);
+  });
 });
