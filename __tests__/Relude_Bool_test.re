@@ -4,14 +4,9 @@ open Expect;
 module Bool = Relude.Bool;
 
 describe("Bool", () => {
-  test("ifElse true", () =>
-    expect(Bool.ifElse(() => "true", () => "false", true))
-    |> toEqual("true")
-  );
-
-  test("ifElse false", () =>
-    expect(Bool.ifElse(() => "true", () => "false", false))
-    |> toEqual("false")
+  testAll("ifElse", [(true, "yes"), (false, "no")], ((input, expected)) =>
+    expect(input |> Bool.ifElse(() => "yes", () => "no"))
+    |> toEqual(expected)
   );
 
   testAll("inverse", [(true, false), (false, true)], ((input, expected)) =>
@@ -129,4 +124,71 @@ describe("Bool", () => {
   testAll("show", [(true, "true"), (false, "false")], ((a, b)) =>
     expect(Bool.show(a)) |> toEqual(b)
   );
+});
+
+describe("Bool Conjuntive", () => {
+  testAll(
+    "append",
+    [
+      (true, true, true),
+      (true, false, false),
+      (false, true, false),
+      (false, false, false),
+    ],
+    ((a, b, expected)) => {
+    expect(Bool.Conjunctive.Magma.append(a, b)) |> toEqual(expected)
+  })
+});
+
+describe("Bool Disjunctive", () => {
+  testAll(
+    "append",
+    [
+      (true, true, true),
+      (true, false, true),
+      (false, true, true),
+      (false, false, false),
+    ],
+    ((a, b, expected)) => {
+    expect(Bool.Disjunctive.Magma.append(a, b)) |> toEqual(expected)
+  })
+});
+
+describe("Bool Bounded", () => {
+  test("top", () => {
+    expect(Bool.Bounded.top) |> toEqual(true)
+  });
+
+  test("bottom", () => {
+    expect(Bool.Bounded.bottom) |> toEqual(false)
+  });
+});
+
+describe("Bool Enum", () => {
+  testAll(
+    "pred", [(true, Some(false)), (false, None)], ((input, expected)) => {
+    expect(Bool.Enum.pred(input)) |> toEqual(expected)
+  });
+
+  testAll(
+    "succ", [(true, None), (false, Some(true))], ((input, expected)) => {
+    expect(Bool.Enum.succ(input)) |> toEqual(expected)
+  });
+});
+
+describe("Bool BoundedEnum", () => {
+  test("cardinality", () => {
+    expect(Bool.BoundedEnum.cardinality) |> toEqual(2)
+  });
+
+  testAll("fromEnum", [(true, 1), (false, 0)], ((input, expected)) => {
+    expect(Bool.BoundedEnum.fromEnum(input)) |> toEqual(expected)
+  });
+
+  testAll(
+    "toEnum",
+    [(1, Some(true)), (0, Some(false)), (2, None), ((-1), None)],
+    ((input, expected)) => {
+    expect(Bool.BoundedEnum.toEnum(input)) |> toEqual(expected)
+  });
 });

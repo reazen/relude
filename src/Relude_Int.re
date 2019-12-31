@@ -141,6 +141,32 @@ module Ord: BsAbstract.Interface.ORD with type t = int = {
 };
 include Relude_Extensions_Ord.OrdExtensions(Ord);
 
+module Bounded: BsAbstract.Interface.BOUNDED with type t = int = {
+  include Ord;
+  let top = top;
+  let bottom = bottom;
+};
+include Relude_Extensions_Bounded.BoundedExtensions(Bounded);
+
+module Enum: Relude_Interface.ENUM with type t = int = {
+  include Ord;
+  let pred = i =>
+    if (i > bottom) {
+      Some(i - 1);
+    } else {
+      None;
+    };
+  let succ = i =>
+    if (i < top) {
+      Some(i + 1);
+    } else {
+      None;
+    };
+};
+include Relude_Extensions_Enum.EnumExtensions(Enum);
+
+// Not a BoundedEnum b/c cardinality would be larger than an signed int can represent
+
 module Semiring: BsAbstract.Interface.SEMIRING with type t = int = {
   type t = int;
   let zero = zero;
@@ -156,12 +182,6 @@ module Ring: BsAbstract.Interface.RING with type t = int = {
 };
 include Relude_Extensions_Ring.RingExtensions(Ring);
 include OrdRingExtensions(Ring);
-
-module Bounded: BsAbstract.Interface.BOUNDED with type t = int = {
-  include Ord;
-  let top = top;
-  let bottom = bottom;
-};
 
 module EuclideanRing: BsAbstract.Interface.EUCLIDEAN_RING with type t = int = {
   include Ring;
@@ -217,7 +237,7 @@ module Show: BsAbstract.Interface.SHOW with type t = int = {
 */
 let fromString: string => option(int) =
   v =>
-    try (Some(int_of_string(v))) {
+    try(Some(int_of_string(v))) {
     | _ => None
     };
 
@@ -239,4 +259,6 @@ module Divisive = {
 
 module Infix = {
   include BsAbstract.Int.Infix;
+  include Relude_Extensions_Eq.EqInfix(Eq);
+  include Relude_Extensions_Ord.OrdInfix(Ord);
 };

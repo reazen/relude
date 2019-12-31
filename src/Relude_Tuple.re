@@ -1,237 +1,80 @@
-/**
- * Constructs a tuple-2 from 2 values
- */
-let make: 'a 'b. ('a, 'b) => ('a, 'b) = (a, b) => (a, b);
+module Tuple2 = Relude_Tuple2;
+module Tuple3 = Relude_Tuple3;
+module Tuple4 = Relude_Tuple4;
+module Tuple5 = Relude_Tuple5;
 
-/**
- * Constructs a tuple-2 from 2 values
- *
- * Alias of `make`
- */
-let make2: 'a 'b. ('a, 'b) => ('a, 'b) = make;
+// Aliases for backwards compat/convenience
+// This also helps to make sure our implementations of all the tuples are in sync
+// We might be able to make a module type for that, but it could be tricky with some
+// of the module shenanigans going on with EQ/ORD/etc.
 
-/**
- * Constructs a tuple-3 from 3 values
- */
-let make3: 'a 'b 'c. ('a, 'b, 'c) => ('a, 'b, 'c) = (a, b, c) => (a, b, c);
+let make = Tuple2.make;
+let make2 = Tuple2.make;
+let make3 = Tuple3.make;
+let make4 = Tuple4.make;
+let make5 = Tuple5.make;
 
-/**
- * Constructs a tuple-4 from 4 values
- */
-let make4: 'a 'b 'c 'd. ('a, 'b, 'c, 'd) => ('a, 'b, 'c, 'd) =
-  (a, b, c, d) => (a, b, c, d);
+let fromArray = Tuple2.fromArray;
+let fromArray2 = Tuple2.fromArray;
+let fromArray3 = Tuple3.fromArray;
+let fromArray4 = Tuple4.fromArray;
+let fromArray5 = Tuple5.fromArray;
 
-/**
- * Constructs a tuple-5 from 5 values
- */
-let make5: 'a 'b 'c 'd 'e. ('a, 'b, 'c, 'd, 'e) => ('a, 'b, 'c, 'd, 'e) =
-  (a, b, c, d, e) => (a, b, c, d, e);
+let fromArrayAtLeast = Tuple2.fromArrayAtLeast;
+let fromArrayAtLeast2 = Tuple2.fromArrayAtLeast;
+let fromArrayAtLeast3 = Tuple3.fromArrayAtLeast;
+let fromArrayAtLeast4 = Tuple4.fromArrayAtLeast;
+let fromArrayAtLeast5 = Tuple5.fromArrayAtLeast;
 
-/**
- * Constructs a tuple-2 from an array of exactly 2 values
- */
-let fromArray: 'a. array('a) => option(('a, 'a)) =
-  fun
-  | [|a, b|] => Some((a, b))
-  | _ => None;
+let fromList = Tuple2.fromList;
+let fromList2 = Tuple2.fromList;
+let fromList3 = Tuple3.fromList;
+let fromList4 = Tuple4.fromList;
+let fromList5 = Tuple5.fromList;
 
-/**
- * Constructs a tuple-2 from an array of exactly 2 values
- *
- * Alias of `fromArray`
- */
-let fromArray2: 'a. array('a) => option(('a, 'a)) = fromArray;
+let fromListAtLeast = Tuple2.fromListAtLeast;
+let fromListAtLeast2 = Tuple2.fromListAtLeast;
+let fromListAtLeast3 = Tuple3.fromListAtLeast;
+let fromListAtLeast4 = Tuple4.fromListAtLeast;
+let fromListAtLeast5 = Tuple5.fromListAtLeast;
 
-/**
- * Constructs a tuple-3 from an array of exactly 3 values
- */
-let fromArray3: 'a. array('a) => option(('a, 'a, 'a)) =
-  fun
-  | [|a, b, c|] => Some((a, b, c))
-  | _ => None;
+// These were re-definitions of uncurry, so leaving them here as aliases for now
+let apply = Relude_Function.uncurry2;
+let apply2 = Relude_Function.uncurry2;
+let apply3 = Relude_Function.uncurry3;
+let apply4 = Relude_Function.uncurry4;
+let apply5 = Relude_Function.uncurry5;
 
-/**
- * Constructs a tuple-4 from an array of exactly 4 values
- */
-let fromArray4: 'a. array('a) => option(('a, 'a, 'a, 'a)) =
-  fun
-  | [|a, b, c, d|] => Some((a, b, c, d))
-  | _ => None;
+let showBy = Tuple2.showBy;
+let showBy2 = Tuple2.showBy;
+let showBy3 = Tuple3.showBy;
+let showBy4 = Tuple4.showBy;
+let showBy5 = Tuple5.showBy;
 
-/**
- * Constructs a tuple-5 from an array of exactly 5 values
- */
-let fromArray5: 'a. array('a) => option(('a, 'a, 'a, 'a, 'a)) =
-  fun
-  | [|a, b, c, d, e|] => Some((a, b, c, d, e))
-  | _ => None;
+let eqBy = Tuple2.eqBy;
+let eqBy2 = Tuple2.eqBy;
+let eqBy3 = Tuple3.eqBy;
+let eqBy4 = Tuple4.eqBy;
+let eqBy5 = Tuple5.eqBy;
+module WithEqs2 = Tuple2.WithEqs;
+module WithEqs3 = Tuple3.WithEqs;
+module WithEqs4 = Tuple4.WithEqs;
+module WithEqs5 = Tuple5.WithEqs;
+module EqBy2 = Tuple2.EqBy;
+module EqBy3 = Tuple3.EqBy;
+module EqBy4 = Tuple4.EqBy;
+module EqBy5 = Tuple5.EqBy;
 
-/**
- * Constructs a tuple-2 from an array of at least 2 values
- */
-let fromArrayAtLeast2: 'a. array('a) => option(('a, 'a)) =
-  xs => Relude_Array.take(2, xs) |> fromArray;
-
-/**
- * Constructs a tuple-3 from an array of at least 3 values
- */
-let fromArrayAtLeast3: 'a. array('a) => option(('a, 'a, 'a)) =
-  xs => Relude_Array.take(3, xs) |> fromArray3;
-
-/**
- * Constructs a tuple-4 from an array of at least 4 values
- */
-let fromArrayAtLeast4: 'a. array('a) => option(('a, 'a, 'a, 'a)) =
-  xs => Relude_Array.take(4, xs) |> fromArray4;
-
-/**
- * Constructs a tuple-5 from an array of at least 5 values
- */
-let fromArrayAtLeast5: 'a. array('a) => option(('a, 'a, 'a, 'a, 'a)) =
-  xs => Relude_Array.take(5, xs) |> fromArray5;
-
-// Pattern matching on lists leads to deeply nested conditional branches in the
-// JS code, which is hard to read and painful to test exhaustively. Instead, we
-// implement fromList* in terms of fromArray*. We avoid an O(n) conversion to
-// Array by first taking only enough elements to make sure the tuple is OK. That
-// count is the size of the tuple + 1 to ensure that lists larger than the
-// target tuple size will be caught and rejected.
-
-/**
- * Constructs a tuple-2 from a list of exactly 2 values
- */
-let fromList: 'a. list('a) => option(('a, 'a)) =
-  xs => Relude_List.(take(3, xs) |> toArray) |> fromArray;
-
-/**
- * Constructs a tuple-2 from a list of exactly 2 values
- *
- * Alias of `fromList`
- */
-let fromList2: 'a. list('a) => option(('a, 'a)) = fromList;
-
-/**
- * Constructs a tuple-3 from a list of exactly 3 values
- */
-let fromList3: 'a. list('a) => option(('a, 'a, 'a)) =
-  xs => Relude_List.(take(4, xs) |> toArray) |> fromArray3;
-
-/**
- * Constructs a tuple-4 from a list of exactly 4 values
- */
-let fromList4: 'a. list('a) => option(('a, 'a, 'a, 'a)) =
-  xs => Relude_List.(take(5, xs) |> toArray) |> fromArray4;
-
-/**
- * Constructs a tuple-5 from a list of exactly 5 values
- */
-let fromList5: 'a. list('a) => option(('a, 'a, 'a, 'a, 'a)) =
-  xs => Relude_List.(take(6, xs) |> toArray) |> fromArray5;
-
-/**
- * Constructs a tuple-2 from a list of at least 2 values
- */
-let fromListAtLeast2: 'a. list('a) => option(('a, 'a)) =
-  xs => Relude_List.take(2, xs) |> fromList;
-
-/**
- * Constructs a tuple-3 from a list of at least 3 values
- */
-let fromListAtLeast3: 'a. list('a) => option(('a, 'a, 'a)) =
-  xs => Relude_List.take(3, xs) |> fromList3;
-
-/**
- * Constructs a tuple-4 from a list of at least 4 values
- */
-let fromListAtLeast4: 'a. list('a) => option(('a, 'a, 'a, 'a)) =
-  xs => Relude_List.take(4, xs) |> fromList4;
-
-/**
- * Constructs a tuple-5 from a list of at least 5 values
- */
-let fromListAtLeast5: 'a. list('a) => option(('a, 'a, 'a, 'a, 'a)) =
-  xs => Relude_List.take(5, xs) |> fromList5;
-
-/**
- * Applies a normal 2-argument function to arguments contained in a tuple-2
- */
-let apply2: 'a 'b 'c. (('a, 'b) => 'c, ('a, 'b)) => 'c =
-  (f, (a, b)) => f(a, b);
-
-/**
- * Applies a normal 3-argument function to arguments contained in a tuple-3
- */
-let apply3: 'a 'b 'c 'd. (('a, 'b, 'c) => 'd, ('a, 'b, 'c)) => 'd =
-  (f, (a, b, c)) => f(a, b, c);
-
-/**
- * Applies a normal 4-argument function to arguments contained in a tuple-4
- */
-let apply4: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd) => 'e, ('a, 'b, 'c, 'd)) => 'e =
-  (f, (a, b, c, d)) => f(a, b, c, d);
-
-/**
- * Applies a normal 5-argument function to arguments contained in a tuple-5
- */
-let apply5:
-  'a 'b 'c 'd 'e 'f.
-  (('a, 'b, 'c, 'd, 'e) => 'f, ('a, 'b, 'c, 'd, 'e)) => 'f
- =
-  (f, (a, b, c, d, e)) => f(a, b, c, d, e);
-
-let showBy2: 'a 'b. ('a => string, 'b => string, ('a, 'b)) => string =
-  (showA, showB, (a, b)) => "(" ++ showA(a) ++ ", " ++ showB(b) ++ ")";
-
-let showBy3:
-  'a 'b 'c.
-  ('a => string, 'b => string, 'c => string, ('a, 'b, 'c)) => string
- =
-  (showA, showB, showC, (a, b, c)) =>
-    "(" ++ showA(a) ++ ", " ++ showB(b) ++ ", " ++ showC(c) ++ ")";
-
-let showBy4:
-  'a 'b 'c 'd.
-  (
-    'a => string,
-    'b => string,
-    'c => string,
-    'd => string,
-    ('a, 'b, 'c, 'd)
-  ) =>
-  string
- =
-  (showA, showB, showC, showD, (a, b, c, d)) =>
-    "("
-    ++ showA(a)
-    ++ ", "
-    ++ showB(b)
-    ++ ", "
-    ++ showC(c)
-    ++ ", "
-    ++ showD(d)
-    ++ ")";
-
-let showBy5:
-  'a 'b 'c 'd 'e.
-  (
-    'a => string,
-    'b => string,
-    'c => string,
-    'd => string,
-    'e => string,
-    ('a, 'b, 'c, 'd, 'e)
-  ) =>
-  string
- =
-  (showA, showB, showC, showD, showE, (a, b, c, d, e)) =>
-    "("
-    ++ showA(a)
-    ++ ", "
-    ++ showB(b)
-    ++ ", "
-    ++ showC(c)
-    ++ ", "
-    ++ showD(d)
-    ++ ", "
-    ++ showE(e)
-    ++ ")";
+let compareBy = Tuple2.compareBy;
+let compareBy2 = Tuple2.compareBy;
+let compareBy3 = Tuple3.compareBy;
+let compareBy4 = Tuple4.compareBy;
+let compareBy5 = Tuple5.compareBy;
+module WithOrds2 = Tuple2.WithOrds;
+module WithOrds3 = Tuple3.WithOrds;
+module WithOrds4 = Tuple4.WithOrds;
+module WithOrds5 = Tuple5.WithOrds;
+module OrdBy2 = Tuple2.OrdBy;
+module OrdBy3 = Tuple3.OrdBy;
+module OrdBy4 = Tuple4.OrdBy;
+module OrdBy5 = Tuple5.OrdBy;
