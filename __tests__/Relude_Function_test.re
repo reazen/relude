@@ -2,6 +2,13 @@ open Jest;
 open Expect;
 
 module Function = Relude_Function;
+module StringArgument = {
+  type t = string;
+  module Type: BsAbstract.Interface.TYPE with type t = t = {
+    type nonrec t = t;
+  };
+};
+module FunctionWithStringArgument = Function.WithArgument(StringArgument);
 
 let (<<) = Function.Infix.(<<);
 let (>>) = Function.Infix.(>>);
@@ -24,6 +31,12 @@ describe("Function", () => {
   test("const returns the first arg", () =>
     expect(Function.const(1, 2)) |> toBe(1)
   );
+
+  test("flip", () => {
+    let formula = (x, y) => x + 2 * y;
+    expect(formula(3, 5)) |> toBe(13) |> ignore;
+    expect(Function.flip(formula, 5, 3)) |> toBe(13);
+  });
 
   test("compose combines functions from right to left", () => {
     let plus5 = a => a + 5;
@@ -68,6 +81,46 @@ describe("Function", () => {
   test("uncurry5", () =>
     expect(Function.uncurry5(f5, (1, 2, 3, 4, 5))) |> toEqual(15)
   );
+
+  test("map", () => {
+    let plus5 = a => a + 5;
+    let times3 = a => a * 3;
+    expect(Function.map(plus5, times3, 10)) |> toBe(35);
+  });
+
+  test("apply", () => {
+    let showResult = (n, x: float) =>
+      "input " ++ string_of_int(n) ++ " yields " ++ Js.Float.toString(x);
+
+    let cube = x => float_of_int(x * x * x);
+
+    expect(Function.apply(showResult, cube, 5))
+    |> toBe("input 5 yields 125");
+  });
+
+  test("pure returns the first arg", () =>
+    expect(Function.pure(1, 2)) |> toBe(1)
+  );
+
+  test("bind", () => {
+    let showResult = (x, n: int) =>
+      "input " ++ string_of_int(n) ++ " yields " ++ Js.Float.toString(x);
+
+    let cube = x => float_of_int(x * x * x);
+
+    expect(Function.bind(cube, showResult, 5)) |> toBe("input 5 yields 125");
+  });
+
+  test("flatMap", () => {
+    let showResult = (x, n: int) => {
+      "input " ++ string_of_int(n) ++ " yields " ++ Js.Float.toString(x);
+    };
+
+    let cube = x => float_of_int(x * x * x);
+
+    expect(Function.flatMap(showResult, cube, 5))
+    |> toBe("input 5 yields 125");
+  });
 
   test("memoize0", () => {
     let calls = ref(0);
@@ -160,5 +213,13 @@ describe("Function", () => {
     let resultF = f("");
     let resultG = g("");
     expect((resultF, resultG)) |> toEqual((true, false));
+  });
+
+  test("WithArgument", () => {
+    open FunctionWithStringArgument.Infix;
+    let plus5 = a => a + 5;
+    let times3 = a => (a |> int_of_string) * 3;
+    let actual = (plus5 <$> times3)("10");
+    expect(actual) |> toBe(35);
   });
 });
