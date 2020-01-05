@@ -166,17 +166,17 @@ describe("Validation", () => {
     expect(x^) |> toEqual(0);
   });
 
-  testAll(
-    "bimap",
-    [
-      (Validation.VOk(123), Validation.VOk(124)),
-      (Validation.VError(123), Validation.VError(122)),
-    ],
-    ((input, expected)) => {
-      let actual = input |> Validation.bimap(i => i + 1, i => i - 1);
-      expect(actual) |> toEqual(expected);
-    },
-  );
+  test("bimap success", () => {
+    expect(Validation.VOk(123) |> Validation.bimap(i => i + 1, i => i - 1))
+    |> toEqual(Validation.VOk(124))
+  });
+
+  test("bimap error", () => {
+    expect(
+      Validation.VError(123) |> Validation.bimap(i => i + 1, i => i - 1),
+    )
+    |> toEqual(Validation.VError(122))
+  });
 
   testAll(
     "bitap",
