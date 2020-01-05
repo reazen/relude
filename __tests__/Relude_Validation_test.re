@@ -178,15 +178,25 @@ describe("Validation", () => {
     |> toEqual(Validation.VError(122))
   });
 
-  testAll(
-    "bitap",
-    [(Validation.VOk(123), 124), (Validation.VError(123), 122)],
-    ((input, expected)) => {
-      let x = ref(0);
-      input |> Validation.bitap(i => x := i + 1, i => x := i - 1) |> ignore;
-      expect(x^) |> toEqual(expected);
-    },
-  );
+  test("bitap success", () => {
+    let x = ref(0);
+
+    Validation.VOk(123)
+    |> Validation.bitap(i => x := i + 1, i => x := i - 1)
+    |> ignore;
+
+    expect(x^) |> toEqual(124);
+  });
+
+  test("bitap error", () => {
+    let x = ref(0);
+
+    Validation.VError(123)
+    |> Validation.bitap(i => x := i + 1, i => x := i - 1)
+    |> ignore;
+
+    expect(x^) |> toEqual(122);
+  });
 
   test("bind/flatMap success", () => {
     let input = Validation.VOk(123);
