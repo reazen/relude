@@ -552,6 +552,26 @@ describe("Array", () => {
     |> toEqual([|1, 2, 100, 4, 5|])
   );
 
+  test("insertAt first", () =>
+    expect(Array.insertAt(0, 100, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|100, 1, 2, 3, 4, 5|])
+  );
+
+  test("insertAt within range", () =>
+    expect(Array.insertAt(2, 100, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 100, 3, 4, 5|])
+  );
+
+  test("insertAt last", () =>
+    expect(Array.insertAt(5, 100, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 3, 4, 5, 100|])
+  );
+
+  test("insertAt out of range", () =>
+    expect(Array.insertAt(6, 100, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 3, 4, 5|])
+  );
+
   test("map", () =>
     expect(Array.map(a => a + 2, [|1, 2, 3|])) |> toEqual([|3, 4, 5|])
   );
