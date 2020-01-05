@@ -37,7 +37,7 @@ let isOk: 'a 'e. t('a, 'e) => bool =
 let isError: 'a 'e. t('a, 'e) => bool = a => !isOk(a);
 
 /**
-  `map(f, x)` returns `VOk(f(x))` if `x` is of the form `VOK(v)`.
+  `map(f, x)` returns `VOk(f(x))` if `x` is of the form `VOk(v)`.
   It returns `VError(e)` if `x` is of the form `VError(e)`.
 
   ### Example
@@ -74,7 +74,7 @@ let tap: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
        });
 
 /**
-  `mapError(f, x)` returns `VOk(v)` if `x` is of the form `VOK(v)`.
+  `mapError(f, x)` returns `VOk(v)` if `x` is of the form `VOk(v)`.
   It returns `VError(f(e))` if `x` is of the form `VError(e)`.
 
   ### Example
