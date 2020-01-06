@@ -8,7 +8,7 @@
  * that Lazy module, which allows use of the `lazy` keyword.
  * 
  * The downside is that it doesn't really fit neatly into the Relude way
- * of doing error handling, since sever functions can throw exceptions, and
+ * of doing error handling, since several functions can throw exceptions, and
  * it also handles propogated exceptions in its own unique way (exceptions
  * are rethrown each time a lazy value is forced, if it threw an exception
  * the last time it was forced). That behavior may or may not be desireable.
