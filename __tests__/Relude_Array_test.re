@@ -572,6 +572,26 @@ describe("Array", () => {
     |> toEqual([|1, 2, 3, 4, 5|])
   );
 
+  test("updateAt within range", () =>
+    expect(Array.updateAt(2, x => x + 1, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 4, 4, 5|])
+  );
+
+  test("updateAt out of range", () =>
+    expect(Array.updateAt(6, x => x + 1, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 3, 4, 5|])
+  );
+
+  test("swapAt within range", () =>
+    expect(Array.swapAt(0, 4, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|5, 2, 3, 4, 1|])
+  );
+
+  test("swapAt out of range", () =>
+    expect(Array.swapAt(0, 5, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 3, 4, 5|])
+  );
+
   test("map", () =>
     expect(Array.map(a => a + 2, [|1, 2, 3|])) |> toEqual([|3, 4, 5|])
   );

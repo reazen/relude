@@ -512,3 +512,25 @@ let insertAt: 'a. (int, 'a, array('a)) => array('a) =
     | None => xs
     };
   };
+
+/**
+ * Creates a new array that modifies the value at the given index with the given function.
+ * If the index is out of range, no change is made.
+ */
+let updateAt: 'a. (int, 'a => 'a, array('a)) => array('a) =
+  (targetIndex, f, xs) => {
+    xs |> mapWithIndex((x, index) => index == targetIndex ? f(x) : x);
+  };
+
+/**
+ * Creates a new array with the elements at the two given indexes swapped.
+ * If either index is out of range, no change is made.
+ */
+let swapAt: 'a. (int, int, array('a)) => array('a) =
+  (i, j, xs) => {
+    switch (at(i, xs), at(j, xs)) {
+    | (Some(a), Some(b)) =>
+      xs |> mapWithIndex((x, k) => i == k ? b : j == k ? a : x)
+    | _ => xs
+    };
+  };
