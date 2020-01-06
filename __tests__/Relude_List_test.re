@@ -640,6 +640,16 @@ describe("List", () => {
     |> toEqual([1, 2, 3, 4, 5])
   );
 
+  test("updateAt within range", () =>
+    expect(List.updateAt(2, x => x + 1, [1, 2, 3, 4, 5]))
+    |> toEqual([1, 2, 4, 4, 5])
+  );
+
+  test("updateAt out of range", () =>
+    expect(List.updateAt(6, x => x + 1, [1, 2, 3, 4, 5]))
+    |> toEqual([1, 2, 3, 4, 5])
+  );
+
   test("distinctBy", () =>
     expect(List.distinctBy(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
     |> toEqual([6, 1, 2, 3, 4, 5])
