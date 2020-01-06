@@ -512,3 +512,12 @@ let insertAt: 'a. (int, 'a, array('a)) => array('a) =
     | None => xs
     };
   };
+
+/**
+ * Creates a new array that modifies the value at the given index with the given function.
+ * If the index is out of range, no change is made.
+ */
+let updateAt: 'a. (int, 'a => 'a, array('a)) => array('a) =
+  (targetIndex, f, xs) => {
+    xs |> mapWithIndex((x, index) => index == targetIndex ? f(x) : x);
+  };
