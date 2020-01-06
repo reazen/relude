@@ -4,6 +4,7 @@ open Expect;
 module NonEmptyList = Relude_NonEmpty.List;
 module String = Relude_String;
 module Result = Relude_Result;
+module Option = Relude_Option;
 module Validation = Relude_Validation;
 
 module Error = {
@@ -38,7 +39,7 @@ module Person = {
     language: string,
   };
 
-  // Think of this as a function of type `a => (b => (c => d)`
+  // Think of this as a function of type `a => (b => (c => d))`
   // Given an `a` I can partially apply it and give you a function of type `b => (c => d)`
   // Given a `b` I can partially apply it and give you `c => d`
   // Finally, given a `c` I can give you a `d` (Person)
@@ -106,6 +107,224 @@ describe("Validation", () => {
   test("isOk success", () =>
     expect(Validation.VOk(123)->Validation.isOk) |> toBe(true)
   );
+
+  test("isOk error", () =>
+    expect(Validation.VError("error")->Validation.isOk) |> toBe(false)
+  );
+
+  test("isError success", () =>
+    expect(Validation.VError("error")->Validation.isError) |> toBe(true)
+  );
+
+  test("isError error", () =>
+    expect(Validation.VOk(123)->Validation.isError) |> toBe(false)
+  );
+
+  test("tap success", () => {
+    let x = ref(0);
+    Validation.VOk(123) |> Validation.tap(i => x := i) |> ignore;
+    expect(x^) |> toEqual(123);
+  });
+
+  test("tap error", () => {
+    let x = ref(0);
+    Validation.VError(123) |> Validation.tap(i => x := i) |> ignore;
+    expect(x^) |> toEqual(0);
+  });
+
+  test("mapError success", () => {
+    let actual = Validation.VError(123) |> Validation.mapError(i => i + 1);
+    expect(actual) |> toEqual(Validation.VError(124));
+  });
+
+  test("mapError error", () => {
+    let actual = Validation.VOk(123) |> Validation.mapError(i => i + 1);
+    expect(actual) |> toEqual(Validation.VOk(123));
+  });
+
+  test("mapErrorsNel success", () => {
+    let actual =
+      Validation.VError(NonEmptyList.pure(123))
+      |> Validation.mapErrorsNel(i => i + 1);
+    expect(actual) |> toEqual(Validation.VError(NonEmptyList.pure(124)));
+  });
+
+  test("mapErrorsNel error", () => {
+    let actual = Validation.VOk(123) |> Validation.mapErrorsNel(i => i + 1);
+    expect(actual) |> toEqual(Validation.VOk(123));
+  });
+
+  test("tapError success", () => {
+    let x = ref(0);
+    Validation.VError(123) |> Validation.tapError(i => x := i) |> ignore;
+    expect(x^) |> toEqual(123);
+  });
+
+  test("tapError error", () => {
+    let x = ref(0);
+    Validation.VOk(123) |> Validation.tapError(i => x := i) |> ignore;
+    expect(x^) |> toEqual(0);
+  });
+
+  test("bimap success", () => {
+    expect(Validation.VOk(123) |> Validation.bimap(i => i + 1, i => i - 1))
+    |> toEqual(Validation.VOk(124))
+  });
+
+  test("bimap error", () => {
+    expect(
+      Validation.VError(123) |> Validation.bimap(i => i + 1, i => i - 1),
+    )
+    |> toEqual(Validation.VError(122))
+  });
+
+  test("bitap success", () => {
+    let x = ref(0);
+
+    Validation.VOk(123)
+    |> Validation.bitap(i => x := i + 1, i => x := i - 1)
+    |> ignore;
+
+    expect(x^) |> toEqual(124);
+  });
+
+  test("bitap error", () => {
+    let x = ref(0);
+
+    Validation.VError(123)
+    |> Validation.bitap(i => x := i + 1, i => x := i - 1)
+    |> ignore;
+
+    expect(x^) |> toEqual(122);
+  });
+
+  test("bind/flatMap success", () => {
+    let input = Validation.VOk(123);
+    let f = i => Validation.VError(i + 1);
+    let expected = Validation.VError(124);
+
+    expect(Validation.bind(input, f)) |> toEqual(expected) |> ignore;
+    expect(Validation.flatMap(f, input)) |> toEqual(expected);
+  });
+
+  test("bind/flatMap error", () => {
+    let input = Validation.VError(123);
+    let f = i => Validation.VOk(i + 1);
+    let expected = Validation.VError(123);
+
+    expect(Validation.bind(input, f)) |> toEqual(expected) |> ignore;
+    expect(Validation.flatMap(f, input)) |> toEqual(expected);
+  });
+
+  test("fromResult ok", () => {
+    expect(Validation.fromResult(Result.ok(123)))
+    |> toEqual(Validation.VOk(123))
+  });
+
+  test("fromResult error", () => {
+    expect(Validation.fromResult(Result.error("error")))
+    |> toEqual(Validation.VError("error"))
+  });
+
+  test("toResult ok", () => {
+    expect(Validation.toResult(Validation.VOk(123)))
+    |> toEqual(Result.ok(123))
+  });
+
+  test("toResult error", () => {
+    expect(Validation.toResult(Validation.VError("error")))
+    |> toEqual(Result.error("error"))
+  });
+
+  test("fromOption some", () => {
+    expect(Validation.fromOption("error", Option.some(123)))
+    |> toEqual(Validation.VOk(123))
+  });
+
+  test("fromOption none", () => {
+    expect(Validation.fromOption("error", Option.none))
+    |> toEqual(Validation.VError("error"))
+  });
+
+  test("fold success", () => {
+    let input = Validation.VOk(123);
+    let errFcn = i => i + 1;
+    let okFcn = i => i - 1;
+    let expected = 122;
+
+    expect(Validation.fold(errFcn, okFcn, input)) |> toEqual(expected);
+  });
+
+  test("fold error", () => {
+    let input = Validation.VError(123);
+    let errFcn = i => i + 1;
+    let okFcn = i => i - 1;
+    let expected = 124;
+
+    expect(Validation.fold(errFcn, okFcn, input)) |> toEqual(expected);
+  });
+
+  test("flip success", () => {
+    expect(Validation.flip(Validation.VOk(123)))
+    |> toEqual(Validation.VError(123))
+  });
+
+  test("flip error", () => {
+    expect(Validation.flip(Validation.VError(123)))
+    |> toEqual(Validation.VOk(123))
+  });
+
+  test("map5 success", () => {
+    expect(
+      Validation.map5(
+        NonEmptyList.concat,
+        (a, b, c, d, e) => a + b + c + d + e,
+        Validation.VOk(1),
+        Validation.VOk(2),
+        Validation.VOk(3),
+        Validation.VOk(4),
+        Validation.VOk(5),
+      ),
+    )
+    |> toEqual(Validation.VOk(15))
+  });
+
+  test("map5 some error", () => {
+    expect(
+      Validation.map5(
+        NonEmptyList.concat,
+        (a, b, c, d, e) => a + b + c + d + e,
+        Validation.VOk(1),
+        Validation.VOk(2),
+        Validation.VError(NonEmptyList.pure("error")),
+        Validation.VOk(4),
+        Validation.VOk(5),
+      ),
+    )
+    |> toEqual(Validation.VError(NonEmptyList.pure("error")))
+  });
+
+  test("map5 all error", () => {
+    expect(
+      Validation.map5(
+        NonEmptyList.concat,
+        (a, b, c, d, e) => a + b + c + d + e,
+        Validation.VError(NonEmptyList.pure("error1")),
+        Validation.VError(NonEmptyList.pure("error2")),
+        Validation.VError(NonEmptyList.pure("error3")),
+        Validation.VError(NonEmptyList.pure("error4")),
+        Validation.VError(NonEmptyList.pure("error5")),
+      ),
+    )
+    |> toEqual(
+         Validation.VError(
+           NonEmptyList.make(
+             "error1",
+             ["error2", "error3", "error4", "error5"],
+           ),
+         ),
+       )
+  });
 
   test("makeWithValidation success", () => {
     let validation = Person.makeWithValidation("Andy", 55, "English");
