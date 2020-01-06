@@ -496,3 +496,19 @@ let scanRight: (('a, 'b) => 'b, 'b, array('a)) => array('b) =
         xs,
       ),
     );
+
+/**
+ * Creates a new array that inserts the given value at the given index.
+ * If the index is out of range, no insertion is made.
+ */
+let insertAt: 'a. (int, 'a, array('a)) => array('a) =
+  (targetIndex, newX, xs) => {
+    switch (splitAt(targetIndex, xs)) {
+    | Some((before, after)) =>
+      Relude_Array_Instances.concat(
+        before,
+        Relude_Array_Instances.concat([|newX|], after),
+      )
+    | None => xs
+    };
+  };

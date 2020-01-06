@@ -456,3 +456,16 @@ let scanRight: (('a, 'b) => 'b, 'b, list('a)) => list('b) =
       xs,
     )
     |> snd;
+
+/**
+ * Creates a new list that inserts the given value at the given index.
+ * If the index is out of range, no insertion is made.
+ */
+let insertAt: 'a. (int, 'a, list('a)) => list('a) =
+  (targetIndex, newX, xs) => {
+    switch (splitAt(targetIndex, xs)) {
+    | Some((before, after)) =>
+      Relude_List_Instances.concat(before, [newX, ...after])
+    | None => xs
+    };
+  };

@@ -620,6 +620,26 @@ describe("List", () => {
     |> toEqual([1, 2, 100, 4, 5])
   );
 
+  test("insertAt first", () =>
+    expect(List.insertAt(0, 100, [1, 2, 3, 4, 5]))
+    |> toEqual([100, 1, 2, 3, 4, 5])
+  );
+
+  test("insertAt within range", () =>
+    expect(List.insertAt(2, 100, [1, 2, 3, 4, 5]))
+    |> toEqual([1, 2, 100, 3, 4, 5])
+  );
+
+  test("insertAt last", () =>
+    expect(List.insertAt(5, 100, [1, 2, 3, 4, 5]))
+    |> toEqual([1, 2, 3, 4, 5, 100])
+  );
+
+  test("insertAt out of range", () =>
+    expect(List.insertAt(6, 100, [1, 2, 3, 4, 5]))
+    |> toEqual([1, 2, 3, 4, 5])
+  );
+
   test("distinctBy", () =>
     expect(List.distinctBy(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
     |> toEqual([6, 1, 2, 3, 4, 5])
