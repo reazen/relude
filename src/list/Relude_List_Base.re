@@ -478,3 +478,16 @@ let updateAt: 'a. (int, 'a => 'a, list('a)) => list('a) =
   (targetIndex, f, xs) => {
     xs |> mapWithIndex((x, index) => index == targetIndex ? f(x) : x);
   };
+
+/**
+ * Creates a new list with the elements at the two given indexes swapped.
+ * If either index is out of range, no change is made.
+ */
+let swapAt: 'a. (int, int, list('a)) => list('a) =
+  (i, j, xs) => {
+    switch (at(i, xs), at(j, xs)) {
+    | (Some(a), Some(b)) =>
+      xs |> mapWithIndex((x, k) => i == k ? b : j == k ? a : x)
+    | _ => xs
+    };
+  };
