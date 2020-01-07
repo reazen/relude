@@ -18,8 +18,35 @@ describe("IO basics", () => {
        )
   );
 
+  testAsync("pureWithVoid unsafeRunAsync", onDone =>
+    IO.pureWithVoid(42)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(value) => onDone(expect(value) |> toEqual(42))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("throw unsafeRunAsync", onDone =>
+    IO.throwWithVoid("this is a test")
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_a) => onDone(fail("Failed"))
+         | Error(_err) => onDone(pass),
+       )
+  );
+
   testAsync("suspend unsafeRunAsync", onDone =>
     IO.suspend(() => 42)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(value) => onDone(expect(value) |> toEqual(42))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("suspendWithVoid unsafeRunAsync", onDone =>
+    IO.suspendWithVoid(() => 42)
     |> IO.unsafeRunAsync(
          fun
          | Ok(value) => onDone(expect(value) |> toEqual(42))
@@ -91,6 +118,42 @@ describe("IO basics", () => {
        )
   );
 
+  testAsync("pure map <#> unsafeRunAsync", onDone => {
+    let (<#>) = IO.(<#>);
+
+    IO.pure(42)
+    <#> (a => a + 10)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(value) => onDone(expect(value) |> toEqual(52))
+         | Error(_) => onDone(fail("Failed")),
+       );
+  });
+
+  testAsync("pure tap unsafeRunAsync", onDone => {
+    let a = ref(0);
+
+    IO.pure(42)
+    |> IO.tap(b => a := b)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_value) => onDone(expect(a^) |> toEqual(42))
+         | Error(_) => onDone(fail("Failed")),
+       );
+  });
+
+  testAsync("pure tapError unsafeRunAsync", onDone => {
+    let a = ref(0);
+
+    IO.throw(42)
+    |> IO.tapError(b => a := b)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(_) => onDone(expect(a^) |> toEqual(42)),
+       );
+  });
+
   testAsync("pure apply unsafeRunAsync", onDone =>
     IO.pure(42)
     |> IO.apply(IO.pure(a => a * 2))
@@ -108,6 +171,16 @@ describe("IO basics", () => {
          fun
          | Ok(value) => onDone(expect(value) |> toEqual(52))
          | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("throw flatMap unsafeRunAsync", onDone =>
+    IO.throw(42)
+    |> IO.flatMap(a => IO.pure(a + 1))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(value) => onDone(expect(value) |> toEqual(42)),
        )
   );
 
@@ -189,6 +262,16 @@ describe("IO cond", () => {
        )
   );
 
+  testAsync("throw cond error unsafeRunAsync", onDone =>
+    IO.pure("hel")
+    |> IO.cond(a => a |> String.length == 5, "is five", "boom explosions")
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("fail"))
+         | Error(a) => onDone(expect(a) |> toEqual("boom explosions")),
+       )
+  );
+
   testAsync("pure condError mapError unsafeRunAsync", onDone =>
     IO.pure("hello world")
     |> IO.condError(a => a |> String.length == 5, "string is too long")
@@ -199,18 +282,970 @@ describe("IO cond", () => {
          | Error(assertion) => onDone(assertion),
        )
   );
-});
 
-describe("IO compose", () =>
-  testAsync("compose pure pure", onDone =>
-    IO.(IO.pure(int_of_string) >>> IO.pure(i => i > 0) <*> IO.pure("42"))
+  testAsync("pure condError ok unsafeRunAsync", onDone =>
+    IO.pure("hello")
+    |> IO.condError(a => a |> String.length == 5, "string is too long")
     |> IO.unsafeRunAsync(
          fun
-         | Ok(a) => onDone(expect(a) |> toEqual(true))
+         | Ok(a) => onDone(expect(a) |> toEqual("hello"))
          | Error(_) => onDone(fail("fail")),
        )
-  )
-);
+  );
+});
+
+describe("IO compose", () => {
+  describe("pure", () => {
+    let ioAToB = IO.pure(a => a ++ "1");
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.(ioBToC <<< ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("pure (andThen)", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.(ioAToB >>> ioBToC)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Result.ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Result.error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+      let ioAToB = IO.pure(a => a ++ "1");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a("0")) |> toEqual("012"))
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+  });
+
+  describe("throw", () => {
+    let ioAToB = IO.throw("error");
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(i => i + 42);
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error 2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), i) => i + 42);
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(i => i + 42));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Result.ok(i => i + 42)));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Result.error("error 2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((a, b) => a + b, IO.pure(1));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((a, b) => a + b), IO.pure(1));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(a => IO.pure(b => a + b), IO.pure(0));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => onDone(expect(e) |> toEqual("error")),
+         );
+    });
+  });
+
+  describe("suspend", () => {
+    let ioAToB = IO.suspend(((), a) => a ++ "1");
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+  });
+
+  describe("suspendIO", () => {
+    let ioAToB = IO.suspendIO(() => IO.pure(a => a ++ "1"));
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+  });
+
+  describe("async (ok)", () => {
+    let ioAToB = IO.async(onDone => onDone(Result.ok(a => a ++ "1")));
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO (error)", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(_b => Result.error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) =>
+             expect(a("0")) |> toEqual(Result.error("error")) |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+  });
+
+  describe("async (error)", () => {
+    let ioAToB = IO.async(onDone => onDone(Result.error("error")));
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+  });
+
+  describe("map", () => {
+    let ioAToB = IO.map((one, a) => a ++ one, IO.pure("1"));
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+  });
+
+  describe("apply", () => {
+    let ioAToB = IO.apply(IO.pure((one, a) => a ++ one), IO.pure("1"));
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+  });
+
+  describe("flatMap", () => {
+    let ioAToB = IO.flatMap(one => IO.pure(a => a ++ one), IO.pure("1"));
+
+    testAsync("pure", onDone => {
+      let ioBToC = IO.pure(b => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("throw", onDone => {
+      let ioBToC = IO.throw("error");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("suspend", onDone => {
+      let ioBToC = IO.suspend(((), b) => b ++ "2");
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("suspendIO", onDone => {
+      let ioBToC = IO.suspendIO(() => IO.pure(b => b ++ "2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (ok)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Ok(b => b ++ "2")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("async (error)", onDone => {
+      let ioBToC = IO.async(onDone => onDone(Belt.Result.Error("error")));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("fail"))
+           | Error(e) => expect(e) |> toEqual("error") |> onDone,
+         );
+    });
+
+    testAsync("map", onDone => {
+      let ioBToC = IO.map((two, b) => b ++ two, IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("apply", onDone => {
+      let ioBToC = IO.apply(IO.pure((two, b) => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+
+    testAsync("flatMap", onDone => {
+      let ioBToC = IO.flatMap(two => IO.pure(b => b ++ two), IO.pure("2"));
+
+      IO.compose(ioBToC, ioAToB)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => expect(a("0")) |> toEqual("012") |> onDone
+           | Error(_) => onDone(fail("fail")),
+         );
+    });
+  });
+});
 
 describe("IO mapError", () => {
   testAsync("pure mapError unsafeRunAsync", onDone =>
@@ -269,6 +1304,308 @@ describe("IO catchError", () => {
          | Error(_) => onDone(fail("Fail")),
        )
   );
+
+  testAsync("async (ok) catchError unsafeRunAsync", onDone =>
+    IO.async(onDone => onDone(Result.ok("0")))
+    |> IO.catchError((e: string) => IO.throw(e ++ "1"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(a) => onDone(expect(a) |> toEqual("0"))
+         | Error(_) => onDone(fail("Failed")),
+       )
+  );
+
+  testAsync("async (error) catchError unsafeRunAsync", onDone =>
+    IO.async(onDone => onDone(Result.error("0")))
+    |> IO.catchError((e: string) => IO.throw(e ++ "1"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) => onDone(expect(e) |> toEqual("01")),
+       )
+  );
+
+  describe("map catchError unsafeRunAsync", () => {
+    let r0ToA = a => a ++ "1";
+
+    testAsync("pure", onDone =>
+      IO.map(r0ToA, IO.pure("0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("throw", onDone =>
+      IO.map(r0ToA, IO.throw("0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual("02")),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.map(r0ToA, IO.suspend(() => "0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.map(r0ToA, IO.suspendIO(() => IO.pure("0")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.map(r0ToA, IO.async(onDone => onDone(Result.ok("0"))))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("async (error)", onDone =>
+      IO.map(r0ToA, IO.async(onDone => onDone(Result.error("0"))))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual("02")),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(r0ToA, IO.map(a => a ++ "0", IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.map(r0ToA, IO.apply(IO.pure(a => a ++ "0"), IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.map(r0ToA, IO.flatMap(a => IO.pure(a ++ "0"), IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+  });
+
+  describe("apply catchError unsafeRunAsync", () => {
+    let ioR0ToA = IO.pure(a => a ++ "1");
+
+    testAsync("pure", onDone =>
+      IO.apply(ioR0ToA, IO.pure("0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("throw", onDone =>
+      IO.apply(ioR0ToA, IO.throw("0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual("02")),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.apply(ioR0ToA, IO.suspend(() => "0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.apply(ioR0ToA, IO.suspendIO(() => IO.pure("0")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.apply(ioR0ToA, IO.async(onDone => onDone(Result.ok("0"))))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("async (error)", onDone =>
+      IO.apply(ioR0ToA, IO.async(onDone => onDone(Result.error("0"))))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual("02")),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.apply(ioR0ToA, IO.map(a => a ++ "0", IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.apply(ioR0ToA, IO.apply(IO.pure(a => a ++ "0"), IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.apply(ioR0ToA, IO.flatMap(a => IO.pure(a ++ "0"), IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+  });
+
+  describe("flatMap catchError unsafeRunAsync", () => {
+    let r0ToIOA = a => IO.pure(a ++ "1");
+
+    testAsync("pure", onDone =>
+      IO.flatMap(r0ToIOA, IO.pure("0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("throw", onDone =>
+      IO.flatMap(r0ToIOA, IO.throw("0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual("02")),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.flatMap(r0ToIOA, IO.suspend(() => "0"))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.flatMap(r0ToIOA, IO.suspendIO(() => IO.pure("0")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.flatMap(r0ToIOA, IO.async(onDone => onDone(Result.ok("0"))))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("async (error)", onDone =>
+      IO.flatMap(r0ToIOA, IO.async(onDone => onDone(Result.error("0"))))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual("02")),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.flatMap(r0ToIOA, IO.map(a => a ++ "0", IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.flatMap(r0ToIOA, IO.apply(IO.pure(a => a ++ "0"), IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.flatMap(r0ToIOA, IO.flatMap(a => IO.pure(a ++ "0"), IO.pure("+")))
+      |> IO.catchError((e: string) => IO.throw(e ++ "2"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual("+01"))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+  });
 });
 
 describe("IO handleError", () =>
@@ -283,7 +1620,7 @@ describe("IO handleError", () =>
   )
 );
 
-describe("IO bimap/bitap", () =>
+describe("IO bimap/bitap", () => {
   testAsync("suspend bimap bimap unsafeRunAsync", onDone =>
     IO.suspend(() => 42)
     |> IO.bimap(a => a * 2, e => e ++ e)
@@ -293,8 +1630,32 @@ describe("IO bimap/bitap", () =>
          | Ok(assertion) => onDone(assertion)
          | Error(assertion) => onDone(assertion),
        )
-  )
-);
+  );
+
+  testAsync("suspend bitap (ok) unsafeRunAsync", onDone => {
+    let a = ref(0);
+
+    IO.pure(42)
+    |> IO.bitap(b => a := b + 1, e => a := e - 1)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(expect(a^) |> toEqual(43))
+         | Error(_) => onDone(fail("fail")),
+       );
+  });
+
+  testAsync("suspend bitap (error) unsafeRunAsync", onDone => {
+    let a = ref(0);
+
+    IO.throw(42)
+    |> IO.bitap(b => a := b + 1, e => a := e - 1)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("fail"))
+         | Error(_) => onDone(expect(a^) |> toEqual(41)),
+       );
+  });
+});
 
 describe("IO alt", () => {
   testAsync("alt success success", onDone => {
@@ -475,6 +1836,22 @@ describe("IO tries/exceptions", () => {
            ),
        );
   });
+
+  testAsync("triesJS with exn", onDone => {
+    exception MyExn(string);
+
+    IO.triesJS(() => raise(MyExn("Crap the pants")))
+    |> IO.unsafeRunAsync(result =>
+         switch (result) {
+         | Ok(_) => onDone(fail("Failed"))
+         | Error(e) =>
+           onDone(
+             expect(Js.Exn.message(e))
+             |> toEqual(Some("Unexpected error: MyExn,4,Crap the pants")),
+           )
+         }
+       );
+  });
 });
 
 describe("IO flip", () => {
@@ -528,27 +1905,218 @@ describe("IO flip", () => {
        )
   );
 
-  testAsync("pure map flip unsafeRunAsync", onDone =>
-    IO.pure(42)
-    |> IO.map(a => a + 10)
-    |> IO.flip
-    |> IO.unsafeRunAsync(
-         fun
-         | Ok(_) => onDone(fail("Failed"))
-         | Error(e) => onDone(expect(e) |> toEqual(52)),
-       )
-  );
+  describe("map flip unsafeRunAsync", () => {
+    testAsync("pure", onDone =>
+      IO.pure(42)
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
 
-  testAsync("pure apply flip unsafeRunAsync", onDone =>
-    IO.pure(42)
-    |> IO.apply(IO.pure(a => a + 10))
-    |> IO.flip
-    |> IO.unsafeRunAsync(
-         fun
-         | Ok(_) => onDone(fail("Failed"))
-         | Error(e) => onDone(expect(e) |> toEqual(52)),
-       )
-  );
+    testAsync("throw", onDone =>
+      IO.throw(42)
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual(42))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.suspend(() => 42)
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.suspendIO(() => IO.pure(42))
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.async(onDone => onDone(Result.ok(42)))
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("async (error)", onDone =>
+      IO.async(onDone => onDone(Result.error(42)))
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual(42))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(b => b + 42, IO.pure(0))
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.apply(IO.pure(b => b + 42), IO.pure(0))
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.flatMap(b => IO.pure(b + 42), IO.pure(0))
+      |> IO.map(a => a + 10)
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+  });
+
+  describe("apply flip unsafeRunAsync", () => {
+    testAsync("pure", onDone =>
+      IO.pure(42)
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("throw", onDone =>
+      IO.throw(42)
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual(42))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.suspend(() => 42)
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.suspendIO(() => IO.pure(42))
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.async(onDone => onDone(Result.ok(42)))
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("async (error)", onDone =>
+      IO.async(onDone => onDone(Result.error(42)))
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual(42))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(b => b + 42, IO.pure(0))
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.apply(IO.pure(b => b + 42), IO.pure(0))
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(b => b + 42, IO.pure(0))
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.flatMap(b => IO.pure(b + 42), IO.pure(0))
+      |> IO.apply(IO.pure(a => a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+  });
 
   testAsync("pure flatMap flip unsafeRunAsync", onDone =>
     IO.pure(42)
@@ -561,31 +2129,99 @@ describe("IO flip", () => {
        )
   );
 
-  testAsync("pure flatMap flatMap map flatMap flip unsafeRunAsync", onDone =>
-    IO.pure(42)
-    |> IO.flatMap(a => Pure(a + 10))
-    |> IO.flatMap(a => Pure(a + 100))
-    |> IO.map(a => a + 1000)
-    |> IO.flatMap(a => IO.async(onDone => onDone(Result.ok(a + 10000))))
-    |> IO.flip
-    |> IO.unsafeRunAsync(
-         fun
-         | Ok(_) => onDone(fail("Failed"))
-         | Error(e) => onDone(expect(e) |> toEqual(11152)),
-       )
-  );
+  describe("flatMap flip unsafeRunAsync", () => {
+    testAsync("pure flatMap map", onDone =>
+      IO.pure(42)
+      |> IO.flatMap(a => Pure(a + 10))
+      |> IO.flatMap(a => Pure(a + 100))
+      |> IO.map(a => a + 1000)
+      |> IO.flatMap(a => IO.async(onDone => onDone(Result.ok(a + 10000))))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(11152)),
+         )
+    );
 
-  testAsync("async flatMap suspend flip bimap unsafeRunAsync", onDone =>
-    IO.async(onDone => onDone(Result.ok(42)))
-    |> IO.flatMap(a => IO.suspend(() => a))
-    |> IO.flip
-    |> IO.bimap(_ => fail("fail"), e => expect(e) |> toEqual(42))
-    |> IO.unsafeRunAsync(
-         fun
-         | Ok(assertion) => onDone(assertion)
-         | Error(assertion) => onDone(assertion),
-       )
-  );
+    testAsync("throw", onDone =>
+      IO.throw(42)
+      |> IO.flatMap(a => Pure(a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) => onDone(expect(a) |> toEqual(42))
+           | Error(_) => onDone(fail("Failed")),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.suspend(() => 42)
+      |> IO.flatMap(a => Pure(a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.suspendIO(() => IO.pure(42))
+      |> IO.flatMap(a => Pure(a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("async flatMap suspend flip bimap unsafeRunAsync", onDone =>
+      IO.async(onDone => onDone(Result.ok(42)))
+      |> IO.flatMap(a => IO.suspend(() => a))
+      |> IO.flip
+      |> IO.bimap(_ => fail("fail"), e => expect(e) |> toEqual(42))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(a => a + 42, IO.pure(0))
+      |> IO.flatMap(a => Pure(a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.apply(IO.pure(a => a + 42), IO.pure(0))
+      |> IO.flatMap(a => Pure(a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.flatMap(a => IO.pure(a + 42), IO.pure(0))
+      |> IO.flatMap(a => Pure(a + 10))
+      |> IO.flip
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(fail("Failed"))
+           | Error(e) => onDone(expect(e) |> toEqual(52)),
+         )
+    );
+  });
 });
 
 describe("IO summonError", () => {
@@ -707,20 +2343,372 @@ describe("IO summonError", () => {
        )
   );
 
-  testAsync("pure apply summonError bimap unsafeRunAsync", onDone =>
-    IO.pure(42)
-    |> IO.apply(IO.pure(a => a * 2))
-    |> IO.summonError
-    |> IO.bimap(
-         res => expect(res) |> toEqual(Belt.Result.Ok(84)),
-         Relude.Void.absurd,
-       )
-    |> IO.unsafeRunAsync(
-         fun
-         | Ok(assertion) => onDone(assertion)
-         | Error(assertion) => onDone(assertion),
-       )
-  );
+  describe("map unsafeRunAsync", () => {
+    testAsync("throw", onDone =>
+      IO.map(a => a + 42, IO.throw(1))
+      |> IO.summonError
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(a) =>
+             expect(a |> Result.getError) |> toEqual(Some(1)) |> onDone
+           | Error(_) => fail("Failed") |> onDone,
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.map(a => a + 42, IO.suspend(() => 1))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(43)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.map(a => a + 42, IO.suspendIO(() => IO.pure(1)))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(43)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("async", onDone =>
+      IO.map(a => a + 42, IO.async(onDone => onDone(Result.ok(1))))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(43)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(a => a + 42, IO.map(b => b + 2, IO.pure(1)))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(45)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.map(a => a + 42, IO.apply(IO.pure(b => b + 2), IO.pure(1)))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(45)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.map(a => a + 42, IO.flatMap(b => IO.pure(b + 2), IO.pure(1)))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(45)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+  });
+
+  describe("apply unsafeRunAsync", () => {
+    testAsync("pure", onDone =>
+      IO.pure(42)
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("throw", onDone => {
+      let a = ref(None);
+
+      IO.throw(2)
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.tap(b => a := b |> Result.getError)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(expect(a^) |> toEqual(Some(2)))
+           | Error(_) => onDone(fail("Failed")),
+         );
+    });
+
+    testAsync("suspend", onDone =>
+      IO.suspend(() => 42)
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.suspendIO(() => IO.pure(42))
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.async(onDone => Belt.Result.Ok(42) |> onDone)
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("async (error)", onDone => {
+      let a = ref(None);
+
+      IO.async(onDone => Belt.Result.Error(42) |> onDone)
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.tap(b => a := b |> Result.getError)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(expect(a^) |> toEqual(Some(42)))
+           | Error(_) => onDone(fail("Failed")),
+         );
+    });
+
+    testAsync("map", onDone =>
+      IO.map(a => a + 1, IO.pure(41))
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.apply(IO.pure(a => a + 1), IO.pure(41))
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.flatMap(a => IO.pure(a + 1), IO.pure(41))
+      |> IO.apply(IO.pure(a => a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+  });
+
+  describe("flatMap unsafeRunAsync", () => {
+    testAsync("pure", onDone =>
+      IO.pure(42)
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("throw", onDone => {
+      let a = ref(None);
+
+      IO.throw(2)
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.tap(b => a := b |> Result.getError)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(expect(a^) |> toEqual(Some(2)))
+           | Error(_) => onDone(fail("Failed")),
+         );
+    });
+
+    testAsync("suspend", onDone =>
+      IO.suspend(() => 42)
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.suspendIO(() => IO.pure(42))
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.async(onDone => Belt.Result.Ok(42) |> onDone)
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("async (error)", onDone => {
+      let a = ref(None);
+
+      IO.async(onDone => Belt.Result.Error(42) |> onDone)
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.tap(b => a := b |> Result.getError)
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(_) => onDone(expect(a^) |> toEqual(Some(42)))
+           | Error(_) => onDone(fail("Failed")),
+         );
+    });
+
+    testAsync("map", onDone =>
+      IO.map(a => a + 1, IO.pure(41))
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.apply(IO.pure(a => a + 1), IO.pure(41))
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.flatMap(a => IO.pure(a + 1), IO.pure(41))
+      |> IO.flatMap(a => IO.pure(a * 2))
+      |> IO.summonError
+      |> IO.bimap(
+           res => expect(res) |> toEqual(Belt.Result.Ok(84)),
+           Relude.Void.absurd,
+         )
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+  });
 });
 
 describe("IO unsummonError", () => {
@@ -799,17 +2787,180 @@ describe("IO unsummonError", () => {
        )
   );
 
-  testAsync("async flatMap suspend unsummonError bimap unsafeRunAsync", onDone =>
-    IO.async(onDone => onDone(Result.ok(Result.ok(42))))
-    |> IO.flatMap(a => IO.suspend(() => a))
-    |> IO.unsummonError
-    |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("fail"))
-    |> IO.unsafeRunAsync(
-         fun
-         | Ok(assertion) => onDone(assertion)
-         | Error(assertion) => onDone(assertion),
-       )
-  );
+  describe("flatMap unsummonError unsafeRunAsync", () => {
+    testAsync("pure", onDone =>
+      IO.pure(0)
+      |> IO.flatMap(a => IO.pure(Belt.Result.Ok(a + 42)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("fail"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.suspend(() => 0)
+      |> IO.flatMap(a => IO.pure(Belt.Result.Ok(a + 42)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("fail"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.suspendIO(() => IO.pure(0))
+      |> IO.flatMap(a => IO.pure(Belt.Result.Ok(a + 42)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("fail"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync(
+      "async flatMap suspend unsummonError bimap unsafeRunAsync", onDone =>
+      IO.async(onDone => onDone(Result.ok(Result.ok(42))))
+      |> IO.flatMap(a => IO.suspend(() => a))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(42), _ => fail("fail"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(a => a + 1, IO.pure(0))
+      |> IO.flatMap(a => IO.pure(Belt.Result.Ok(a + 42)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(43), _ => fail("fail"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.apply(IO.pure(a => a + 1), IO.pure(0))
+      |> IO.flatMap(a => IO.pure(Belt.Result.Ok(a + 42)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(43), _ => fail("fail"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.flatMap(a => IO.pure(a + 1), IO.pure(0))
+      |> IO.flatMap(a => IO.pure(Belt.Result.Ok(a + 42)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(43), _ => fail("fail"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+  });
+
+  describe("map unsummonError bimap unsafeRunAsync", () => {
+    testAsync("pure", onDone =>
+      IO.map(a => Belt.Result.Ok(a + 1), IO.pure(0))
+      |> IO.unsummonError
+      |> IO.bimap(_ => pass, _ => fail("Failed"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("suspend", onDone =>
+      IO.map(a => Belt.Result.Ok(a + 1), IO.suspend(() => 0))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(1), _ => fail("Failed"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("suspendIO", onDone =>
+      IO.map(a => Belt.Result.Ok(a + 1), IO.suspendIO(() => IO.pure(0)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(1), _ => fail("Failed"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("async (ok)", onDone =>
+      IO.map(
+        a => Belt.Result.Ok(a + 1),
+        IO.async(onDone => onDone(Belt.Result.Ok(0))),
+      )
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(1), _ => fail("Failed"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("map", onDone =>
+      IO.map(a => Belt.Result.Ok(a + 1), IO.map(a => a + 1, IO.pure(0)))
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(2), _ => fail("Failed"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("apply", onDone =>
+      IO.map(
+        a => Belt.Result.Ok(a + 1),
+        IO.apply(IO.pure(a => a + 1), IO.pure(0)),
+      )
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(2), _ => fail("Failed"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+
+    testAsync("flatMap", onDone =>
+      IO.map(
+        a => Belt.Result.Ok(a + 1),
+        IO.flatMap(a => IO.pure(a + 1), IO.pure(0)),
+      )
+      |> IO.unsummonError
+      |> IO.bimap(a => expect(a) |> toEqual(2), _ => fail("Failed"))
+      |> IO.unsafeRunAsync(
+           fun
+           | Ok(assertion) => onDone(assertion)
+           | Error(assertion) => onDone(assertion),
+         )
+    );
+  });
 
   testAsync(
     "pure map flatMap pure summonError unsummonError bimap unsafeRunAsync",
@@ -860,6 +3011,27 @@ describe("IO delay", () => {
        );
     Jest.advanceTimersByTime(10);
   });
+});
+
+testAsync("IO delayWithVoid unsafeRunAsync", onDone => {
+  IO.delayWithVoid(10)
+  |> IO.unsafeRunAsync(
+       fun
+       | Ok(_) => onDone(pass)
+       | Error(_) => onDone(fail("Failed")),
+     );
+  Jest.advanceTimersByTime(10);
+});
+
+testAsync("IO withDelayBefore unsafeRunAsync", onDone => {
+  IO.pure(0)
+  |> IO.withDelayBefore(10)
+  |> IO.unsafeRunAsync(
+       fun
+       | Ok(_) => onDone(pass)
+       | Error(_) => onDone(fail("Failed")),
+     );
+  Jest.advanceTimersByTime(10);
 });
 
 describe("IO debounce", () => {
