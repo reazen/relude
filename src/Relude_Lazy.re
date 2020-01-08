@@ -1,64 +1,48 @@
 
-type t('a) =
-  | Thunk('a)
-  | Deferred(unit => 'a)
-  | DeferredU((. unit) => 'a);
+type deferred('a) = {
+  f: unit => 'a,
+};
 
-let pure: 'a => t('a) = (value) => Thunk(value);
+type deferredU('a) = {
+  f: (. unit) => 'a,
+};
 
-let defer: (unit => 'a) => t('a) = (fn) => Deferred(fn);
+type t('a) = [
+  | `Pure('a)
+  | `Deferred(deferred('a))
+  | `DeferredU(deferredU('a))
+];
 
-let deferU: ((. unit) => 'a) => t('a) = (fn) => DeferredU(fn);
+let force: t('a) => 'a = fun
+  | `Pure(a) => a
+  | `Deferred(lazyA) => lazyA.f()
+  | `DeferredU(lazyA) => lazyA.f(. );
 
 let identity: t('a) => t('a) = value => value;
 
-let force: t('a) => 'a = fun
-    | Thunk(v) => v
-    | Deferred(fn) => fn()
-    | DeferredU(fn) => fn(. );
+let pure: 'a => t('a) = a => `Pure(a);
 
-let forceIdentity: t('a) => t('a) = fun
-    | Thunk(v) => Thunk(v)
-    | Deferred(fn) => Thunk(fn())
-    | DeferredU(fn) => Thunk(fn(. ));
+let defer: (unit => 'a) => t('a) = unitToA => `Deferred({f: unitToA});
 
-let join: t(t('a)) => t('a) = force;
+let deferU: ((. unit) => 'a) => t('a) = unitToA => `DeferredU({f: unitToA});
 
-let map: ('a => 'b, t('a)) => t('b) = (aToB, mA) => deferU((. ) => aToB(force(mA)));
+let join: (t(t('a)) => t('a)) = force;
 
-let mapU: ((. 'a) => 'b, t('a)) => t('b) = (aToB, mA) => deferU((. ) => aToB(. force(mA)));
+let map: ('a => 'b, t('a)) => t('b) = (aToB, mA) => `DeferredU({ f: (. ) => aToB(force(mA)) });
 
-let forceMap: ('a => 'b, t('a)) => t('b) = (aToB, mA) => pure(aToB(force(mA)));
+let mapU: ((. 'a) => 'b, t('a)) => t('b) = (aToB, mA) => `DeferredU({ f: (. ) => aToB(. force(mA)) });
 
-let forceMapU: ((. 'a) => 'b, t('a)) => t('b) = (aToB, mA) => pure(aToB(. force(mA)));
+// let flatMap: ('a => t('b), t('a)) => t('b) = (aToMB, mA) => `DeferredU((. ) => aToMB(force(mA)));
 
-// let map2: (('a, 'b) => 'c, t('a), t('b)) => t('c) = (abToC, mA, mB) => deferU((. ) => abToC(force(mA), force(mB)));
+let flatMapU: ((. 'a) => t('b), t('a)) => t('b) = (aToMB, mA) => `DeferredU({ f: (. ) => join(aToMB(. force(mA))) });
 
-let forceMap2: (('a, 'b) => 'c, t('a), t('b)) => t('c) = (abToC, mA, mB) => pure(abToC(force(mA), force(mB)));
+let bind: (t('a), 'a => t('b)) => t('b) = (mA, aToMB) => `DeferredU({ f: (. ) => force(aToMB(force(mA))) });
 
-let apply: (t('a => 'b), t('a)) => t('b) = (mAtoB, mA) => deferU((. ) => force(mAtoB)(force(mA)));
+let bindU: (t('a), (. 'a) => t('b)) => t('b) = (mA, aToMB) => `DeferredU({ f: (. ) => force(aToMB(. force(mA))) });
 
-let applyU: (t((. 'a) => 'b), t('a)) => t('b) = (mAtoB, mA) => deferU((. ) => force(mAtoB)(. force(mA)));
+let apply: (t('a => 'b), t('a)) => t('b) = (mAtoB, mA) => `DeferredU({ f: (. ) => force(mAtoB)(force(mA)) })
 
-let forceApply: (t('a => 'b), t('a)) => t('b) = (mAtoB, mA) => pure(force(mAtoB)(force(mA)));
-
-let forceApplyU: (t((. 'a) => 'b), t('a)) => t('b) = (mAtoB, mA) => pure(force(mAtoB)(. force(mA)));
-
-// let flatMap: ('a => t('b), t('a)) => t('b) = (aToMB, mA) => deferU((. ) => force(aToMB(force(mA))));
-
-let flatMapU: ((. 'a) => t('b), t('a)) => t('b) = (aToMB, mA) => deferU((. ) => force(aToMB(. force(mA))));
-
-let forceFlatMap: ('a => t('b), t('a)) => t('b) = (aToMB, mA) => aToMB(force(mA));
-
-let forceFlatMapU: ((. 'a) => t('b), t('a)) => t('b) = (aToMB, mA) => aToMB(. force(mA));
-
-let bind: (t('a), 'a => t('b)) => t('b) = (mA, aToMB) => deferU((. ) => force(aToMB(force(mA))));
-
-let bindU: (t('a), (. 'a) => t('b)) => t('b) = (mA, aToMB) => deferU((. ) => force(aToMB(. force(mA))));
-
-let forceBind: (t('a), 'a => t('b)) => t('b) = (mA, aToMB) => aToMB(force(mA));
-
-let forceBindU: (t('a), (. 'a) => t('b)) => t('b) = (mA, aToMB) => aToMB(. force(mA));
+let applyU: (t((. 'a) => 'b), t('a)) => t('b) = (mAtoB, mA) => `DeferredU({ f: (. ) => force(mAtoB)(. force(mA)) })
 
 module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
