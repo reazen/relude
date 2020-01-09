@@ -273,11 +273,10 @@ let partition:
 /**
  * Transform each value in the map to a new value using the provided function.
  */
-let map: ('v1 => 'v2, t('key,'v1, 'id)) => t('key, 'v2, 'id) = fn => Belt.Map.map(_, fn);
+let map: ('v1 => 'v2, t('key, 'v1, 'id)) => t('key, 'v2, 'id) = fn => Belt.Map.map(_, fn);
 
 let mapWithKey: (('key, 'v1) => 'v2, t('key, 'v1, 'id)) => t('key, 'v2, 'id) =
   fn => Belt.Map.mapWithKey(_, fn);
-
 
 let groupListBy:
   (Belt.Id.comparable('key, 'id), 'value => 'key, list('value)) => t('key, list('value), 'id) =
@@ -297,7 +296,64 @@ let groupArrayBy:
     Belt.Array.reduce(_, make(comparable), addItemToMap);
   };
 
-module WithOrd = (M: BsAbstract.Interface.ORD) => {
+//////////////////////////////////////////////////////////////////////////
+
+module type MAP = {
+  type key;
+  module Comparable: {
+    type identity;
+    type t;
+  };
+  type t('value) = Belt.Map.t(Comparable.t, 'value, Comparable.identity);
+  let make: unit => t('value);
+  let set: (key, 'value, t('value)) => t('value);
+  let singleton: (key, 'value) => t('value);
+  let isEmpty: t('value) => bool;
+  let contains: (key, t('value)) => bool;
+  let compareInt: (('value, 'value) => int, t('value), t('value)) => int;
+  let compareBy:
+    (('value, 'value) => BsAbstract.Interface.ordering, t('value), t('value)) =>
+    BsAbstract.Interface.ordering;
+
+  let eqBy: (('value, 'value) => bool, t('value), t('value)) => bool;
+  let find: ((key, 'value) => bool, t('value)) => option((key, 'value));
+  let forEach: ((key, 'value) => unit, t('value)) => unit;
+  let foldLeft: (('acc, key, 'value) => 'acc, 'acc, t('value)) => 'acc;
+  let all: ((key, 'value) => bool, t('value)) => bool;
+  let any: ((key, 'value) => bool, t('value)) => bool;
+  let length: t('value) => int;
+  let toArray: t('value) => array((key, 'value));
+  let fromArray: array((key, 'value)) => t('value);
+  let fromValueArray: ('value => key, array('value)) => t('value);
+  let toList: t('value) => list((key, 'value));
+  let fromList: list((key, 'value)) => t('value);
+  let fromValueList: ('value => key, list('value)) => t('value);
+  let keys: t('value) => list(key);
+  let keyArray: t('value) => array(key);
+  let values: t('value) => list('value);
+  let valueArray: t('value) => array('value);
+  let minKey: t('value) => option(key);
+  let maxKey: t('value) => option(key);
+  let min: t('value) => option((key, 'value));
+  let max: t('value) => option((key, 'value));
+  let get: (key, t('value)) => option('value);
+  let getOrElse: (key, 'value, t('value)) => 'value;
+  let remove: (key, t('value)) => t('value);
+  let removeMany: (array(key), t('value)) => t('value);
+  let update: (key, option('value) => option('value), t('value)) => t('value);
+  let merge:
+    ((key, option('value), option('value)) => option('value), t('value), t('value)) =>
+    t('value);
+  let mergeMany: (array((key, 'value)), t('value)) => t('value);
+  let filter: ((key, 'value) => bool, t('value)) => t('value);
+  let partition: ((key, 'value) => bool, t('value)) => (t('value), t('value));
+  let map: ('v1 => 'v2, t('v1)) => t('v2);
+  let mapWithKey: ((key, 'v1) => 'v2, t('v1)) => t('v2);
+  let groupListBy: ('a => key, list('a)) => t(list('a));
+  let groupArrayBy: ('a => key, array('a)) => t(array('a));
+};
+
+module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   type key = M.t;
 
   module Comparable =
@@ -308,17 +364,15 @@ module WithOrd = (M: BsAbstract.Interface.ORD) => {
 
   type nonrec t('value) = t(key, 'value, Comparable.identity);
 
-  /**
-   * These functions will internally supply the `Comparable` module to the functions
-   * which require it to construct new `Map` instances.
-   */
-
   let make: unit => t('value) = () => make((module Comparable));
 
   let singleton: (key, 'value) => t('value) = (key, value) => make() |> set(key, value);
 
   let fromArray: array((key, 'value)) => t('value) =
     arr => fromArray((module Comparable), arr);
+
+  let fromValueArray: ('value => key, array('value)) => t('value) =
+    (toKey, arr) => fromValueArray((module Comparable), toKey, arr);
 
   let fromList: list((key, 'value)) => t('value) = lst => fromList((module Comparable), lst);
 
@@ -375,24 +429,3 @@ module WithOrd = (M: BsAbstract.Interface.ORD) => {
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 };
-
-module Test = WithOrd({
-  type t = int;
-  let eq = (a, b) => a === b;
-  let compare = (a, b) => BsAbstract.Interface.unsafe_compare(a, b);
-});
-
-let test = Test.singleton(0, "Hello");
-
-let test = test |> set(18, "fidopa");
-
-let test = test |> Test.set(30, "Hi");
-
-module Comp = Belt.Id.MakeComparable({
-  type t = int;
-  let cmp = (a: t, b: t) => a < b ? -1 : a > b ? +1 : 0;
-});
-
-let x: (int, string) => t(int, string, Comp.identity) = singleton((module Comp));
-
-
