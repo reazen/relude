@@ -592,6 +592,15 @@ describe("Array", () => {
     |> toEqual([|1, 2, 3, 4, 5|])
   );
 
+  test("removeAt within range", () =>
+    expect(Array.removeAt(1, [|1, 2, 3, 4, 5|])) |> toEqual([|1, 3, 4, 5|])
+  );
+
+  test("removeAt out of range", () =>
+    expect(Array.removeAt(5, [|1, 2, 3, 4, 5|]))
+    |> toEqual([|1, 2, 3, 4, 5|])
+  );
+
   test("map", () =>
     expect(Array.map(a => a + 2, [|1, 2, 3|])) |> toEqual([|3, 4, 5|])
   );
