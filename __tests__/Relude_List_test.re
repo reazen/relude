@@ -658,6 +658,14 @@ describe("List", () => {
     expect(List.swapAt(0, 5, [1, 2, 3, 4, 5])) |> toEqual([1, 2, 3, 4, 5])
   );
 
+  test("removeAt within range", () =>
+    expect(List.removeAt(1, [1, 2, 3, 4, 5])) |> toEqual([1, 3, 4, 5])
+  );
+
+  test("removeAt out of range", () =>
+    expect(List.removeAt(5, [1, 2, 3, 4, 5])) |> toEqual([1, 2, 3, 4, 5])
+  );
+
   test("distinctBy", () =>
     expect(List.distinctBy(Int.eq, [6, 1, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5]))
     |> toEqual([6, 1, 2, 3, 4, 5])

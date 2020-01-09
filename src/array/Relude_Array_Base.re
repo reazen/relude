@@ -534,3 +534,12 @@ let swapAt: 'a. (int, int, array('a)) => array('a) =
     | _ => xs
     };
   };
+
+/**
+ * Creates a new array without the element at the given index.
+ * If the index is out of range, no change is made.
+ */
+let removeAt: 'a. (int, array('a)) => array('a) =
+  (targetIndex, xs) => {
+    xs |> filterWithIndex((_, i) => i != targetIndex);
+  };

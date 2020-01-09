@@ -491,3 +491,12 @@ let swapAt: 'a. (int, int, list('a)) => list('a) =
     | _ => xs
     };
   };
+
+/**
+ * Creates a new list without the element at the given index.
+ * If the index is out of range, no change is made.
+ */
+let removeAt: 'a. (int, list('a)) => list('a) =
+  (targetIndex, xs) => {
+    xs |> filterWithIndex((_, i) => i != targetIndex);
+  };
