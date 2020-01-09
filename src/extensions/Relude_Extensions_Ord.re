@@ -90,7 +90,7 @@ module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
   };
 
   module type ORD_BY_F =
-    (A: Relude_Interface.ARROW with type b = O.t) =>
+    (A: Relude_Interface.FUNCTION_1 with type b = O.t) =>
      BsAbstract.Interface.ORD with type t = A.a;
 
   /**
@@ -107,7 +107,7 @@ module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
    * ```
    */
   module OrdBy: ORD_BY_F =
-    (A: Relude_Interface.ARROW with type b = O.t) => {
+    (A: Relude_Interface.FUNCTION_1 with type b = O.t) => {
       include Relude_Extensions_Eq.EqExtensions(O); // Get the EqBy module functor, so we can get the EQ bits using the Arrow
       include EqBy(A); // Get the type t and eq functions using the Arrow
       let compare: (t, t) => ordering =

@@ -22,6 +22,18 @@ let ok: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
 let error: 'a 'e. 'e => t('a, 'e) = e => VError(e);
 
 /**
+ * Puts an error into a NonEmptyList on the error side of the validation
+ */
+let errorNel: 'a 'e. 'e => t('a, Relude_NonEmpty.List.t('e)) =
+  e => VError(Relude_NonEmpty.List.pure(e));
+
+/**
+ * Puts an error into a NonEmptyArray on the error side of the validation
+ */
+let errorNea: 'a 'e. 'e => t('a, Relude_NonEmpty.Array.t('e)) =
+  e => VError(Relude_NonEmpty.Array.pure(e));
+
+/**
   `isOk(v)` returns `true` if `v` is of the form `VOk(val)`;
   `false` otherwise.
 */
@@ -380,16 +392,16 @@ module WithErrors =
          Errors: BsAbstract.Interface.SEMIGROUP_ANY,
          Error: BsAbstract.Interface.TYPE,
        ) => {
-  module Functor:
-    BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Errors.t(Error.t)) = {
-    type nonrec t('a) = t('a, Errors.t(Error.t));
+  type nonrec t('a) = t('a, Errors.t(Error.t));
+
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Apply:
-    BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t)) = {
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = (ff, fa) => applyWithAppendErrors(Errors.append, ff, fa);
   };
@@ -397,16 +409,14 @@ module WithErrors =
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
-    BsAbstract.Interface.APPLICATIVE with
-      type t('a) = t('a, Errors.t(Error.t)) = {
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad:
-    BsAbstract.Interface.MONAD with type t('a) = t('a, Errors.t(Error.t)) = {
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };

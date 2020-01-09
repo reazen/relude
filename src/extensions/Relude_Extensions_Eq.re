@@ -29,7 +29,7 @@ module EqExtensions = (Eq: BsAbstract.Interface.EQ) => {
   };
 
   module type EQ_BY_F =
-    (A: Relude_Interface.ARROW with type b = Eq.t) =>
+    (A: Relude_Interface.FUNCTION_1 with type b = Eq.t) =>
      BsAbstract.Interface.EQ with type t = A.a;
 
   /**
@@ -46,7 +46,7 @@ module EqExtensions = (Eq: BsAbstract.Interface.EQ) => {
    * ```
    */
   module EqBy: EQ_BY_F =
-    (A: Relude_Interface.ARROW with type b = Eq.t) => {
+    (A: Relude_Interface.FUNCTION_1 with type b = Eq.t) => {
       type t = A.a;
 
       let eq: (t, t) => bool = (b1, b2) => Eq.eq(A.f(b1), A.f(b2));

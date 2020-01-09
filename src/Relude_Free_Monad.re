@@ -71,12 +71,11 @@ module WithFunctor = (F: BsAbstract.Interface.FUNCTOR) => {
      * Applies an interpreter function to interpret each value of our algebra into
      * a target monad.
      */
-    let rec foldFree: 'a. (F.t(t('a)) => M.t(t('a)), t('a)) => M.t('a) =
-      (fFreeAToMFreeA, freeA) =>
+    let rec foldFree: (F.t('x) => M.t('x), t('a)) => M.t('a) =
+      (nat, freeA) =>
         switch (freeA) {
         | Pure(a) => M.pure(a)
-        | FlatMap(fFreeA) =>
-          M.flat_map(fFreeAToMFreeA(fFreeA), foldFree(fFreeAToMFreeA))
+        | FlatMap(fFreeA) => M.flat_map(nat(fFreeA), foldFree(nat))
         };
   };
 

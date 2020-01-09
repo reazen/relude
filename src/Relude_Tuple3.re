@@ -71,7 +71,7 @@ module type EQ_BY_F =
     EqA: BsAbstract.Interface.EQ,
     EqB: BsAbstract.Interface.EQ,
     EqC: BsAbstract.Interface.EQ,
-    A: Relude_Interface.ARROW with type b = (EqA.t, EqB.t, EqC.t),
+    A: Relude_Interface.FUNCTION_1 with type b = (EqA.t, EqB.t, EqC.t),
   ) =>
    BsAbstract.Interface.EQ with type t = A.a;
 
@@ -80,7 +80,7 @@ module EqBy: EQ_BY_F =
     EqA: BsAbstract.Interface.EQ,
     EqB: BsAbstract.Interface.EQ,
     EqC: BsAbstract.Interface.EQ,
-    A: Relude_Interface.ARROW with type b = (EqA.t, EqB.t, EqC.t),
+    A: Relude_Interface.FUNCTION_1 with type b = (EqA.t, EqB.t, EqC.t),
   ) => {
     type t = A.a;
     let eq = (t1, t2) => {
@@ -132,7 +132,7 @@ module type ORD_BY_F =
     OrdA: BsAbstract.Interface.ORD,
     OrdB: BsAbstract.Interface.ORD,
     OrdC: BsAbstract.Interface.ORD,
-    A: Relude_Interface.ARROW with type b = (OrdA.t, OrdB.t, OrdC.t),
+    A: Relude_Interface.FUNCTION_1 with type b = (OrdA.t, OrdB.t, OrdC.t),
   ) =>
    BsAbstract.Interface.ORD with type t = A.a;
 
@@ -141,7 +141,7 @@ module OrdBy: ORD_BY_F =
     OrdA: BsAbstract.Interface.ORD,
     OrdB: BsAbstract.Interface.ORD,
     OrdC: BsAbstract.Interface.ORD,
-    A: Relude_Interface.ARROW with type b = (OrdA.t, OrdB.t, OrdC.t),
+    A: Relude_Interface.FUNCTION_1 with type b = (OrdA.t, OrdB.t, OrdC.t),
   ) => {
     include EqBy(OrdA, OrdB, OrdC, A);
     let compare = (t1, t2) => {

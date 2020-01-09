@@ -1,9 +1,55 @@
 open Jest;
 open Expect;
-
-module NonEmpty = Relude_NonEmpty;
+open Relude.Globals;
 
 describe("NonEmpty.List", () => {
+  test("make", () =>
+    expect(NonEmpty.List.make(1, [2, 3]))
+    |> toEqual(NonEmpty.List.NonEmpty(1, [2, 3]))
+  );
+
+  testAll(
+    "fromList",
+    [
+      ([], None),
+      ([1], Some(NonEmpty.List.pure(1))),
+      ([1, 2, 3], Some(NonEmpty.List.make(1, [2, 3]))),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.List.fromList(input)) |> toEqual(expected)
+  );
+
+  testAll(
+    "toList",
+    [
+      (NonEmpty.List.pure(1), [1]),
+      (NonEmpty.List.make(1, [2, 3]), [1, 2, 3]),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.List.toList(input)) |> toEqual(expected)
+  );
+
+  testAll(
+    "fromArray",
+    [
+      ([||], None),
+      ([|1|], Some(NonEmpty.List.pure(1))),
+      ([|1, 2, 3|], Some(NonEmpty.List.make(1, [2, 3]))),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.List.fromArray(input)) |> toEqual(expected)
+  );
+
+  testAll(
+    "toArray",
+    [
+      (NonEmpty.List.pure(1), [|1|]),
+      (NonEmpty.List.make(1, [2, 3]), [|1, 2, 3|]),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.List.toArray(input)) |> toEqual(expected)
+  );
+
   test("cons", () =>
     expect(NonEmpty.List.cons(1, NonEmpty.List.one(2)))
     |> toEqual(NonEmpty.List.make(1, [2]))
@@ -63,6 +109,17 @@ describe("NonEmpty.List", () => {
     expect(result) |> toEqual(expected);
   });
 
+  testAll(
+    "reverse",
+    [
+      (NonEmpty.List.pure(1), NonEmpty.List.pure(1)),
+      (NonEmpty.List.make(1, [2]), NonEmpty.List.make(2, [1])),
+      (NonEmpty.List.make(1, [2, 3]), NonEmpty.List.make(3, [2, 1])),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.List.reverse(input)) |> toEqual(expected)
+  );
+
   test("eq", () => {
     let ne = NonEmpty.List.make(1, [2, 3]);
     expect(NonEmpty.List.eq((module Relude_Int.Eq), ne, ne))
@@ -87,6 +144,53 @@ describe("NonEmpty.List", () => {
 });
 
 describe("NonEmpty.Array", () => {
+  test("make", () =>
+    expect(NonEmpty.Array.make(1, [|2, 3|]))
+    |> toEqual(NonEmpty.Array.NonEmpty(1, [|2, 3|]))
+  );
+
+  testAll(
+    "fromList",
+    [
+      ([], None),
+      ([1], Some(NonEmpty.Array.pure(1))),
+      ([1, 2, 3], Some(NonEmpty.Array.make(1, [|2, 3|]))),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.Array.fromList(input)) |> toEqual(expected)
+  );
+
+  testAll(
+    "toList",
+    [
+      (NonEmpty.Array.pure(1), [1]),
+      (NonEmpty.Array.make(1, [|2, 3|]), [1, 2, 3]),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.Array.toList(input)) |> toEqual(expected)
+  );
+
+  testAll(
+    "fromArray",
+    [
+      ([||], None),
+      ([|1|], Some(NonEmpty.Array.pure(1))),
+      ([|1, 2, 3|], Some(NonEmpty.Array.make(1, [|2, 3|]))),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.Array.fromArray(input)) |> toEqual(expected)
+  );
+
+  testAll(
+    "toArray",
+    [
+      (NonEmpty.Array.pure(1), [|1|]),
+      (NonEmpty.Array.make(1, [|2, 3|]), [|1, 2, 3|]),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.Array.toArray(input)) |> toEqual(expected)
+  );
+
   test("cons", () =>
     expect(NonEmpty.Array.cons(1, NonEmpty.Array.one(2)))
     |> toEqual(NonEmpty.Array.make(1, [|2|]))
@@ -103,6 +207,20 @@ describe("NonEmpty.Array", () => {
     expect(NonEmpty.Array.concat(l1, l2))
     |> toEqual(NonEmpty.Array.make(1, [|2, 3, 4, 5|]));
   });
+
+  testAll(
+    "reverse",
+    [
+      (NonEmpty.Array.pure(1), NonEmpty.Array.pure(1)),
+      (NonEmpty.Array.make(1, [|2|]), NonEmpty.Array.make(2, [|1|])),
+      (
+        NonEmpty.Array.make(1, [|2, 3|]),
+        NonEmpty.Array.make(3, [|2, 1|]),
+      ),
+    ],
+    ((input, expected)) =>
+    expect(NonEmpty.Array.reverse(input)) |> toEqual(expected)
+  );
 
   module NonEmptyArrayWithOption =
     NonEmpty.Array.WithApplicative(Relude_Option.Applicative);
