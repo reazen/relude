@@ -296,8 +296,6 @@ let groupArrayBy:
     Belt.Array.reduce(_, make(comparable), addItemToMap);
   };
 
-//////////////////////////////////////////////////////////////////////////
-
 module type MAP = {
   type key;
   module Comparable: {
@@ -355,7 +353,6 @@ module type MAP = {
 };
 
 module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
-  type key = M.t;
 
   module Comparable =
     Belt.Id.MakeComparable({
@@ -363,6 +360,7 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
       let cmp = (a, b) => M.compare(a, b) |> Relude_Ordering.toInt;
     });
 
+  type key = M.t;
   type nonrec t('value) = t(key, 'value, Comparable.identity);
 
   let make: unit => t('value) = () => make((module Comparable));
