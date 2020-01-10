@@ -167,6 +167,14 @@ let foldLeft: (('acc, 'value) => 'acc, 'acc, t('value, 'id)) => 'acc =
   (fn, acc, set) => Belt.Set.reduce(set, acc, fn);
 
 /**
+ * TODO: optimize foldRight for sets. This remains unimplemented
+ * in `Belt`'s API, but it exists in PureScript/Haskell, since `Set`
+ * implements `Foldable`.
+ */
+let foldRight: (('b, 'a) => 'a, 'a, t('b, 'id)) => 'a = (fn, acc, set) =>
+  Array.fold_right(fn, Belt.Set.toArray(set), acc);
+
+/**
  * Determine whether a given predicate holds true for all values
  * in a given set.
  */
@@ -191,9 +199,6 @@ let filter: ('value => bool, t('value, 'id)) => t('value, 'id) =
  * Immutably divide a set into a tuple of two sets, where the first
  * set contains all the values which pass the predicate function test,
  * and the second one contains all the values which fail.
- * **Note: The argument order is significant for this function**.
- * 
- * TODO: document the behavior based on argument order.
  */
 let partition: ('value => bool, t('value, 'id)) => (t('value, 'id), t('value, 'id)) =
   (predicate, set) => Belt.Set.partition(set, predicate);
@@ -248,18 +253,10 @@ let getOrElse: ('value, 'value ,t('value, 'id)) => 'value =
   (value, default, set) => Relude_Option_Base.getOrElse(default, Belt.Set.get(set, value));
 
 /**
- * TODO: Test & document this function.
+ * TODO: Needs documentation. Belt doesn't provide much description.
  */
 let split: ('value, t('value, 'id)) => ((t('value, 'id), t('value, 'id)), bool) =
   (value, set) => Belt.Set.split(set, value);
-
-/**
- * TODO: optimize foldRight for sets. This remains unimplemented
- * in `Belt`'s API, but it exists in PureScript/Haskell, since `Set`
- * implements `Foldable`.
- */
-let foldRight: (('b, 'a) => 'a, 'a, t('b, 'id)) => 'a = ( fn, acc, set,) =>
-  Array.fold_right(fn, toArray(set), acc);
 
 
 module type SET = {
@@ -287,6 +284,7 @@ module type SET = {
   let eq: (t, t) => bool;
   let forEach: (value => unit, t) => unit;
   let foldLeft: (('a, value) => 'a, 'a, t) => 'a;
+  let foldRight: ((value, 'a) => 'a, 'a, t) => 'a;
   let all: (value => bool, t) => bool;
   let any: (value => bool, t) => bool;
   let filter: (value => bool, t) => t;
@@ -301,9 +299,7 @@ module type SET = {
   let split: (value, t) => ((t, t), bool);
 };
 
-module WithOrd = (M: BsAbstract.Interface.ORD)
-// : (SET with type value = M.t)
-=> {
+module WithOrd = (M: BsAbstract.Interface.ORD) : (SET with type value = M.t) => {
   module Comparable =
     Belt.Id.MakeComparable({
       type t = M.t;
