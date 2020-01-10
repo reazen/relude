@@ -762,35 +762,45 @@ let toValidationNea:
   | Error(error) =>
     Relude_Validation.VError(Relude_NonEmpty.Array.pure(error));
 
+module Bifunctor:
+  BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
+  type nonrec t('a, 'e) = t('a, 'e);
+  let bimap = bimap;
+};
+let bimap = Bifunctor.bimap;
+include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
+
+module Bifoldable:
+  BsAbstract.Interface.BIFOLDABLE with type t('a, 'e) = t('a, 'e) = {
+  include BsAbstract.Result.Bifoldable;
+};
+let bifoldLeft = Bifoldable.bifold_left;
+let bifoldRight = Bifoldable.bifold_right;
+include Relude_Extensions_Bifoldable.BifoldableExtensions(Bifoldable);
+
 /**
 Because Result is a bi-functor, we need to capture the error type in order
 to implement many of the single-type-parameter typeclasses.  Doing it like this
 allows us to unlock a bunch of stuff at once using a single module functor.
  */
 module WithError = (E: BsAbstract.Interface.TYPE) => {
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
-    type nonrec t('a) = t('a, E.t);
+  type nonrec t('a) = t('a, E.t);
+
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Bifunctor:
-    BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
-    type nonrec t('a, 'e) = t('a, 'e);
-    let bimap = bimap;
-  };
-  let bimap = Bifunctor.bimap;
-  include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
-
-  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a, E.t) = {
+  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a) = {
     include Functor;
     let alt = alt;
   };
   let alt = Alt.alt;
   include Relude_Extensions_Alt.AltExtensions(Alt);
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, E.t) = {
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
@@ -798,14 +808,14 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t) = {
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, E.t) = {
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };
@@ -813,8 +823,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   module MonadThrow:
-    Relude_Interface.MONAD_THROW with
-      type t('a) = t('a, E.t) and type e = E.t = {
+    Relude_Interface.MONAD_THROW with type t('a) = t('a) and type e = E.t = {
     include Monad;
     type e = E.t;
     let throwError = error;
@@ -823,8 +832,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_MonadThrow.MonadThrowExtensions(MonadThrow);
 
   module MonadError:
-    Relude_Interface.MONAD_ERROR with
-      type t('a) = t('a, E.t) and type e = E.t = {
+    Relude_Interface.MONAD_ERROR with type t('a) = t('a) and type e = E.t = {
     include MonadThrow;
     let catchError = catchError;
   };
@@ -832,27 +840,19 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
   module Semigroupoid:
-    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b, E.t) = {
-    type nonrec t('a, 'b) = t('a => 'b, E.t);
+    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b) = {
+    type nonrec t('a, 'b) = t('a => 'b);
     let compose = compose;
   };
   let compose = compose;
   include Relude_Extensions_Semigroupoid.SemigroupoidExtensions(Semigroupoid);
 
-  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a, E.t) = {
+  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
     include BsAbstract.Result.Foldable(E);
   };
   let foldLeft = Foldable.fold_left;
   let foldRight = Foldable.fold_right;
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
-
-  module Bifoldable:
-    BsAbstract.Interface.BIFOLDABLE with type t('a, 'e) = t('a, 'e) = {
-    include BsAbstract.Result.Bifoldable;
-  };
-  let bifoldLeft = Bifoldable.bifold_left;
-  let bifoldRight = Bifoldable.bifold_right;
-  include Relude_Extensions_Bifoldable.BifoldableExtensions(Bifoldable);
 
   module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
     module Traversable: BsAbstract.Interface.TRAVERSABLE = {

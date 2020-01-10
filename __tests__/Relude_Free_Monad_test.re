@@ -56,17 +56,17 @@ module StorageAPI = {
     });
 
   // Low-level operations that we'll use for our interpreter
-  let get: string => State.t(option(int)) =
+  let getState: string => State.t(option(int)) =
     key => StateT(s => (Belt.Map.String.get(s, key), s));
 
-  let put: (string, int) => State.t(unit) =
+  let putState: (string, int) => State.t(unit) =
     (key, value) => StateT(s => ((), Belt.Map.String.set(s, key, value)));
 
-  let delete: string => State.t(unit) =
+  let deleteState: string => State.t(unit) =
     key => StateT(s => ((), Belt.Map.String.remove(s, key)));
 
   // Storage algebra specialized to string key and int value
-  module StorageF =
+  module StorageFWithKeyAndValue =
     StorageF.WithKeyAndValue(
       {
         type t = string;
@@ -77,24 +77,24 @@ module StorageAPI = {
     );
 
   // The interpreter to interpret our algebra into a state monad
-  let interpreter: StorageF.t('a) => State.t('a) =
+  let interpreter: StorageFWithKeyAndValue.t('a) => State.t('a) =
     storage =>
       State.Infix.(
         switch (storage) {
-        | Get(key, next) => get(key) <#> (valueOpt => next(valueOpt))
-        | Put(key, value, next) => put(key, value) <#> (_ => next) // Map the result into our next free operation, so we can propagate the state
-        | Delete(key, next) => delete(key) <#> (_ => next) // Map the result into our next free operation, so we can propagate the state
+        | Get(key, next) => getState(key) <#> (valueOpt => next(valueOpt))
+        | Put(key, value, next) => putState(key, value) <#> (_ => next) // Map the result into our next free operation, so we can propagate the state
+        | Delete(key, next) => deleteState(key) <#> (_ => next) // Map the result into our next free operation, so we can propagate the state
         }
       );
 
   // Include the smart constructors and operators for our algebra
   // This gets us our get/put/delete functions and things like <$>/<#>/>>=/<*>/etc.
   // For use when creating our programs
-  include StorageF;
+  include StorageFWithKeyAndValue;
 
   // Include foldFree function, which requires knowledge of the monad we're interpreting
   // into
-  include StorageF.FreeMonad.WithMonad(State.Monad);
+  include StorageFWithKeyAndValue.FreeMonad.WithMonad(State.Monad);
 };
 
 describe("Relude_Free_Monad", () => {

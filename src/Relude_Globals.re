@@ -39,6 +39,7 @@ module AsyncResult = Relude_AsyncResult;
 module Bool = Relude_Bool;
 module Eq = Relude_Eq;
 module Float = Relude_Float;
+module Free = Relude_Free;
 module HList = Relude_HList;
 module HMap = Relude_HMap;
 module Int = Relude_Int;

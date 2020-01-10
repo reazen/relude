@@ -110,7 +110,7 @@ module type EQ_BY_F =
     EqD: BsAbstract.Interface.EQ,
     EqE: BsAbstract.Interface.EQ,
     A:
-      Relude_Interface.ARROW with
+      Relude_Interface.FUNCTION_1 with
         type b = (EqA.t, EqB.t, EqC.t, EqD.t, EqE.t),
   ) =>
    BsAbstract.Interface.EQ with type t = A.a;
@@ -123,7 +123,7 @@ module EqBy: EQ_BY_F =
     EqD: BsAbstract.Interface.EQ,
     EqE: BsAbstract.Interface.EQ,
     A:
-      Relude_Interface.ARROW with
+      Relude_Interface.FUNCTION_1 with
         type b = (EqA.t, EqB.t, EqC.t, EqD.t, EqE.t),
   ) => {
     type t = A.a;
@@ -208,7 +208,7 @@ module type ORD_BY_F =
     OrdD: BsAbstract.Interface.ORD,
     OrdE: BsAbstract.Interface.ORD,
     A:
-      Relude_Interface.ARROW with
+      Relude_Interface.FUNCTION_1 with
         type b = (OrdA.t, OrdB.t, OrdC.t, OrdD.t, OrdE.t),
   ) =>
    BsAbstract.Interface.ORD with type t = A.a;
@@ -221,7 +221,7 @@ module OrdBy: ORD_BY_F =
     OrdD: BsAbstract.Interface.ORD,
     OrdE: BsAbstract.Interface.ORD,
     A:
-      Relude_Interface.ARROW with
+      Relude_Interface.FUNCTION_1 with
         type b = (OrdA.t, OrdB.t, OrdC.t, OrdD.t, OrdE.t),
   ) => {
     include EqBy(OrdA, OrdB, OrdC, OrdD, OrdE, A);

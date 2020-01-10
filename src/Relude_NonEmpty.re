@@ -40,6 +40,26 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
       TailSequence.MonoidAny.append(TailSequence.Monad.pure(head), tail);
 
   /**
+   * Converts a list to a NonEmpty, failing if the list is empty
+   */
+  let fromList: 'a. list('a) => option(t('a)) =
+    list =>
+      switch (list) {
+      | [] => None
+      | [h, ...t] => Some(NonEmpty(h, TailSequence.fromList(t)))
+      };
+
+  /**
+   * Converts an array to a NonEmpty, failing if the list is empty
+   */
+  let fromArray: 'a. array('a) => option(t('a)) =
+    array =>
+      Relude_Array_Base.uncons(array)
+      |> Relude_Option_Instances.map(((h, t)) =>
+           NonEmpty(h, TailSequence.fromArray(t))
+         );
+
+  /**
    * Prepends a new head value to the NonEmpty
    */
   let cons: 'a. ('a, t('a)) => t('a) =
@@ -212,6 +232,25 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     (delim, xs) =>
       switch (xs) {
       | NonEmpty(y, ys) => y ++ delim ++ TailSequence.mkString(delim, ys)
+      };
+
+  /**
+   * Reverses the NonEmpty
+   */
+  let reverse: t('a) => t('a) =
+    fun
+    | NonEmpty(head, tail) => {
+        tail
+        |> TailSequence.reverse
+        |> TailSequence.uncons
+        |> Relude_Option_Instances.map(
+             ((tailReversedHead, tailReversedTail)) => {
+             NonEmpty(
+               tailReversedHead,
+               tailReversedTail |> TailSequence.append(head),
+             )
+           })
+        |> Relude_Option_Base.getOrElseLazy(() => pure(head));
       };
 
   /**

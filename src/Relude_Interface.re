@@ -6,7 +6,7 @@ module type TYPE_ANY = {type t('a);};
 /**
  * Module type which captures a simple a => b function
  */
-module type ARROW = {
+module type FUNCTION_1 = {
   type a;
   type b;
   let f: a => b;
@@ -15,9 +15,27 @@ module type ARROW = {
 /**
  * Module type functor which captures a simple a => b function
  */
-module type ARROW_F =
+module type FUNCTION_1_F =
   (A: BsAbstract.Interface.TYPE, B: BsAbstract.Interface.TYPE) =>
-   ARROW with type a = A.t and type b = B.t;
+   FUNCTION_1 with type a = A.t and type b = B.t;
+
+/**
+ * Captures a natural tranformation
+ *
+ * It seems surprisingly hard to do `forall a. f a -> g a` in OCaml, but maybe I'm missing something.
+ * See the Relude_Free_Applicative for an example usage.
+ */
+module type NATURAL_TRANSFORMATION = {
+  type f('a);
+  type g('a);
+  let f: f('a) => g('a);
+
+  // Another encoding would be using FUNCTOR modules here, but the f('a)/g('a) version seems easier to work with inline,
+  // and we've already gone off the deep end, so let's not make it any more clunky.
+  //module F: BsAbstract.Interface.FUNCTOR;
+  //module G: BsAbstract.Interface.FUNCTOR;
+  //let f: F.t('a) => G.t('a);
+};
 
 /**
  * Module type signature for a module that represents a sequence of values and related functions.
