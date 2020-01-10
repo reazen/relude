@@ -307,6 +307,7 @@ module type MAP = {
   type t('value) = Belt.Map.t(Comparable.t, 'value, Comparable.identity);
   let make: unit => t('value);
   let set: (key, 'value, t('value)) => t('value);
+
   let singleton: (key, 'value) => t('value);
   let isEmpty: t('value) => bool;
   let contains: (key, t('value)) => bool;
@@ -365,26 +366,18 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   type nonrec t('value) = t(key, 'value, Comparable.identity);
 
   let make: unit => t('value) = () => make((module Comparable));
-
   let singleton: (key, 'value) => t('value) = (key, value) => make() |> set(key, value);
-
   let fromArray: array((key, 'value)) => t('value) =
     arr => fromArray((module Comparable), arr);
-
   let fromValueArray: ('value => key, array('value)) => t('value) =
     (toKey, arr) => fromValueArray((module Comparable), toKey, arr);
-
   let fromList: list((key, 'value)) => t('value) = lst => fromList((module Comparable), lst);
-
   let fromValueList: ('value => key, list('value)) => t('value) =
     (toKey, lst) => fromValueList((module Comparable), toKey, lst);
-
   let groupListBy: ('value => key, list('value)) => t(list('value)) =
     (groupBy, lst) => groupListBy((module Comparable), groupBy, lst);
-
   let groupArrayBy: ('value => key, array('value)) => t(array('value)) =
     (groupBy, arr) => groupArrayBy((module Comparable), groupBy, arr);
-
   let set: (key, 'value, t('value)) => t('value) = set;
   let isEmpty: t('value) => bool = isEmpty;
   let contains: (key, t('value)) => bool = contains;
