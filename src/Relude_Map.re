@@ -354,13 +354,14 @@ module type MAP = {
 
 module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
 
+  type key = M.t;
+
   module Comparable =
     Belt.Id.MakeComparable({
-      type t = M.t;
+      type t = key;
       let cmp = (a, b) => M.compare(a, b) |> Relude_Ordering.toInt;
     });
 
-  type key = M.t;
   type nonrec t('value) = t(key, 'value, Comparable.identity);
 
   let make: unit => t('value) = () => make((module Comparable));
@@ -413,10 +414,11 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   let partition: ((key, 'value) => bool, t('value)) => (t('value), t('value)) = partition;
   let map: ('v1 => 'v2, t('v1)) => t('v2) = map;
   let mapWithKey: ((key, 'v1) => 'v2, t('v1)) => t('v2) = mapWithKey;
+
   module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
-  let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
+
 };
