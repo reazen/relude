@@ -253,6 +253,14 @@ let getOrElse: ('value, 'value ,t('value, 'id)) => 'value =
 let split: ('value, t('value, 'id)) => ((t('value, 'id), t('value, 'id)), bool) =
   (value, set) => Belt.Set.split(set, value);
 
+/**
+ * TODO: optimize foldRight for sets. This remains unimplemented
+ * in `Belt`'s API, but it exists in PureScript/Haskell, since `Set`
+ * implements `Foldable`.
+ */
+let foldRight: (('b, 'a) => 'a, 'a, t('b, 'id)) => 'a = ( fn, acc, set,) =>
+  Array.fold_right(fn, toArray(set), acc);
+
 
 module type SET = {
   type value;
@@ -321,6 +329,7 @@ module WithOrd = (M: BsAbstract.Interface.ORD)
   let eq: (t, t) => bool = eq;
   let forEach: (value => unit, t) => unit = forEach;
   let foldLeft: (('acc, value) => 'acc, 'acc, t) => 'acc = foldLeft;
+  let foldRight: ((value, 'a) => 'a, 'a, t) => 'a = foldRight;
   let all: (value => bool, t) => bool = all;
   let any: (value => bool, t) => bool = any;
   let filter: (value => bool, t) => t = filter;
