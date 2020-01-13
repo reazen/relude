@@ -19,6 +19,22 @@ let zero: float = 0.0;
 let one: float = 1.0;
 
 /**
+ * Value for "not a number", used for mathematical operations that do not result
+ * in a real number, such as `0.0 /. 0.0` and `sqrt(-2)`.
+ */
+let nan: float = nan;
+
+/**
+ * Positive infinity
+ */
+let infinity: float = infinity;
+
+/**
+ * Negative infinity
+ */
+let negativeInfinity: float = neg_infinity;
+
+/**
  * Finds the sum of two floats
  */
 let add: (float, float) => float = (+.);
@@ -39,14 +55,45 @@ let multiply: (float, float) => float = ( *. );
 let divide: (float, float) => float = (/.);
 
 /**
- * Finds the max float value
+ * Raise the first number to the power of the second number.
+ *
+ * ```re
+ * pow(2.0, 4.0) == 16.0;
+ * pow(3.0, 2.0) == 9.0;
+ * pow(-2.0, (0.333333)) |> isNaN;
+ * ```
  */
-let top: float = BsAbstract.Float.Bounded.top;
+let pow = (a, b) => a ** b;
 
 /**
- * Finds the max float value
+ * Find the square root of the given float. The square root of negative numbers
+ * is `nan`.
  */
-let bottom: float = BsAbstract.Float.Bounded.bottom;
+let sqrt = sqrt;
+
+/**
+ * The maximum float value.
+ */
+let top: float = max_float;
+
+/**
+ * The minimum float value. Note that when using Bucklescript, this value is
+ * hard-coded and is not necessarily equal to `Number.MIN_VALUE` in JS.
+ */
+let bottom: float = min_float;
+
+/**
+ * NaN values are never equal to other numeric values, including other NaN
+ * values. This means that the intuitive `myValue == nan` is not sufficient for
+ * determining whether a value is NaN.
+ *
+ * ```re
+ * isNaN(3.14) == false;
+ * isNaN(infinity) == false;
+ * isNaN(nan) == true;
+ * ```
+ */
+let isNaN: float => bool = x => x != x;
 
 /**
  * Compates two floats
@@ -211,7 +258,7 @@ module Show: BsAbstract.Interface.SHOW with type t = float = {
 */
 let fromString: string => option(float) =
   v =>
-    try (Some(float_of_string(v))) {
+    try(Some(float_of_string(v))) {
     | _ => None
     };
 

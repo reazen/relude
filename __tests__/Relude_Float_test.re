@@ -64,6 +64,38 @@ describe("Float", () => {
     |> toEqual(true)
   );
 
+  test("pow", () =>
+    expect(Float.pow(2.0, 4.0)) |> toEqual(16.0)
+  );
+
+  test("pow (nan)", () =>
+    expect(Float.pow(-2.0, 0.3333333) |> Float.isNaN) |> toEqual(true)
+  );
+
+  test("sqrt", () =>
+    expect(Float.sqrt(9.0)) |> toEqual(3.0)
+  );
+
+  test("sqrt (nan)", () =>
+    expect(Float.sqrt(-9.0) |> Float.isNaN) |> toEqual(true)
+  );
+
+  test("isNaN (false for normal number)", () =>
+    expect(Float.isNaN(3.0)) |> toEqual(false)
+  );
+
+  test("isNaN (false for infinity)", () =>
+    expect(Float.isNaN(Float.infinity)) |> toEqual(false)
+  );
+
+  test("isNaN (true for nan)", () =>
+    expect(Float.isNaN(Float.nan)) |> toEqual(true)
+  );
+
+  test("isNaN (true for computation that returns nan)", () =>
+    expect(Float.isNaN(Float.sqrt(-1.0))) |> toEqual(true)
+  );
+
   test("compareAsInt (-1)", () =>
     expect(Float.compareAsInt(3.0, 3.1)) |> toEqual(-1)
   );
@@ -137,11 +169,13 @@ describe("Float", () => {
   );
 
   test("named lessThanOrEq (smaller)", () =>
-    expect(Float.OrdNamed.lessThanOrEq(~compareTo=2.0, 1.0)) |> toEqual(true)
+    expect(Float.OrdNamed.lessThanOrEq(~compareTo=2.0, 1.0))
+    |> toEqual(true)
   );
 
   test("named lessThanOrEq (larger)", () =>
-    expect(Float.OrdNamed.lessThanOrEq(~compareTo=0.0, 3.0)) |> toEqual(false)
+    expect(Float.OrdNamed.lessThanOrEq(~compareTo=0.0, 3.0))
+    |> toEqual(false)
   );
 
   test("named greaterThan (larger)", () =>
@@ -149,7 +183,8 @@ describe("Float", () => {
   );
 
   test("named greaterThan (equal)", () =>
-    expect(Float.OrdNamed.greaterThan(~compareTo=1.0, 1.0)) |> toEqual(false)
+    expect(Float.OrdNamed.greaterThan(~compareTo=1.0, 1.0))
+    |> toEqual(false)
   );
 
   test("named greaterThanOrEq (eq)", () =>
