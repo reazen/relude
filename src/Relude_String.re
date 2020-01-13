@@ -254,6 +254,23 @@ let toLowerCase: string => string = Js.String.toLowerCase;
 let fromCharCode: int => string = Js.String.fromCharCode;
 
 /**
+  `charCodeAt(n, str)` returns (optionally) the numeric character code at the
+  given 0-based position in a string. If the provided position is out of the
+  range of the size of the string (too high or negative), `None` is returned.
+
+  ```re
+  charCodeAt(0, "abc") == Some(97);
+  charCodeAt(-1, "abc") == None;
+  charCodeAt(0, "") == None;
+  ```
+*/
+let charCodeAt: (int, string) => option(int) =
+  (i, str) => {
+    let code = Js.String.charCodeAt(i, str);
+    Relude_Float.isNaN(code) ? None : Some(int_of_float(code));
+  };
+
+/**
   `charAt(n, str)` returns `Some(chStr)`, where `chStr` is a string
   consisting of the character at location `n` in the string. The
   first character in a string has position zero.

@@ -125,6 +125,18 @@ describe("String", () => {
     expect(Str.fromCharCode(65)) |> toEqual("A")
   );
 
+  test("charCodeAt (success)", () =>
+    expect(Str.charCodeAt(0, "abc")) |> toEqual(Some(97))
+  );
+
+  test("charCodeAt (negative index)", () =>
+    expect(Str.charCodeAt(-1, "abc")) |> toEqual(None)
+  );
+
+  test("charCodeAt (empty string)", () =>
+    expect(Str.charCodeAt(0, "")) |> toEqual(None)
+  );
+
   test("charAt success", () =>
     expect(Str.charAt(2, "abcdefg")) |> toEqual(Some("c"))
   );
