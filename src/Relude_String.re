@@ -274,6 +274,24 @@ let charAt: (int, string) => option(string) =
     Js.String.get(str, i) |> Js.Nullable.return |> Js.Nullable.toOption;
 
 /**
+  `charAtOrEmpty(n, str)` returns the string containing the character at the
+  given index or the empty string if the index is out of range.
+
+  ```re
+  charAtOrEmpty(0, "abc") == "a";
+  charAtOrEmpty(0, "") == "";
+  charAtOrEmpty(2, "a") == "";
+  charAtOrEmpty(-1, "abc") == "";
+  ```
+*/
+let charAtOrEmpty: (int, string) => string =
+  (i, str) =>
+    switch (charAt(i, str)) {
+    | None => ""
+    | Some(x) => x
+    };
+
+/**
   `charAtNullable(n, str)` returns `Js.Nullable.return(chStr)`,
   where `chStr` is a string consisting of the character at
   location `n` in the string. The first character in a string has position zero.
