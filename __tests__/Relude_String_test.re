@@ -153,6 +153,22 @@ describe("String", () => {
     ) |> toThrow
   );
 
+  test("charAtOrEmpty (in range)", () =>
+    expect(Str.charAtOrEmpty(0, "abc")) |> toEqual("a")
+  );
+
+  test("charAtOrEmpty (empty string)", () =>
+    expect(Str.charAtOrEmpty(0, "")) |> toEqual("")
+  );
+
+  test("charAtOrEmpty (above range)", () =>
+    expect(Str.charAtOrEmpty(2, "a")) |> toEqual("")
+  );
+
+  test("charAtOrEmpty (below range)", () =>
+    expect(Str.charAtOrEmpty(-1, "abc")) |> toEqual("")
+  );
+
   test("toList", () =>
     expect(Str.toList("abcde")) |> toEqual(["a", "b", "c", "d", "e"])
   );
