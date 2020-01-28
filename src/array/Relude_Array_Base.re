@@ -543,3 +543,16 @@ let removeAt: 'a. (int, array('a)) => array('a) =
   (targetIndex, xs) => {
     xs |> filterWithIndex((_, i) => i != targetIndex);
   };
+
+/**
+ * Creates an array of elements split into groups the length of size.
+ * If the array can't be split evenly, the final chunk will be the remaining elements.
+ */
+let rec chunk: 'a. (int, array('a)) => array(array('a)) =
+  (size, xs) =>
+    xs |> length <= size
+      ? [|xs|]
+      : xs
+        |> drop(size)
+        |> chunk(size)
+        |> Relude_Array_Instances.concat([|xs |> take(size)|]);
