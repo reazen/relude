@@ -500,3 +500,12 @@ let removeAt: 'a. (int, list('a)) => list('a) =
   (targetIndex, xs) => {
     xs |> filterWithIndex((_, i) => i != targetIndex);
   };
+
+/**
+ * Creates a list of elements split into groups the length of size.
+ * If the list can't be split evenly, the final chunk will be the remaining elements.
+ */
+let rec chunk: 'a. (int, list('a)) => list(list('a)) =
+  (size, xs) =>
+    xs |> Relude_List_Instances.length <= size
+      ? [xs] : [xs |> take(size), ...xs |> drop(size) |> chunk(size)];

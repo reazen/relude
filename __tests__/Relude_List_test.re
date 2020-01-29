@@ -784,6 +784,21 @@ describe("List", () => {
        ])
   );
 
+  test("chunk", () =>
+    expect(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+      |> List.chunk(3),
+    )
+    |> toEqual([
+         [1, 2, 3],
+         [4, 5, 6],
+         [7, 8, 9],
+         [10, 11, 12],
+         [13, 14, 15],
+         [16],
+       ])
+  );
+
   test("List.Float.sum empty", () =>
     expect(List.Float.sum([])) |> toEqual(0.)
   );
