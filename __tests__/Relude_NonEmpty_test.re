@@ -4,6 +4,18 @@ open Expect;
 module NonEmpty = Relude_NonEmpty;
 
 describe("NonEmpty.List", () => {
+  test("pure", () =>
+    expect(NonEmpty.List.pure(1)) |> toEqual(NonEmpty.List.make(1, []))
+  );
+
+  test("flatMap", () =>
+    expect(
+      NonEmpty.List.one(1)
+      |> NonEmpty.List.flatMap(a => NonEmpty.List.one(a + 1)),
+    )
+    |> toEqual(NonEmpty.List.make(2, []))
+  );
+
   test("cons", () =>
     expect(NonEmpty.List.cons(1, NonEmpty.List.one(2)))
     |> toEqual(NonEmpty.List.make(1, [2]))
@@ -12,6 +24,14 @@ describe("NonEmpty.List", () => {
   test("uncons", () =>
     expect(NonEmpty.List.uncons(NonEmpty.List.make(1, [2, 3])))
     |> toEqual((1, [2, 3]))
+  );
+
+  test("fromSequence", () =>
+    NonEmpty.List.one(1)
+    |> NonEmpty.List.toSequence
+    |> NonEmpty.List.fromSequence
+    |> expect
+    |> toEqual(Some(NonEmpty.List.make(1, [])))
   );
 
   test("concat with two full NonEmpty.Lists", () => {
@@ -63,10 +83,27 @@ describe("NonEmpty.List", () => {
     expect(result) |> toEqual(expected);
   });
 
-  test("eq", () => {
+  test("apply", () => {
+    let result =
+      NonEmpty.List.apply(
+        NonEmpty.List.make(v => v + 10, [v => v * 3]),
+        NonEmpty.List.make(1, [2]),
+      );
+    let expected = NonEmpty.List.make(11, [12, 3, 6]);
+    expect(result) |> toEqual(expected);
+  });
+
+  test("eq tail", () => {
     let ne = NonEmpty.List.make(1, [2, 3]);
     expect(NonEmpty.List.eq((module Relude_Int.Eq), ne, ne))
     |> toEqual(true);
+  });
+
+  test("eq head", () => {
+    let ne1 = NonEmpty.List.make(0, [2, 3]);
+    let ne2 = NonEmpty.List.make(1, [2, 3]);
+    expect(NonEmpty.List.eq((module Relude_Int.Eq), ne1, ne2))
+    |> toEqual(false);
   });
 
   test("show", () => {
@@ -102,6 +139,26 @@ describe("NonEmpty.Array", () => {
     let l2 = NonEmpty.Array.make(4, [|5|]);
     expect(NonEmpty.Array.concat(l1, l2))
     |> toEqual(NonEmpty.Array.make(1, [|2, 3, 4, 5|]));
+  });
+
+  test("toNonEmptyList", () =>
+    NonEmpty.Array.cons(1, NonEmpty.Array.one(2))
+    |> NonEmpty.Array.toNonEmptyList
+    |> expect
+    |> toEqual(NonEmpty.List.make(1, [2]))
+  );
+
+  test("fromNonEmptyList", () =>
+    NonEmpty.List.make(1, [2])
+    |> NonEmpty.Array.fromNonEmptyList
+    |> expect
+    |> toEqual(NonEmpty.Array.make(1, [|2|]))
+  );
+
+  test("show", () => {
+    let ne = NonEmpty.Array.make(1, [|2, 3|]);
+    expect(NonEmpty.Array.show((module Relude_Int.Show), ne))
+    |> toEqual("[!1, 2, 3!]");
   });
 
   module NonEmptyArrayWithOption =
