@@ -12,7 +12,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
    * Creates a NonEmpty with a single value
    */
   let one: 'a. 'a => t('a) =
-    head => NonEmpty(head, TailSequence.MonoidAny.empty);
+    head => NonEmpty(head, TailSequence.emptyLazy());
 
   /**
    * Constructs a NonEmpty with the given head and tail values
@@ -37,7 +37,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   let toSequence: 'a. t('a) => TailSequence.t('a) =
     fun
     | NonEmpty(head, tail) =>
-      TailSequence.MonoidAny.append(TailSequence.Monad.pure(head), tail);
+      TailSequence.concat(TailSequence.Monad.pure(head), tail);
 
   /**
    * Converts a list to a NonEmpty, failing if the list is empty
@@ -95,10 +95,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     (nonEmpty1, nonEmpty2) =>
       NonEmpty(
         head(nonEmpty1),
-        TailSequence.MonoidAny.append(
-          tail(nonEmpty1),
-          toSequence(nonEmpty2),
-        ),
+        TailSequence.concat(tail(nonEmpty1), toSequence(nonEmpty2)),
       );
 
   module SemigroupAny:

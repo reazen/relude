@@ -4,14 +4,11 @@
  * Heavily inspired by Queensland Function Programming Lab Haskell implementation,
  * although without many of the advanced capabilities, like the ListZipperOp stuff.
  * https://github.com/qfpl/list-zipper/blob/master/src/Data/ListZipper.hs
- * 
+ *
  * See also this very enlightening presentation about zippers for more background:
  * http://data.tmorris.net/talks/zippers/0a1062fd0526d7ac1f41ade1e4db1465d311b4fd/zippers.pdf
  */
 module WithSequence = (S: Relude_Interface.SEQUENCE) => {
-  module SFoldableExtensions =
-    Relude_Extensions_Foldable.FoldableExtensions(S.Foldable);
-
   /**
    * A Zipper type contains a sequence on the left (in reverse order, so that the head
    * of the left sequence is treated as if it's the item immediately to the left of the focus),
@@ -291,7 +288,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * TODO: not needed with Foldable extensions
    */
   let toArray: 'a. t('a) => array('a) =
-    zipper => zipper |> toSequence |> SFoldableExtensions.toArray;
+    zipper => zipper |> toSequence |> S.toArray;
 
   /**
    * Converts the Zipper into a list
@@ -299,7 +296,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * TODO: not needed with Foldable extensions
    */
   let toList: 'a. t('a) => list('a) =
-    zipper => zipper |> toSequence |> SFoldableExtensions.toList;
+    zipper => zipper |> toSequence |> S.toList;
 
   /**
    * Converts the Zipper into a NonEmptyArray
@@ -707,7 +704,9 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     if (checkFocus && f(focus)) {
       Some(z);
     } else {
-      z |> moveRight |> Relude_Option.flatMap(findRightBy(~checkFocus=true, f));
+      z
+      |> moveRight
+      |> Relude_Option.flatMap(findRightBy(~checkFocus=true, f));
     };
 
   /**

@@ -11,17 +11,6 @@ module SemigroupAny:
 include Relude_Extensions_SemigroupAny.SemigroupAnyExtensions(SemigroupAny);
 
 /**
- * Returns an empty array.  Warning: arrays are mutable so this value cannot be shared.
- */
-let empty: 'a. array('a) = [||];
-
-module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = array('a) = {
-  include SemigroupAny;
-  let empty = empty;
-};
-include Relude_Extensions_MonoidAny.MonoidAnyExtensions(MonoidAny);
-
-/**
  * Applies a pure function to each value in the array
  */
 let map: 'a 'b. ('a => 'b, array('a)) => array('b) = BsAbstract.Array.Functor.map;
@@ -77,23 +66,6 @@ module Alt: BsAbstract.Interface.ALT with type t('a) = array('a) = {
 };
 include Relude_Extensions_Alt.AltExtensions(Alt);
 
-module Plus: BsAbstract.Interface.PLUS with type t('a) = array('a) = {
-  include MonoidAny;
-  let map = map;
-  let alt = alt;
-};
-include Relude_Extensions_Plus.PlusExtensions(Plus);
-
-module Alternative:
-  BsAbstract.Interface.ALTERNATIVE with type t('a) = array('a) = {
-  include MonoidAny;
-  let map = map;
-  let alt = alt;
-  let apply = apply;
-  let pure = pure;
-};
-include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
-
 /**
  * Imap is the invariant map function for arrays.
  */
@@ -102,18 +74,6 @@ let imap: 'a 'b. ('a => 'b, 'b => 'a, array('a)) => array('b) = BsAbstract.Array
 module Invariant: BsAbstract.Interface.INVARIANT with type t('a) = array('a) = {
   type t('a) = array('a);
   let imap = imap;
-};
-
-module MonadZero: BsAbstract.Interface.MONAD_ZERO with type t('a) = array('a) = {
-  include Monad;
-  let empty = empty;
-  let alt = alt;
-};
-
-module MonadPlus: BsAbstract.Interface.MONAD_PLUS with type t('a) = array('a) = {
-  include Monad;
-  let empty = empty;
-  let alt = alt;
 };
 
 /**
