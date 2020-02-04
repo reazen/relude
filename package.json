@@ -32,13 +32,13 @@
   "license": "MIT",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.9",
-    "bs-abstract": "^0.18.0",
-    "bs-platform": "^7.0.1",
+    "bs-abstract": "github:gaku-sei/bs-abstract#support-bs-7.0.2",
+    "bs-platform": "^7.1.0",
     "docsify-cli": "~4.4.0"
   },
   "peerDependencies": {
     "bs-abstract": "^0.18.0",
-    "bs-platform": "^7.0.1"
+    "bs-platform": "^7.1.0"
   },
   "jest": {
     "verbose": false,

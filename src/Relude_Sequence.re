@@ -1,6 +1,5 @@
 module List: Relude_Interface.SEQUENCE with type t('a) = list('a) = {
   type t('a) = list('a);
-  let empty = [];
   let emptyLazy = () => [];
   let length = Relude_List_Instances.length;
   let isEmpty = Relude_List_Base.isEmpty;
@@ -23,7 +22,6 @@ module List: Relude_Interface.SEQUENCE with type t('a) = list('a) = {
   let showBy = Relude_List_Instances.showBy;
   let mkString =
     Relude_List_Instances.intercalate((module BsAbstract.String.Monoid));
-  module MonoidAny = Relude_List_Instances.MonoidAny;
   module Functor = Relude_List_Instances.Functor;
   module Apply = Relude_List_Instances.Apply;
   module Applicative = Relude_List_Instances.Applicative;
@@ -36,7 +34,6 @@ module List: Relude_Interface.SEQUENCE with type t('a) = list('a) = {
 
 module Array: Relude_Interface.SEQUENCE with type t('a) = array('a) = {
   type t('a) = array('a);
-  let empty = [||];
   let emptyLazy = () => [||];
   let length = Relude_Array_Base.length;
   let isEmpty = Relude_Array_Base.isEmpty;
@@ -59,7 +56,6 @@ module Array: Relude_Interface.SEQUENCE with type t('a) = array('a) = {
   let showBy = Relude_Array_Instances.showBy;
   let mkString =
     Relude_Array_Instances.intercalate((module BsAbstract.String.Monoid));
-  module MonoidAny = Relude_Array_Instances.MonoidAny;
   module Functor = Relude_Array_Instances.Functor;
   module Apply = Relude_Array_Instances.Apply;
   module Applicative = Relude_Array_Instances.Applicative;

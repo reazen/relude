@@ -42,7 +42,6 @@ module type NATURAL_TRANSFORMATION = {
 module type SEQUENCE = {
   type t('a);
 
-  let empty: t('a);
   let emptyLazy: unit => t('a);
   let length: t('a) => int;
   let isEmpty: t('a) => bool;
@@ -65,18 +64,16 @@ module type SEQUENCE = {
   let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool;
   let showBy: ('a => string, t('a)) => string;
 
-  module MonoidAny: BsAbstract.Interface.MONOID_ANY with type t('a) = t('a);
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) := t('a);
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a);
-
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a);
+  module Apply: BsAbstract.Interface.APPLY with type t('a) := t('a);
 
   module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a);
+    BsAbstract.Interface.APPLICATIVE with type t('a) := t('a);
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a);
+  module Monad: BsAbstract.Interface.MONAD with type t('a) := t('a);
 
-  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a);
+  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) := t('a);
 
   module Traversable:
     (A: BsAbstract.Interface.APPLICATIVE) =>

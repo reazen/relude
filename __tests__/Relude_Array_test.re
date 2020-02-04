@@ -29,10 +29,6 @@ describe("Array", () => {
     expect(Array.isNotEmpty([|1|])) |> toBe(true)
   );
 
-  test("empty is []", () =>
-    expect(Array.empty) |> toEqual([||])
-  );
-
   test("pure creates a one-item array", () =>
     expect(Array.pure(123)) |> toEqual([|123|])
   );
