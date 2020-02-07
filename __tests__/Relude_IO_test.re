@@ -1620,6 +1620,28 @@ describe("IO handleError", () =>
   )
 );
 
+describe("IO mapHandleError", () => {
+  testAsync("pure mapHandleError unsafeRunAsync", onDone =>
+    IO.pure(42)
+    |> IO.mapHandleError(a => a * 2, int_of_string)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(b) => onDone(expect(b) |> toEqual(84))
+         | Error(_) => onDone(fail("Fail")),
+       )
+  );
+
+  testAsync("pure mapHandleError unsafeRunAsync", onDone =>
+    IO.throw("42")
+    |> IO.mapHandleError(a => a * 2, int_of_string)
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(b) => onDone(expect(b) |> toEqual(42))
+         | Error(_) => onDone(fail("Fail")),
+       )
+  );
+});
+
 describe("IO bimap/bitap", () => {
   testAsync("suspend bimap bimap unsafeRunAsync", onDone =>
     IO.suspend(() => 42)

@@ -234,6 +234,20 @@ describe("Result", () => {
     |> toEqual(Belt.Result.Ok(84))
   );
 
+  test("mapHandleError success", () =>
+    expect(
+      Result.pure(42) |> Result.mapHandleError(a => a * 2, int_of_string),
+    )
+    |> toEqual(Belt.Result.Ok(84))
+  );
+
+  test("mapHandleError failure", () =>
+    expect(
+      Result.error("42") |> Result.mapHandleError(a => a * 2, int_of_string),
+    )
+    |> toEqual(Belt.Result.Ok(42))
+  );
+
   test("eqBy when eq, both Ok", () =>
     expect(Result.eqBy(Relude_Int.eq, Relude_String.eq, Ok("a"), Ok("a")))
     |> toEqual(true)
