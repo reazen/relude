@@ -5,191 +5,273 @@ during applicative validation.
 E.g. if you are doing applicative validation to construct a User model, you could parse a phone number and
 allow it, but collect a warning that certain phone number formats are deprecated.
 */
-type t('a, 'e) =
-  | IOk('a)
-  | IError('e)
-  | IBoth('a, 'e);
+include Relude_Ior_Type;
 
 /**
- * Constructs an IOk value with the given success value
+ * Constructs a This value with the given success value
  */
-let ok: 'a => t('a, 'e) = a => IOk(a);
+let this: 'a => t('a, 'b) = a => This(a);
 
 /**
- * Constructs an IError value with the given error value
+ * Constructs an That value with the given that value
  */
-let error: 'e => t('a, 'e) = e => IError(e);
+let that: 'b => t('a, 'b) = b => That(b);
 
 /**
- * Constructs an IBoth value with the given success and error values
+ * Constructs an Both value with the given this and that values
  */
-let both: ('a, 'e) => t('a, 'e) = (a, e) => IBoth(a, e);
+let both: ('a, 'b) => t('a, 'b) = (a, b) => Both(a, b);
 
 /**
- * Indicates if the Ior is IOk with any value
+ * Indicates if the Ior is This with any value
  */
-let isOk: 'a 'e. t('a, 'e) => bool =
+let isThis: 'a 'b. t('a, 'b) => bool =
   fun
-  | IOk(_) => true
-  | IError(_) => false
-  | IBoth(_, _) => false;
+  | This(_) => true
+  | That(_) => false
+  | Both(_, _) => false;
 
 /**
- * Indicates if the Ior is IError with any value
+ * Indicates if the Ior is That with any value
  */
-let isError: 'a 'e. t('a, 'e) => bool =
+let isThat: 'a 'b. t('a, 'b) => bool =
   fun
-  | IOk(_) => false
-  | IError(_) => true
-  | IBoth(_, _) => false;
+  | This(_) => false
+  | That(_) => true
+  | Both(_, _) => false;
 
 /**
- * Indicates if the Ior is IBoth with any values
+ * Indicates if the Ior is Both with any values
  */
-let isBoth: 'a 'e. t('a, 'e) => bool =
+let isBoth: 'a 'b. t('a, 'b) => bool =
   fun
-  | IOk(_) => false
-  | IError(_) => false
-  | IBoth(_, _) => true;
+  | This(_) => false
+  | That(_) => false
+  | Both(_, _) => true;
 
 /**
- * Maps a pure function over the success channel of the Ior
+ * Gets the 'a value out of the Ior
  */
-let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
+let getThis: 'a 'b. t('a, 'b) => option('a) =
+  fun
+  | This(a) => Some(a)
+  | That(_) => None
+  | Both(a, _) => Some(a);
+
+/**
+ * Gets the 'b value out of the Ior
+ */
+let getThat: 'a 'b. t('a, 'b) => option('b) =
+  fun
+  | This(_) => None
+  | That(b) => Some(b)
+  | Both(_, b) => Some(b);
+
+/**
+ * Partitions a list of Iors into lists of the values for each constructor
+ */
+let partition:
+  'a 'b.
+  list(t('a, 'b)) => (list('a), list('b), list(('a, 'b)))
+ =
+  iors =>
+    Relude_List.foldRight(
+      (ior, (as_, bs, boths)) =>
+        switch (ior) {
+        | This(a) => ([a, ...as_], bs, boths)
+        | That(b) => (as_, [b, ...bs], boths)
+        | Both(a, b) => (as_, bs, [(a, b), ...boths])
+        },
+      ([], [], []),
+      iors,
+    );
+
+/**
+ * Extracts that 'a values out of a list of Iors
+ */
+let catThis: 'a 'b. list(t('a, 'b)) => list('a) =
+  iors =>
+    Relude_List.foldRight(
+      (ior, acc) =>
+        switch (ior) {
+        | This(a) => [a, ...acc]
+        | That(_) => acc
+        | Both(a, _) => [a, ...acc]
+        },
+      [],
+      iors,
+    );
+
+/**
+ * Extracts that 'b values out of a list of Iors
+ */
+let catThat: 'a 'b. list(t('a, 'b)) => list('b) =
+  iors =>
+    Relude_List.foldRight(
+      (ior, acc) =>
+        switch (ior) {
+        | This(_) => acc
+        | That(b) => [b, ...acc]
+        | Both(_, b) => [b, ...acc]
+        },
+      [],
+      iors,
+    );
+
+/**
+ * Maps a pure function over the `this` channel of the Ior
+ */
+let mapThis: 'a 'b 'c. ('a => 'c, t('a, 'b)) => t('c, 'b) =
   (f, fa) =>
     switch (fa) {
-    | IError(_) as e => e
-    | IOk(a) => IOk(f(a))
-    | IBoth(a, e) => IBoth(f(a), e)
+    | That(_) as e => e
+    | This(a) => This(f(a))
+    | Both(a, b) => Both(f(a), b)
     };
 
 /**
- * Applies a side effect function if the value is IOk, IError, or IBoth
+ * Alias for `mapThis`
+ */
+let map = mapThis;
+
+/**
+ * Maps a pure function over the `that` channel of the Ior
+ */
+let mapThat: 'a 'b 'c. ('b => 'c, t('a, 'b)) => t('a, 'c) =
+  (f, fa) =>
+    switch (fa) {
+    | This(_) as a => a
+    | That(b) => That(f(b))
+    | Both(a, b) => Both(a, f(b))
+    };
+
+/**
+ * Applies a side effect function if the value is This, That, or Both
  */
 let tap:
-  'a 'e.
-  ('a => unit, 'e => unit, ('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
+  'a 'b.
+  ('a => unit, 'b => unit, ('a, 'b) => unit, t('a, 'b)) => t('a, 'b)
  =
-  (ifOk, ifError, ifBoth, fa) =>
+  (ifThis, ifThat, ifBoth, fa) =>
     switch (fa) {
-    | IOk(a) =>
-      ifOk(a);
+    | This(a) =>
+      ifThis(a);
       fa;
-    | IError(e) =>
-      ifError(e);
+    | That(e) =>
+      ifThat(e);
       fa;
-    | IBoth(a, e) =>
+    | Both(a, e) =>
       ifBoth(a, e);
       fa;
     };
 
 /**
- * Applies a side-effect function if the value is IOk
+ * Applies a side-effect function if the value is This
  */
-let tapOk: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
-  (ifOk, fa) =>
+let tapThis: 'a 'b. ('a => unit, t('a, 'b)) => t('a, 'b) =
+  (ifThis, fa) =>
     switch (fa) {
-    | IOk(a) =>
-      ifOk(a);
+    | This(a) =>
+      ifThis(a);
       fa;
-    | IError(_) => fa
-    | IBoth(_, _) => fa
+    | That(_) => fa
+    | Both(_, _) => fa
     };
 
 /**
- * Applies a side-effect function if the value is IError
+ * Applies a side-effect function if the value is That
  */
-let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
-  (ifError, fa) =>
+let tapThat: 'a 'b. ('b => unit, t('a, 'b)) => t('a, 'b) =
+  (ifThat, fa) =>
     switch (fa) {
-    | IOk(_) => fa
-    | IError(e) =>
-      ifError(e);
+    | This(_) => fa
+    | That(e) =>
+      ifThat(e);
       fa;
-    | IBoth(_, _) => fa
+    | Both(_, _) => fa
     };
 
 /**
- * Applies a side-effect function if the value is IBoth
+ * Applies a side-effect function if the value is Both
  */
-let tapBoth: 'a 'e. (('a, 'e) => unit, t('a, 'e)) => t('a, 'e) =
+let tapBoth: 'a 'b. (('a, 'b) => unit, t('a, 'b)) => t('a, 'b) =
   (ifBoth, fa) =>
     switch (fa) {
-    | IOk(_) => fa
-    | IError(_) => fa
-    | IBoth(a, e) =>
+    | This(_) => fa
+    | That(_) => fa
+    | Both(a, e) =>
       ifBoth(a, e);
       fa;
     };
 
 /**
- * Applies a side effect function to the 'a value in an IOk or an IBoth
+ * Applies a side effect function to the 'a value in an This or an Both
  */
-let tapOkOrBothOk: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
-  (ifValue, fa) =>
+let tapThisOrBoth: 'a 'b. ('a => unit, t('a, 'b)) => t('a, 'b) =
+  (ifThis, fa) =>
     switch (fa) {
-    | IOk(a) =>
-      ifValue(a);
+    | This(a) =>
+      ifThis(a);
       fa;
-    | IError(_) => fa
-    | IBoth(a, _) =>
-      ifValue(a);
+    | That(_) => fa
+    | Both(a, _) =>
+      ifThis(a);
       fa;
     };
 
 /**
- * Applies a side effect function to the 'e value in an IError or an IBoth
+ * Applies a side effect function to the 'b value in an That or an Both
  */
-let tapErrorOrBothError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
-  (ifError, fa) =>
+let tapThatOrBoth: 'a 'b. ('b => unit, t('a, 'b)) => t('a, 'b) =
+  (ifThat, fa) =>
     switch (fa) {
-    | IOk(_) => fa
-    | IError(e) =>
-      ifError(e);
+    | This(_) => fa
+    | That(e) =>
+      ifThat(e);
       fa;
-    | IBoth(_, e) =>
-      ifError(e);
+    | Both(_, e) =>
+      ifThat(e);
       fa;
     };
 
 /**
- * Applies a wrapped function to the success channel, with error collecting semantics.
+ * Applies a wrapped function to the success channel, with `that` collecting semantics.
  */
-let applyWithAppendErrors:
-  (('e, 'e) => 'e, t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
-  (appendErrors, ff, fa) =>
+let applyWithAppendThats:
+  (('b, 'b) => 'b, t('a => 'c, 'b), t('a, 'b)) => t('c, 'b) =
+  (appendThats, ff, fa) =>
     switch (ff, fa) {
-    | (IOk(f), IOk(a)) => IOk(f(a))
-    | (IOk(_), IError(e)) => IError(e)
-    | (IOk(f), IBoth(a, e)) => IBoth(f(a), e)
-    | (IError(e), IOk(_)) => IError(e)
-    | (IError(e1), IError(e2)) => IError(appendErrors(e1, e2))
-    | (IError(e1), IBoth(_, e2)) => IError(appendErrors(e1, e2))
-    | (IBoth(f, e1), IOk(a)) => IBoth(f(a), e1)
-    | (IBoth(_, e1), IError(e2)) => IError(appendErrors(e1, e2))
-    | (IBoth(f, e1), IBoth(a, e2)) => IBoth(f(a), appendErrors(e1, e2))
+    | (This(f), This(a)) => This(f(a))
+    | (This(_), That(b)) => That(b)
+    | (This(f), Both(a, b)) => Both(f(a), b)
+    | (That(b), This(_)) => That(b)
+    | (That(b1), That(b2)) => That(appendThats(b1, b2))
+    | (That(b1), Both(_, b2)) => That(appendThats(b1, b2))
+    | (Both(f, b1), This(a)) => Both(f(a), b1)
+    | (Both(_, b1), That(b2)) => That(appendThats(b1, b2))
+    | (Both(f, b1), Both(a, b2)) => Both(f(a), appendThats(b1, b2))
     };
 
 /**
- * Lifts a pure value into an IOk
+ * Lifts a pure value into an This
  */
-let pure: 'a => t('a, 'e) = a => IOk(a);
+let pure: 'a 'b. 'a => t('a, 'b) = a => This(a);
 
 /**
  * Applies a monadic function to the success channel of the Ior
  */
-let bind: (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
+let bind: (t('a, 'b), 'a => t('c, 'b)) => t('c, 'b) =
   (fa, f) =>
     switch (fa) {
-    | IOk(a) => f(a)
-    | IError(_) as err => err
-    | IBoth(a, _) => f(a)
+    | This(a) => f(a)
+    | That(_) as that => that
+    | Both(a, _) => f(a)
     };
 
 /**
  * Applies a monadic function to the success channel of the Ior
  */
-let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
+let flatMap: ('a => t('c, 'b), t('a, 'b)) => t('c, 'b) =
   (f, fa) => bind(fa, f);
 
 /**
@@ -197,8 +279,8 @@ let flatMap: ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
  */
 let map2:
   (('x, 'x) => 'x, ('a, 'b) => 'c, t('a, 'x), t('b, 'x)) => t('c, 'x) =
-  (appendErrors, f, fa, fb) =>
-    applyWithAppendErrors(appendErrors, map(f, fa), fb);
+  (appendThats, f, fa, fb) =>
+    applyWithAppendThats(appendThats, map(f, fa), fb);
 
 /**
  * Maps the results of 3 Ior values using the given function
@@ -206,8 +288,8 @@ let map2:
 let map3:
   (('x, 'x) => 'x, ('a, 'b, 'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x)) =>
   t('d, 'x) =
-  (appendErrors, f, fa, fb, fc) =>
-    applyWithAppendErrors(appendErrors, map2(appendErrors, f, fa, fb), fc);
+  (appendThats, f, fa, fb, fc) =>
+    applyWithAppendThats(appendThats, map2(appendThats, f, fa, fb), fc);
 
 /**
  * Maps the results of 4 Ior values using the given function
@@ -222,12 +304,8 @@ let map4:
     t('d, 'x)
   ) =>
   t('e, 'x) =
-  (appendErrors, f, fa, fb, fc, fd) =>
-    applyWithAppendErrors(
-      appendErrors,
-      map3(appendErrors, f, fa, fb, fc),
-      fd,
-    );
+  (appendThats, f, fa, fb, fc, fd) =>
+    applyWithAppendThats(appendThats, map3(appendThats, f, fa, fb, fc), fd);
 
 /**
  * Maps the results of 5 Ior values using the given function
@@ -243,41 +321,85 @@ let map5:
     t('e, 'x)
   ) =>
   t('f, 'x) =
-  (appendErrors, f, fa, fb, fc, fd, fe) =>
-    applyWithAppendErrors(
-      appendErrors,
-      map4(appendErrors, f, fa, fb, fc, fd),
+  (appendThats, f, fa, fb, fc, fd, fe) =>
+    applyWithAppendThats(
+      appendThats,
+      map4(appendThats, f, fa, fb, fc, fd),
       fe,
     );
 
 /**
- * Creates a module that locks in the Error TYPE and SEMIGROUP_ANY modules, so
+ * Folds an Ior into a value by applying a function for each case
+ */
+let fold: 'a 'b 'c. ('a => 'c, 'b => 'c, ('a, 'b) => 'c, t('a, 'b)) => 'c =
+  (aToC, bToC, abToC, ior) =>
+    switch (ior) {
+    | This(a) => aToC(a)
+    | That(b) => bToC(b)
+    | Both(a, b) => abToC(a, b)
+    };
+
+/**
+ * Converts an Ior into a tuple by filling in default values if needed
+ */
+let toTuple: 'a 'b. ('a, 'b, t('a, 'b)) => ('a, 'b) =
+  (defaultA, defaultB, ior) =>
+    switch (ior) {
+    | This(a) => (a, defaultB)
+    | That(b) => (defaultA, b)
+    | Both(a, b) => (a, b)
+    };
+
+/**
+ * Collapses an Ior containing two same-typed values into a value of that type, combining the values if needed
+ */
+let merge: 'a. (('a, 'a) => 'a, t('a, 'a)) => 'a =
+  (f, ior) =>
+    switch (ior) {
+    | This(a) => a
+    | That(a) => a
+    | Both(a1, a2) => f(a1, a2)
+    };
+
+/**
+ * Collapses an Ior by converting each side into a same-typed value, and combining them if needed
+ */
+let mergeWith: 'a 'b 'c. ('a => 'c, 'b => 'c, ('c, 'c) => 'c, t('a, 'b)) => 'c =
+  (aToC, bToC, ccToC, ior) =>
+    switch (ior) {
+    | This(a) => aToC(a)
+    | That(b) => bToC(b)
+    | Both(a, b) => ccToC(aToC(a), bToC(b))
+    };
+
+/**
+ * Creates a module that locks in the That TYPE and SEMIGROUP_ANY modules, so
  * that we can implement the typeclass instances for the single-type-parameter typeclasses.
  */
-module WithErrors =
+module WithThats =
        (
-         Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-         Error: BsAbstract.Interface.TYPE,
+         Thats: BsAbstract.Interface.SEMIGROUP_ANY,
+         That: BsAbstract.Interface.TYPE,
        ) => {
   module Functor:
-    BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Errors.t(Error.t)) = {
-    type nonrec t('a) = t('a, Errors.t(Error.t));
+    BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Thats.t(That.t)) = {
+    type nonrec t('a) = t('a, Thats.t(That.t));
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
   module Apply:
-    BsAbstract.Interface.APPLY with type t('a) = t('a, Errors.t(Error.t)) = {
+    BsAbstract.Interface.APPLY with type t('a) = t('a, Thats.t(That.t)) = {
     include Functor;
-    let apply = (ff, fa) => applyWithAppendErrors(Errors.append, ff, fa);
+    let apply = (ff, fa) => applyWithAppendThats(Thats.append, ff, fa);
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
     BsAbstract.Interface.APPLICATIVE with
-      type t('a) = t('a, Errors.t(Error.t)) = {
+      type t('a) = t('a, Thats.t(That.t)) = {
     include Apply;
     let pure = pure;
   };
@@ -285,7 +407,7 @@ module WithErrors =
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   module Monad:
-    BsAbstract.Interface.MONAD with type t('a) = t('a, Errors.t(Error.t)) = {
+    BsAbstract.Interface.MONAD with type t('a) = t('a, Thats.t(That.t)) = {
     include Applicative;
     let flat_map = bind;
   };

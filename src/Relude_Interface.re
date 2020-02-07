@@ -29,7 +29,6 @@ module type NATURAL_TRANSFORMATION = {
   type f('a);
   type g('a);
   let f: f('a) => g('a);
-
   // Another encoding would be using FUNCTOR modules here, but the f('a)/g('a) version seems easier to work with inline,
   // and we've already gone off the deep end, so let's not make it any more clunky.
   //module F: BsAbstract.Interface.FUNCTOR;
@@ -110,6 +109,29 @@ module type ISO_LIST = {
   type t('a);
   let fromList: list('a) => t('a);
   let toList: t('a) => list('a);
+};
+
+/**
+ * Module type signature for Ior-based zipping and unzipping
+ */
+module type SEMIALIGN = {
+  include BsAbstract.Interface.FUNCTOR;
+  let align: (t('a), t('b)) => t(Relude_Ior_Type.t('a, 'b));
+  let alignWith: (Relude_Ior_Type.t('a, 'b) => 'c, t('a), t('b)) => t('c);
+};
+
+/**
+ * Module type signature for an extension of ALIGN that adds an empty `nil` value.
+ *
+ * Note that this has a parallel to the applicative typeclasses:
+ * 
+ * APPLY/APPLICATIVE/TRAVERSABLE
+ * 
+ * SEMIALIGN/ALIGN/CROSSWALK (or maybe ALIGNABLE?)
+ */
+module type ALIGN = {
+  include SEMIALIGN;
+  let nil: t('a);
 };
 
 /**

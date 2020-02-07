@@ -326,6 +326,66 @@ describe("Validation", () => {
        )
   });
 
+  testAll(
+    "alignWithAppendErrors",
+    [
+      (
+        Validation.ok(42),
+        Validation.ok("a"),
+        Validation.ok(Relude_Ior_Type.Both(42, "a")),
+      ),
+      (
+        Validation.ok(42),
+        Validation.error("fail2"),
+        Validation.ok(Relude_Ior_Type.This(42)),
+      ),
+      (
+        Validation.error("fail1"),
+        Validation.ok("a"),
+        Validation.ok(Relude_Ior_Type.That("a")),
+      ),
+      (
+        Validation.error("fail1"),
+        Validation.error("fail2"),
+        Validation.error("fail1fail2"),
+      ),
+    ],
+    ((inputA, inputB, expected)) => {
+      let actual =
+        Validation.alignWithAppendErrors((a, b) => a ++ b, inputA, inputB);
+      expect(actual) |> toEqual(expected);
+    },
+  );
+
+  testAll(
+    "alignWithWithAppendErrors",
+    [
+      (Validation.ok(42), Validation.ok("99"), Validation.ok(141)),
+      (Validation.ok(42), Validation.error("fail2"), Validation.ok(42)),
+      (Validation.error("fail1"), Validation.ok("99"), Validation.ok(99)),
+      (
+        Validation.error("fail1"),
+        Validation.error("fail2"),
+        Validation.error("fail1fail2"),
+      ),
+    ],
+    ((inputA, inputB, expected)) => {
+      let f =
+        fun
+        | Relude_Ior_Type.This(a) => a
+        | Relude_Ior_Type.That(b) => int_of_string(b)
+        | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+      let actual =
+        Validation.alignWithWithAppendErrors(
+          (a, b) => a ++ b,
+          f,
+          inputA,
+          inputB,
+        );
+      expect(actual) |> toEqual(expected);
+    },
+  );
+
   test("makeWithValidation success", () => {
     let validation = Person.makeWithValidation("Andy", 55, "English");
     let expected: Person.t = {name: "Andy", age: 55, language: "English"};

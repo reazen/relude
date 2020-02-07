@@ -230,6 +230,27 @@ let applyWithAppendErrors:
     | (VError(e1), VError(e2)) => VError(appendErrors(e1, e2))
     };
 
+let alignWithAppendErrors:
+  'a 'b 'e.
+  (('e, 'e) => 'e, t('a, 'e), t('b, 'e)) =>
+  t(Relude_Ior_Type.t('a, 'b), 'e)
+ =
+  (appendErrors, fa, fb) =>
+    switch (fa, fb) {
+    | (VOk(a), VOk(b)) => VOk(Both(a, b))
+    | (VOk(a), VError(_)) => VOk(This(a))
+    | (VError(_), VOk(b)) => VOk(That(b))
+    | (VError(e1), VError(e2)) => VError(appendErrors(e1, e2))
+    };
+
+let alignWithWithAppendErrors:
+  'a 'b 'c 'e.
+  (('e, 'e) => 'e, Relude_Ior_Type.t('a, 'b) => 'c, t('a, 'e), t('b, 'e)) =>
+  t('c, 'e)
+ =
+  (appendErrors, f, fa, fb) =>
+    alignWithAppendErrors(appendErrors, fa, fb) |> map(f);
+
 /**
   `pure(val)` wraps its argument in a `VOk()`.
 
@@ -415,6 +436,14 @@ module WithErrors =
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+
+  module Semialign: Relude_Interface.SEMIALIGN with type t('a) = t('a) = {
+    include Functor;
+    let align = (fa, fb) => alignWithAppendErrors(Errors.append, fa, fb);
+    let alignWith = (f, fa, fb) =>
+      alignWithWithAppendErrors(Errors.append, f, fa, fb);
+  };
+  include Relude_Extensions_Semialign.SemialignExtensions(Semialign);
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;

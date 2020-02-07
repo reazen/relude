@@ -139,6 +139,36 @@ describe("Option", () => {
     expect(Option.apply(Some(a => a + 2), Some(1))) |> toEqual(Some(3))
   );
 
+  testAll(
+    "align",
+    [
+      (Some(42), Some("a"), Some(Relude_Ior_Type.Both(42, "a"))),
+      (Some(42), None, Some(Relude_Ior_Type.This(42))),
+      (None, Some("a"), Some(Relude_Ior_Type.That("a"))),
+      (None, None, None),
+    ],
+    ((fa, fb, expected)) => {
+    expect(Option.align(fa, fb)) |> toEqual(expected)
+  });
+
+  testAll(
+    "alignWith",
+    [
+      (Some(42), Some("99"), Some(141)),
+      (Some(42), None, Some(42)),
+      (None, Some("99"), Some(99)),
+      (None, None, None),
+    ],
+    ((fa, fb, expected)) => {
+      let f =
+        fun
+        | Relude_Ior_Type.This(a) => a
+        | Relude_Ior_Type.That(b) => int_of_string(b)
+        | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+      expect(Option.alignWith(f, fa, fb)) |> toEqual(expected);
+    },
+  );
+
   test("pure", () =>
     expect(Option.pure(5)) |> toEqual(Some(5))
   );
