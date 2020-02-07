@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
+open Relude.Globals;
 
-module Result = Relude_Result;
 module ResultS =
   Result.WithError({
     type t = string;
@@ -70,6 +70,66 @@ describe("Result", () => {
     expect(Result.apply(Result.ok(a => a + 10), Result.ok(42)))
     |> toEqual(Result.ok(52))
   );
+
+  test("align Ok Ok", () =>
+    expect(Result.align(Result.ok(42), Result.ok("a")))
+    |> toEqual(Result.ok(Ior.both(42, "a")))
+  );
+
+  test("align Ok Error", () =>
+    expect(Result.align(Result.ok(42), Result.error("a")))
+    |> toEqual(Result.ok(Ior.this(42)))
+  );
+
+  test("align Error Ok", () =>
+    expect(Result.align(Result.error(42), Result.ok("a")))
+    |> toEqual(Result.ok(Ior.that("a")))
+  );
+
+  test("align Error Error", () =>
+    expect(Result.align(Result.error(42), Result.error(99)))
+    |> toEqual(Result.error(42))
+  );
+
+  test("alignWith Ok Ok", () => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | That(b) => int_of_string(b)
+      | Both(a, b) => a + int_of_string(b);
+    expect(Result.alignWith(f, Result.ok(42), Result.ok("99")))
+    |> toEqual(Result.ok(141));
+  });
+
+  test("alignWith Ok Error", () => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | That(b) => int_of_string(b)
+      | Both(a, b) => a + int_of_string(b);
+    expect(Result.alignWith(f, Result.ok(42), Result.error("99")))
+    |> toEqual(Result.ok(42));
+  });
+
+  test("alignWith Error Ok", () => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | That(b) => int_of_string(b)
+      | Both(a, b) => a + int_of_string(b);
+    expect(Result.alignWith(f, Result.error(42), Result.ok("99")))
+    |> toEqual(Result.ok(99));
+  });
+
+  test("alignWith Error Ok", () => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | That(b) => int_of_string(b)
+      | Both(a, b) => a + int_of_string(b);
+    expect(Result.alignWith(f, Result.error("a"), Result.error("b")))
+    |> toEqual(Result.error("a"));
+  });
 
   test("map2", () =>
     expect(Result.map2((a, b) => a + b, Result.ok(5), Result.ok(10)))

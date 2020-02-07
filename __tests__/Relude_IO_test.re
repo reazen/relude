@@ -164,6 +164,101 @@ describe("IO basics", () => {
        )
   );
 
+  testAsync("align pure pure", onDone =>
+    IO.align(IO.pure(42), IO.pure("a"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(ior) =>
+           onDone(expect(ior) |> toEqual(Relude_Ior_Type.Both(42, "a")))
+         | Error(_) => onDone(fail("Fail")),
+       )
+  );
+
+  testAsync("align pure throw", onDone =>
+    IO.align(IO.pure(42), IO.throw("e2"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(ior) =>
+           onDone(expect(ior) |> toEqual(Relude_Ior_Type.This(42)))
+         | Error(_) => onDone(fail("Fail")),
+       )
+  );
+
+  testAsync("align throw pure", onDone =>
+    IO.align(IO.throw("e1"), IO.pure(99))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(ior) =>
+           onDone(expect(ior) |> toEqual(Relude_Ior_Type.That(99)))
+         | Error(_) => onDone(fail("Fail")),
+       )
+  );
+
+  testAsync("align throw throw", onDone =>
+    IO.align(IO.throw("e1"), IO.throw("e2"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Fail"))
+         | Error(e) => onDone(expect(e) |> toEqual("e1")),
+       )
+  );
+
+  testAsync("alignWith pure pure", onDone => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | Relude_Ior_Type.That(b) => int_of_string(b)
+      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+    IO.alignWith(f, IO.pure(42), IO.pure("99"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(v) => onDone(expect(v) |> toEqual(141))
+         | Error(_) => onDone(fail("Fail")),
+       );
+  });
+
+  testAsync("alignWith pure throw", onDone => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | Relude_Ior_Type.That(b) => int_of_string(b)
+      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+    IO.alignWith(f, IO.pure(42), IO.throw("e2"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(v) => onDone(expect(v) |> toEqual(42))
+         | Error(_) => onDone(fail("Fail")),
+       );
+  });
+
+  testAsync("alignWith throw pure", onDone => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | Relude_Ior_Type.That(b) => int_of_string(b)
+      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+    IO.alignWith(f, IO.throw("e1"), IO.pure("99"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(v) => onDone(expect(v) |> toEqual(99))
+         | Error(_) => onDone(fail("Fail")),
+       );
+  });
+
+  testAsync("alignWith throw throw", onDone => {
+    let f =
+      fun
+      | Relude_Ior_Type.This(a) => a
+      | Relude_Ior_Type.That(b) => int_of_string(b)
+      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+    IO.alignWith(f, IO.throw("e1"), IO.throw("e2"))
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(_) => onDone(fail("Fail"))
+         | Error(e) => onDone(expect(e) |> toEqual("e1"))
+       );
+  });
+
   testAsync("pure flatMap pure unsafeRunAsync", onDone =>
     IO.pure(42)
     |> IO.flatMap(a => IO.pure(a + 10))

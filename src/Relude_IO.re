@@ -852,6 +852,43 @@ let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
   (io1, io2) => io1 |> catchError(_ => io2);
 
 /**
+ * Creates a new IO that will run the two input IO effects in parallel, and resolve if either or both succeed.
+ */
+let align:
+  'a 'b 'e.
+  (t('a, 'e), t('b, 'e)) => t(Relude_Ior_Type.t('a, 'b), 'e)
+ =
+  (ioA, ioB) => {
+    Async(
+      onDone =>
+        // Not sure if there's a better way to do this
+        unsafeRunAsyncPar2(
+          (resultA, resultB) => {
+            switch (resultA, resultB) {
+            | (Ok(a), Ok(b)) => onDone(Ok(Relude_Ior_Type.Both(a, b)))
+            | (Ok(a), Error(_)) => onDone(Ok(Relude_Ior_Type.This(a)))
+            | (Error(_), Ok(b)) => onDone(Ok(Relude_Ior_Type.That(b)))
+            | (Error(_) as e, Error(_)) => onDone(e)
+            }
+          },
+          ioA,
+          ioB,
+        ),
+    );
+  };
+
+/**
+ * Creates a new IO that runs two effects in parallel, and if either or both succeed, convert the result into another type 'c
+ */
+let alignWith:
+  'a 'b 'c 'e.
+  (Relude_Ior_Type.t('a, 'b) => 'c, t('a, 'e), t('b, 'e)) => t('c, 'e)
+ =
+  (f, fa, fb) => {
+    align(fa, fb) |> map(f);
+  };
+
+/**
  * Returns a new `IO` that when run, will attempt the `IO` given as the second, un-labeled argument,
  * and if it fails, will attempt the `IO` given as the first argument with the label ~fallback.
  *
@@ -1385,34 +1422,37 @@ let throttle:
       };
   };
 
+module Bifunctor:
+  BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
+  type nonrec t('a, 'e) = t('a, 'e);
+  let bimap = bimap;
+};
+let bimap = bimap;
+include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
+
 /**
 Because this is a bifunctor, we need to use a module functor to lock in the error type,
 so we can implement many of the single-type parameter typeclasses.
 */
 module WithError = (E: BsAbstract.Interface.TYPE) => {
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
-    type nonrec t('a) = t('a, E.t);
+  type nonrec t('a) = t('a, E.t);
+
+  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
     let map = map;
   };
   let map = Functor.map;
+  let mapError = mapError;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Bifunctor:
-    BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
-    type nonrec t('a, 'e) = t('a, 'e);
-    let bimap = bimap;
-  };
-  let bimap = bimap;
-  include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
-
-  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a, E.t) = {
+  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a) = {
     include Functor;
     let alt = alt;
   };
   let alt = alt;
   include Relude_Extensions_Alt.AltExtensions(Alt);
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, E.t) = {
+  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
@@ -1420,14 +1460,21 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, E.t) = {
+    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, E.t) = {
+  module Semialign: Relude_Interface.SEMIALIGN with type t('a) = t('a) = {
+    include Functor;
+    let align = align;
+    let alignWith = alignWith;
+  };
+  include Relude_Extensions_Semialign.SemialignExtensions(Semialign);
+
+  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };
@@ -1436,7 +1483,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
 
   module MonadThrow:
     Relude_Interface.MONAD_THROW with
-      type t('a) = t('a, E.t) and type e = E.t = {
+      type t('a) = t('a) and type e = E.t = {
     include Monad;
     type e = E.t;
     let throwError = throw;
@@ -1446,7 +1493,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
 
   module MonadError:
     Relude_Interface.MONAD_ERROR with
-      type t('a) = t('a, E.t) and type e = E.t = {
+      type t('a) = t('a) and type e = E.t = {
     include MonadThrow;
     let catchError = catchError;
   };
@@ -1455,8 +1502,8 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
 
   // Not sure if this is valid, but I'll leave it for now
   module Semigroupoid:
-    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b, E.t) = {
-    type nonrec t('a, 'b) = t('a => 'b, E.t);
+    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b) = {
+    type nonrec t('a, 'b) = t('a => 'b);
     let compose = compose;
   };
   include Relude_Extensions_Semigroupoid.SemigroupoidExtensions(Semigroupoid);
