@@ -111,6 +111,39 @@ module Monad: BsAbstract.Interface.MONAD with type t('a) = option('a) = {
 };
 include Relude_Extensions_Monad.MonadExtensions(Monad);
 
+let align:
+  'a 'b.
+  (option('a), option('b)) => option(Relude_Ior_Type.t('a, 'b))
+ =
+  (fa, fb) =>
+    switch (fa, fb) {
+    | (None, None) => None
+    | (Some(a), None) => Some(This(a))
+    | (None, Some(b)) => Some(That(b))
+    | (Some(a), Some(b)) => Some(Both(a, b))
+    };
+
+let alignWith:
+  'a 'b 'c.
+  (Relude_Ior_Type.t('a, 'b) => 'c, option('a), option('b)) => option('c)
+ =
+  (f, fa, fb) => {
+    align(fa, fb) |> map(f);
+  };
+
+module Semialign: Relude_Interface.SEMIALIGN with type t('a) = option('a) = {
+  include Functor;
+  let align = align;
+  let alignWith = alignWith;
+};
+include Relude_Extensions_Semialign.SemialignExtensions(Semialign);
+
+module Align: Relude_Interface.ALIGN with type t('a) = option('a) = {
+  include Semialign;
+  let nil: t('a) = None;
+};
+include Relude_Extensions_Align.AlignExtensions(Align);
+
 /**
   `foldLeft(f, init, opt)` takes as its first argument a function `f`
   that has two arguments. The first argument is an “accumulator“ of the same type
@@ -279,8 +312,9 @@ module Eq: BsAbstract.Option.EQ_F =
 
 // TODO: the actual implementation should come from upstream... currently
 // waiting on a bs-abstract release
-module type ORD_F = (O: BsAbstract.Interface.ORD) =>
-  BsAbstract.Interface.ORD with type t = option(O.t);
+module type ORD_F =
+  (O: BsAbstract.Interface.ORD) =>
+   BsAbstract.Interface.ORD with type t = option(O.t);
 
 module Ord: ORD_F =
   (O: BsAbstract.Interface.ORD) => {

@@ -539,6 +539,33 @@ let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
     };
 
 /**
+ * Converts two results into a result where either side or both sides have succeded, or a result that
+ * fails if both sides failed.
+ */
+let align:
+  'a 'b 'e.
+  (t('a, 'e), t('b, 'e)) => t(Relude_Ior_Type.t('a, 'b), 'e)
+ =
+  (fa, fb) =>
+    switch (fa, fb) {
+    | (Ok(a), Ok(b)) => Ok(Both(a, b))
+    | (Ok(a), Error(_)) => Ok(This(a))
+    | (Error(_), Ok(b)) => Ok(That(b))
+    | (Error(e), Error(_)) => Error(e) // Not sure if this should have append semantics, or fail fast
+    };
+
+/**
+ * Similar to map2, but captures successful values from either or both sides
+ */
+let alignWith:
+  'a 'b 'c 'e.
+  (Relude_Ior_Type.t('a, 'b) => 'c, t('a, 'e), t('b, 'e)) => t('c, 'e)
+ =
+  (f, fa, fb) => {
+    align(fa, fb) |> map(f);
+  };
+
+/**
   `catchError(f, r)` returns `f(e)` when `r` is of the form
   `Error(e)`; otherwise it returns `r` (an `Ok` value) unchanged.
 
@@ -814,6 +841,13 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
+
+  module Semialign: Relude_Interface.SEMIALIGN with type t('a) = t('a) = {
+    include Functor;
+    let align = align;
+    let alignWith = alignWith;
+  };
+  include Relude_Extensions_Semialign.SemialignExtensions(Semialign);
 
   module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;

@@ -5,10 +5,7 @@ during applicative validation.
 E.g. if you are doing applicative validation to construct a User model, you could parse a phone number and
 allow it, but collect a warning that certain phone number formats are deprecated.
 */
-type t('a, 'b) =
-  | This('a)
-  | That('b)
-  | Both('a, 'b);
+include Relude_Ior_Type;
 
 /**
  * Constructs a This value with the given success value
@@ -51,6 +48,75 @@ let isBoth: 'a 'b. t('a, 'b) => bool =
   | This(_) => false
   | That(_) => false
   | Both(_, _) => true;
+
+/**
+ * Gets the 'a value out of the Ior
+ */
+let getThis: 'a 'b. t('a, 'b) => option('a) =
+  fun
+  | This(a) => Some(a)
+  | That(_) => None
+  | Both(a, _) => Some(a);
+
+/**
+ * Gets the 'b value out of the Ior
+ */
+let getThat: 'a 'b. t('a, 'b) => option('b) =
+  fun
+  | This(_) => None
+  | That(b) => Some(b)
+  | Both(_, b) => Some(b);
+
+/**
+ * Partitions a list of Iors into lists of the values for each constructor
+ */
+let partition:
+  'a 'b.
+  list(t('a, 'b)) => (list('a), list('b), list(('a, 'b)))
+ =
+  iors =>
+    Relude_List.foldRight(
+      (ior, (as_, bs, boths)) =>
+        switch (ior) {
+        | This(a) => ([a, ...as_], bs, boths)
+        | That(b) => (as_, [b, ...bs], boths)
+        | Both(a, b) => (as_, bs, [(a, b), ...boths])
+        },
+      ([], [], []),
+      iors,
+    );
+
+/**
+ * Extracts that 'a values out of a list of Iors
+ */
+let catThis: 'a 'b. list(t('a, 'b)) => list('a) =
+  iors =>
+    Relude_List.foldRight(
+      (ior, acc) =>
+        switch (ior) {
+        | This(a) => [a, ...acc]
+        | That(_) => acc
+        | Both(a, _) => [a, ...acc]
+        },
+      [],
+      iors,
+    );
+
+/**
+ * Extracts that 'b values out of a list of Iors
+ */
+let catThat: 'a 'b. list(t('a, 'b)) => list('b) =
+  iors =>
+    Relude_List.foldRight(
+      (ior, acc) =>
+        switch (ior) {
+        | This(_) => acc
+        | That(b) => [b, ...acc]
+        | Both(_, b) => [b, ...acc]
+        },
+      [],
+      iors,
+    );
 
 /**
  * Maps a pure function over the `this` channel of the Ior
@@ -261,6 +327,50 @@ let map5:
       map4(appendThats, f, fa, fb, fc, fd),
       fe,
     );
+
+/**
+ * Folds an Ior into a value by applying a function for each case
+ */
+let fold: 'a 'b 'c. ('a => 'c, 'b => 'c, ('a, 'b) => 'c, t('a, 'b)) => 'c =
+  (aToC, bToC, abToC, ior) =>
+    switch (ior) {
+    | This(a) => aToC(a)
+    | That(b) => bToC(b)
+    | Both(a, b) => abToC(a, b)
+    };
+
+/**
+ * Converts an Ior into a tuple by filling in default values if needed
+ */
+let toTuple: 'a 'b. ('a, 'b, t('a, 'b)) => ('a, 'b) =
+  (defaultA, defaultB, ior) =>
+    switch (ior) {
+    | This(a) => (a, defaultB)
+    | That(b) => (defaultA, b)
+    | Both(a, b) => (a, b)
+    };
+
+/**
+ * Collapses an Ior containing two same-typed values into a value of that type, combining the values if needed
+ */
+let merge: 'a. (('a, 'a) => 'a, t('a, 'a)) => 'a =
+  (f, ior) =>
+    switch (ior) {
+    | This(a) => a
+    | That(a) => a
+    | Both(a1, a2) => f(a1, a2)
+    };
+
+/**
+ * Collapses an Ior by converting each side into a same-typed value, and combining them if needed
+ */
+let mergeWith: 'a 'b 'c. ('a => 'c, 'b => 'c, ('c, 'c) => 'c, t('a, 'b)) => 'c =
+  (aToC, bToC, ccToC, ior) =>
+    switch (ior) {
+    | This(a) => aToC(a)
+    | That(b) => bToC(b)
+    | Both(a, b) => ccToC(aToC(a), bToC(b))
+    };
 
 /**
  * Creates a module that locks in the That TYPE and SEMIGROUP_ANY modules, so

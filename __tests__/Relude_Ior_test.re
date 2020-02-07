@@ -13,32 +13,6 @@ module That = {
 module IorT = Ior.WithThats(NonEmptyList.SemigroupAny, That);
 
 describe("Ior", () => {
-  test("pure", () =>
-    expect(Ior.pure(5)) |> toEqual(This(5))
-  );
-
-  testAll(
-    "bind",
-    [
-      (Ior.this(1), This(2)),
-      (Ior.that("Warning"), That("Warning")),
-      (Ior.both(1, "Warning"), This(2)),
-    ],
-    ((ior, expected)) =>
-    expect(Ior.bind(ior, a => Ior.this(a + 1))) |> toEqual(expected)
-  );
-
-  testAll(
-    "flatMap",
-    [
-      (Ior.this(1), This(2)),
-      (Ior.that("Warning"), That("Warning")),
-      (Ior.both(1, "Warning"), This(2)),
-    ],
-    ((ior, expected)) =>
-    expect(Ior.flatMap(a => Ior.this(a + 1), ior)) |> toEqual(expected)
-  );
-
   test("this", () =>
     expect(Ior.this(5)) |> toEqual(This(5))
   );
@@ -84,18 +58,93 @@ describe("Ior", () => {
     expect(Ior.isBoth(actual)) |> toEqual(expected)
   );
 
-  test("map This", () =>
-    expect(Ior.map(a => a + 2, This(1))) |> toEqual(This(3))
+  testAll(
+    "getThis",
+    [
+      (Ior.pure(5), Some(5)),
+      (Ior.that("Warning"), None),
+      (Ior.both(5, "Warning"), Some(5)),
+    ],
+    ((actual, expected)) =>
+    expect(Ior.getThis(actual)) |> toEqual(expected)
   );
 
-  test("map That", () =>
-    expect(Ior.map(a => a + 2, That("Warning")))
-    |> toEqual(That("Warning"))
+  testAll(
+    "getThat",
+    [
+      (Ior.pure(5), None),
+      (Ior.that("Warning"), Some("Warning")),
+      (Ior.both(5, "Warning"), Some("Warning")),
+    ],
+    ((actual, expected)) =>
+    expect(Ior.getThat(actual)) |> toEqual(expected)
   );
 
-  test("map Both", () =>
-    expect(Ior.map(a => a + 2, Both(5, "Warning")))
-    |> toEqual(Both(7, "Warning"))
+  test("partition", () => {
+    let actual =
+      Ior.partition([
+        Ior.this(1),
+        Ior.that("2"),
+        Ior.both(3, "4"),
+        Ior.that("5"),
+        Ior.both(6, "7"),
+        Ior.that("8"),
+        Ior.this(9),
+      ]);
+    let expected = ([1, 9], ["2", "5", "8"], [(3, "4"), (6, "7")]);
+    expect(actual) |> toEqual(expected);
+  });
+
+  test("catThis", () => {
+    let actual =
+      Ior.catThis([
+        Ior.this(1),
+        Ior.that("2"),
+        Ior.both(3, "4"),
+        Ior.that("5"),
+        Ior.both(6, "7"),
+        Ior.that("8"),
+        Ior.this(9),
+      ]);
+    let expected = [1, 3, 6, 9];
+    expect(actual) |> toEqual(expected);
+  });
+
+  test("catThat", () => {
+    let actual =
+      Ior.catThat([
+        Ior.this(1),
+        Ior.that("2"),
+        Ior.both(3, "4"),
+        Ior.that("5"),
+        Ior.both(6, "7"),
+        Ior.that("8"),
+        Ior.this(9),
+      ]);
+    let expected = ["2", "4", "5", "7", "8"];
+    expect(actual) |> toEqual(expected);
+  });
+
+  testAll(
+    "mapThis",
+    [
+      (This(42), This(84)),
+      (That("a"), That("a")),
+      (Both(42, "a"), Both(84, "a")),
+    ],
+    ((input, expected)) =>
+    expect(Ior.mapThis(a => a * 2, input)) |> toEqual(expected)
+  );
+
+  testAll(
+    "mapThat",
+    [
+      (This(42), This(42)),
+      (That("a"), That("aa")),
+      (Both(42, "a"), Both(42, "aa")),
+    ],
+    ((input, expected)) =>
+    expect(Ior.mapThat(b => b ++ b, input)) |> toEqual(expected)
   );
 
   test("tap This", () => {
@@ -103,11 +152,10 @@ describe("Ior", () => {
     let _ =
       Ior.tap(
         this => actual := this,
-        _that => actual := (-1),
-        (_this, _that) => actual := (-2),
+        _ => actual := (-1),
+        (_, _) => actual := (-2),
         This(1),
       );
-
     expect(actual^) |> toEqual(1);
   });
 
@@ -115,12 +163,11 @@ describe("Ior", () => {
     let actual = ref(0);
     let _ =
       Ior.tap(
-        _this => actual := (-1),
+        _ => actual := (-1),
         that => actual := that,
-        (_this, _that) => actual := (-2),
+        (_, _) => actual := (-2),
         That(1),
       );
-
     expect(actual^) |> toEqual(1);
   });
 
@@ -128,12 +175,11 @@ describe("Ior", () => {
     let actual = ref(0);
     let _ =
       Ior.tap(
-        _this => actual := (-1),
-        _that => actual := (-2),
+        _ => actual := (-1),
+        _ => actual := (-2),
         (this, that) => actual := this + that,
         Both(1, 2),
       );
-
     expect(actual^) |> toEqual(3);
   });
 
@@ -266,6 +312,79 @@ describe("Ior", () => {
       ),
     )
     |> toEqual(This(15))
+  );
+
+  test("pure", () =>
+    expect(Ior.pure(5)) |> toEqual(This(5))
+  );
+
+  testAll(
+    "bind",
+    [
+      (Ior.this(1), This(2)),
+      (Ior.that("Warning"), That("Warning")),
+      (Ior.both(1, "Warning"), This(2)),
+    ],
+    ((ior, expected)) =>
+    expect(Ior.bind(ior, a => Ior.this(a + 1))) |> toEqual(expected)
+  );
+
+  testAll(
+    "flatMap",
+    [
+      (Ior.this(1), This(2)),
+      (Ior.that("Warning"), That("Warning")),
+      (Ior.both(1, "Warning"), This(2)),
+    ],
+    ((ior, expected)) =>
+    expect(Ior.flatMap(a => Ior.this(a + 1), ior)) |> toEqual(expected)
+  );
+
+  testAll(
+    "fold",
+    [(Ior.this(1), 10), (Ior.that("2"), 20), (Ior.both(1, "2"), 30)],
+    ((input, expected)) => {
+      let actual =
+        Ior.fold(
+          a => a * 10,
+          b => int_of_string(b) * 10,
+          (a, b) => a * 10 + int_of_string(b) * 10,
+          input,
+        );
+      expect(actual) |> toEqual(expected);
+    },
+  );
+
+  testAll(
+    "toTuple",
+    [
+      (Ior.this(1), (1, "hi")),
+      (Ior.that("2"), (100, "2")),
+      (Ior.both(1, "2"), (1, "2")),
+    ],
+    ((input, expected)) => {
+      let actual = input |> Ior.toTuple(100, "hi");
+      expect(actual) |> toEqual(expected);
+    },
+  );
+
+  testAll(
+    "merge",
+    [(Ior.this(1), 1), (Ior.that(2), 2), (Ior.both(1, 2), 3)],
+    ((input, expected)) => {
+      let actual = input |> Ior.merge((a, b) => a + b);
+      expect(actual) |> toEqual(expected);
+    },
+  );
+
+  testAll(
+    "mergeWith",
+    [(Ior.this("1"), 1), (Ior.that("2"), 2), (Ior.both("1", "2"), 3)],
+    ((input, expected)) => {
+      let actual =
+        input |> Ior.mergeWith(int_of_string, int_of_string, (a, b) => a + b);
+      expect(actual) |> toEqual(expected);
+    },
   );
 
   describe("WithThats", () => {
