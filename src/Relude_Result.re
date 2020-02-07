@@ -598,6 +598,16 @@ let handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
   };
 
 /**
+ * Maps the success channel and handles an error on the error channel to end up with an
+ * Result of a new type with a voided error channel
+ */
+let mapHandleError:
+  'a 'e 'b.
+  ('a => 'b, 'e => 'b, t('a, 'e)) => t('b, Relude_Void.t)
+ =
+  (aToB, eToB, ioAE) => ioAE |> map(aToB) |> handleError(eToB);
+
+/**
   `recover(goodValue, result)` returns `result` if it is
   of the form `Ok(..)`. If `result` is of the form `Error(..)`,
   `recover` returns `Ok(goodValue)`.

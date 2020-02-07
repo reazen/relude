@@ -186,7 +186,10 @@ The function uses the term "unsafe" because calling this function causes all of 
 to actually be executed.  It is not "unsafe" in that it can throw an exception - it is just a convention in FP
 libraries to denote these types of functions as unsafe.
 */
-let rec unsafeRunAsync: 'a 'e. (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => unit =
+let rec unsafeRunAsync:
+  'a 'e.
+  (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => unit
+ =
   (onDone, ioA) =>
     switch (ioA) {
     | Pure(a) => onDone(Belt.Result.Ok(a))
@@ -233,7 +236,11 @@ let rec unsafeRunAsync: 'a 'e. (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => uni
  */
 and unsafeRunAsyncPar2:
   'a 'b 'e.
-  ((Belt.Result.t('a, 'e), Belt.Result.t('b, 'e)) => unit, t('a, 'e), t('b, 'e)) =>
+  (
+    (Belt.Result.t('a, 'e), Belt.Result.t('b, 'e)) => unit,
+    t('a, 'e),
+    t('b, 'e)
+  ) =>
   unit
  =
   (onDone, ioA, ioB) => {
@@ -265,7 +272,8 @@ and unsafeRunAsyncPar2:
 and unsafeRunAsyncPar3:
   'a 'b 'c 'e.
   (
-    (Belt.Result.t('a, 'e), Belt.Result.t('b, 'e), Belt.Result.t('c, 'e)) => unit,
+    (Belt.Result.t('a, 'e), Belt.Result.t('b, 'e), Belt.Result.t('c, 'e)) =>
+    unit,
     t('a, 'e),
     t('b, 'e),
     t('c, 'e)
@@ -629,7 +637,9 @@ let rec mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     | Async(onDoneA) =>
       Async(
         onDone =>
-          onDoneA(resultA => resultA |> Relude_Result.mapError(e1ToE2) |> onDone),
+          onDoneA(resultA =>
+            resultA |> Relude_Result.mapError(e1ToE2) |> onDone
+          ),
       )
     | Map(rToA, ioR) => ioR |> mapError(e1ToE2) |> map(rToA)
     | Apply(ioRToA, ioR) =>
@@ -785,6 +795,16 @@ let handleError: 'a 'e. ('e => 'a, t('a, 'e)) => t('a, Relude_Void.t) =
   (eToA, ioA) => ioA |> catchError(e => Pure(eToA(e)));
 
 /**
+ * Maps the success channel and handles an error on the error channel to end up with an
+ * IO of a new type with a voided error channel
+ */
+let mapHandleError:
+  'a 'e 'b.
+  ('a => 'b, 'e => 'b, t('a, 'e)) => t('b, Relude_Void.t)
+ =
+  (aToB, eToB, ioAE) => ioAE |> map(aToB) |> handleError(eToB);
+
+/**
 Applies functions on both the success and error channels of the `IO`.
 */
 let bimap: 'a 'b 'e1 'e2. ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2) =
@@ -857,7 +877,7 @@ let tries: 'a. (unit => 'a) => t('a, exn) =
   getA =>
     SuspendIO(
       () =>
-        try (Pure(getA())) {
+        try(Pure(getA())) {
         | exn => Throw(exn)
         },
     );
@@ -872,7 +892,7 @@ let triesJS: 'a. (unit => 'a) => t('a, Js.Exn.t) =
   getA =>
     SuspendIO(
       () =>
-        try (Pure(getA())) {
+        try(Pure(getA())) {
         | Js.Exn.Error(jsExn) => Throw(jsExn)
         | exn =>
           let jsExn = Relude_Js_Exn.unsafeFromExn(exn);
@@ -891,7 +911,9 @@ let rec flip: 'a 'e. t('a, 'e) => t('e, 'a) =
     | Suspend(getA) => suspendIO(() => getA() |> throw)
     | SuspendIO(getIOA) => SuspendIO(() => getIOA() |> flip)
     | Async(onDoneA) =>
-      Async(onDone => onDoneA(resultA => onDone(resultA |> Relude_Result.flip)))
+      Async(
+        onDone => onDoneA(resultA => onDone(resultA |> Relude_Result.flip)),
+      )
     | Map(r0ToA, ioR0) => flipMap(r0ToA, ioR0)
     | Apply(ioR0ToA, ioR0) => flipApply(ioR0ToA, ioR0)
     | FlatMap(r0ToIOA, ioR0) => flipFlatMap(r0ToIOA, ioR0)
@@ -909,7 +931,9 @@ and flipMap: 'a 'r0 'e. ('r0 => 'a, t('r0, 'e)) => t('e, 'a) =
       Async(
         onDone =>
           onDoneR0(resultR0 =>
-            onDone(resultR0 |> Relude_Result.map(r0ToA) |> Relude_Result.flip)
+            onDone(
+              resultR0 |> Relude_Result.map(r0ToA) |> Relude_Result.flip,
+            )
           ),
       )
     | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> flip
@@ -980,7 +1004,10 @@ and flipFlatMap: 'a 'r0 'e. ('r0 => t('a, 'e), t('r0, 'e)) => t('e, 'a) =
 Summons an error of type `'e` from the error channel into the success channel as a `Result.t('a, 'e)`.
 The error channel becomes `Void.t` because the error has been (re)moved.
 */
-let rec summonError: 'a 'e. t('a, 'e) => t(Belt.Result.t('a, 'e), Relude_Void.t) =
+let rec summonError:
+  'a 'e.
+  t('a, 'e) => t(Belt.Result.t('a, 'e), Relude_Void.t)
+ =
   ioA =>
     switch (ioA) {
     | Pure(a) => Pure(Belt.Result.Ok(a))
@@ -1008,7 +1035,9 @@ and summonErrorMap:
     | Async(onDoneR0) =>
       Async(
         onDone =>
-          onDoneR0(resR0 => onDone(Belt.Result.Ok(Relude_Result.map(r0ToA, resR0)))),
+          onDoneR0(resR0 =>
+            onDone(Belt.Result.Ok(Relude_Result.map(r0ToA, resR0)))
+          ),
       )
     | Map(r1ToR0, ioR1) => ioR1 |> map(r1ToR0 >> r0ToA) |> summonError
     | Apply(ioR1ToR0, ioR1) =>
@@ -1094,7 +1123,10 @@ and summonErrorFlatMap:
 /**
 Unsummons an error from a success channel `Result.t('a, 'e)` back into the error channel of the `IO`.
 */
-let rec unsummonError: 'a 'e. t(Belt.Result.t('a, 'e), Relude_Void.t) => t('a, 'e) =
+let rec unsummonError:
+  'a 'e.
+  t(Belt.Result.t('a, 'e), Relude_Void.t) => t('a, 'e)
+ =
   ioResultA =>
     switch (ioResultA) {
     | Pure(resultA) => resultA |> Relude_Result.fold(throw, pure)
@@ -1128,7 +1160,9 @@ and unsummonErrorMap:
     | Pure(r0) => r0ToResultA(r0) |> Relude_Result.fold(throw, pure)
     | Throw(void) => Relude_Void.absurd(void)
     | Suspend(getR0) =>
-      SuspendIO(() => getR0() |> r0ToResultA |> Relude_Result.fold(throw, pure))
+      SuspendIO(
+        () => getR0() |> r0ToResultA |> Relude_Result.fold(throw, pure),
+      )
     | SuspendIO(getIOR0) =>
       SuspendIO(() => getIOR0() |> map(r0ToResultA) |> unsummonError)
     | Async(onDoneR0) =>
@@ -1153,7 +1187,8 @@ and unsummonErrorMap:
 
 and unsummonErrorApply:
   'r0 'a 'e.
-  (t('r0 => Belt.Result.t('a, 'e), Relude_Void.t), t('r0, Relude_Void.t)) => t('a, 'e)
+  (t('r0 => Belt.Result.t('a, 'e), Relude_Void.t), t('r0, Relude_Void.t)) =>
+  t('a, 'e)
  =
   (ioR0ToResultA, ioR0) => {
     ioR0ToResultA
@@ -1165,7 +1200,8 @@ and unsummonErrorApply:
 
 and unsummonErrorFlatMap:
   'r0 'a 'e.
-  ('r0 => t(Belt.Result.t('a, 'e), Relude_Void.t), t('r0, Relude_Void.t)) => t('a, 'e)
+  ('r0 => t(Belt.Result.t('a, 'e), Relude_Void.t), t('r0, Relude_Void.t)) =>
+  t('a, 'e)
  =
   (r0ToIOResultA, ioR0) => {
     switch (ioR0) {
