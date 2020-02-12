@@ -84,6 +84,17 @@ let update: ('value, t('value, 'id)) => t('value, 'id) =
   (value, set) => Belt.Set.add(Belt.Set.remove(set, value), value);
 
 /**
+ * Immutably add a value to a set if it does not already exist.
+ * If an equivalent value already exists in the set, it will be
+ * removed. In either case, a new physical reference to the set
+ * will be returned.
+ */
+let toggle: ('value, t('value, 'id)) => t('value, 'id) =
+  (value, set) =>
+    Belt.Set.has(set, value)
+      ? Belt.Set.remove(set, value) : Belt.Set.add(set, value);
+
+/**
  * Returns a new set representing the union of two sets. E.g.:
  * ```
  *  let s1 = fromList([1, 3, 4, 5, 2, 1]);
