@@ -285,6 +285,7 @@ module type SET = {
   let remove: (value, t) => t;
   let removeMany: (array(value), t) => t;
   let update: (value, t) => t;
+  let toggle: (value, t) => t;
   let union: (t, t) => t;
   let intersect: (t, t) => t;
   let diff: (t, t) => t;
@@ -330,6 +331,7 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (SET with type value = M.t) => 
   let remove: (value, t) => t = remove;
   let removeMany: (array(value), t) => t = removeMany;
   let update: (value, t) => t = update;
+  let toggle: (value, t) => t = toggle;
   let union: (t, t) => t = union;
   let intersect: (t, t) => t = intersect;
   let diff: (t, t) => t = diff;
