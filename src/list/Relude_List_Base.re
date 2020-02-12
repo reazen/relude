@@ -204,10 +204,20 @@ let filter: 'a. ('a => bool, list('a)) => list('a) =
   (f, xs) => Belt.List.keep(xs, f);
 
 /**
+ * Alias of filter
+ */
+let keep: 'a. ('a => bool, list('a)) => list('a) = filter;
+
+/**
  * Creates a new list containing only the items from the given list that satisfy the given indexed predicate.
  */
 let filterWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) =
   (f, xs) => Belt.List.keepWithIndex(xs, f);
+
+/**
+ * Alias of filterWithIndex
+ */
+let keepWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) = filterWithIndex;
 
 /**
  * Creates a new list containing only the items from the given list that do not satisfy the given predicate.
@@ -216,10 +226,20 @@ let filterNot: 'a. ('a => bool, list('a)) => list('a) =
   f => filter(a => !f(a));
 
 /**
+ * Alias of filterNot
+ */
+let reject: 'a. ('a => bool, list('a)) => list('a) = filterNot;
+
+/**
  * Creates a new list containing only the items from the given list that do not satisfy the given indexed predicate.
  */
 let filterNotWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) =
   f => filterWithIndex((a, i) => !f(a, i));
+
+/**
+ * Alias of filterNotWithIndex
+ */
+let rejectWithIndex: 'a. (('a, int) => bool, list('a)) => list('a) = filterNotWithIndex;
 
 /**
  * Maps a option-creating function over the list, and keeps the Some values without the Some structure.
