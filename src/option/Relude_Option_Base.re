@@ -217,6 +217,11 @@ let filter: 'a. ('a => bool, option('a)) => option('a) =
     );
 
 /**
+ * Alias of filter
+ */
+let keep: 'a. ('a => bool, option('a)) => option('a) = filter;
+
+/**
   `filterNot` is the inverse of `filter`, meaning `Some` values are preserved
   if the provided predicate function returns false.
 
@@ -229,3 +234,8 @@ let filter: 'a. ('a => bool, option('a)) => option('a) =
 */
 let filterNot: 'a. ('a => bool, option('a)) => option('a) =
   f => filter(a => !f(a));
+
+/**
+ * Alias of filterNot
+ */
+let reject: 'a. ('a => bool, option('a)) => option('a) = filterNot;

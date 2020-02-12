@@ -237,10 +237,20 @@ let filter: 'a. ('a => bool, array('a)) => array('a) =
   (f, xs) => Belt.Array.keep(xs, f);
 
 /**
+ * Alias of filter
+ */
+let keep: 'a. ('a => bool, array('a)) => array('a) = filter;
+
+/**
  * Returns a new array of items from the input array which satisfy the given indexed predicate.
  */
 let filterWithIndex: 'a. (('a, int) => bool, array('a)) => array('a) =
   (f, xs) => Belt.Array.keepWithIndex(xs, f);
+
+/**
+ * Alias of filterWithIndex
+ */
+let keepWithIndex: 'a. (('a, int) => bool, array('a)) => array('a) = filterWithIndex;
 
 /**
  * Returns a new array of items from the input array which do not satisfy the given predicate.
@@ -249,10 +259,20 @@ let filterNot: 'a. ('a => bool, array('a)) => array('a) =
   f => filter(a => !f(a));
 
 /**
+ * Alias of filterNot
+ */
+let reject: 'a. ('a => bool, array('a)) => array('a) = filterNot;
+
+/**
  * Returns a new array of items from the input array which do not satisfy the given indexed predicate.
  */
 let filterNotWithIndex: 'a. (('a, int) => bool, array('a)) => array('a) =
   f => filterWithIndex((a, i) => !f(a, i));
+
+/**
+ * Alias of filterNotWithIndex
+ */
+let rejectWithIndex: 'a. (('a, int) => bool, array('a)) => array('a) = filterNotWithIndex;
 
 /**
  * Maps a function over the array and keeps only the values which were Some.
