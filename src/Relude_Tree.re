@@ -285,13 +285,13 @@ module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
   };
 
   module Fold_Map_Any = (M: BsAbstract.Interface.MONOID_ANY) => {
-    let fold_map: ('a => M.t('a), t('a)) => M.t('a) =
+    let fold_map: 'a 'b. ('a => M.t('b), t('a)) => M.t('b) =
       (f, tree) =>
         tree |> foldLeft((acc, value) => M.append(acc, f(value)), M.empty);
   };
 
   module Fold_Map_Plus = (P: BsAbstract.Interface.PLUS) => {
-    let fold_map: ('a => P.t('a), t('a)) => P.t('a) =
+    let fold_map: 'a 'b. ('a => P.t('b), t('a)) => P.t('b) =
       (f, tree) =>
         tree |> foldLeft((acc, value) => P.alt(acc, f(value)), P.empty);
   };

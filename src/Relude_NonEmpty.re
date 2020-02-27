@@ -149,8 +149,8 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
       module TailFoldMapPlus =
         TailSequence.Foldable.Fold_Map_Plus(FoldMapPlus);
       let fold_map:
-        'a.
-        ('a => FoldMapPlus.t('a), t('a)) => FoldMapPlus.t('a)
+        'a 'b.
+        ('a => FoldMapPlus.t('b), t('a)) => FoldMapPlus.t('b)
        =
         (f, NonEmpty(x, xs)) =>
           FoldMapPlus.alt(f(x), TailFoldMapPlus.fold_map(f, xs));
@@ -159,7 +159,10 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     module Fold_Map_Any = (FoldMapAny: BsAbstract.Interface.MONOID_ANY) => {
       module SequenceFoldMapAny =
         TailSequence.Foldable.Fold_Map_Any(FoldMapAny);
-      let fold_map: 'a. ('a => FoldMapAny.t('a), t('a)) => FoldMapAny.t('a) =
+      let fold_map:
+        'a 'b.
+        ('a => FoldMapAny.t('b), t('a)) => FoldMapAny.t('b)
+       =
         (f, NonEmpty(x, xs)) =>
           FoldMapAny.append(f(x), SequenceFoldMapAny.fold_map(f, xs));
     };
