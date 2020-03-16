@@ -387,7 +387,7 @@ let moveUp: 'a. t('a) => option(t('a)) =
            rightSiblings: ancestorsHeadRight,
            children:
              Relude_List.flatten([
-               leftSiblings,
+               leftSiblings |> Relude_List.reverse,
                [Relude_Tree.make(focus, children)],
                rightSiblings,
              ]),

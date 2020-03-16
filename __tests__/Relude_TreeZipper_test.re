@@ -662,6 +662,16 @@ describe("TreeZipper", () => {
     expect(actual) |> toEqual(expected);
   });
 
+  test("moveUpToTop maintains structure", () => {
+    let actual =
+      testTree1
+      |> TreeZipper.fromTree
+      |> TreeZipper.moveBy([`Down(2), `Right(2)])
+      |> Option.map(TreeZipper.moveUpToTop);
+    let expected = Some(testTree1 |> TreeZipper.fromTree);
+    expect(actual) |> toEqual(expected);
+  });
+
   test("moveDown", () => {
     let actual = testTree1 |> TreeZipper.fromTree |> TreeZipper.moveDown;
     let expected =
