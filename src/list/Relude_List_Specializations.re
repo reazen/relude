@@ -136,12 +136,12 @@ module Option = {
  */
 module Result = {
   /**
-   * Traverses a `'a => Result.t('b, 'e)` function over a `list('a)`, to produce a `Result.t(list('b), 'e)` using
-   * fail-fast semantics.
+   * Traverses a `'a => result('b, 'e)` function over a `list('a)`, to produce a
+   * `result(list('b), 'e)` using fail-fast semantics.
    */
   let traverse =
-      (type e, f: 'a => Belt.Result.t('b, e), list: list('a))
-      : Belt.Result.t(list('b), e) => {
+      (type e, f: 'a => result('b, e), list: list('a))
+      : result(list('b), e) => {
     module ResultE =
       Relude_Result.WithError({
         type t = e;
@@ -151,11 +151,11 @@ module Result = {
     TraverseResult.traverse(f, list);
   };
 
-/**
+  /**
  * Sequences a `list(Result.t('a, 'e))` into `Result.t(list('a) 'e))` using fail
  * fast semantics.
  */
-  let sequence = (type e, xs): Belt.Result.t(list('a), e) => {
+  let sequence = (type e, xs): result(list('a), e) => {
     module ResultE =
       Relude_Result.WithError({
         type t = e;
@@ -218,17 +218,18 @@ module Validation = {
          (Error: BsAbstract.Interface.TYPE) =>
     Traversable(Relude_NonEmpty.List.SemigroupAny, Error);
 
-  /*
-   This is a streamlined definition of traverse which allows you to return a Belt.Result.t for each item
-   in the list, and all errors are collected in a NonEmpty.List of your error type, using applicative semantics
-   for Validation.
+  /**
+   * This is a streamlined definition of traverse which allows you to return a
+   * result for each item in the list, and all errors are collected in a
+   * `NonEmptyList` of your error type, using applicative semantics for
+   * Validation.
    */
   let traverse =
       (
         type a,
         type b,
         type e,
-        f: a => Belt.Result.t(b, e), /* Each a produces a Result with a success value or a single error value */
+        f: a => result(b, e), /* Each a produces a Result with a success value or a single error value */
         list: list(a),
       )
       : Relude_Validation.t(list(b), Relude_NonEmpty.List.t(e)) => {

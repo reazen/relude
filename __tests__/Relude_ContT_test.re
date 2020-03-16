@@ -31,10 +31,10 @@ module Cont = Relude.Cont.WithResult(Unit.Type);
 let readFileSuccess =
     (
       FilePath(filePath): FilePath.t,
-      onDone: Belt.Result.t(string, Error.t) => unit,
+      onDone: result(string, Error.t) => unit,
     )
     : unit =>
-  onDone(Belt.Result.Ok("Read file: " ++ filePath));
+  onDone(Ok("Read file: " ++ filePath));
 
 /**
  * Callback-based API for reading a file (with an error)
@@ -42,10 +42,10 @@ let readFileSuccess =
 let readFileError =
     (
       FilePath(filePath): FilePath.t,
-      onDone: Belt.Result.t(string, Error.t) => unit,
+      onDone: result(string, Error.t) => unit,
     )
     : unit =>
-  onDone(Belt.Result.Error(Error("Failed to read file: " ++ filePath)));
+  onDone(Error(Error("Failed to read file: " ++ filePath)));
 
 /**
  * Callback-based API for writing a file (with success)
@@ -54,7 +54,7 @@ let writeFileSuccess =
     (
       FilePath(_filePath): FilePath.t,
       _content: string,
-      onDone: Belt.Result.t(unit, Error.t) => unit,
+      onDone: result(unit, Error.t) => unit,
     )
     : unit =>
   onDone(Ok());
@@ -66,7 +66,7 @@ let writeFileError =
     (
       FilePath(filePath): FilePath.t,
       _content: string,
-      onDone: Belt.Result.t(unit, Error.t) => unit,
+      onDone: result(unit, Error.t) => unit,
     )
     : unit =>
   onDone(Error(Error("Failed to write file: " ++ filePath)));
@@ -74,27 +74,26 @@ let writeFileError =
 /**
  * Continuation Monad for the callback-based API for reading a file (success)
  */
-let readFileSuccessCont: FilePath.t => Cont.t(Belt.Result.t(string, Error.t)) =
+let readFileSuccessCont: FilePath.t => Cont.t(result(string, Error.t)) =
   filePath => Cont.make(readFileSuccess(filePath));
 
 /**
  * Continuation Monad for the callback-based API for reading a file (error)
  */
-let readFileError: FilePath.t => Cont.t(Belt.Result.t(string, Error.t)) =
+let readFileError: FilePath.t => Cont.t(result(string, Error.t)) =
   filePath => Cont.make(readFileError(filePath));
 
 /**
  * Continuation Monad for the callback-based API for writing a file (success)
  */
 let writeFileSuccessCont:
-  (FilePath.t, string) => Cont.t(Belt.Result.t(unit, Error.t)) =
+  (FilePath.t, string) => Cont.t(result(unit, Error.t)) =
   (filePath, content) => Cont.make(writeFileSuccess(filePath, content));
 
 /**
  * Continuation Monad for the callback-based API for writing a file (error)
  */
-let writeFileErrorCont:
-  (FilePath.t, string) => Cont.t(Belt.Result.t(unit, Error.t)) =
+let writeFileErrorCont: (FilePath.t, string) => Cont.t(result(unit, Error.t)) =
   (filePath, content) => Cont.make(writeFileError(filePath, content));
 
 describe("ContT Identity", () => {
@@ -174,13 +173,13 @@ let stringToIntCB:
   (str, onDone) => {
     Relude.Int.fromString(str)
     |> Relude.Option.fold(IO.throw(Error.Error("Failed")), i => IO.pure(i))
-    |> IO.flatMap(i => onDone(Belt.Result.Ok(i)));
+    |> IO.flatMap(i => onDone(Ok(i)));
   };
 
 /**
  * A ContT version of the above ContT(IO) CB API
  */
-let stringToIntCont: string => ContIO.t(Belt.Result.t(int, Error.t)) =
+let stringToIntCont: string => ContIO.t(result(int, Error.t)) =
   str => ContIO.make(stringToIntCB(str));
 
 /**
@@ -209,13 +208,13 @@ describe("ContT IO", () => {
     <#> (res => res |> Result.map(a => a * 2))
     |> ContIO.runContT(
          fun
-         | Belt.Result.Ok(i) => assertIntIO(84, i, onDone)
-         | Belt.Result.Error(_) => failIO(onDone),
+         | Ok(i) => assertIntIO(84, i, onDone)
+         | Error(_) => failIO(onDone),
        )
     |> IO.unsafeRunAsync(
          fun
-         | Belt.Result.Ok () => ()
-         | Belt.Result.Error(_) => (),
+         | Ok () => ()
+         | Error(_) => (),
        )
   );
 
@@ -223,21 +222,21 @@ describe("ContT IO", () => {
     ContIO.map2(
       (res1, res2) =>
         switch (res1, res2) {
-        | (Belt.Result.Ok(a), Belt.Result.Ok(b)) => Belt.Result.Ok(a + b)
-        | _ => Belt.Result.Error(Error.Error("error"))
+        | (Ok(a), Ok(b)) => Ok(a + b)
+        | _ => Error(Error.Error("error"))
         },
       stringToIntCont("42"),
       stringToIntCont("43"),
     )
     |> ContIO.runContT(
          fun
-         | Belt.Result.Ok(a) => assertIntIO(85, a, onDone)
-         | Belt.Result.Error(_) => failIO(onDone),
+         | Ok(a) => assertIntIO(85, a, onDone)
+         | Error(_) => failIO(onDone),
        )
     |> IO.unsafeRunAsync(
          fun
-         | Belt.Result.Ok () => ()
-         | Belt.Result.Error(_) => (),
+         | Ok () => ()
+         | Error(_) => (),
        )
   );
 });

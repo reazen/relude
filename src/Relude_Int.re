@@ -107,7 +107,10 @@ let rec rangeAsArray: (int, int) => array(int) =
     if (start >= end_) {
       [||];
     } else {
-      Belt.Array.concat([|start|], rangeAsArray(start + 1, end_));
+      Relude_Array_Instances.concat(
+        [|start|],
+        rangeAsArray(start + 1, end_),
+      );
     };
 
 /**

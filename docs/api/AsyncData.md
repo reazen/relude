@@ -2,7 +2,7 @@
 
 ## Overview
 
-`Relude.AsyncData` contains an variant type `t('a)` for representing the different states in which a value can be during an asynchronous data load.  Because the type only has a single type parameter `'a`, it cannot represent failures by default, but you can choose to use any type for `'a`, including `option('b)` (for data that may or may not load), `Belt.Result.t('b, 'e)` (for data that can fail to load), etc.  If you need to represent an error condition along with the success condition, see [AsyncResult](api/AsyncResult.md).
+`Relude.AsyncData` contains an variant type `t('a)` for representing the different states in which a value can be during an asynchronous data load.  Because the type only has a single type parameter `'a`, it cannot represent failures by default, but you can choose to use any type for `'a`, including `option('b)` (for data that may or may not load), `result('b, 'e)` (for data that can fail to load), etc.  If you need to represent an error condition along with the success condition, see [AsyncResult](api/AsyncResult.md).
 
 The variant type has the following constructors: `Init`, `Loading`, `Reloading('a)`, and `Complete('a)`.
 

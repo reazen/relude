@@ -100,11 +100,7 @@ describe("NonEmpty.List", () => {
   test("foldLeft", () => {
     let ne = NonEmpty.List.make(1, [2, 3, 4, 5]);
     let result =
-      NonEmpty.List.foldLeft(
-        (acc, curr) => Belt.List.concat(acc, [curr]),
-        [],
-        ne,
-      );
+      NonEmpty.List.foldLeft((acc, curr) => List.append(curr, acc), [], ne);
     expect(result) |> toEqual([1, 2, 3, 4, 5]);
   });
 
@@ -112,7 +108,7 @@ describe("NonEmpty.List", () => {
     let ne = NonEmpty.List.make(1, [2, 3, 4, 5]);
     let result =
       NonEmpty.List.foldRight(
-        (curr, acc) => Belt.List.concat(acc, [curr]),
+        (curr, acc) => List.append(curr, acc),
         [],
         ne,
       );

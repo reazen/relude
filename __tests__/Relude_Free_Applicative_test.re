@@ -3,7 +3,7 @@ open Expect;
 open Relude.Globals;
 
 module Validator = {
-  type t('a) = string => Belt.Result.t('a, string);
+  type t('a) = string => result('a, string);
 };
 
 // The functor we will be using as our metadata type in the FreeAp

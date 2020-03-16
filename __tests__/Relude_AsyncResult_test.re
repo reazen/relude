@@ -21,13 +21,12 @@ describe("AsyncResult", () => {
   );
 
   test("Complete Ok", () =>
-    expect(AsyncResult.ok(1))
-    |> toEqual(AsyncData.complete(Belt.Result.Ok(1)))
+    expect(AsyncResult.ok(1)) |> toEqual(AsyncData.complete(Ok(1)))
   );
 
   test("Complete Error", () =>
     expect(AsyncResult.error("Fail"))
-    |> toEqual(AsyncData.complete(Belt.Result.Error("Fail")))
+    |> toEqual(AsyncData.complete(Error("Fail")))
   );
 
   test("isOk when Loading", () =>
@@ -1171,7 +1170,7 @@ describe("AsyncResult", () => {
 
   test("WithError Loading", () => {
     open AsyncResultS.Infix;
-    let f = a => a +1 ;
+    let f = a => a + 1;
     let ok = AsyncResult.loading;
     let actual = f <$> ok;
     expect(actual) |> toEqual(AsyncResult.loading);

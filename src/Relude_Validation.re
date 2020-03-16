@@ -1,6 +1,6 @@
 /**
- * Similar to Belt.Result, but has an Applicative instance that collects the errors using a semigroup, rather than fail-fast
- * semantics.
+ * Similar to result, but has an Applicative instance that collects the errors
+ * using a semigroup, rather than fail-fast semantics.
  */
 type t('a, 'e) =
   | VOk('a)
@@ -287,78 +287,99 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     };
 
 /**
-  `bind` is the same as `flatMap` with the arguments flipped.
+ * `bind` is the same as `flatMap` with the arguments flipped.
  */
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
 /**
-  `fromResult` converts a variable of type `Belt.Result.t` to
-  `Validation.t`. `fromResult(Ok(x))` returns `VOk(x)`;
-  `fromResult(Error(err))` returns `VError(err)`.
-*/
-let fromResult: Belt.Result.t('a, 'b) => t('a, 'b) =
-  result =>
-    switch (result) {
-    | Ok(a) => VOk(a)
-    | Error(e) => VError(e)
-    };
+ * `fromResult` converts a value of type `result` to a `Validation.t`, returning
+ * `VOk(x)` if the result was `Ok(x)` and `VError(x)` if the result was
+ * `Error(x)`.
+ */
+let fromResult: result('a, 'b) => t('a, 'b) =
+  fun
+  | Ok(a) => VOk(a)
+  | Error(e) => VError(e);
 
 /**
-  `toResult` converts a variable of type `Validation.t` to
-  `Belt.Result.t`. `toResult(VOk(x))` returns `Ok(x)`;
-  `toResult(VError(err))` returns `Error(err)`.
+ * `toResult` converts a value of type `Validation.t` to `result`.
 */
-let toResult: t('a, 'b) => Belt.Result.t('a, 'b) =
-  validation =>
-    switch (validation) {
-    | VOk(a) => Ok(a)
-    | VError(a) => Error(a)
-    };
+let toResult: t('a, 'b) => result('a, 'b) =
+  fun
+  | VOk(a) => Ok(a)
+  | VError(a) => Error(a);
 
+/**
+ * `fromOption` converts an `option` into a `Validation.t`, returning `VOk(x)`
+ * if the option was `Some(x)` and `VError` (constructed with the provided
+ * error) if the option was `None`.
+ */
 let fromOption: 'a 'e. ('e, option('a)) => t('a, 'e) =
-  (defaultError, opt) =>
-    switch (opt) {
+  defaultError =>
+    fun
     | Some(a) => ok(a)
-    | None => error(defaultError)
-    };
+    | None => error(defaultError);
 
+/**
+ * `fromOptionLazy` converts an `option` into a `Validation.t`, similar to
+ * `fromOption`, except that provided error is constructed lazily by calling a
+ * function. This is useful if the error is expensive to construct, especially
+ * since it may not be needed.
+ */
 let fromOptionLazy: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
-  (getDefaultError, opt) =>
-    switch (opt) {
+  getDefaultError =>
+    fun
     | Some(a) => ok(a)
-    | None => error(getDefaultError())
-    };
+    | None => error(getDefaultError());
 
 /**
-  `fold(errFcn, okFcn, x)` returns `okFcn(v)` when
-  `x` is of the form `VOk(v)`; it returns `errFcn(e)` when
-  `x` is of the form `VError(e)`.
-
-  ### Example
-  ```re
-  let errToInt = (_) => {-1};
-  let cube = (x) => {x * x * x};
-  fold(errToInt, cube, VOk(12)) == 1728;
-  fold(errToInt, cube, VError("bad")) == -1;
-  ```
-*/
+ * `fold(errFn, okFn, x)` returns `okFn(v)` when the provided Validation (`x`)
+ * is `VOk(v)`; it returns `errFn(e)` when the Validation is `VError(e)`. This
+ * is effectively a function that allows you to "handle" both possible states of
+ * the Validation.
+ *
+ * ```re
+ * let positiveInt = str =>
+ *   Validate.(
+ *     Int.fromtString(str)
+ *     |> fromOption(`InvalidInput)
+ *     |> flatMapV(x => x < 0 ? error(`NotPositive) : pure(x))
+ *   );
+ *
+ * let showError =
+ *   fun
+ *   | `InvalidInput => "The provided string was not an int"
+ *   | `NotPositive => "The provided int was negative";
+ *
+ *
+ * let errMsg = x => "Something went wrong: " ++ showError(x);
+ * let succMsg = x => "Found valid positive int: " ++ Int.toString(x);
+ *
+ * // "Something went wrong: The provided string was not an int"
+ * fold(errMsg, succMsg, positiveInt("a"));
+ *
+ * // "Something went wrong: The provided int was negative"
+ * fold(errMsg, succMsg, positiveInt("-3"));
+ *
+ * // "Found valid positive int: 123"
+ * fold(errMsg, succMsg, positiveInt("123"));
+ * ```
+ */
 let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
-  (ec, ac, r) =>
-    switch (r) {
+  (ec, ac) =>
+    fun
     | VOk(a) => ac(a)
-    | VError(e) => ec(e)
-    };
+    | VError(e) => ec(e);
 
 /**
-  `flip()` Flips the values between the success and error channels.
-
-  ### Example
-  ```re
-  flip(VOk(12)) == VError(12);
-  flip(VError(-1)) == VOk(-1);
-  ```
-*/
+ * `flip` Flips the values between the success and error channels.
+ *
+ * ```re
+ * flip(VOk(12)) == VError(12);
+ * flip(VError(-1)) == VOk(-1);
+ * ```
+ */
 let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   fa => fa |> fold(e => VOk(e), a => VError(a));
 

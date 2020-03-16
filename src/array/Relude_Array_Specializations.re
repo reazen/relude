@@ -142,9 +142,12 @@ module Option = {
  */
 module Result = {
   /**
-   * Maps a function `'a => Belt.Result.t('b, 'e)` over an `array('a)` and produces a `Belt.Result.t(array('b), 'e)`
+   * Maps a function `'a => result('b, 'e)` over an `array('a)` and produces a
+   * `result(array('b), 'e)`.
    */
-  let traverse = (type e, f: 'a => Belt.Result.t('b, e), xs: array('a)): Belt.Result.t(array('b), e) => {
+  let traverse =
+      (type e, f: 'a => result('b, e), xs: array('a))
+      : result(array('b), e) => {
     module ResultE =
       Relude_Result.WithError({
         type t = e;
@@ -155,9 +158,9 @@ module Result = {
   };
 
   /**
-   * Flips an `array(Belt.Result.t('a, 'e))` into a `Belt.Result.t(array('a), 'e)`
+   * Flips an `array(result('a, 'e))` into a `result(array('a), 'e)`
    */
-  let sequence = (type e, xs: array(Belt.Result.t('a, e))): Belt.Result.t(array('a), e) => {
+  let sequence = (type e, xs: array(result('a, e))): result(array('a), e) => {
     module ResultE =
       Relude_Result.WithError({
         type t = e;
@@ -237,7 +240,7 @@ module Validation = {
   };
 
   let traverse =
-      (type a, type b, type e, f: a => Belt.Result.t(b, e), array: array(a))
+      (type a, type b, type e, f: a => result(b, e), array: array(a))
       : Relude_Validation.t(array(b), Relude_NonEmpty.Array.t(e)) => {
     module Error = {
       type t = e;
