@@ -14,12 +14,8 @@ let toIO: 'a. Js.Promise.t('a) => Relude_IO.t('a, Js.Promise.error) =
   promise =>
     Relude_IO.async(onDone =>
       promise
-      |> Js.Promise.then_(v =>
-           Js.Promise.resolve(onDone(Belt.Result.Ok(v)))
-         )
-      |> Js.Promise.catch(e =>
-           Js.Promise.resolve(onDone(Belt.Result.Error(e)))
-         )
+      |> Js.Promise.then_(v => Js.Promise.resolve(onDone(Ok(v))))
+      |> Js.Promise.catch(e => Js.Promise.resolve(onDone(Error(e))))
       |> ignore
     );
 
@@ -34,12 +30,8 @@ let toIOLazy:
     Relude_IO.async(onDone => {
       let promise = runPromise();
       promise
-      |> Js.Promise.then_(v =>
-           Js.Promise.resolve(onDone(Belt.Result.Ok(v)))
-         )
-      |> Js.Promise.catch(e =>
-           Js.Promise.resolve(onDone(Belt.Result.Error(e)))
-         )
+      |> Js.Promise.then_(v => Js.Promise.resolve(onDone(Ok(v))))
+      |> Js.Promise.catch(e => Js.Promise.resolve(onDone(Error(e))))
       |> ignore;
     });
 
@@ -59,8 +51,8 @@ let fromIO: 'a 'e. Relude_IO.t('a, 'e) => Js.Promise.t('a) =
       io
       |> Relude_IO.unsafeRunAsync(result =>
            switch (result) {
-           | Belt.Result.Ok(v) => resolve(. v)
-           | Belt.Result.Error(e) => reject(. Relude_Unsafe.coerce(e)) /* TODO: not sure if this is wise/good */
+           | Ok(v) => resolve(. v)
+           | Error(e) => reject(. Relude_Unsafe.coerce(e)) /* TODO: not sure if this is wise/good */
            }
          )
     );
@@ -76,8 +68,8 @@ let fromIOExn: 'a. Relude_IO.t('a, exn) => Js.Promise.t('a) =
       io
       |> Relude_IO.unsafeRunAsync(result =>
            switch (result) {
-           | Belt.Result.Ok(v) => resolve(. v)
-           | Belt.Result.Error(e) => reject(. e)
+           | Ok(v) => resolve(. v)
+           | Error(e) => reject(. e)
            }
          )
     );
@@ -93,8 +85,8 @@ let fromIOJsExn: 'a. Relude_IO.t('a, Js.Exn.t) => Js.Promise.t('a) =
       io
       |> Relude_IO.unsafeRunAsync(result =>
            switch (result) {
-           | Belt.Result.Ok(v) => resolve(. v)
-           | Belt.Result.Error(e) => reject(. Relude_Js_Exn.unsafeToExn(e))
+           | Ok(v) => resolve(. v)
+           | Error(e) => reject(. Relude_Js_Exn.unsafeToExn(e))
            }
          )
     );

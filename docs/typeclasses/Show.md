@@ -54,7 +54,7 @@ let y = String.Show.show("hi"); // "hi"
 
 ## More advanced instances
 
-Its easy to implement `SHOW` for primitive types like `int` and `string`, but how do we implement it for types like `option('a)` or `Belt.Result.t('a, 'e)`?  The answer is to use [module functors](https://v1.realworldocaml.org/v1/en/html/functors.html) - to construct typeclasses from other typeclasses.  Note: this usage of the term `functor` here is different than the `FUNCTOR` typeclass/module type which we will be talking about below - `module functor` is just what OCaml calls its ability to define modules which can be constructed from other modules.
+Its easy to implement `SHOW` for primitive types like `int` and `string`, but how do we implement it for types like `option('a)` or `result('a, 'e)`?  The answer is to use [module functors](https://v1.realworldocaml.org/v1/en/html/functors.html) - to construct typeclasses from other typeclasses.  Note: this usage of the term `functor` here is different than the `FUNCTOR` typeclass/module type which we will be talking about below - `module functor` is just what OCaml calls its ability to define modules which can be constructed from other modules.
 
 TODO: Option/Result example of show
 

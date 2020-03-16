@@ -1,5 +1,3 @@
-open Belt.Result;
-
 /**
 Fs.FFI wraps a few functions from the node.js fs module with little to no modification to the fs API.
 */

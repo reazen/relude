@@ -16,9 +16,9 @@ module BifunctorExtensions = (B: BsAbstract.Interface.BIFUNCTOR) => {
 
   /**
    * Alias for `mapRight`
-   * 
-   * Note: this function only makes sense if your error type is on the right of the Bifunctor, like
-   * Belt.Result.t('a, 'e), or Relude.IO.t('a, 'e).
+   *
+   * Note: this function only makes sense if your error type is on the right of
+   * the Bifunctor, like `result('a, 'e)`, or `Relude.IO.t('a, 'e)`.
    */
   let mapError = mapRight;
 };

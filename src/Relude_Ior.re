@@ -1,10 +1,11 @@
 /**
-Ior is similar to Belt.Result, but it has the ability to collect "non-fatal warning" information
-during applicative validation.
-
-E.g. if you are doing applicative validation to construct a User model, you could parse a phone number and
-allow it, but collect a warning that certain phone number formats are deprecated.
-*/
+ * Ior is similar to result, but it has the ability to collect "non-fatal
+ * warning" information during applicative validation.
+ *
+ * E.g. if you are doing applicative validation to construct a User model, you
+ * could parse a phone number and allow it, but collect a warning that certain
+ * phone number formats are deprecated.
+ */
 include Relude_Ior_Type;
 
 /**

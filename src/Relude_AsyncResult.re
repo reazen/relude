@@ -1,9 +1,12 @@
-/*
- AsyncResult is a specialization of AsyncData that uses a Belt.Result.t as the value type.
-
- This type also implements map/apply/flatMap/etc. to operate on the innermost a value (inside the Result.Ok)
+/**
+ * AsyncResult is a specialization of AsyncData that uses a `result` as the
+ * value type. This is useful for async data that may fail (for example, network
+ * requests and reading files).
+ *
+ * This type also implements map/apply/flatMap/etc. to operate on the innermost
+ * `'a` value (inside `Ok`).
  */
-type t('a, 'e) = Relude_AsyncData.t(Belt.Result.t('a, 'e));
+type t('a, 'e) = Relude_AsyncData.t(result('a, 'e));
 
 /**
  * Constructs an Init value
@@ -19,25 +22,25 @@ let loading: 'a 'e. t('a, 'e) = Relude_AsyncData.loading;
  * Constructs a Reloading(Ok(_)) value
  */
 let reloadingOk: 'a 'e. 'a => t('a, 'e) =
-  a => Relude_AsyncData.reloading(Belt.Result.Ok(a));
+  a => Relude_AsyncData.reloading(Ok(a));
 
 /**
  * Constructs a Reloading(Error(_)) value
  */
 let reloadingError: 'a 'e. 'e => t('a, 'e) =
-  e => Relude_AsyncData.reloading(Belt.Result.Error(e));
+  e => Relude_AsyncData.reloading(Error(e));
 
 /**
  * Constructs a Complete(Ok(_)) value
  */
 let completeOk: 'a 'e. 'a => t('a, 'e) =
-  a => Relude_AsyncData.complete(Belt.Result.Ok(a));
+  a => Relude_AsyncData.complete(Ok(a));
 
 /**
  * Constructs a Complete(Error(_)) value
  */
 let completeError: 'a 'e. 'e => t('a, 'e) =
-  e => Relude_AsyncData.complete(Belt.Result.Error(e));
+  e => Relude_AsyncData.complete(Error(e));
 
 /**
  * Constructs a Complete(Ok(_)) value
@@ -255,10 +258,10 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     switch (fa) {
     | Init => Init
     | Loading => Loading
-    | Reloading(Belt.Result.Ok(a)) => reloadingOk(f(a))
-    | Reloading(Belt.Result.Error(_)) as r => r
-    | Complete(Belt.Result.Ok(a)) => completeOk(f(a))
-    | Complete(Belt.Result.Error(_)) as r => r
+    | Reloading(Ok(a)) => reloadingOk(f(a))
+    | Reloading(Error(_)) as r => r
+    | Complete(Ok(a)) => completeOk(f(a))
+    | Complete(Error(_)) as r => r
     };
 
 /**
@@ -269,10 +272,10 @@ let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     switch (fa) {
     | Init => Init
     | Loading => Loading
-    | Reloading(Belt.Result.Ok(_)) as r => r
-    | Reloading(Belt.Result.Error(e)) => reloadingError(f(e))
-    | Complete(Belt.Result.Ok(_)) as c => c
-    | Complete(Belt.Result.Error(e)) => completeError(f(e))
+    | Reloading(Ok(_)) as r => r
+    | Reloading(Error(e)) => reloadingError(f(e))
+    | Complete(Ok(_)) as c => c
+    | Complete(Error(e)) => completeError(f(e))
     };
 
 /**
@@ -283,8 +286,8 @@ let tap:
   (
     unit => unit,
     unit => unit,
-    Belt.Result.t('a, 'e) => unit,
-    Belt.Result.t('a, 'e) => unit,
+    result('a, 'e) => unit,
+    result('a, 'e) => unit,
     t('a, 'e)
   ) =>
   t('a, 'e)
@@ -303,18 +306,12 @@ let tapLoading: 'a 'e. (unit => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData
 /**
  * Applies a side-effect function if the value is Reloading
  */
-let tapReloading:
-  'a 'e.
-  (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
- = Relude_AsyncData.tapReloading;
+let tapReloading: 'a 'e. (result('a, 'e) => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData.tapReloading;
 
 /**
  * Applies a side-effect function if the value is Complete
  */
-let tapComplete:
-  'a 'e.
-  (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
- = Relude_AsyncData.tapComplete;
+let tapComplete: 'a 'e. (result('a, 'e) => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData.tapComplete;
 
 /**
  * Applies a side-effect function if the value is Init or Loading
@@ -324,17 +321,14 @@ let tapEmpty: 'a 'e. (unit => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData.t
 /**
  * Applies a side-effect function if the value is Reloading or Complete
  */
-let tapNotEmpty:
-  'a 'e.
-  (Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
- = Relude_AsyncData.tapNotEmpty;
+let tapNotEmpty: 'a 'e. (result('a, 'e) => unit, t('a, 'e)) => t('a, 'e) = Relude_AsyncData.tapNotEmpty;
 
 /**
  * Applies a side effect function if the value is empty or not-empty
  */
 let tapByValue:
   'a 'e.
-  (unit => unit, Belt.Result.t('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
+  (unit => unit, result('a, 'e) => unit, t('a, 'e)) => t('a, 'e)
  =
   (ifEmpty, ifNotEmpty, fa) =>
     switch (fa) {
@@ -464,14 +458,7 @@ let flatten: 'a 'e. t(t('a, 'e), 'e) => t('a, 'e) =
  */
 let fold:
   'a 'e 'b.
-  (
-    'b,
-    'b,
-    Belt.Result.t('a, 'e) => 'b,
-    Belt.Result.t('a, 'e) => 'b,
-    t('a, 'e)
-  ) =>
-  'b
+  ('b, 'b, result('a, 'e) => 'b, result('a, 'e) => 'b, t('a, 'e)) => 'b
  =
   (initValue, loadingValue, onReloading, onComplete, fa) =>
     switch (fa) {
@@ -490,8 +477,8 @@ let foldLazy:
   (
     unit => 'b,
     unit => 'b,
-    Belt.Result.t('a, 'e) => 'b,
-    Belt.Result.t('a, 'e) => 'b,
+    result('a, 'e) => 'b,
+    result('a, 'e) => 'b,
     t('a, 'e)
   ) =>
   'b

@@ -9,17 +9,17 @@ module ResultS =
 
 describe("Result", () => {
   test("pure", () =>
-    expect(Result.pure(1)) |> toEqual(Belt.Result.Ok(1))
+    expect(Result.pure(1)) |> toEqual(Ok(1))
   );
 
   test("map Ok", () =>
-    expect(Result.map(a => a + 2, Belt.Result.Ok(1)))
-    |> toEqual(Belt.Result.Ok(3))
+    expect(Result.map(a => a + 2, Ok(1)))
+    |> toEqual(Ok(3))
   );
 
   test("map Error", () =>
-    expect(Result.map(a => a + 2, Belt.Result.Error("error")))
-    |> toEqual(Belt.Result.Error("error"))
+    expect(Result.map(a => a + 2, Error("error")))
+    |> toEqual(Error("error"))
   );
 
   test("mapError Ok", () =>
@@ -176,22 +176,22 @@ describe("Result", () => {
   );
 
   test("flatMap", () =>
-    expect(Result.flatMap(a => Belt.Result.Ok(a + 2), Belt.Result.Ok(1)))
-    |> toEqual(Belt.Result.Ok(3))
+    expect(Result.flatMap(a => Ok(a + 2), Ok(1)))
+    |> toEqual(Ok(3))
   );
 
   test("bind", () =>
-    expect(Result.bind(Belt.Result.Ok(1), a => Belt.Result.Ok(a + 2)))
-    |> toEqual(Belt.Result.Ok(3))
+    expect(Result.bind(Ok(1), a => Ok(a + 2)))
+    |> toEqual(Ok(3))
   );
 
   test("fold Ok", () =>
-    expect(Result.fold(_ => "error", _ => "ok", Belt.Result.Ok(1)))
+    expect(Result.fold(_ => "error", _ => "ok", Ok(1)))
     |> toEqual("ok")
   );
 
   test("fold Error", () =>
-    expect(Result.fold(_ => "error", _ => "ok", Belt.Result.Error(1)))
+    expect(Result.fold(_ => "error", _ => "ok", Error(1)))
     |> toEqual("error")
   );
 
@@ -213,53 +213,53 @@ describe("Result", () => {
   );
 
   test("merge Error", () =>
-    expect(Result.merge(Belt.Result.Error(1))) |> toEqual(1)
+    expect(Result.merge(Error(1))) |> toEqual(1)
   );
 
   test("merge Ok", () =>
-    expect(Result.merge(Belt.Result.Ok(1))) |> toEqual(1)
+    expect(Result.merge(Ok(1))) |> toEqual(1)
   );
 
   test("flip Ok", () =>
-    expect(Result.flip(Belt.Result.Ok(1)))
-    |> toEqual(Belt.Result.Error(1))
+    expect(Result.flip(Ok(1)))
+    |> toEqual(Error(1))
   );
 
   test("flip Error", () =>
-    expect(Result.flip(Belt.Result.Error("my error")))
-    |> toEqual(Belt.Result.Ok("my error"))
+    expect(Result.flip(Error("my error")))
+    |> toEqual(Ok("my error"))
   );
 
   test("isOk when Ok", () =>
-    expect(Result.isOk(Belt.Result.Ok(1))) |> toEqual(true)
+    expect(Result.isOk(Ok(1))) |> toEqual(true)
   );
 
   test("isOk when Error", () =>
-    expect(Result.isOk(Belt.Result.Error(1))) |> toEqual(false)
+    expect(Result.isOk(Error(1))) |> toEqual(false)
   );
 
   test("isError when Error", () =>
-    expect(Result.isError(Belt.Result.Error(1))) |> toEqual(true)
+    expect(Result.isError(Error(1))) |> toEqual(true)
   );
 
   test("isError when Ok", () =>
-    expect(Result.isError(Belt.Result.Ok(1))) |> toEqual(false)
+    expect(Result.isError(Ok(1))) |> toEqual(false)
   );
 
   test("getOk when Ok", () =>
-    expect(Result.getOk(Belt.Result.Ok(1))) |> toEqual(Some(1))
+    expect(Result.getOk(Ok(1))) |> toEqual(Some(1))
   );
 
   test("getOk when Error", () =>
-    expect(Result.getOk(Belt.Result.Error(1))) |> toEqual(None)
+    expect(Result.getOk(Error(1))) |> toEqual(None)
   );
 
   test("getError when Error", () =>
-    expect(Result.getError(Belt.Result.Error(1))) |> toEqual(Some(1))
+    expect(Result.getError(Error(1))) |> toEqual(Some(1))
   );
 
   test("getError when Ok", () =>
-    expect(Result.getError(Belt.Result.Ok(1))) |> toEqual(None)
+    expect(Result.getError(Ok(1))) |> toEqual(None)
   );
 
   test("catchError success", () =>
@@ -267,7 +267,7 @@ describe("Result", () => {
       Result.pure(42)
       |> Result.catchError((e: string) => Result.error(e ++ e)),
     )
-    |> toEqual(Belt.Result.Ok(42))
+    |> toEqual(Ok(42))
   );
 
   test("catchError failure", () =>
@@ -279,33 +279,33 @@ describe("Result", () => {
            Result.error(intValue * 2);
          }),
     )
-    |> toEqual(Belt.Result.Error(84))
+    |> toEqual(Error(84))
   );
 
   test("handleError success", () =>
     expect(Result.pure(42) |> Result.handleError((_e: string) => 84))
-    |> toEqual(Belt.Result.Ok(42))
+    |> toEqual(Ok(42))
   );
 
   test("handleError failure", () =>
     expect(
       Result.error("42") |> Result.handleError(e => int_of_string(e) * 2),
     )
-    |> toEqual(Belt.Result.Ok(84))
+    |> toEqual(Ok(84))
   );
 
   test("mapHandleError success", () =>
     expect(
       Result.pure(42) |> Result.mapHandleError(a => a * 2, int_of_string),
     )
-    |> toEqual(Belt.Result.Ok(84))
+    |> toEqual(Ok(84))
   );
 
   test("mapHandleError failure", () =>
     expect(
       Result.error("42") |> Result.mapHandleError(a => a * 2, int_of_string),
     )
-    |> toEqual(Belt.Result.Ok(42))
+    |> toEqual(Ok(42))
   );
 
   test("eqBy when eq, both Ok", () =>
@@ -344,17 +344,17 @@ describe("Result", () => {
     open ResultS.Infix;
     let f = a => a * 2;
     let g = err => err ++ err;
-    let ok = Belt.Result.Ok(42);
+    let ok = Ok(42);
     let actual = (f <<$>> g)(ok);
-    expect(actual) |> toEqual(Belt.Result.Ok(84));
+    expect(actual) |> toEqual(Ok(84));
   });
 
   test("<<$>> Error", () => {
     open ResultS.Infix;
     let f = a => a * 2;
     let g = err => err ++ err;
-    let error = Belt.Result.Error("hi");
+    let error = Error("hi");
     let actual = (f <<$>> g)(error);
-    expect(actual) |> toEqual(Belt.Result.Error("hihi"));
+    expect(actual) |> toEqual(Error("hihi"));
   });
 });

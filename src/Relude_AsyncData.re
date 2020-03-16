@@ -1,12 +1,20 @@
 /**
-AsyncData represents the state of data that is being loaded asynchronously.
-
-This type does not represent failures by default, but it can by using Belt.Result.t as your 'a type.
-
-The reason for this is that not all async data loading mechanisms will necessarily fail.
-
-The other interesting bit is that `Reloading` can be used if you already have data (e.g. an Ok or Error Result),
-but you need to reload the data to get a new Result.
+ * AsyncData represents the state of data that is being loaded asynchronously.
+ * While Promise and IO represent the effect of loading that data, `AsyncData`
+ * represents what that data looks like at one particular snapshot in time. This
+ * is particularly useful when storing application state (e.g. in a React
+ * component).
+ *
+ * By default, this type does not represent failures. If you want to represent
+ * the possibility for an async value to fail, you can use a `result` in the
+ * `'a` type (or see `AsyncResult`, which does this for you).
+ *
+ * The reason for this is that not all async data loading mechanisms will
+ * necessarily fail.
+ *
+ * The other interesting bit is that `Reloading` can be used if you already have
+ * data (e.g. an Ok or Error Result), but you need to reload the data to get a
+ * new result.
 */
 type t('a) =
   | Init

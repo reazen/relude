@@ -967,7 +967,7 @@ describe("List", () => {
 
     let io4 =
       IO.async(onDone =>
-        Js.Global.setTimeout(() => onDone(Belt.Result.Ok(4)), 0) |> ignore
+        Js.Global.setTimeout(() => onDone(Ok(4)), 0) |> ignore
       );
     let io5 = io4 |> IO.map(four => four + 1);
 
@@ -976,9 +976,7 @@ describe("List", () => {
     let io7 =
       io4
       |> IO.flatMap(four => IO.suspend(() => four + 2))
-      |> IO.flatMap(six =>
-           IO.async(onDone => onDone(Belt.Result.Ok(six + 1)))
-         );
+      |> IO.flatMap(six => IO.async(onDone => onDone(Ok(six + 1))));
 
     let io8 =
       io7

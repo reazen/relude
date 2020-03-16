@@ -3,51 +3,75 @@
  */
 module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   type t('a, 'e) =
-    | ResultT(M.t(Belt.Result.t('a, 'e)));
+    | ResultT(M.t(result('a, 'e)));
 
-  let make: 'a 'e. M.t(Belt.Result.t('a, 'e)) => t('a, 'e) =
+  let make: 'a 'e. M.t(result('a, 'e)) => t('a, 'e) =
     mResult => ResultT(mResult);
 
-  let runResultT: 'a 'e. t('a, 'e) => M.t(Belt.Result.t('a, 'e)) =
+  let runResultT: 'a 'e. t('a, 'e) => M.t(result('a, 'e)) =
     (ResultT(mResult)) => mResult;
 
   let withResultT: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     (e1ToE2, ResultT(mResultE1)) =>
       ResultT(
-        M.map(resultE1 => Relude_Result.mapError(e1ToE2, resultE1), mResultE1),
+        M.map(
+          resultE1 => Relude_Result.mapError(e1ToE2, resultE1),
+          mResultE1,
+        ),
       );
 
   let mapResultT:
     'a 'b 'e.
-    (M.t(Belt.Result.t('a, 'e)) => M.t(Belt.Result.t('b, 'e)), t('a, 'e)) =>
-    t('b, 'e)
+    (M.t(result('a, 'e)) => M.t(result('b, 'e)), t('a, 'e)) => t('b, 'e)
    =
     (mResultAToMResultB, ResultT(mResultA)) =>
       ResultT(mResultAToMResultB(mResultA));
 
-  let fromResult: 'a 'e. Belt.Result.t('a, 'e) => t('a, 'e) =
+  let fromResult: 'a 'e. result('a, 'e) => t('a, 'e) =
     result => ResultT(M.pure(result));
 
   let liftF: 'a 'e. M.t('a) => t('a, 'e) =
-    mA => ResultT(M.map(a => Belt.Result.Ok(a), mA));
+    mA => ResultT(M.map(a => Ok(a), mA));
 
   let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     (aToB, ResultT(mResultA)) =>
       ResultT(M.map(resultA => Relude_Result.map(aToB, resultA), mResultA));
 
-  let subflatMap: 'a 'b 'e. ('a => Belt.Result.t('b, 'e),  t('a, 'e)) => t('b, 'e) =
+  let subflatMap: 'a 'b 'e. ('a => result('b, 'e), t('a, 'e)) => t('b, 'e) =
     (aToB, ResultT(mResultA)) =>
-      ResultT(M.map(resultA => Relude_Result.flatMap(aToB, resultA), mResultA));
-      
-  let cond: 'a 'e. ('a => bool, 'a, 'e,  t('a, 'e)) => t('a, 'e) =
-    (aToBool, success, err, ResultT(mResultA)) =>
-      ResultT(M.map(resultA => Relude_Result.flatMap(a => 
-        aToBool(a) ? Relude_Result.pure(success) : Relude_Result.error(err), resultA), mResultA));
+      ResultT(
+        M.map(resultA => Relude_Result.flatMap(aToB, resultA), mResultA),
+      );
 
-  let condError: 'a 'b 'e. ('a => bool, 'e,  t('a, 'e)) => t('a, 'e) =
+  let cond: 'a 'e. ('a => bool, 'a, 'e, t('a, 'e)) => t('a, 'e) =
+    (aToBool, success, err, ResultT(mResultA)) =>
+      ResultT(
+        M.map(
+          resultA =>
+            Relude_Result.flatMap(
+              a =>
+                aToBool(a)
+                  ? Relude_Result.pure(success) : Relude_Result.error(err),
+              resultA,
+            ),
+          mResultA,
+        ),
+      );
+
+  let condError: 'a 'b 'e. ('a => bool, 'e, t('a, 'e)) => t('a, 'e) =
     (aToBool, err, ResultT(mResultA)) =>
-      ResultT(M.map(resultA => Relude_Result.flatMap(a => 
-        aToBool(a) ? Relude_Result.pure(a) : Relude_Result.error(err), resultA), mResultA));
+      ResultT(
+        M.map(
+          resultA =>
+            Relude_Result.flatMap(
+              a =>
+                aToBool(a)
+                  ? Relude_Result.pure(a) : Relude_Result.error(err),
+              resultA,
+            ),
+          mResultA,
+        ),
+      );
 
   let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) = withResultT;
 
@@ -66,24 +90,26 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
       ResultT(
         M.apply(
           M.map(
-            (resultAToB, resultA) => Relude_Result.apply(resultAToB, resultA),
+            (resultAToB, resultA) =>
+              Relude_Result.apply(resultAToB, resultA),
             mResultAToB,
           ),
           mResultA,
         ),
       );
 
-  let pure: 'a 'e. 'a => t('a, 'e) = a => ResultT(M.pure(Relude_Result.ok(a)));
+  let pure: 'a 'e. 'a => t('a, 'e) =
+    a => ResultT(M.pure(Relude_Result.ok(a)));
 
   let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     (ResultT(mResultA), aToResultTB) => {
       ResultT(
         M.flat_map(mResultA, resultA =>
           switch (resultA) {
-          | Belt.Result.Ok(a) =>
+          | Ok(a) =>
             let ResultT(mResultB) = aToResultTB(a);
             mResultB;
-          | Belt.Result.Error(_) as e => M.pure(e)
+          | Error(_) as e => M.pure(e)
           }
         ),
       );

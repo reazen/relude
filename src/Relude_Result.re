@@ -1,6 +1,6 @@
 open Relude_Function.Infix;
 
-type t('a, 'e) = Belt.Result.t('a, 'e);
+type t('a, 'e) = result('a, 'e) = | Ok('a) | Error('e);
 
 /**
  `ok()` is a synonym for `pure()`.
