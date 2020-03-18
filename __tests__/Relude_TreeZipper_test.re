@@ -20,6 +20,42 @@ let testTree1 =
     ],
   );
 
+let testTree2 =
+  Tree.make(
+    1,
+    [
+      Tree.make(
+        2,
+        [
+          Tree.make(21, [Tree.pure(211), Tree.pure(212), Tree.pure(213)]),
+          Tree.pure(22),
+          Tree.pure(23),
+          Tree.make(
+            24,
+            [
+              Tree.pure(241),
+              Tree.pure(242),
+              Tree.make(
+                243,
+                [Tree.pure(2431), Tree.pure(2432), Tree.pure(2433)],
+              ),
+            ],
+          ),
+        ],
+      ),
+      Tree.pure(3),
+      Tree.pure(4),
+      Tree.make(
+        5,
+        [
+          Tree.pure(51),
+          Tree.pure(52),
+          Tree.make(53, [Tree.pure(531), Tree.pure(532), Tree.pure(533)]),
+        ],
+      ),
+    ],
+  );
+
 describe("TreeZipper", () => {
   test("pure", () => {
     expect(TreeZipper.pure(42))
@@ -895,6 +931,44 @@ describe("TreeZipper", () => {
         children: [Tree.make("31", [Tree.pure("311")])],
       });
     expect(actual) |> toEqual(expected);
+  });
+
+  test("findInFocus", () => {
+    let actual = testTree1 |> fromTree |> findInFocus(a => a == 1);
+    let expected = testTree1 |> fromTree |> Relude_Option.pure; // 1
+    let actual2 = testTree1 |> fromTree |> findInFocus(a => a == 0);
+    let expected2 = None;
+    expect((actual, actual2)) |> toEqual((expected, expected2));
+  });
+
+  test("findInFocusAndChildren", () => {
+    let a = testTree2 |> fromTree |> findInFocusAndChildren(a => a == 213);
+    let e =
+      testTree2
+      |> fromTree  // 1
+      |> moveDownTimes(3)  // 211
+      |> Option.flatMap(moveRightTimes(2)); // 213
+    let a2 = testTree2 |> fromTree |> findInFocusAndChildren(a => a == 2433);
+    let e2 =
+      testTree2
+      |> fromTree  // 1
+      |> moveDownTimes(2)  // 21
+      |> Option.flatMap(moveRightTimes(3))  // 24
+      |> Option.flatMap(moveDown)  // 241
+      |> Option.flatMap(moveRightTimes(2))  // 243
+      |> Option.flatMap(moveDown)  // 2431
+      |> Option.flatMap(moveRightTimes(2)); // 2433
+    let a3 = testTree2 |> fromTree |> findInFocusAndChildren(a => a == 533);
+    let e3 =
+      testTree2
+      |> fromTree  // 1
+      |> moveDown  // 2
+      |> Option.flatMap(moveRightTimes(3))  // 5
+      |> Option.flatMap(moveDown)  // 51
+      |> Option.flatMap(moveRightTimes(2))  // 53
+      |> Option.flatMap(moveDown)  // 531
+      |> Option.flatMap(moveRightTimes(2)); // 533
+    expect((a, a2, a3)) |> toEqual((e, e2, e3));
   });
 
   test("findLeft", () => {

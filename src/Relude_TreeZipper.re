@@ -593,31 +593,37 @@ include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
 // TODO: could implement Apply/Applicative/Monad/Comonad/etc.
 
+let findInFocus: 'a. ('a => bool, t('a)) => option(t('a)) =
+  (pred, zipper) => pred(getFocusValue(zipper)) ? Some(zipper) : None;
+
 /**
- * Finds a value in the curernt focus and recursively the children
+ * Finds a value in the curernt focus and recursively the children.
+ * Equivalent to a depth first search in the currently focused tree.
  */
-let rec findInFocusAndChildren: 'a. ('a => bool, t('a)) => option(t('a)) =
-  (pred, zipper) =>
-    if (pred(zipper |> getFocusValue)) {
-      Some(zipper);
-    } else {
-      zipper
-      |> moveDown
-      |> Relude_Option.flatMap(childZipper => {
-           childZipper
-           |> findInFocusAndChildren(pred)
-           |> Relude_Option.orElseLazy(~fallback=() =>
-                childZipper
-                |> moveRight
-                |> Relude_Option.flatMap(findInFocusAndChildren(pred))
-              )
-         });
-    }
+let findInFocusAndChildren: 'a. ('a => bool, t('a)) => option(t('a)) =
+  (pred, zipper) => {
+    let rec dfs = zipper =>
+      findInFocus(pred, zipper)
+      |> Relude_Option.orElseLazy(~fallback=() =>
+           moveDown(zipper) |> Relude_Option.flatMap(dfs)
+         )
+      |> Relude_Option.orElseLazy(~fallback=() =>
+           moveRight(zipper) |> Relude_Option.flatMap(dfs)
+         );
+
+    findInFocus(pred, zipper)
+    |> Relude_Option.orElseLazy(~fallback=() =>
+         moveDown(zipper) |> Relude_Option.flatMap(dfs)
+       );
+  };
 
 /**
  * Attempts to find a value by searching the current focus and left siblings
  */
-and findLeft: 'a. (~checkFocus: bool=?, 'a => bool, t('a)) => option(t('a)) =
+let rec findLeft:
+  'a.
+  (~checkFocus: bool=?, 'a => bool, t('a)) => option(t('a))
+ =
   (~checkFocus=true, pred, zipper) =>
     if (checkFocus) {
       findInFocusAndChildren(pred, zipper)
