@@ -264,7 +264,7 @@ let memoize0 = (f: unit => 'a): (unit => 'a) => {
  * which once called, stores the result produced by the given function in
  * a closure-based cache, using a cache key created by the function `makeKey`
  *
- * All successive calls to teh function for input values that resolve to the same
+ * All successive calls to the function for input values that resolve to the same
  * cache key will return the cached result.
  */
 let memoize1 = (~makeKey: 'a => string, f: 'a => 'b): ('a => 'b) => {
