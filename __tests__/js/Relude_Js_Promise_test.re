@@ -53,6 +53,22 @@ describe("Js.Promise", () => {
        )
   );
 
+  testPromise("fromIOWithResult success", () =>
+    Relude_IO.pure(42)
+    |> Relude_Js_Promise.fromIOWithResult
+    |> Js.Promise.then_(actual =>
+         actual |> expect |> toEqual(Ok(42)) |> Js.Promise.resolve
+       )
+  );
+
+  testPromise("fromIOWithResult error", () =>
+    Relude_IO.throw(42)
+    |> Relude_Js_Promise.fromIOWithResult
+    |> Js.Promise.then_(actual =>
+         actual |> expect |> toEqual(Error(42)) |> Js.Promise.resolve
+       )
+  );
+
   testPromise("fromIO success", () =>
     Relude_IO.pure(42)
     |> Relude_Js_Promise.fromIO
