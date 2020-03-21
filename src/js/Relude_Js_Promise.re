@@ -42,6 +42,21 @@ Converts a `Relude.IO` into a Js.Promise.t.
 
 This function will cause the IO effects to be run.
 
+The promise that is returned will not reject, it will instead have a `Result` as its resolution
+ */
+let fromIOWithResult:
+  'a 'e.
+  Relude_IO.t('a, 'e) => Js.Promise.t(result('a, 'e))
+ =
+  io =>
+    Js.Promise.make((~resolve, ~reject as _) =>
+      io |> Relude_IO.unsafeRunAsync(result => resolve(. result))
+    );
+/**
+Converts a `Relude.IO` into a Js.Promise.t.
+
+This function will cause the IO effects to be run.
+
 The error channel is unsafely coerced into the promise error type, which is
 probably fine, because the Js.Promise error type is opaque.
  */
