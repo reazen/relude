@@ -1,3 +1,5 @@
+type t = string;
+
 /**
 Returns the empty string
 */
