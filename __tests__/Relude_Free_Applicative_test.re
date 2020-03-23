@@ -16,21 +16,16 @@ module Field = {
   let make = (name, validator) => {name, validator};
 
   let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
-    (f, field) => {
-      ...field,
-      validator: input => field.validator(input) |> Result.map(f),
+    (f, {name, validator}) => {
+      name,
+      validator: validator >> Result.map(f),
     };
-
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
-    type nonrec t('a) = t('a);
-    let map = map;
-  };
 };
 
 // Form is our free-applicative type that we'll use to describe the fields that
 // we will support for form building.
 module Schema = {
-  include Free.Applicative.WithFunctor(Field.Functor);
+  include Free.Applicative.WithFunctor(Field);
 
   // A field is the metadata we capture in the freeap for describing a form
   let field: 'a. (string, Validator.t('a)) => t('a) =
@@ -41,15 +36,8 @@ module Schema = {
     name =>
       field(name, input =>
         Relude.Int.fromString(input)
-        |> Option.foldLazy(
-             () =>
-               Error(
-                 "Invalid input for field "
-                 ++ name
-                 ++ " (expected int): "
-                 ++ input,
-               ),
-             i => Ok(i),
+        |> Result.fromOption(
+             "Invalid input for field " ++ name ++ " (expected int): " ++ input,
            )
       );
 
@@ -57,16 +45,14 @@ module Schema = {
   let nonEmptyString: string => t(string) =
     name =>
       field(name, input =>
-        if (input |> String.isEmpty) {
-          Error(
-            "Invalid input for field "
-            ++ name
-            ++ " (expected non-empty): "
-            ++ input,
-          );
-        } else {
-          Ok(input);
-        }
+        Some(input)
+        |> Relude.Option.keep(String.isNotEmpty)
+        |> Relude.Result.fromOption(
+             "Invalid input for field "
+             ++ name
+             ++ " (expected non-empty): "
+             ++ input,
+           )
       );
 };
 
@@ -90,21 +76,13 @@ module User = {
 };
 
 // This is the target applicative into which we will interpret
-module ValidationE =
-  Validation.WithErrors(
-    NonEmptyList.SemigroupAny,
-    {
-      type t = string;
-    },
-  );
+module ValidationE = Validation.WithErrors(NonEmptyList.SemigroupAny, String);
 
 // This is a demo of how to interpret the DSL into another applicative, like validation.
 // The NT thing is pretty nasty, but I couldn't figure out a simpler way to do it.
 let validateUser =
     (first: string, last: string, age: string): ValidationE.t(User.t) => {
-  module NT:
-    Relude.Interface.NATURAL_TRANSFORMATION with
-      type f('a) = Field.t('a) and type g('a) = ValidationE.t('a) = {
+  module NT = {
     type f('a) = Field.t('a);
     type g('a) = ValidationE.t('a);
     let f = (field: f('a)) =>
