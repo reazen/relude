@@ -1,7 +1,9 @@
+open BsBastet.Interface;
+
 /**
  * Creates a ContT (continuation) Monad module with the given Monad module.
  */
-module WithMonad = (M: BsBastet.Interface.MONAD) => {
+module WithMonad = (M: MONAD) => {
   /**
    * The type of a continuation.  `'a` is the intermediate result type, and `'r`' is the final result type.
    */
@@ -68,7 +70,7 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
           ),
       );
 
-  module WithResult = (R: BsBastet.Interface.TYPE) => {
+  module WithResult = (R: TYPE) => {
     type nonrec t('a) = t(R.t, 'a); // = | ContT(('a => M.t(R.t)) => M.t(R.t));
 
     let make = make;
@@ -80,26 +82,25 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
     let pure = pure;
     let bind = bind;
 
-    module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };
     include Relude_Extensions.Functor.FunctorExtensions(Functor);
 
-    module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
+    module Apply: APPLY with type t('a) = t('a) = {
       include Functor;
       let apply = apply;
     };
     include Relude_Extensions.Apply.ApplyExtensions(Apply);
 
-    module Applicative:
-      BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
+    module Applicative: APPLICATIVE with type t('a) = t('a) = {
       include Apply;
       let pure = pure;
     };
     include Relude_Extensions.Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsBastet.Interface.MONAD with type t('a) = t('a) = {
+    module Monad: MONAD with type t('a) = t('a) = {
       include Applicative;
       let flat_map = bind;
     };
@@ -113,8 +114,7 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
   };
 };
 
-module WithMonadAndResult =
-       (M: BsBastet.Interface.MONAD, R: BsBastet.Interface.TYPE) => {
+module WithMonadAndResult = (M: MONAD, R: TYPE) => {
   module WithMonad = WithMonad(M);
   include WithMonad.WithResult(R);
 };

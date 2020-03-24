@@ -1,4 +1,6 @@
-module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
+open BsBastet.Interface;
+
+module WithFunctor = (F: FUNCTOR) => {
   type t('a) =
     | Pure('a)
     | FlatMap(F.t(t('a)));
@@ -11,7 +13,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
         FlatMap(fFreeA |> F.map(freeA => freeA |> map(aToB)))
       };
 
-  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
@@ -26,7 +28,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
       };
     };
 
-  module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
@@ -34,7 +36,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
 
   let pure: 'a. 'a => t('a) = a => Pure(a);
 
-  module Applicative: BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -48,7 +50,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
         FlatMap(fFreeA |> F.map(freeA => bind(freeA, aToFreeB)))
       };
 
-  module Monad: BsBastet.Interface.MONAD with type t('a) = t('a) = {
+  module Monad: MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };
@@ -65,7 +67,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
   /**
    * Specifies a monad into which we will interpret our free monadic program
    */
-  module WithMonad = (M: BsBastet.Interface.MONAD) => {
+  module WithMonad = (M: MONAD) => {
     /**
      * Applies an interpreter function to interpret each value of our algebra into
      * a target monad.

@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * Module type signature for a type constructor with a single type hole.
  */
@@ -16,8 +18,7 @@ module type FUNCTION_1 = {
  * Module type functor which captures a simple a => b function
  */
 module type FUNCTION_1_F =
-  (A: BsBastet.Interface.TYPE, B: BsBastet.Interface.TYPE) =>
-   FUNCTION_1 with type a = A.t and type b = B.t;
+  (A: TYPE, B: TYPE) => FUNCTION_1 with type a = A.t and type b = B.t;
 
 /**
  * Captures a natural tranformation
@@ -31,8 +32,8 @@ module type NATURAL_TRANSFORMATION = {
   let f: f('a) => g('a);
   // Another encoding would be using FUNCTOR modules here, but the f('a)/g('a) version seems easier to work with inline,
   // and we've already gone off the deep end, so let's not make it any more clunky.
-  //module F: BsBastet.Interface.FUNCTOR;
-  //module G: BsBastet.Interface.FUNCTOR;
+  //module F: FUNCTOR;
+  //module G: FUNCTOR;
   //let f: F.t('a) => G.t('a);
 };
 
@@ -64,30 +65,25 @@ module type SEQUENCE = {
   let eqBy: (('a, 'a) => bool, t('a), t('a)) => bool;
   let showBy: ('a => string, t('a)) => string;
 
-  module Functor: BsBastet.Interface.FUNCTOR with type t('a) := t('a);
+  module Functor: FUNCTOR with type t('a) := t('a);
 
-  module Apply: BsBastet.Interface.APPLY with type t('a) := t('a);
+  module Apply: APPLY with type t('a) := t('a);
 
-  module Applicative:
-    BsBastet.Interface.APPLICATIVE with type t('a) := t('a);
+  module Applicative: APPLICATIVE with type t('a) := t('a);
 
-  module Monad: BsBastet.Interface.MONAD with type t('a) := t('a);
+  module Monad: MONAD with type t('a) := t('a);
 
-  module Foldable: BsBastet.Interface.FOLDABLE with type t('a) := t('a);
+  module Foldable: FOLDABLE with type t('a) := t('a);
 
   module Traversable:
-    (A: BsBastet.Interface.APPLICATIVE) =>
+    (A: APPLICATIVE) =>
 
-      BsBastet.Interface.TRAVERSABLE with
+      TRAVERSABLE with
         type t('a) = t('a) and type applicative_t('a) = A.t('a);
 
-  module Eq:
-    (EqA: BsBastet.Interface.EQ) =>
-     BsBastet.Interface.EQ with type t = t(EqA.t);
+  module Eq: (EqA: EQ) => EQ with type t = t(EqA.t);
 
-  module Show:
-    (ShowA: BsBastet.Interface.SHOW) =>
-     BsBastet.Interface.SHOW with type t = t(ShowA.t);
+  module Show: (ShowA: SHOW) => SHOW with type t = t(ShowA.t);
 };
 
 /**
@@ -112,7 +108,7 @@ module type ISO_LIST = {
  * Module type signature for Ior-based zipping and unzipping
  */
 module type SEMIALIGN = {
-  include BsBastet.Interface.FUNCTOR;
+  include FUNCTOR;
   let align: (t('a), t('b)) => t(Relude_Ior_Type.t('a, 'b));
   let alignWith: (Relude_Ior_Type.t('a, 'b) => 'c, t('a), t('b)) => t('c);
 };
@@ -135,7 +131,7 @@ module type ALIGN = {
  * Module type signature for a Monad that can produce an error in a monadic context
  */
 module type MONAD_THROW = {
-  include BsBastet.Interface.MONAD;
+  include MONAD;
   type e;
   let throwError: e => t('a);
 };
@@ -169,7 +165,7 @@ module type UPPER_BOUNDED = {
  * a lawful chain of successors and predecessors
  */
 module type ENUM = {
-  include BsBastet.Interface.ORD;
+  include ORD;
   let succ: t => option(t);
   let pred: t => option(t);
 };
@@ -179,7 +175,7 @@ module type ENUM = {
  * a lawful chain of successors and predecessors, and there is a top and bottom bound.
  */
 module type BOUNDED_ENUM = {
-  include BsBastet.Interface.BOUNDED;
+  include BOUNDED;
   include ENUM with type t := t;
   let cardinality: int;
   let fromEnum: t => int;

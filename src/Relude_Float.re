@@ -1,9 +1,11 @@
+open BsBastet.Interface;
+
 /**
  * Indicates if two floats are exactly equal
  */
 let eq: (float, float) => bool = (a, b) => a == b;
 
-module Eq: BsBastet.Interface.EQ with type t = float = {
+module Eq: EQ with type t = float = {
   type t = float;
   let eq = eq;
 };
@@ -98,15 +100,15 @@ let isNaN: float => bool = x => x != x;
 /**
  * Compates two floats
  */
-let compare: (float, float) => BsBastet.Interface.ordering = BsBastet.Float.Ord.compare;
+let compare: (float, float) => ordering = BsBastet.Float.Ord.compare;
 
-module Ord: BsBastet.Interface.ORD with type t = float = {
+module Ord: ORD with type t = float = {
   include Eq;
   let compare = compare;
 };
 include Relude_Extensions_Ord.OrdExtensions(Ord);
 
-module Semiring: BsBastet.Interface.SEMIRING with type t = float = {
+module Semiring: SEMIRING with type t = float = {
   type t = float;
   let zero = zero;
   let one = one;
@@ -115,14 +117,14 @@ module Semiring: BsBastet.Interface.SEMIRING with type t = float = {
 };
 include Relude_Extensions_Semiring.SemiringExtensions(Semiring);
 
-module Ring: BsBastet.Interface.RING with type t = float = {
+module Ring: RING with type t = float = {
   include Semiring;
   let subtract = (a, b) => a -. b;
 };
 include Relude_Extensions_Ring.RingExtensions(Ring);
 include OrdRingExtensions(Ring);
 
-module EuclideanRing: BsBastet.Interface.EUCLIDEAN_RING with type t = float = {
+module EuclideanRing: EUCLIDEAN_RING with type t = float = {
   include Ring;
   let divide = divide;
   let modulo = (_, _) => 0.0;
@@ -240,7 +242,7 @@ let show: float => string = Js.Float.toString;
  */
 let toString = show;
 
-module Show: BsBastet.Interface.SHOW with type t = float = {
+module Show: SHOW with type t = float = {
   type t = float;
   let show = show;
 };
