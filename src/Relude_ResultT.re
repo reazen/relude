@@ -1,7 +1,9 @@
+open BsBastet.Interface;
+
 /**
  * Creates a ResultT Monad with the given outer Monad module.
  */
-module WithMonad = (M: BsBastet.Interface.MONAD) => {
+module WithMonad = (M: MONAD) => {
   type t('a, 'e) =
     | ResultT(M.t(result('a, 'e)));
 
@@ -118,7 +120,7 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
   let semiflatMap: 'a 'b 'e. ('a => M.t('b), t('a, 'e)) => t('b, 'e) =
     (aToMB, resultTA) => bind(resultTA, a => liftF(aToMB(a)));
 
-  module WithError = (E: BsBastet.Interface.TYPE) => {
+  module WithError = (E: TYPE) => {
     let make = make;
     let runResultT = runResultT;
     let withResultT = withResultT;
@@ -130,37 +132,35 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
     let cond = cond;
     let condError = condError;
 
-    module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
+    module Functor: FUNCTOR with type t('a) = t('a, E.t) = {
       type nonrec t('a) = t('a, E.t);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Bifunctor:
-      BsBastet.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
+    module Bifunctor: BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
       type nonrec t('a, 'e) = t('a, 'e);
       let bimap = bimap;
     };
     let bimap = Bifunctor.bimap;
     include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 
-    module Apply: BsBastet.Interface.APPLY with type t('a) = t('a, E.t) = {
+    module Apply: APPLY with type t('a) = t('a, E.t) = {
       include Functor;
       let apply = apply;
     };
     let apply = Apply.apply;
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-    module Applicative:
-      BsBastet.Interface.APPLICATIVE with type t('a) = t('a, E.t) = {
+    module Applicative: APPLICATIVE with type t('a) = t('a, E.t) = {
       include Apply;
       let pure = pure;
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsBastet.Interface.MONAD with type t('a) = t('a, E.t) = {
+    module Monad: MONAD with type t('a) = t('a, E.t) = {
       include Applicative;
       let flat_map = bind;
     };
@@ -176,8 +176,7 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
   };
 };
 
-module WithMonadAndError =
-       (M: BsBastet.Interface.MONAD, E: BsBastet.Interface.TYPE) => {
+module WithMonadAndError = (M: MONAD, E: TYPE) => {
   module WithMonad = WithMonad(M);
   include WithMonad.WithError(E);
 };

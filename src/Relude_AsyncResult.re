@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * AsyncResult is a specialization of AsyncData that uses a `result` as the
  * value type. This is useful for async data that may fail (for example, network
@@ -565,30 +567,29 @@ let eqBy:
  * This is useful so that we can provide typeclass instances for typeclasses that
  * have a single type hole, like Functor, Apply, Monad, etc.
  */
-module WithError = (E: BsBastet.Interface.TYPE) => {
-  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a, E.t) = {
+module WithError = (E: TYPE) => {
+  module Functor: FUNCTOR with type t('a) = t('a, E.t) = {
     type nonrec t('a) = t('a, E.t);
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Apply: BsBastet.Interface.APPLY with type t('a) = t('a, E.t) = {
+  module Apply: APPLY with type t('a) = t('a, E.t) = {
     include Functor;
     let apply = apply;
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Applicative:
-    BsBastet.Interface.APPLICATIVE with type t('a) = t('a, E.t) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a, E.t) = {
     include Apply;
     let pure = pure;
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad: BsBastet.Interface.MONAD with type t('a) = t('a, E.t) = {
+  module Monad: MONAD with type t('a) = t('a, E.t) = {
     include Applicative;
     let flat_map = bind;
   };

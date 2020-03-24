@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * Folds a bool value into a value of a different type, using a function
  * for the true and false cases.
@@ -74,7 +76,7 @@ let eq: (bool, bool) => bool =
 /**
  * EQ instance for booleans
  */
-module Eq: BsBastet.Interface.EQ with type t = bool = {
+module Eq: EQ with type t = bool = {
   type t = bool;
   let eq = eq;
 };
@@ -82,7 +84,7 @@ module Eq: BsBastet.Interface.EQ with type t = bool = {
 /**
  * Compares two booleans for equality
  */
-let compare: (bool, bool) => BsBastet.Interface.ordering =
+let compare: (bool, bool) => ordering =
   (a, b) =>
     switch (a, b) {
     | (true, true) => `equal_to
@@ -94,7 +96,7 @@ let compare: (bool, bool) => BsBastet.Interface.ordering =
 /**
  * ORD instance for booleans
  */
-module Ord: BsBastet.Interface.ORD with type t = bool = {
+module Ord: ORD with type t = bool = {
   include Eq;
   let compare = compare;
 };
@@ -107,23 +109,23 @@ let show: bool => string = b => b ? "true" : "false";
 /**
  * SHOW instance for booleans
  */
-module Show: BsBastet.Interface.SHOW with type t = bool = {
+module Show: SHOW with type t = bool = {
   type t = bool;
   let show = show;
 };
 
 module Conjunctive = {
-  module Magma: BsBastet.Interface.MAGMA with type t = bool = {
+  module Magma: MAGMA with type t = bool = {
     type t = bool;
     let append = (&&);
   };
 
-  module MedialMagma: BsBastet.Interface.MEDIAL_MAGMA with type t = bool = Magma;
+  module MedialMagma: MEDIAL_MAGMA with type t = bool = Magma;
 
-  module Semigroup: BsBastet.Interface.SEMIGROUP with type t = bool = Magma;
+  module Semigroup: SEMIGROUP with type t = bool = Magma;
   include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 
-  module Monoid: BsBastet.Interface.MONOID with type t = bool = {
+  module Monoid: MONOID with type t = bool = {
     include Semigroup;
     let empty = true;
   };
@@ -133,17 +135,17 @@ module Conjunctive = {
 module And = Conjunctive;
 
 module Disjunctive = {
-  module Magma: BsBastet.Interface.MAGMA with type t = bool = {
+  module Magma: MAGMA with type t = bool = {
     type t = bool;
     let append = (||);
   };
 
-  module MedialMagma: BsBastet.Interface.MEDIAL_MAGMA with type t = bool = Magma;
+  module MedialMagma: MEDIAL_MAGMA with type t = bool = Magma;
 
-  module Semigroup: BsBastet.Interface.SEMIGROUP with type t = bool = Magma;
+  module Semigroup: SEMIGROUP with type t = bool = Magma;
   include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 
-  module Monoid: BsBastet.Interface.MONOID with type t = bool = {
+  module Monoid: MONOID with type t = bool = {
     include Semigroup;
     let empty = false;
   };
@@ -152,7 +154,7 @@ module Disjunctive = {
 
 module Or = Disjunctive;
 
-module Bounded: BsBastet.Interface.BOUNDED with type t = bool = {
+module Bounded: BOUNDED with type t = bool = {
   include Ord;
   let top = true;
   let bottom = false;

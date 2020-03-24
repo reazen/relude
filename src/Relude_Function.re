@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
   This module defines functions that let you manipulate
   other functions.
@@ -400,30 +402,29 @@ module Infix = {
   let (>>) = flipCompose;
 };
 
-module WithArgument = (R: BsBastet.Interface.TYPE) => {
-  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = R.t => 'a = {
+module WithArgument = (R: TYPE) => {
+  module Functor: FUNCTOR with type t('a) = R.t => 'a = {
     type t('a) = R.t => 'a;
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Apply: BsBastet.Interface.APPLY with type t('a) = R.t => 'a = {
+  module Apply: APPLY with type t('a) = R.t => 'a = {
     include Functor;
     let apply = apply;
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Applicative:
-    BsBastet.Interface.APPLICATIVE with type t('a) = R.t => 'a = {
+  module Applicative: APPLICATIVE with type t('a) = R.t => 'a = {
     include Apply;
     let pure = pure;
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad: BsBastet.Interface.MONAD with type t('a) = R.t => 'a = {
+  module Monad: MONAD with type t('a) = R.t => 'a = {
     include Applicative;
     let flat_map = bind;
   };

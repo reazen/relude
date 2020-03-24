@@ -1,6 +1,7 @@
+open BsBastet.Interface;
 open Relude_Function.Infix;
 
-module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
+module WithFunctor = (F: FUNCTOR) => {
   type t('a) =
     | Pure('a): t('a)
     | Apply(F.t('x), t('x => 'a)): t('a);
@@ -13,7 +14,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
         Apply(fx, freeXToA |> map(xToA => xToA >> aToB))
       };
 
-  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
@@ -29,7 +30,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
         Apply(fx, freeXToB);
       };
 
-  module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
@@ -37,7 +38,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
 
   let pure: 'a. 'a => t('a) = a => Pure(a);
 
-  module Applicative: BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -57,7 +58,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
    * doesn't seem to work with the existential type captured by the FreeAp
    * (at least I couldn't figure it out).
    */
-  module WithApplicative = (A: BsBastet.Interface.APPLICATIVE) => {
+  module WithApplicative = (A: APPLICATIVE) => {
     /**
      * We also need a natural transformation in order to create our interpreters
      * for the free applicative. Because of the existential type captured by the
@@ -90,7 +91,7 @@ module WithFunctor = (F: BsBastet.Interface.FUNCTOR) => {
 
   module WithApplicativeAndNT =
          (
-           A: BsBastet.Interface.APPLICATIVE,
+           A: APPLICATIVE,
            NT:
              Relude_Interface.NATURAL_TRANSFORMATION with
                type f('a) = F.t('a) and type g('a) = A.t('a),

@@ -1,11 +1,13 @@
+open BsBastet.Interface;
+
 /**
  * Contains functions and modules for to help with comparing values
- */;
+ */
 
 /**
  * The ordering type represents the result of a comparison - `less_than, `equal_to, or `greater_than
  */
-type ordering = BsBastet.Interface.ordering;
+type nonrec ordering = ordering;
 
 /**
  * The compare function is the heart of all comparison functions
@@ -35,8 +37,7 @@ let by: 'a 'b. ('b => 'a, compare('a)) => compare('b) =
  */
 let cmap = by;
 
-module Contravariant:
-  BsBastet.Interface.CONTRAVARIANT with type t('a) = compare('a) = {
+module Contravariant: CONTRAVARIANT with type t('a) = compare('a) = {
   type nonrec t('a) = compare('a);
   let cmap = by;
 };
@@ -70,8 +71,7 @@ let compareAsIntBy: 'a. (compare('a), 'a, 'a) => int =
  * Compares two values using the given ORD module
  */
 let compareAsInt =
-    (type a, ord: (module BsBastet.Interface.ORD with type t = a), a: a, b: a)
-    : int => {
+    (type a, ord: (module ORD with type t = a), a: a, b: a): int => {
   module Ord = (val ord);
   compareAsIntBy(Ord.compare, a, b);
 };
@@ -90,7 +90,7 @@ let minBy: 'a. (compare('a), 'a, 'a) => 'a =
 /**
  * Finds the minimum of two values using the given ORD module
  */
-let min = (type a, ord: (module BsBastet.Interface.ORD with type t = a), a, b) => {
+let min = (type a, ord: (module ORD with type t = a), a, b) => {
   module Ord = (val ord);
   minBy(Ord.compare, a, b);
 };
@@ -109,7 +109,7 @@ let maxBy: 'a. (compare('a), 'a, 'a) => 'a =
 /**
  * Finds the maximum of two values using the given ORD module
  */
-let max = (type a, ord: (module BsBastet.Interface.ORD with type t = a), a, b) => {
+let max = (type a, ord: (module ORD with type t = a), a, b) => {
   module Ord = (val ord);
   maxBy(Ord.compare, a, b);
 };
@@ -128,8 +128,7 @@ let ltBy = lessThanBy;
 /**
  * Indicates if the item on the left is less than the item on the right using the given ORD module
  */
-let lessThan =
-    (type a, ord: (module BsBastet.Interface.ORD with type t = a), a, b) => {
+let lessThan = (type a, ord: (module ORD with type t = a), a, b) => {
   module Ord = (val ord);
   lessThanBy(Ord.compare, a, b);
 };
@@ -153,8 +152,7 @@ let lteBy = lessThanOrEqBy;
 /**
  * Indicates if the item on the left is less than or equal to the item on the right using the given ORD module
  */
-let lessThanOrEq =
-    (type a, ord: (module BsBastet.Interface.ORD with type t = a), a, b) => {
+let lessThanOrEq = (type a, ord: (module ORD with type t = a), a, b) => {
   module Ord = (val ord);
   lessThanOrEqBy(Ord.compare, a, b);
 };
@@ -178,8 +176,7 @@ let gtBy = greaterThanBy;
 /**
  * Indicates if the item on the left is greater than the item on the right using the given ORD module
  */
-let greaterThan =
-    (type a, ord: (module BsBastet.Interface.ORD with type t = a), a, b) => {
+let greaterThan = (type a, ord: (module ORD with type t = a), a, b) => {
   module Ord = (val ord);
   greaterThanBy(Ord.compare, a, b);
 };
@@ -203,8 +200,7 @@ let gteBy = greaterThanOrEqBy;
 /**
  * Indicates if the item on the left is greater than or equal to the item on the right using the given ORD module
  */
-let greaterThanOrEq =
-    (type a, ord: (module BsBastet.Interface.ORD with type t = a), a, b) => {
+let greaterThanOrEq = (type a, ord: (module ORD with type t = a), a, b) => {
   module Ord = (val ord);
   greaterThanOrEqBy(Ord.compare, a, b);
 };
@@ -233,14 +229,7 @@ let clampBy: 'a. (compare('a), ~min: 'a, ~max: 'a, 'a) => 'a =
 /**
  * First-class module version of clampBy
  */
-let clamp =
-    (
-      type a,
-      ord: (module BsBastet.Interface.ORD with type t = a),
-      ~min: a,
-      ~max: a,
-      x,
-    ) => {
+let clamp = (type a, ord: (module ORD with type t = a), ~min: a, ~max: a, x) => {
   module Ord = (val ord);
   clampBy(Ord.compare, ~min, ~max, x);
 };
@@ -255,14 +244,7 @@ let betweenBy: 'a. (compare('a), ~min: 'a, ~max: 'a, 'a) => bool =
 /**
  * First-class module version of betweenBy
  */
-let between =
-    (
-      type a,
-      ord: (module BsBastet.Interface.ORD with type t = a),
-      ~min: a,
-      ~max: a,
-      x,
-    ) => {
+let between = (type a, ord: (module ORD with type t = a), ~min: a, ~max: a, x) => {
   module Ord = (val ord);
   betweenBy(Ord.compare, ~min, ~max, x);
 };
@@ -273,8 +255,8 @@ let between =
 let abs =
     (
       type a,
-      ord: (module BsBastet.Interface.ORD with type t = a),
-      ring: (module BsBastet.Interface.RING with type t = a),
+      ord: (module ORD with type t = a),
+      ring: (module RING with type t = a),
       x,
     ) => {
   module Ring = (val ring);
@@ -288,8 +270,8 @@ let abs =
 let signum =
     (
       type a,
-      ord: (module BsBastet.Interface.ORD with type t = a),
-      ring: (module BsBastet.Interface.RING with type t = a),
+      ord: (module ORD with type t = a),
+      ring: (module RING with type t = a),
       x,
     )
     : a => {

@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * AsyncData represents the state of data that is being loaded asynchronously.
  * While Promise and IO represent the effect of loading that data, `AsyncData`
@@ -220,7 +222,7 @@ let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
     | Complete(a) => Complete(f(a))
     };
 
-module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+module Functor: FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
   let map = map;
 };
@@ -376,7 +378,7 @@ let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
     | (Complete(f), Complete(a)) => Complete(f(a))
     };
 
-module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
+module Apply: APPLY with type t('a) = t('a) = {
   include Functor;
   let apply = apply;
 };
@@ -387,7 +389,7 @@ include Relude_Extensions_Apply.ApplyExtensions(Apply);
  */
 let pure: 'a. 'a => t('a) = a => Complete(a);
 
-module Applicative: BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
+module Applicative: APPLICATIVE with type t('a) = t('a) = {
   include Apply;
   let pure = pure;
 };
@@ -405,7 +407,7 @@ let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
     | Complete(a) => f(a)
     };
 
-module Monad: BsBastet.Interface.MONAD with type t('a) = t('a) = {
+module Monad: MONAD with type t('a) = t('a) = {
   include Applicative;
   let flat_map = bind;
 };
@@ -439,7 +441,7 @@ let alt: 'a. (t('a), t('a)) => t('a) =
     | (Complete(_) as c, Complete(_)) => c
     };
 
-module Alt: BsBastet.Interface.ALT with type t('a) = t('a) = {
+module Alt: ALT with type t('a) = t('a) = {
   include Functor;
   let alt = alt;
 };
@@ -462,7 +464,7 @@ let eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
     | (Complete(_), _) => false
     };
 
-module Eq = (E: BsBastet.Interface.EQ) : BsBastet.Interface.EQ => {
+module Eq = (E: EQ) : EQ => {
   type nonrec t = t(E.t);
   let eq = eqBy(E.eq);
 };
@@ -480,7 +482,7 @@ let showBy: 'a. ('a => string, t('a)) => string =
     | Complete(a) => "Complete(" ++ showA(a) ++ ")"
     };
 
-module Show = (S: BsBastet.Interface.SHOW) : BsBastet.Interface.SHOW => {
+module Show = (S: SHOW) : SHOW => {
   type nonrec t = t(S.t);
   let show = showBy(S.show);
 };

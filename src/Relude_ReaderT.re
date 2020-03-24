@@ -1,3 +1,4 @@
+open BsBastet.Interface;
 open Relude_Function.Infix;
 
 // TODO: not sure whether to just make this functor include the "Env" type R here along with the Monad, or
@@ -7,7 +8,7 @@ open Relude_Function.Infix;
 /**
  * Creates a ReaderT Monad with the given Monad module
  */
-module WithMonad = (M: BsBastet.Interface.MONAD) => {
+module WithMonad = (M: MONAD) => {
   type t('r, 'a) =
     | ReaderT('r => M.t('a));
 
@@ -60,7 +61,7 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
    * Locks in the reader environment type, so that we can implement
    * the single-type-parameter typeclasses.
    */
-  module WithEnv = (R: BsBastet.Interface.TYPE) => {
+  module WithEnv = (R: TYPE) => {
     type nonrec t('a) = t(R.t, 'a);
 
     let make = make;
@@ -72,29 +73,28 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
     let local = local;
     let semiflatMap = semiflatMap;
 
-    module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
+    module Apply: APPLY with type t('a) = t('a) = {
       include Functor;
       let apply = apply;
     };
     let apply = Apply.apply;
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-    module Applicative:
-      BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
+    module Applicative: APPLICATIVE with type t('a) = t('a) = {
       include Apply;
       let pure = pure;
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsBastet.Interface.MONAD with type t('a) = t('a) = {
+    module Monad: MONAD with type t('a) = t('a) = {
       include Applicative;
       let flat_map = bind;
     };
@@ -109,8 +109,7 @@ module WithMonad = (M: BsBastet.Interface.MONAD) => {
   };
 };
 
-module WithMonadAndEnv =
-       (M: BsBastet.Interface.MONAD, E: BsBastet.Interface.TYPE) => {
+module WithMonadAndEnv = (M: MONAD, E: TYPE) => {
   module WithMonad = WithMonad(M);
   include WithMonad.WithEnv(E);
 };
