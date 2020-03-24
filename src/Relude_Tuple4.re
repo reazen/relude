@@ -1,32 +1,34 @@
+open BsBastet.Interface;
+
 /**
-   * Constructs a tuple-4 from 4 values
-   */
+ * Constructs a tuple-4 from 4 values
+ */
 let make: 'a 'b 'c 'd. ('a, 'b, 'c, 'd) => ('a, 'b, 'c, 'd) =
   (a, b, c, d) => (a, b, c, d);
 
 /**
-   * Constructs a tuple-4 from an array of exactly 4 values
-   */
+ * Constructs a tuple-4 from an array of exactly 4 values
+ */
 let fromArray: 'a. array('a) => option(('a, 'a, 'a, 'a)) =
   fun
   | [|a, b, c, d|] => Some((a, b, c, d))
   | _ => None;
 
 /**
-   * Constructs a tuple-4 from an array of at least 4 values
-   */
+ * Constructs a tuple-4 from an array of at least 4 values
+ */
 let fromArrayAtLeast: 'a. array('a) => option(('a, 'a, 'a, 'a)) =
   xs => Relude_Array.take(4, xs) |> fromArray;
 
 /**
-   * Constructs a tuple-4 from a list of exactly 4 values
-   */
+ * Constructs a tuple-4 from a list of exactly 4 values
+ */
 let fromList: 'a. list('a) => option(('a, 'a, 'a, 'a)) =
   xs => Relude_List.(take(5, xs) |> toArray) |> fromArray;
 
 /**
-   * Constructs a tuple-4 from a list of at least 4 values
-   */
+ * Constructs a tuple-4 from a list of at least 4 values
+ */
 let fromListAtLeast: 'a. list('a) => option(('a, 'a, 'a, 'a)) =
   xs => Relude_List.take(4, xs) |> fromList;
 
@@ -67,17 +69,11 @@ let eqBy:
   (eqA, eqB, eqC, eqD, (a1, b1, c1, d1), (a2, b2, c2, d2)) =>
     eqA(a1, a2) && eqB(b1, b2) && eqC(c1, c2) && eqD(d1, d2);
 
-module WithEqs =
-       (
-         EqA: BsAbstract.Interface.EQ,
-         EqB: BsAbstract.Interface.EQ,
-         EqC: BsAbstract.Interface.EQ,
-         EqD: BsAbstract.Interface.EQ,
-       ) => {
+module WithEqs = (EqA: EQ, EqB: EQ, EqC: EQ, EqD: EQ) => {
   type t = (EqA.t, EqB.t, EqC.t, EqD.t);
   let eq = eqBy(EqA.eq, EqB.eq, EqC.eq, EqD.eq);
 
-  module Eq: BsAbstract.Interface.EQ with type t = t = {
+  module Eq: EQ with type t = t = {
     type nonrec t = t;
     let eq = eq;
   };
@@ -86,20 +82,20 @@ module WithEqs =
 
 module type EQ_BY_F =
   (
-    EqA: BsAbstract.Interface.EQ,
-    EqB: BsAbstract.Interface.EQ,
-    EqC: BsAbstract.Interface.EQ,
-    EqD: BsAbstract.Interface.EQ,
+    EqA: EQ,
+    EqB: EQ,
+    EqC: EQ,
+    EqD: EQ,
     A: Relude_Interface.FUNCTION_1 with type b = (EqA.t, EqB.t, EqC.t, EqD.t),
   ) =>
-   BsAbstract.Interface.EQ with type t = A.a;
+   EQ with type t = A.a;
 
 module EqBy: EQ_BY_F =
   (
-    EqA: BsAbstract.Interface.EQ,
-    EqB: BsAbstract.Interface.EQ,
-    EqC: BsAbstract.Interface.EQ,
-    EqD: BsAbstract.Interface.EQ,
+    EqA: EQ,
+    EqB: EQ,
+    EqC: EQ,
+    EqD: EQ,
     A: Relude_Interface.FUNCTION_1 with type b = (EqA.t, EqB.t, EqC.t, EqD.t),
   ) => {
     type t = A.a;
@@ -144,18 +140,12 @@ let compareBy:
       }
     };
 
-module WithOrds =
-       (
-         OrdA: BsAbstract.Interface.ORD,
-         OrdB: BsAbstract.Interface.ORD,
-         OrdC: BsAbstract.Interface.ORD,
-         OrdD: BsAbstract.Interface.ORD,
-       ) => {
+module WithOrds = (OrdA: ORD, OrdB: ORD, OrdC: ORD, OrdD: ORD) => {
   include WithEqs(OrdA, OrdB, OrdC, OrdD);
   let compare =
     compareBy(OrdA.compare, OrdB.compare, OrdC.compare, OrdD.compare);
 
-  module Ord: BsAbstract.Interface.ORD with type t = t = {
+  module Ord: ORD with type t = t = {
     include Eq;
     let compare = compare;
   };
@@ -164,21 +154,25 @@ module WithOrds =
 
 module type ORD_BY_F =
   (
-    OrdA: BsAbstract.Interface.ORD,
-    OrdB: BsAbstract.Interface.ORD,
-    OrdC: BsAbstract.Interface.ORD,
-    OrdD: BsAbstract.Interface.ORD,
-    A: Relude_Interface.FUNCTION_1 with type b = (OrdA.t, OrdB.t, OrdC.t, OrdD.t),
+    OrdA: ORD,
+    OrdB: ORD,
+    OrdC: ORD,
+    OrdD: ORD,
+    A:
+      Relude_Interface.FUNCTION_1 with
+        type b = (OrdA.t, OrdB.t, OrdC.t, OrdD.t),
   ) =>
-   BsAbstract.Interface.ORD with type t = A.a;
+   ORD with type t = A.a;
 
 module OrdBy: ORD_BY_F =
   (
-    OrdA: BsAbstract.Interface.ORD,
-    OrdB: BsAbstract.Interface.ORD,
-    OrdC: BsAbstract.Interface.ORD,
-    OrdD: BsAbstract.Interface.ORD,
-    A: Relude_Interface.FUNCTION_1 with type b = (OrdA.t, OrdB.t, OrdC.t, OrdD.t),
+    OrdA: ORD,
+    OrdB: ORD,
+    OrdC: ORD,
+    OrdD: ORD,
+    A:
+      Relude_Interface.FUNCTION_1 with
+        type b = (OrdA.t, OrdB.t, OrdC.t, OrdD.t),
   ) => {
     include EqBy(OrdA, OrdB, OrdC, OrdD, A);
     let compare = (t1, t2) => {

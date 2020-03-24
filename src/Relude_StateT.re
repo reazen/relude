@@ -1,6 +1,7 @@
+open BsBastet.Interface;
 open Relude_Function.Infix;
 
-module WithMonad = (M: BsAbstract.Interface.MONAD) => {
+module WithMonad = (M: MONAD) => {
   /**
   StateT represents an effectful function from a state value of type 's to a result value 'a and a next state of type 's.
   This version of StateT has 'a on the left for consistency with other Reason types like Result/IO/Validation/etc.
@@ -113,7 +114,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
       );
     };
 
-  module WithState = (S: BsAbstract.Interface.TYPE) => {
+  module WithState = (S: TYPE) => {
     type nonrec t('a) = t('a, S.t);
 
     let runStateT = runStateT;
@@ -127,29 +128,28 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let modify = modify;
     let modify_ = modify_;
 
-    module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+    module Apply: APPLY with type t('a) = t('a) = {
       include Functor;
       let apply = apply;
     };
     let apply = Apply.apply;
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-    module Applicative:
-      BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+    module Applicative: APPLICATIVE with type t('a) = t('a) = {
       include Apply;
       let pure = pure;
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+    module Monad: MONAD with type t('a) = t('a) = {
       include Applicative;
       let flat_map = bind;
     };

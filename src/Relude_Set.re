@@ -14,7 +14,10 @@ let empty:
  * ordered by the comparator function `Comparable.cmp`.
  */
 let fromArray:
-  ((module Belt.Id.Comparable with type t = 'value and type identity = 'id), array('value)) =>
+  (
+    (module Belt.Id.Comparable with type t = 'value and type identity = 'id),
+    array('value)
+  ) =>
   Belt.Set.t('value, 'id) =
   (id, value) => Belt.Set.fromArray(~id, value);
 
@@ -24,7 +27,10 @@ let fromArray:
  * ordered by the comparator function `Comparable.cmp`.
  */
 let fromList:
-  ((module Belt.Id.Comparable with type t = 'value and type identity = 'id), list('value)) =>
+  (
+    (module Belt.Id.Comparable with type t = 'value and type identity = 'id),
+    list('value)
+  ) =>
   Belt.Set.t('value, 'id) =
   (id, value) => Belt.Set.fromArray(~id, Belt.List.toArray(value));
 
@@ -36,7 +42,8 @@ let isEmpty: t('value, 'id) => bool = Belt.Set.isEmpty;
 /**
  * Determine whether a set contains a given value.
  */
-let contains: ('value, t('value, 'id)) => bool = (value, set) => Belt.Set.has(set, value);
+let contains: ('value, t('value, 'id)) => bool =
+  (value, set) => Belt.Set.has(set, value);
 
 /**
  * Immutably add a value to a set. If the value already exists
@@ -44,7 +51,8 @@ let contains: ('value, t('value, 'id)) => bool = (value, set) => Belt.Set.has(se
  * unchanged. Otherwise, a new copy of the set is returned
  * containing the value.
  */
-let add: ('value, t('value, 'id)) => t('value, 'id) = (value, set) => Belt.Set.add(set, value);
+let add: ('value, t('value, 'id)) => t('value, 'id) =
+  (value, set) => Belt.Set.add(set, value);
 
 /**
  * Immutably merge an array of values into a set. Note: unlike `add`
@@ -146,7 +154,7 @@ let subset: (t('value, 'id), t('value, 'id)) => bool = Belt.Set.subset;
  * ordering between two sets. This can be used as a comparator function
  * to determine the ordering of nested sets (e.g. `Set.t(Set.t('a))`);
  * **Note: The argument order is significant for this function**. E.g.:
- * 
+ *
  * ```
  * let s0 = Test1.fromList([1, 2, 3, 4]);
  * let s1 = Test1.fromList([1, 2, 3, 4]);
@@ -171,7 +179,8 @@ let eq: (t('value, 'id), t('value, 'id)) => bool = Belt.Set.eq;
  * Apply a function to each element of a set, in increasing
  * order.
  */
-let forEach: ('value => unit, t('value, 'id)) => unit = (fn, set) => Belt.Set.forEach(set, fn);
+let forEach: ('value => unit, t('value, 'id)) => unit =
+  (fn, set) => Belt.Set.forEach(set, fn);
 
 /**
  * Iterate over the values of a set in increasing order,
@@ -214,7 +223,8 @@ let filter: ('value => bool, t('value, 'id)) => t('value, 'id) =
  * set contains all the values which pass the predicate function test,
  * and the second one contains all the values which fail.
  */
-let partition: ('value => bool, t('value, 'id)) => (t('value, 'id), t('value, 'id)) =
+let partition:
+  ('value => bool, t('value, 'id)) => (t('value, 'id), t('value, 'id)) =
   (predicate, set) => Belt.Set.partition(set, predicate);
 
 /**
@@ -251,28 +261,30 @@ let maximum: t('value, 'id) => option('value) = Belt.Set.maximum;
  * Returns `None` if no equivalent element is found, or the
  * set is empty.
  */
-let get: ('value, t('value, 'id)) => option('value) = (value, set) => Belt.Set.get(set, value);
+let get: ('value, t('value, 'id)) => option('value) =
+  (value, set) => Belt.Set.get(set, value);
 
 /**
  * Returns an equivalent element from a set if one exists,
  * or else returns a specified default value.
  */
 let getOrElse: ('value, 'value, t('value, 'id)) => 'value =
-  (value, default, set) => Relude_Option_Base.getOrElse(default, Belt.Set.get(set, value));
+  (value, default, set) =>
+    Relude_Option_Base.getOrElse(default, Belt.Set.get(set, value));
 
 /**
  * TODO: Needs documentation. Belt doesn't provide much description.
  */
-let split: ('value, t('value, 'id)) => ((t('value, 'id), t('value, 'id)), bool) =
+let split:
+  ('value, t('value, 'id)) => ((t('value, 'id), t('value, 'id)), bool) =
   (value, set) => Belt.Set.split(set, value);
 
 module type SET = {
-  
   module Comparable: {
     type identity;
     type t;
   };
-  
+
   type value;
   type t = Belt.Set.t(value, Comparable.identity);
   let empty: t;
@@ -309,18 +321,17 @@ module type SET = {
   let split: (value, t) => ((t, t), bool);
 };
 
-module WithOrd = (M: BsAbstract.Interface.ORD) : (SET with type value = M.t) => {
-
+module WithOrd = (M: BsBastet.Interface.ORD) : (SET with type value = M.t) => {
   type value = M.t;
-  
+
   module Comparable =
     Belt.Id.MakeComparable({
       type t = value;
       let cmp = (a, b) => M.compare(a, b) |> Relude_Ordering.toInt;
     });
-    
+
   type nonrec t = t(value, Comparable.identity);
-  
+
   let empty: t = empty((module Comparable));
   let fromArray: array(value) => t = fromArray((module Comparable));
   let fromList: list(value) => t = fromList((module Comparable));

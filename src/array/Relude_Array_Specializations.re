@@ -1,7 +1,9 @@
+open BsBastet.Interface;
+
 /**
  * Array extensions for when you have an EQ instance.
  */
-module ArrayEqExtensions = (E: BsAbstract.Interface.EQ) => {
+module ArrayEqExtensions = (E: EQ) => {
   include Relude_Array_Instances.FoldableEqExtensions(E);
   /**
    * Finds the distinct items of the array, based on the given EQ module.
@@ -31,7 +33,7 @@ module ArrayEqExtensions = (E: BsAbstract.Interface.EQ) => {
 /**
  * Array extensions for when you have an ORD instance.
  */
-module ArrayOrdExtensions = (O: BsAbstract.Interface.ORD) => {
+module ArrayOrdExtensions = (O: ORD) => {
   include ArrayEqExtensions(O);
   include Relude_Array_Instances.FoldableOrdExtensions(O);
 
@@ -44,7 +46,7 @@ module ArrayOrdExtensions = (O: BsAbstract.Interface.ORD) => {
 /**
  * Array extensions for when you have an MONOID instance.
  */
-module ArrayMonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
+module ArrayMonoidExtensions = (M: MONOID) => {
   include Relude_Array_Instances.FoldableMonoidExtensions(M);
 };
 
@@ -207,17 +209,13 @@ module IO = {
  * Array extensions for `array(Validation.t('a, 'e))`
  */
 module Validation = {
-  module WithErrors =
-         (
-           Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-           Error: BsAbstract.Interface.TYPE,
-         ) => {
+  module WithErrors = (Errors: SEMIGROUP_ANY, Error: TYPE) => {
     module ValidationE = Relude_Validation.WithErrors(Errors, Error);
     module Traversable =
       Relude_Array_Instances.Traversable(ValidationE.Applicative);
   };
 
-  module WithErrorsAsArray = (Error: BsAbstract.Interface.TYPE) => {
+  module WithErrorsAsArray = (Error: TYPE) => {
     module ValidationE =
       Relude_Validation.WithErrors(
         Relude_Array_Instances.SemigroupAny,
@@ -232,7 +230,7 @@ module Validation = {
       type t = string;
     });
 
-  module WithErrorsAsNonEmptyArray = (Error: BsAbstract.Interface.TYPE) => {
+  module WithErrorsAsNonEmptyArray = (Error: TYPE) => {
     module ValidationE =
       Relude_Validation.WithErrors(Relude_NonEmpty.Array.SemigroupAny, Error);
     module Traversable =

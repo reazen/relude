@@ -1,3 +1,4 @@
+open BsBastet.Interface;
 open Relude_Function.Infix;
 
 /**
@@ -1405,8 +1406,7 @@ let throttle:
       };
   };
 
-module Bifunctor:
-  BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
+module Bifunctor: BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
   type nonrec t('a, 'e) = t('a, 'e);
   let bimap = bimap;
 };
@@ -1417,10 +1417,10 @@ include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 Because this is a bifunctor, we need to use a module functor to lock in the error type,
 so we can implement many of the single-type parameter typeclasses.
 */
-module WithError = (E: BsAbstract.Interface.TYPE) => {
+module WithError = (E: TYPE) => {
   type nonrec t('a) = t('a, E.t);
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
@@ -1428,22 +1428,21 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   let mapError = mapError;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a) = {
+  module Alt: ALT with type t('a) = t('a) = {
     include Functor;
     let alt = alt;
   };
   let alt = alt;
   include Relude_Extensions_Alt.AltExtensions(Alt);
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -1457,7 +1456,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   };
   include Relude_Extensions_Semialign.SemialignExtensions(Semialign);
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+  module Monad: MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };
@@ -1482,8 +1481,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
   // Not sure if this is valid, but I'll leave it for now
-  module Semigroupoid:
-    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b) = {
+  module Semigroupoid: SEMIGROUPOID with type t('a, 'b) = t('a => 'b) = {
     type nonrec t('a, 'b) = t('a => 'b);
     let compose = compose;
   };

@@ -1,9 +1,11 @@
+open BsBastet.Interface;
+
 type eq('a) = ('a, 'a) => bool;
 
 /**
  * Extensions for any EQ
  */
-module EqExtensions = (Eq: BsAbstract.Interface.EQ) => {
+module EqExtensions = (Eq: EQ) => {
   /**
    * Creates a new equality function by contramapping the given conversion function
    */
@@ -23,14 +25,14 @@ module EqExtensions = (Eq: BsAbstract.Interface.EQ) => {
   /**
    * An Eq module which is the inverse of the given Eq module
    */
-  module EqInverted: BsAbstract.Interface.EQ with type t = Eq.t = {
+  module EqInverted: EQ with type t = Eq.t = {
     type t = Eq.t;
     let eq = eqInverted;
   };
 
   module type EQ_BY_F =
     (A: Relude_Interface.FUNCTION_1 with type b = Eq.t) =>
-     BsAbstract.Interface.EQ with type t = A.a;
+     EQ with type t = A.a;
 
   /**
    * Creates a new Eq for a type b, given an Eq for type a and a Arrow for `b => a`
@@ -56,7 +58,7 @@ module EqExtensions = (Eq: BsAbstract.Interface.EQ) => {
 /**
  * Infix operator extensions for any EQ
  */
-module EqInfix = (Eq: BsAbstract.Interface.EQ) => {
+module EqInfix = (Eq: EQ) => {
   module EqExtensions = EqExtensions(Eq);
 
   // Note: if we want to change these, try for consistency with ORD operators

@@ -1,43 +1,45 @@
+open BsBastet.Interface;
+
 /**
-   * Constructs a tuple-2 from 2 values
-   */
+ * Constructs a tuple-2 from 2 values
+ */
 let make: 'a 'b. ('a, 'b) => ('a, 'b) = (a, b) => (a, b);
 
 /**
-   * Constructs a tuple-2 from an array of exactly 2 values
-   */
+ * Constructs a tuple-2 from an array of exactly 2 values
+ */
 let fromArray: 'a. array('a) => option(('a, 'a)) =
   fun
   | [|a, b|] => Some((a, b))
   | _ => None;
 
 /**
-   * Constructs a tuple-2 from an array of at least 2 values
-   */
+ * Constructs a tuple-2 from an array of at least 2 values
+ */
 let fromArrayAtLeast: 'a. array('a) => option(('a, 'a)) =
   xs => Relude_Array.take(2, xs) |> fromArray;
 
 /**
-   * Constructs a tuple-2 from a list of exactly 2 values
-   */
+ * Constructs a tuple-2 from a list of exactly 2 values
+ */
 let fromList: 'a. list('a) => option(('a, 'a)) =
   xs => Relude_List.(take(3, xs) |> toArray) |> fromArray;
 
 /**
-   * Constructs a tuple-2 from a list of at least 2 values
-   */
+ * Constructs a tuple-2 from a list of at least 2 values
+ */
 let fromListAtLeast: 'a. list('a) => option(('a, 'a)) =
   xs => Relude_List.take(2, xs) |> fromList;
 
 /**
-   * Shows a tuple ('a, 'b) using show functions for 'a and 'b
-   */
+ * Shows a tuple ('a, 'b) using show functions for 'a and 'b
+ */
 let showBy: 'a 'b. ('a => string, 'b => string, ('a, 'b)) => string =
   (showA, showB, (a, b)) => "(" ++ showA(a) ++ ", " ++ showB(b) ++ ")";
 
 /**
-   * Compares two tuples of type ('a, 'b) for equality using equality functions for 'a and 'b
-   */
+ * Compares two tuples of type ('a, 'b) for equality using equality functions for 'a and 'b
+ */
 let eqBy:
   'a 'b.
   (('a, 'a) => bool, ('b, 'b) => bool, ('a, 'b), ('a, 'b)) => bool
@@ -45,12 +47,12 @@ let eqBy:
   (eqA, eqB, (a1, b1), (a2, b2)) => eqA(a1, a2) && eqB(b1, b2);
 
 /**
-   * Creates a module containing helpers and an Eq module and extensions for the type (a, b)
-   */
-module WithEqs = (EqA: BsAbstract.Interface.EQ, EqB: BsAbstract.Interface.EQ) => {
+ * Creates a module containing helpers and an Eq module and extensions for the type (a, b)
+ */
+module WithEqs = (EqA: EQ, EqB: EQ) => {
   type t = (EqA.t, EqB.t);
   let eq = eqBy(EqA.eq, EqB.eq);
-  module Eq: BsAbstract.Interface.EQ with type t = t = {
+  module Eq: EQ with type t = t = {
     type nonrec t = t;
     let eq = eq;
   };
@@ -58,20 +60,20 @@ module WithEqs = (EqA: BsAbstract.Interface.EQ, EqB: BsAbstract.Interface.EQ) =>
 };
 
 /**
-   * Creates an Eq module for a type t, given an Arrow from t => (a, b) and EQ modules for a and b
-   */
+ * Creates an Eq module for a type t, given an Arrow from t => (a, b) and EQ modules for a and b
+ */
 module type EQ_BY_F =
   (
-    EqA: BsAbstract.Interface.EQ,
-    EqB: BsAbstract.Interface.EQ,
+    EqA: EQ,
+    EqB: EQ,
     A: Relude_Interface.FUNCTION_1 with type b = (EqA.t, EqB.t),
   ) =>
-   BsAbstract.Interface.EQ with type t = A.a;
+   EQ with type t = A.a;
 
 module EqBy: EQ_BY_F =
   (
-    EqA: BsAbstract.Interface.EQ,
-    EqB: BsAbstract.Interface.EQ,
+    EqA: EQ,
+    EqB: EQ,
     A: Relude_Interface.FUNCTION_1 with type b = (EqA.t, EqB.t),
   ) => {
     type t = A.a;
@@ -81,10 +83,10 @@ module EqBy: EQ_BY_F =
   };
 
 /**
-   * Compares two tuples of type ('a, 'b) for ordering, given comparison functions for 'a and 'b
-   *
-   * The 'a value is checked first, and if the 'as are equal, the 'b compare is checked.
-   */
+ * Compares two tuples of type ('a, 'b) for ordering, given comparison functions for 'a and 'b
+ *
+ * The 'a value is checked first, and if the 'as are equal, the 'b compare is checked.
+ */
 let compareBy:
   'a 'b.
   (
@@ -103,13 +105,12 @@ let compareBy:
     };
 
 /**
-   * Creates an Ord module for (a, b), given Ord instances for a and b
-   */
-module WithOrds =
-       (OrdA: BsAbstract.Interface.ORD, OrdB: BsAbstract.Interface.ORD) => {
+ * Creates an Ord module for (a, b), given Ord instances for a and b
+ */
+module WithOrds = (OrdA: ORD, OrdB: ORD) => {
   include WithEqs(OrdA, OrdB);
   let compare = compareBy(OrdA.compare, OrdB.compare);
-  module Ord: BsAbstract.Interface.ORD with type t = t = {
+  module Ord: ORD with type t = t = {
     include Eq;
     let compare = compare;
   };
@@ -117,20 +118,20 @@ module WithOrds =
 };
 
 /**
-   * Creates an Ord instance for a type t, given an arrow from t => (a, b) and Ord instances for a and b
-   */
+ * Creates an Ord instance for a type t, given an arrow from t => (a, b) and Ord instances for a and b
+ */
 module type ORD_BY_F =
   (
-    OrdA: BsAbstract.Interface.ORD,
-    OrdB: BsAbstract.Interface.ORD,
+    OrdA: ORD,
+    OrdB: ORD,
     A: Relude_Interface.FUNCTION_1 with type b = (OrdA.t, OrdB.t),
   ) =>
-   BsAbstract.Interface.ORD with type t = A.a;
+   ORD with type t = A.a;
 
 module OrdBy: ORD_BY_F =
   (
-    OrdA: BsAbstract.Interface.ORD,
-    OrdB: BsAbstract.Interface.ORD,
+    OrdA: ORD,
+    OrdB: ORD,
     A: Relude_Interface.FUNCTION_1 with type b = (OrdA.t, OrdB.t),
   ) => {
     include EqBy(OrdA, OrdB, A);

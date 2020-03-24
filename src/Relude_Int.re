@@ -116,9 +116,9 @@ let rec rangeAsArray: (int, int) => array(int) =
 /**
   `eq(a, b)` returns `true` if the arguments are equal, `false` otherwise.
 */
-let eq: (int, int) => bool = BsAbstract.Int.Eq.eq;
+let eq: (int, int) => bool = BsBastet.Int.Eq.eq;
 
-module Eq: BsAbstract.Interface.EQ with type t = int = {
+module Eq: BsBastet.Interface.EQ with type t = int = {
   type t = int;
   let eq = eq;
 };
@@ -127,7 +127,7 @@ include Relude_Extensions_Eq.EqExtensions(Eq);
 /**
   `compare(a, b)` returns ` `less_than ` if `a` is less than `b`,
   ` `equal_to ` if `a` equals `b`, and ` `greater_than ` if `a`
-  is greater than `b`. The result is of type `BsAbstract.Interface.ordering`.
+  is greater than `b`. The result is of type `BsBastet.Interface.ordering`.
 
   ### Example
   ```re
@@ -136,15 +136,15 @@ include Relude_Extensions_Eq.EqExtensions(Eq);
   compare(5, 3) == `greater_than;
   ```
 */
-let compare: (int, int) => BsAbstract.Interface.ordering = BsAbstract.Int.Ord.compare;
+let compare: (int, int) => BsBastet.Interface.ordering = BsBastet.Int.Ord.compare;
 
-module Ord: BsAbstract.Interface.ORD with type t = int = {
+module Ord: BsBastet.Interface.ORD with type t = int = {
   include Eq;
   let compare = compare;
 };
 include Relude_Extensions_Ord.OrdExtensions(Ord);
 
-module Bounded: BsAbstract.Interface.BOUNDED with type t = int = {
+module Bounded: BsBastet.Interface.BOUNDED with type t = int = {
   include Ord;
   let top = top;
   let bottom = bottom;
@@ -170,7 +170,7 @@ include Relude_Extensions_Enum.EnumExtensions(Enum);
 
 // Not a BoundedEnum b/c cardinality would be larger than an signed int can represent
 
-module Semiring: BsAbstract.Interface.SEMIRING with type t = int = {
+module Semiring: BsBastet.Interface.SEMIRING with type t = int = {
   type t = int;
   let zero = zero;
   let one = one;
@@ -179,14 +179,14 @@ module Semiring: BsAbstract.Interface.SEMIRING with type t = int = {
 };
 include Relude_Extensions_Semiring.SemiringExtensions(Semiring);
 
-module Ring: BsAbstract.Interface.RING with type t = int = {
+module Ring: BsBastet.Interface.RING with type t = int = {
   include Semiring;
   let subtract = subtract;
 };
 include Relude_Extensions_Ring.RingExtensions(Ring);
 include OrdRingExtensions(Ring);
 
-module EuclideanRing: BsAbstract.Interface.EUCLIDEAN_RING with type t = int = {
+module EuclideanRing: BsBastet.Interface.EUCLIDEAN_RING with type t = int = {
   include Ring;
   let divide = divide;
   let modulo = modulo;
@@ -221,7 +221,7 @@ let show: int => string = string_of_int;
  */
 let toString = show;
 
-module Show: BsAbstract.Interface.SHOW with type t = int = {
+module Show: BsBastet.Interface.SHOW with type t = int = {
   type t = int;
   let show = show;
 };
@@ -245,23 +245,23 @@ let fromString: string => option(int) =
     };
 
 module Additive = {
-  include BsAbstract.Int.Additive;
+  include BsBastet.Int.Additive;
 };
 
 module Multiplicative = {
-  include BsAbstract.Int.Multiplicative;
+  include BsBastet.Int.Multiplicative;
 };
 
 module Subtractive = {
-  include BsAbstract.Int.Subtractive;
+  include BsBastet.Int.Subtractive;
 };
 
 module Divisive = {
-  include BsAbstract.Int.Divisive;
+  include BsBastet.Int.Divisive;
 };
 
 module Infix = {
-  include BsAbstract.Int.Infix;
+  include BsBastet.Int.Infix;
   include Relude_Extensions_Eq.EqInfix(Eq);
   include Relude_Extensions_Ord.OrdInfix(Ord);
 };

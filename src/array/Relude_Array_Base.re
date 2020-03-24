@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * Prepends a single item to the start of an array.
  */
@@ -382,20 +384,14 @@ let sortWithInt: (('a, 'a) => int, array('a)) => array('a) =
 /**
  * Sorts an array using a compare function.
  */
-let sortBy:
-  (('a, 'a) => BsAbstract.Interface.ordering, array('a)) => array('a) =
+let sortBy: (('a, 'a) => ordering, array('a)) => array('a) =
   (f, xs) => sortWithInt((a, b) => f(a, b) |> Relude_Ordering.toInt, xs);
 
 /**
  * Sorts an array using an ORD module.
  */
 let sort =
-    (
-      type a,
-      ordA: (module BsAbstract.Interface.ORD with type t = a),
-      xs: array(a),
-    )
-    : array(a) => {
+    (type a, ordA: (module ORD with type t = a), xs: array(a)): array(a) => {
   module OrdA = (val ordA);
   sortBy(OrdA.compare, xs);
 };
@@ -443,8 +439,7 @@ let removeEachBy: 'a. (('a, 'a) => bool, 'a, array('a)) => array('a) =
 /**
  * Creates a new array with only the distinct values from the array, using the given EQ module.
  */
-let distinct =
-    (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), xs) => {
+let distinct = (type a, eqA: (module EQ with type t = a), xs) => {
   module EqA = (val eqA);
   distinctBy(EqA.eq, xs);
 };
@@ -452,8 +447,7 @@ let distinct =
 /**
  * Removes the first occurrence of the given value from the array, using the given EQ module
  */
-let removeFirst =
-    (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
+let removeFirst = (type a, eqA: (module EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeFirstBy(EqA.eq, x, xs);
 };
@@ -461,8 +455,7 @@ let removeFirst =
 /**
  * Removes all occurrences of the given value from the array, using the given EQ module
  */
-let removeEach =
-    (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
+let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeEachBy(EqA.eq, x, xs);
 };

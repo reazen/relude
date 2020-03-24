@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * Creates a NonEmpty module with the given SEQUENCE module to handle the tail part.
  */
@@ -98,14 +100,13 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
         TailSequence.concat(tail(nonEmpty1), toSequence(nonEmpty2)),
       );
 
-  module SemigroupAny:
-    BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a) = {
+  module SemigroupAny: SEMIGROUP_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let append = concat;
   };
   include Relude_Extensions_SemigroupAny.SemigroupAnyExtensions(SemigroupAny);
 
-  module MagmaAny: BsAbstract.Interface.MAGMA_ANY with type t('a) = t('a) = {
+  module MagmaAny: MAGMA_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let append = concat;
   };
@@ -131,21 +132,21 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
     (f, init, NonEmpty(x, xs)) =>
       f(x, TailSequence.Foldable.fold_right(f, init, xs));
 
-  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
+  module Foldable: FOLDABLE with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
 
     let fold_left = foldLeft;
 
     let fold_right = foldRight;
 
-    module Fold_Map = (FoldMapMonoid: BsAbstract.Interface.MONOID) => {
+    module Fold_Map = (FoldMapMonoid: MONOID) => {
       module TailFoldMap = TailSequence.Foldable.Fold_Map(FoldMapMonoid);
       let fold_map: 'a. ('a => FoldMapMonoid.t, t('a)) => FoldMapMonoid.t =
         (f, NonEmpty(x, xs)) =>
           FoldMapMonoid.append(f(x), TailFoldMap.fold_map(f, xs));
     };
 
-    module Fold_Map_Plus = (FoldMapPlus: BsAbstract.Interface.PLUS) => {
+    module Fold_Map_Plus = (FoldMapPlus: PLUS) => {
       module TailFoldMapPlus =
         TailSequence.Foldable.Fold_Map_Plus(FoldMapPlus);
       let fold_map:
@@ -156,7 +157,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
           FoldMapPlus.alt(f(x), TailFoldMapPlus.fold_map(f, xs));
     };
 
-    module Fold_Map_Any = (FoldMapAny: BsAbstract.Interface.MONOID_ANY) => {
+    module Fold_Map_Any = (FoldMapAny: MONOID_ANY) => {
       module SequenceFoldMapAny =
         TailSequence.Foldable.Fold_Map_Any(FoldMapAny);
       let fold_map:
@@ -175,7 +176,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
     (f, NonEmpty(x, xs)) => NonEmpty(f(x), TailSequence.Monad.map(f, xs));
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
@@ -193,7 +194,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   let apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
     (ff, fa) => map(f => map(f, fa), ff) |> flatten;
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
@@ -206,8 +207,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
    */
   let pure = one;
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -219,7 +219,7 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   let bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
     (nonEmpty, f) => map(f, nonEmpty) |> flatten;
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+  module Monad: MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };
@@ -267,23 +267,15 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
    * Indicates if two NonEmpty sequences are pair-wise equal using the given EQ module
    */
   let eq =
-      (
-        type a,
-        eqA: (module BsAbstract.Interface.EQ with type t = a),
-        xs: t(a),
-        ys: t(a),
-      )
-      : bool => {
+      (type a, eqA: (module EQ with type t = a), xs: t(a), ys: t(a)): bool => {
     module EqA = (val eqA);
     eqBy(EqA.eq, xs, ys);
   };
 
-  module type EQ_F =
-    (EqA: BsAbstract.Interface.EQ) =>
-     BsAbstract.Interface.EQ with type t = t(EqA.t);
+  module type EQ_F = (EqA: EQ) => EQ with type t = t(EqA.t);
 
   module Eq: EQ_F =
-    (EqA: BsAbstract.Interface.EQ) => {
+    (EqA: EQ) => {
       type nonrec t = t(EqA.t);
       let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
     };
@@ -300,23 +292,15 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   /**
    * Converts a NonEmpty to a string using the given SHOW module
    */
-  let show =
-      (
-        type a,
-        showA: (module BsAbstract.Interface.SHOW with type t = a),
-        xs: t(a),
-      )
-      : string => {
+  let show = (type a, showA: (module SHOW with type t = a), xs: t(a)): string => {
     module ShowA = (val showA);
     showBy(ShowA.show, xs);
   };
 
-  module type SHOW_F =
-    (S: BsAbstract.Interface.SHOW) =>
-     BsAbstract.Interface.SHOW with type t = t(S.t);
+  module type SHOW_F = (S: SHOW) => SHOW with type t = t(S.t);
 
   module Show: SHOW_F =
-    (S: BsAbstract.Interface.SHOW) => {
+    (S: SHOW) => {
       type nonrec t = t(S.t);
       let show = showBy(S.show);
     };
@@ -324,19 +308,14 @@ module WithSequence = (TailSequence: Relude_Interface.SEQUENCE) => {
   /**
    * NonEmpty extensions when you have an APPLICATIVE instance
    */
-  module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
+  module WithApplicative = (A: APPLICATIVE) => {
     module Traversable:
-      BsAbstract.Interface.TRAVERSABLE with
+      TRAVERSABLE with
         type t('a) = t('a) and type applicative_t('a) = A.t('a) = {
       type nonrec t('a) = t('a);
       type applicative_t('a) = A.t('a);
-      include (
-                Functor: BsAbstract.Interface.FUNCTOR with type t('a) := t('a)
-              );
-      include (
-                Foldable:
-                  BsAbstract.Interface.FOLDABLE with type t('a) := t('a)
-              );
+      include (Functor: FUNCTOR with type t('a) := t('a));
+      include (Foldable: FOLDABLE with type t('a) := t('a));
       module TailTraversable = TailSequence.Traversable(A);
 
       let traverse:

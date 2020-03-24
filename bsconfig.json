@@ -22,7 +22,7 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
-    "bs-abstract"
+    "bs-bastet"
   ],
   "bs-dev-dependencies": [
     "@glennsl/bs-jest"

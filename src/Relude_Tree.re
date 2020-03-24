@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * A non-empty multi-way (aka "rose") tree which contains a "top" value and
  * a list of child trees.
@@ -174,7 +176,7 @@ let rec map: 'a 'b. ('a => 'b, t('a)) => t('b) =
     children: children |> Relude_List.map(map(aToB)),
   };
 
-module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+module Functor: FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
   let map = map;
 };
@@ -199,13 +201,13 @@ let rec apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
     };
   };
 
-module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+module Apply: APPLY with type t('a) = t('a) = {
   include Functor;
   let apply = apply;
 };
 include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-module Applicative: BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+module Applicative: APPLICATIVE with type t('a) = t('a) = {
   include Apply;
   let pure = pure;
 };
@@ -222,7 +224,7 @@ let rec bind: 'a 'b. (t('a), 'a => t('b)) => t('b) =
     };
   };
 
-module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+module Monad: MONAD with type t('a) = t('a) = {
   include Applicative;
   let flat_map = bind;
 };
@@ -236,13 +238,13 @@ let rec extend: 'a 'b. (t('a) => 'b, t('a)) => t('b) =
     };
   };
 
-module Extend: BsAbstract.Interface.EXTEND with type t('a) = t('a) = {
+module Extend: EXTEND with type t('a) = t('a) = {
   include Functor;
   let extend = extend;
 };
 include Relude_Extensions_Extend.ExtendExtensions(Extend);
 
-module Comonad: BsAbstract.Interface.COMONAD with type t('a) = t('a) = {
+module Comonad: COMONAD with type t('a) = t('a) = {
   include Extend;
   let extract = getValue;
 };
@@ -273,24 +275,24 @@ let rec foldRight: 'a 'b. (('a, 'b) => 'b, 'b, t('a)) => 'b =
     f(value, acc);
   };
 
-module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
+module Foldable: FOLDABLE with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
   let fold_left = foldLeft;
   let fold_right = foldRight;
 
-  module Fold_Map = (M: BsAbstract.Interface.MONOID) => {
+  module Fold_Map = (M: MONOID) => {
     let fold_map: ('a => M.t, t('a)) => M.t =
       (f, tree) =>
         tree |> foldLeft((acc, value) => M.append(acc, f(value)), M.empty);
   };
 
-  module Fold_Map_Any = (M: BsAbstract.Interface.MONOID_ANY) => {
+  module Fold_Map_Any = (M: MONOID_ANY) => {
     let fold_map: 'a 'b. ('a => M.t('b), t('a)) => M.t('b) =
       (f, tree) =>
         tree |> foldLeft((acc, value) => M.append(acc, f(value)), M.empty);
   };
 
-  module Fold_Map_Plus = (P: BsAbstract.Interface.PLUS) => {
+  module Fold_Map_Plus = (P: PLUS) => {
     let fold_map: 'a 'b. ('a => P.t('b), t('a)) => P.t('b) =
       (f, tree) =>
         tree |> foldLeft((acc, value) => P.alt(acc, f(value)), P.empty);
@@ -306,22 +308,20 @@ let rec unfold: 'a. ('a => option(('a, 'a)), 'a) => t('a) =
     };
   };
 
-module Unfoldable: BsAbstract.Interface.UNFOLDABLE with type t('a) = t('a) = {
+module Unfoldable: UNFOLDABLE with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
   let unfold = unfold;
 };
 include Relude_Extensions_Unfoldable.UnfoldableExtensions(Unfoldable);
 
-module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
+module WithApplicative = (A: APPLICATIVE) => {
   module Traversable:
-    BsAbstract.Interface.TRAVERSABLE with
+    TRAVERSABLE with
       type t('a) = t('a) and type applicative_t('a) = A.t('a) = {
     type nonrec t('a) = t('a);
     type applicative_t('a) = A.t('a);
-    include (Functor: BsAbstract.Interface.FUNCTOR with type t('a) := t('a));
-    include (
-              Foldable: BsAbstract.Interface.FOLDABLE with type t('a) := t('a)
-            );
+    include (Functor: FUNCTOR with type t('a) := t('a));
+    include (Foldable: FOLDABLE with type t('a) := t('a));
     module ListTraversable = Relude_List.Traversable(A);
 
     let rec traverse: ('a => A.t('b), t('a)) => A.t(t('b)) =
@@ -364,12 +364,10 @@ let rec showBy: 'a. ('a => string, t('a)) => string =
     ++ Relude_List.showBy(showBy(showA), children);
   };
 
-module type SHOW_F =
-  (ShowA: BsAbstract.Interface.SHOW) =>
-   BsAbstract.Interface.SHOW with type t = t(ShowA.t);
+module type SHOW_F = (ShowA: SHOW) => SHOW with type t = t(ShowA.t);
 
 module Show: SHOW_F =
-  (ShowA: BsAbstract.Interface.SHOW) => {
+  (ShowA: SHOW) => {
     type nonrec t = t(ShowA.t);
     let show = tree => showBy(ShowA.show, tree);
   };
@@ -395,7 +393,7 @@ let showPrettyBy: 'a. ('a => string, t('a)) => string =
   };
 
 module ShowPretty: SHOW_F =
-  (ShowA: BsAbstract.Interface.SHOW) => {
+  (ShowA: SHOW) => {
     type nonrec t = t(ShowA.t);
     let show = showPrettyBy(ShowA.show);
   };
@@ -412,12 +410,10 @@ let rec eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
     eqA(value1, value2) && Relude_List.eqBy(eqBy(eqA), children1, children2);
   };
 
-module type EQ_F =
-  (EqA: BsAbstract.Interface.EQ) =>
-   BsAbstract.Interface.EQ with type t = t(EqA.t);
+module type EQ_F = (EqA: EQ) => EQ with type t = t(EqA.t);
 
 module Eq: EQ_F =
-  (EqA: BsAbstract.Interface.EQ) => {
+  (EqA: EQ) => {
     type nonrec t = t(EqA.t);
     let eq = (tree1, tree2) => eqBy(EqA.eq, tree1, tree2);
   };

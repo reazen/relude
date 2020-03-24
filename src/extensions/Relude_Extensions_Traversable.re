@@ -1,4 +1,4 @@
 /**
  * Extensions for any TRAVERSABLE
  */
-module TraversableExtensions = (T: BsAbstract.Interface.TRAVERSABLE) => {};
+module TraversableExtensions = (T: BsBastet.Interface.TRAVERSABLE) => {};

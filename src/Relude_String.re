@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 type t = string;
 
 /**
@@ -113,13 +115,13 @@ let toNonWhitespace: string => option(string) =
 */
 let concat: (string, string) => string = (a, b) => a ++ b;
 
-module Semigroup: BsAbstract.Interface.SEMIGROUP with type t = string = {
+module Semigroup: SEMIGROUP with type t = string = {
   type t = string;
   let append = concat;
 };
 include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 
-module Monoid: BsAbstract.Interface.MONOID with type t = string = {
+module Monoid: MONOID with type t = string = {
   include Semigroup;
   let empty = empty;
 };
@@ -430,7 +432,7 @@ let show: string => string = a => a;
 /**
  * SHOW module for string
  */
-module Show: BsAbstract.Interface.SHOW with type t = string = {
+module Show: SHOW with type t = string = {
   type t = string;
   let show = show;
 };
@@ -440,7 +442,7 @@ module Show: BsAbstract.Interface.SHOW with type t = string = {
 */
 let eq: (string, string) => bool = (a, b) => a == b;
 
-module Eq: BsAbstract.Interface.EQ with type t = string = {
+module Eq: EQ with type t = string = {
   type t = string;
   let eq = eq;
 };
@@ -449,9 +451,9 @@ include Relude_Extensions_Eq.EqExtensions(Eq);
 /**
  * Compares two strings
  */
-let compare = BsAbstract.String.Ord.compare;
+let compare = BsBastet.String.Ord.compare;
 
-module Ord: BsAbstract.Interface.ORD with type t = string = {
+module Ord: ORD with type t = string = {
   include Eq;
   let compare = compare;
 };

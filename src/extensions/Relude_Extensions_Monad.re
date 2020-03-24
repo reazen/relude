@@ -1,8 +1,8 @@
 /**
  * Extensions for any MONAD
  */
-module MonadExtensions = (M: BsAbstract.Interface.MONAD) => {
-  module BsMonadExtensions = BsAbstract.Functions.Monad(M);
+module MonadExtensions = (M: BsBastet.Interface.MONAD) => {
+  module BsMonadExtensions = BsBastet.Functions.Monad(M);
 
   /**
    * Flipped version of `bind` which has the function on the left and the monad on the right.
@@ -54,7 +54,7 @@ module MonadExtensions = (M: BsAbstract.Interface.MONAD) => {
 /**
  * Infix operator extensions for MONAD
  */
-module MonadInfix = (M: BsAbstract.Interface.MONAD) => {
+module MonadInfix = (M: BsBastet.Interface.MONAD) => {
   module MonadExtensions = MonadExtensions(M);
 
   /**

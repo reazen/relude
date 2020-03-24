@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * Creates a Zipper using the given SEQUENCE as the backing implementation
  *
@@ -131,7 +133,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     (f, Zipper(left, focus, right)) =>
       Zipper(S.Functor.map(f, left), f(focus), S.Functor.map(f, right));
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
@@ -147,7 +149,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     (Zipper(l1, f1, r1), Zipper(l2, f2, r2)) =>
       Zipper(S.zipWith(a => a, l1, l2), f1(f2), S.zipWith(a => a, r1, r2));
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
@@ -164,8 +166,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    */
   let pure: 'a. 'a => t('a) = makeWithFocus;
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -198,14 +199,14 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
       S.Foldable.fold_left(flipF, accF, left);
     };
 
-  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
+  module Foldable: FOLDABLE with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let fold_left = foldLeft;
     let fold_right = foldRight;
 
-    module Fold_Map = (M: BsAbstract.Interface.MONOID) => {
+    module Fold_Map = (M: MONOID) => {
       module D =
-        BsAbstract.Default.Fold_Map(
+        BsBastet.Default.Fold_Map(
           M,
           {
             type nonrec t('a) = t('a);
@@ -214,9 +215,9 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
         );
       let fold_map = D.fold_map_default_left;
     };
-    module Fold_Map_Any = (M: BsAbstract.Interface.MONOID_ANY) => {
+    module Fold_Map_Any = (M: MONOID_ANY) => {
       module D =
-        BsAbstract.Default.Fold_Map_Any(
+        BsBastet.Default.Fold_Map_Any(
           M,
           {
             type nonrec t('a) = t('a);
@@ -225,9 +226,9 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
         );
       let fold_map = D.fold_map_default_left;
     };
-    module Fold_Map_Plus = (P: BsAbstract.Interface.PLUS) => {
+    module Fold_Map_Plus = (P: PLUS) => {
       module D =
-        BsAbstract.Default.Fold_Map_Plus(
+        BsBastet.Default.Fold_Map_Plus(
           P,
           {
             type nonrec t('a) = t('a);
@@ -240,23 +241,18 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
   module type TRAVERSABLE_F =
-    (A: BsAbstract.Interface.APPLICATIVE) =>
+    (A: APPLICATIVE) =>
 
-      BsAbstract.Interface.TRAVERSABLE with
+      TRAVERSABLE with
         type t('a) = t('a) and type applicative_t('a) = A.t('a);
 
   module Traversable: TRAVERSABLE_F =
-    (A: BsAbstract.Interface.APPLICATIVE) => {
+    (A: APPLICATIVE) => {
       type nonrec t('a) = t('a);
       type applicative_t('a) = A.t('a);
 
-      include (
-                Functor: BsAbstract.Interface.FUNCTOR with type t('a) := t('a)
-              );
-      include (
-                Foldable:
-                  BsAbstract.Interface.FOLDABLE with type t('a) := t('a)
-              );
+      include (Functor: FUNCTOR with type t('a) := t('a));
+      include (Foldable: FOLDABLE with type t('a) := t('a));
 
       let (<$>) = A.map;
       let (<*>) = A.apply;
@@ -369,8 +365,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     Zipper(S.concat(l2, prefix |> toSequence |> S.reverse), f2, r2);
   };
 
-  module Semigroup_Any:
-    BsAbstract.Interface.SEMIGROUP_ANY with type t('a) = t('a) = {
+  module Semigroup_Any: SEMIGROUP_ANY with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let append = (l, r) => concat(~prefix=l, r);
   };
@@ -505,13 +500,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
    * Indicates if the focus is at the item, based on the given EQ module
    */
   let isAtItem =
-      (
-        type a,
-        eq: (module BsAbstract.Interface.EQ with type t = a),
-        item: a,
-        zipper: t(a),
-      )
-      : bool => {
+      (type a, eq: (module EQ with type t = a), item: a, zipper: t(a)): bool => {
     module Eq = (val eq);
     isAtItemBy(Eq.eq, item, zipper);
   };
@@ -757,7 +746,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   let findItemLeft =
       (
         type a,
-        eq: (module BsAbstract.Interface.EQ with type t = a),
+        eq: (module EQ with type t = a),
         ~checkFocus=true,
         item: a,
         zipper: t(a),
@@ -773,7 +762,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   let findItemRight =
       (
         type a,
-        eq: (module BsAbstract.Interface.EQ with type t = a),
+        eq: (module EQ with type t = a),
         ~checkFocus=true,
         item: a,
         zipper: t(a),
@@ -790,7 +779,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   let findItem =
       (
         type a,
-        eq: (module BsAbstract.Interface.EQ with type t = a),
+        eq: (module EQ with type t = a),
         ~checkFocus=true,
         item: a,
         zipper: t(a),
@@ -865,13 +854,12 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   /**
  * Converts a Zipper to a string using the given SHOW module
  */
-  let show =
-      (type a, showA: (module BsAbstract.Interface.SHOW with type t = a), xs) => {
+  let show = (type a, showA: (module SHOW with type t = a), xs) => {
     module ShowA = (val showA);
     showBy(ShowA.show, xs);
   };
 
-  module Show = (ShowA: BsAbstract.Interface.SHOW) => {
+  module Show = (ShowA: SHOW) => {
     type nonrec t = t(ShowA.t);
     let show = xs => showBy(ShowA.show, xs);
   };
@@ -888,13 +876,12 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
   /**
    * Compares two lists for length and pair-wise equality using the given EQ module
    */
-  let eq =
-      (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), xs, ys) => {
+  let eq = (type a, eqA: (module EQ with type t = a), xs, ys) => {
     module EqA = (val eqA);
     eqBy(EqA.eq, xs, ys);
   };
 
-  module Eq = (EqA: BsAbstract.Interface.EQ) => {
+  module Eq = (EqA: EQ) => {
     type nonrec t = t(EqA.t);
     let eq = (xs, ys) => eqBy(EqA.eq, xs, ys);
   };
