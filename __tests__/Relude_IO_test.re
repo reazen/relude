@@ -3416,7 +3416,7 @@ let eGet = e => EGet(e);
 let eParse = e => EParse(e);
 let ePrint = e => EPrint(e);
 
-module AppErrorType: BsAbstract.Interface.TYPE with type t = appError = {
+module AppErrorType: BsBastet.Interface.TYPE with type t = appError = {
   type t = appError;
 };
 module IOAppError = IO.WithError(AppErrorType);
@@ -3482,7 +3482,7 @@ describe("IO realish examples", () => {
 
 let testFilePath = FS.testFilePath("Eff_test.txt");
 
-module JsExnType: BsAbstract.Interface.TYPE with type t = Js.Exn.t = {
+module JsExnType: BsBastet.Interface.TYPE with type t = Js.Exn.t = {
   type t = Js.Exn.t;
 };
 module IOJsExn = IO.WithError(JsExnType);

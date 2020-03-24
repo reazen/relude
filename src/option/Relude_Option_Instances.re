@@ -1,3 +1,4 @@
+open BsBastet.Interface;
 open Relude_Function.Infix;
 
 let compose:
@@ -13,8 +14,7 @@ let compose:
     };
   };
 
-module Semigroupoid:
-  BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = option('a => 'b) = {
+module Semigroupoid: SEMIGROUPOID with type t('a, 'b) = option('a => 'b) = {
   type t('a, 'b) = option('a => 'b);
   let compose = compose;
 };
@@ -36,7 +36,7 @@ let map: 'a 'b. ('a => 'b, option('a)) => option('b) =
     | Some(x) => Some(f(x))
     | None => None;
 
-module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = option('a) = {
+module Functor: FUNCTOR with type t('a) = option('a) = {
   type nonrec t('a) = option('a);
   let map = map;
 };
@@ -56,9 +56,9 @@ include Relude_Extensions_Functor.FunctorExtensions(Functor);
   apply(None, None) == None;
   ```
 */
-let apply: 'a 'b. (option('a => 'b), option('a)) => option('b) = BsAbstract.Option.Apply.apply;
+let apply: 'a 'b. (option('a => 'b), option('a)) => option('b) = BsBastet.Option.Apply.apply;
 
-module Apply: BsAbstract.Interface.APPLY with type t('a) = option('a) = {
+module Apply: APPLY with type t('a) = option('a) = {
   include Functor;
   let apply = apply;
 };
@@ -74,8 +74,7 @@ include Relude_Extensions_Apply.ApplyExtensions(Apply);
 */
 let pure: 'a. 'a => option('a) = v => Some(v);
 
-module Applicative:
-  BsAbstract.Interface.APPLICATIVE with type t('a) = option('a) = {
+module Applicative: APPLICATIVE with type t('a) = option('a) = {
   include Apply;
   let pure = pure;
 };
@@ -105,7 +104,7 @@ let bind: 'a 'b. (option('a), 'a => option('b)) => option('b) =
     | None => None
     };
 
-module Monad: BsAbstract.Interface.MONAD with type t('a) = option('a) = {
+module Monad: MONAD with type t('a) = option('a) = {
   include Applicative;
   let flat_map = bind;
 };
@@ -162,7 +161,7 @@ include Relude_Extensions_Align.AlignExtensions(Align);
   ```
 */
 let foldLeft: 'a 'b. (('b, 'a) => 'b, 'b, option('a)) => 'b =
-  (fn, default) => BsAbstract.Option.Foldable.fold_left(fn, default);
+  (fn, default) => BsBastet.Option.Foldable.fold_left(fn, default);
 
 /**
   `foldRight(f, init, opt)` takes as its first argument a function `f`
@@ -182,9 +181,9 @@ let foldLeft: 'a 'b. (('b, 'a) => 'b, 'b, option('a)) => 'b =
   ```
 */
 let foldRight: 'a 'b. (('a, 'b) => 'b, 'b, option('a)) => 'b =
-  (fn, default) => BsAbstract.Option.Foldable.fold_right(fn, default);
+  (fn, default) => BsBastet.Option.Foldable.fold_right(fn, default);
 
-module Foldable = BsAbstract.Option.Foldable;
+module Foldable = BsBastet.Option.Foldable;
 include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
 /**
@@ -220,7 +219,7 @@ let altLazy: 'a. (option('a), unit => option('a)) => option('a) =
     | None => getFA2()
     };
 
-module Semigroup_Any: BsAbstract.Interface.SEMIGROUP_ANY = {
+module Semigroup_Any: SEMIGROUP_ANY = {
   type t('a) = option('a);
   let append = alt;
 };
@@ -230,16 +229,16 @@ module Monoid_Any = {
   let empty = None;
 };
 
-module Alt = BsAbstract.Option.Alt;
+module Alt = BsBastet.Option.Alt;
 include Relude_Extensions_Alt.AltExtensions(Alt);
 
-module Plus = BsAbstract.Option.Plus;
+module Plus = BsBastet.Option.Plus;
 include Relude_Extensions_Plus.PlusExtensions(Plus);
 
-module Alternative = BsAbstract.Option.Alternative;
+module Alternative = BsBastet.Option.Alternative;
 include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
 
-module Traversable: BsAbstract.Option.TRAVERSABLE_F = BsAbstract.Option.Traversable;
+module Traversable: BsBastet.Option.TRAVERSABLE_F = BsBastet.Option.Traversable;
 
 /**
   In `eqBy(f, opt1, opt2)`, `f` is a function that compares two arguments
@@ -295,29 +294,27 @@ let eqBy: (('a, 'a) => bool, option('a), option('a)) => bool =
 let eq =
     (
       type a,
-      showA: (module BsAbstract.Interface.EQ with type t = a),
+      showA: (module EQ with type t = a),
       fa1: option(a),
       fa2: option(a),
     )
     : bool => {
-  module Eq = BsAbstract.Option.Eq((val showA));
+  module Eq = BsBastet.Option.Eq((val showA));
   Eq.eq(fa1, fa2);
 };
 
-module Eq: BsAbstract.Option.EQ_F =
-  (EqA: BsAbstract.Interface.EQ) => {
+module Eq: BsBastet.Option.EQ_F =
+  (EqA: EQ) => {
     type t = option(EqA.t);
     let eq = (xs: t, ys: t) => eqBy(EqA.eq, xs, ys);
   };
 
 // TODO: the actual implementation should come from upstream... currently
 // waiting on a bs-abstract release
-module type ORD_F =
-  (O: BsAbstract.Interface.ORD) =>
-   BsAbstract.Interface.ORD with type t = option(O.t);
+module type ORD_F = (O: ORD) => ORD with type t = option(O.t);
 
 module Ord: ORD_F =
-  (O: BsAbstract.Interface.ORD) => {
+  (O: ORD) => {
     include Eq(O);
     let compare = (a, b) =>
       switch (a, b) {
@@ -341,27 +338,22 @@ let showBy: 'a. ('a => string, option('a)) => string =
  * Converts the option to a string using the given SHOW module
  */
 let show =
-    (
-      type a,
-      showA: (module BsAbstract.Interface.SHOW with type t = a),
-      fa: option(a),
-    )
-    : string => {
-  module Show = BsAbstract.Option.Show((val showA));
+    (type a, showA: (module SHOW with type t = a), fa: option(a)): string => {
+  module Show = BsBastet.Option.Show((val showA));
   Show.show(fa);
 };
 
-module Show = BsAbstract.Option.Show;
+module Show = BsBastet.Option.Show;
 
-module WithSemigroup = (S: BsAbstract.Interface.SEMIGROUP) => {
-  module Semigroup = BsAbstract.Option.Semigroup(S);
+module WithSemigroup = (S: SEMIGROUP) => {
+  module Semigroup = BsBastet.Option.Semigroup(S);
   include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 
-  module Monoid = BsAbstract.Option.Monoid(S);
+  module Monoid = BsBastet.Option.Monoid(S);
   include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
 };
 
-module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
-  module Traversable = BsAbstract.Option.Traversable(A);
+module WithApplicative = (A: APPLICATIVE) => {
+  module Traversable = BsBastet.Option.Traversable(A);
   include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
 };

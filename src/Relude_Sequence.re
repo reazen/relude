@@ -21,7 +21,7 @@ module List: Relude_Interface.SEQUENCE with type t('a) = list('a) = {
   let eqBy = Relude_List_Instances.eqBy;
   let showBy = Relude_List_Instances.showBy;
   let mkString =
-    Relude_List_Instances.intercalate((module BsAbstract.String.Monoid));
+    Relude_List_Instances.intercalate((module BsBastet.String.Monoid));
   module Functor = Relude_List_Instances.Functor;
   module Apply = Relude_List_Instances.Apply;
   module Applicative = Relude_List_Instances.Applicative;
@@ -55,7 +55,7 @@ module Array: Relude_Interface.SEQUENCE with type t('a) = array('a) = {
   let eqBy = Relude_Array_Instances.eqBy;
   let showBy = Relude_Array_Instances.showBy;
   let mkString =
-    Relude_Array_Instances.intercalate((module BsAbstract.String.Monoid));
+    Relude_Array_Instances.intercalate((module BsBastet.String.Monoid));
   module Functor = Relude_Array_Instances.Functor;
   module Apply = Relude_Array_Instances.Apply;
   module Applicative = Relude_Array_Instances.Applicative;

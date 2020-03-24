@@ -5,7 +5,7 @@
  * Functions that deal with comparing values don't belong here - these go in Relude_Ord/OrdExtensions.
  * This module is just for working with values of type `ordering`.
  */
-type t = BsAbstract.Interface.ordering;
+type t = BsBastet.Interface.ordering;
 
 /**
  * Converts an int to a type-safe ordering value
@@ -52,7 +52,7 @@ let eq: (t, t) => bool =
     | (`greater_than, _) => false
     };
 
-module Eq: BsAbstract.Interface.EQ with type t = t = {
+module Eq: BsBastet.Interface.EQ with type t = t = {
   type nonrec t = t;
   let eq = eq;
 };
@@ -75,7 +75,7 @@ let compare: (t, t) => t =
     | (`greater_than, `greater_than) => `equal_to
     };
 
-module Ord: BsAbstract.Interface.ORD with type t = t = {
+module Ord: BsBastet.Interface.ORD with type t = t = {
   include Eq;
   let compare = compare;
 };
@@ -85,7 +85,7 @@ let top = `greater_than;
 
 let bottom = `less_than;
 
-module Bounded: BsAbstract.Interface.BOUNDED with type t = t = {
+module Bounded: BsBastet.Interface.BOUNDED with type t = t = {
   include Ord;
   let top = top;
   let bottom = bottom;

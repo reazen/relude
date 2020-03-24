@@ -1,7 +1,7 @@
 /**
  * Extensions for any MONOID_ANY
  */
-module MonoidAnyExtensions = (M: BsAbstract.Interface.MONOID_ANY) => {
+module MonoidAnyExtensions = (M: BsBastet.Interface.MONOID_ANY) => {
   /**
    * Returns the monoidal value if the given condition is true, otherwise empty.
    */

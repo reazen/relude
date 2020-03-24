@@ -1,27 +1,29 @@
+open BsBastet.Interface;
+
 /**
-`WriterLog` contains a basic typeclass that has a log type `t` and a Monoid for `t`
-for use as a log.  Not all writer typeclass instances require a monoid,
-but I'm going to normalize on it here for simplicity, and to avoid even more
-module functor noise.  This also contains base implementation for List and Array,
-which just need to be provided the entry type in order to be used.
-*/
+ * `WriterLog` contains a basic typeclass that has a log type `t` and a Monoid
+ * for `t` for use as a log.  Not all writer typeclass instances require a
+ * monoid, but I'm going to normalize on it here for simplicity, and to avoid
+ * even more module functor noise.  This also contains base implementation for
+ * List and Array, which just need to be provided the entry type in order to be
+ * used.
+ */
 module WriterLog = {
   module type LOG = {
     type t;
-    module Monoid: BsAbstract.Interface.MONOID with type t = t;
+    module Monoid: MONOID with type t = t;
   };
 
   /**
   Writer log that is backed by a List of entries of type Entry.t
   */
   module List = {
-    module type LIST_LOG =
-      (Entry: BsAbstract.Interface.TYPE) => LOG with type t = list(Entry.t);
+    module type LIST_LOG = (Entry: TYPE) => LOG with type t = list(Entry.t);
 
     module WithEntry: LIST_LOG =
-      (Entry: BsAbstract.Interface.TYPE) => {
+      (Entry: TYPE) => {
         type t = list(Entry.t);
-        module Monoid: BsAbstract.Interface.MONOID with type t = list(Entry.t) = {
+        module Monoid: MONOID with type t = list(Entry.t) = {
           type t = list(Entry.t);
           let empty = [];
           let append = Relude_List.concat;
@@ -34,13 +36,12 @@ module WriterLog = {
   */
   module Array = {
     module type ARRAY_LOG =
-      (Entry: BsAbstract.Interface.TYPE) => LOG with type t = array(Entry.t);
+      (Entry: TYPE) => LOG with type t = array(Entry.t);
 
     module WithEntry: ARRAY_LOG =
-      (Entry: BsAbstract.Interface.TYPE) => {
+      (Entry: TYPE) => {
         type t = array(Entry.t);
-        module Monoid:
-          BsAbstract.Interface.MONOID with type t = array(Entry.t) = {
+        module Monoid: MONOID with type t = array(Entry.t) = {
           type t = array(Entry.t);
           let empty = [||];
           let append = Relude_Array.concat;
@@ -52,7 +53,7 @@ module WriterLog = {
 /**
 Creates a Writer monad with the given inner monad
 */
-module WithMonad = (Monad: BsAbstract.Interface.MONAD) => {
+module WithMonad = (Monad: MONAD) => {
   type t('a, 'w) =
     // 'a on the left for consistency with Result/etc.
     | WriterT(Monad.t(('a, 'w)));
@@ -186,30 +187,28 @@ module WithMonad = (Monad: BsAbstract.Interface.MONAD) => {
     let pass = pass;
     let censor = censor;
 
-    module Functor:
-      BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Log.t) = {
+    module Functor: FUNCTOR with type t('a) = t('a, Log.t) = {
       type nonrec t('a) = t('a, Log.t);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a, Log.t) = {
+    module Apply: APPLY with type t('a) = t('a, Log.t) = {
       include Functor;
       let apply = (ff, fa) => applyWithAppendLog(Log.Monoid.append, ff, fa);
     };
     let apply = Apply.apply;
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-    module Applicative:
-      BsAbstract.Interface.APPLICATIVE with type t('a) = t('a, Log.t) = {
+    module Applicative: APPLICATIVE with type t('a) = t('a, Log.t) = {
       include Apply;
       let pure = a => pureWithEmptyLog(Log.Monoid.empty, a);
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a, Log.t) = {
+    module Monad: MONAD with type t('a) = t('a, Log.t) = {
       include Applicative;
       let flat_map = (fa, f) => bindWithAppendLog(Log.Monoid.append, fa, f);
     };
@@ -227,8 +226,7 @@ module WithMonad = (Monad: BsAbstract.Interface.MONAD) => {
 /**
 Convenience constructor for when you know what Monad and Log type you want to use
 */
-module WithMonadAndLog =
-       (Monad: BsAbstract.Interface.MONAD, Log: WriterLog.LOG) => {
+module WithMonadAndLog = (Monad: MONAD, Log: WriterLog.LOG) => {
   module WithMonad = WithMonad(Monad);
   include WithMonad.WithLog(Log);
 };

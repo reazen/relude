@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 type t('key, 'value, 'id) = Belt.Map.t('key, 'value, 'id);
 
 /**
@@ -20,8 +22,10 @@ let set: ('key, 'value, t('key, 'value, 'id)) => t('key, 'value, 'id) =
 /**
  * Contruct a new map from the provided key and value.
  */
-let singleton: (Belt.Id.comparable('key, 'id), 'key, 'value) => t('key, 'value, 'id) =
-  (comparable, key, value) => Belt.Map.make(~id=comparable) |> Belt.Map.set(_, key, value);
+let singleton:
+  (Belt.Id.comparable('key, 'id), 'key, 'value) => t('key, 'value, 'id) =
+  (comparable, key, value) =>
+    Belt.Map.make(~id=comparable) |> Belt.Map.set(_, key, value);
 
 /**
  * Determine whether a map is empty.
@@ -31,7 +35,8 @@ let isEmpty: t('key, 'value, 'id) => bool = Belt.Map.isEmpty;
 /**
  * Determine whether a map contains a given key.
  */
-let contains: ('key, t('key, 'value, 'id)) => bool = key => Belt.Map.has(_, key);
+let contains: ('key, t('key, 'value, 'id)) => bool =
+  key => Belt.Map.has(_, key);
 
 /**
  * Compare the ordering of two maps, given a comparator function capable of
@@ -39,7 +44,9 @@ let contains: ('key, t('key, 'value, 'id)) => bool = key => Belt.Map.has(_, key)
  * to return an int representing the comparison, and `compareInt` intself will
  * return an int.
  */
-let compareInt: (('value, 'value) => int, t('key, 'value, 'id), t('key, 'value, 'id)) => int =
+let compareInt:
+  (('value, 'value) => int, t('key, 'value, 'id), t('key, 'value, 'id)) =>
+  int =
   (comparator, a, b) => Belt.Map.cmp(a, b, comparator);
 
 /**
@@ -50,11 +57,11 @@ let compareInt: (('value, 'value) => int, t('key, 'value, 'id), t('key, 'value, 
  */
 let compareBy:
   (
-    ('value, 'value) => BsAbstract.Interface.ordering,
+    ('value, 'value) => ordering,
     t('key, 'value, 'id),
     t('key, 'value, 'id)
   ) =>
-  BsAbstract.Interface.ordering =
+  ordering =
   (comparator, a, b) =>
     compareInt((a, b) => Relude_Ordering.toInt(comparator(a, b)), a, b)
     |> Relude_Ordering.fromInt;
@@ -64,14 +71,17 @@ let compareBy:
  * determine whether two maps are equal by checking whether they have equal
  * keys, and equal values at each key.
  */
-let eqBy: (('value, 'value) => bool, t('key, 'value, 'id), t('key, 'value, 'id)) => bool =
+let eqBy:
+  (('value, 'value) => bool, t('key, 'value, 'id), t('key, 'value, 'id)) =>
+  bool =
   (comparator, a, b) => Belt.Map.eq(a, b, comparator);
 
 /**
  * Find (optionally) the first key/value pair in a map matching the provided
  * predicate function.
  */
-let find: (('key, 'value) => bool, t('key, 'value, 'id)) => option(('key, 'value)) =
+let find:
+  (('key, 'value) => bool, t('key, 'value, 'id)) => option(('key, 'value)) =
   by => Belt.Map.findFirstBy(_, by);
 
 /**
@@ -85,7 +95,8 @@ let forEach: (('key, 'value) => unit, t('key, 'value, 'id)) => unit =
 /**
  * Accumulate a map of key/value pairs into a single value.
  */
-let foldLeft: (('acc, 'key, 'value) => 'acc, 'acc, t('key, 'value, 'id)) => 'acc =
+let foldLeft:
+  (('acc, 'key, 'value) => 'acc, 'acc, t('key, 'value, 'id)) => 'acc =
   (fn, acc) => Belt.Map.reduce(_, acc, fn);
 
 /**
@@ -101,7 +112,8 @@ let all: (('key, 'value) => bool, t('key, 'value, 'id)) => bool =
  * whether at least one pair in the map satisfies the predicate. This will
  * always return `false` for empty maps.
  */
-let any: (('key, 'value) => bool, t('key, 'value, 'id)) => bool = cond => Belt.Map.some(_, cond);
+let any: (('key, 'value) => bool, t('key, 'value, 'id)) => bool =
+  cond => Belt.Map.some(_, cond);
 
 /**
  * The count of keys in the map.
@@ -118,7 +130,9 @@ let toArray: t('key, 'value, 'id) => array(('key, 'value)) = Belt.Map.toArray;
 /**
  * Convert an associated array (an array of (key, value) tuples) into a map.
  */
-let fromArray: (Belt.Id.comparable('key, 'id), array(('key, 'value))) => t('key, 'value, 'id) =
+let fromArray:
+  (Belt.Id.comparable('key, 'id), array(('key, 'value))) =>
+  t('key, 'value, 'id) =
   (comparable, arr) => Belt.Map.fromArray(~id=comparable, arr);
 
 /**
@@ -127,9 +141,13 @@ let fromArray: (Belt.Id.comparable('key, 'id), array(('key, 'value))) => t('key,
  * identified (and that identifier can be ordered).
  */
 let fromValueArray:
-  (Belt.Id.comparable('key, 'id), 'value => 'key, array('value)) => t('key, 'value, 'id) =
+  (Belt.Id.comparable('key, 'id), 'value => 'key, array('value)) =>
+  t('key, 'value, 'id) =
   (comparable, toKey) =>
-    Relude_Array_Instances.foldLeft((map, v) => set(toKey(v), v, map), make(comparable));
+    Relude_Array_Instances.foldLeft(
+      (map, v) => set(toKey(v), v, map),
+      make(comparable),
+    );
 
 /**
  * Convert a map to an associated list (a list of key/value tuples). Note that
@@ -141,8 +159,11 @@ let toList: t('key, 'value, 'id) => list(('key, 'value)) = Belt.Map.toList;
 /**
  * Convert an associated list (a list of (key, value) tuples) into a map.
  */
-let fromList: (Belt.Id.comparable('key, 'id), list(('key, 'value))) => t('key, 'value, 'id) =
-  (comparable, lst) => Belt.Map.fromArray(lst |> Belt.List.toArray, ~id=comparable);
+let fromList:
+  (Belt.Id.comparable('key, 'id), list(('key, 'value))) =>
+  t('key, 'value, 'id) =
+  (comparable, lst) =>
+    Belt.Map.fromArray(lst |> Belt.List.toArray, ~id=comparable);
 
 /**
  * Convert a list of values into a map, using the provided function from
@@ -150,9 +171,13 @@ let fromList: (Belt.Id.comparable('key, 'id), list(('key, 'value))) => t('key, '
  * identified (and that identifier can be ordered).
  */
 let fromValueList:
-  (Belt.Id.comparable('key, 'id), 'value => 'key, list('value)) => t('key, 'value, 'id) =
+  (Belt.Id.comparable('key, 'id), 'value => 'key, list('value)) =>
+  t('key, 'value, 'id) =
   (comparable, toKey) =>
-    Relude_List_Instances.foldLeft((map, v) => set(toKey(v), v, map), make(comparable));
+    Relude_List_Instances.foldLeft(
+      (map, v) => set(toKey(v), v, map),
+      make(comparable),
+    );
 
 /**
  * Return a sorted array containing each key in the map.
@@ -162,7 +187,8 @@ let keyArray: t('key, 'value, 'id) => array('key) = Belt.Map.keysToArray;
 /**
  * Return a sorted list containing each key in the map
  */
-let keys: t('key, 'value, 'id) => list('key) = map => keyArray(map) |> Belt.List.fromArray;
+let keys: t('key, 'value, 'id) => list('key) =
+  map => keyArray(map) |> Belt.List.fromArray;
 
 /**
  * Return an array of each value (sorted by key) in the map.
@@ -198,7 +224,8 @@ let max: t('key, 'value, 'id) => option(('key, 'value)) = Belt.Map.maximum;
 /**
  * Attempt to find a value in a map, given a key.
  */
-let get: ('key, t('key, 'value, 'id)) => option('value) = key => Belt.Map.get(_, key);
+let get: ('key, t('key, 'value, 'id)) => option('value) =
+  key => Belt.Map.get(_, key);
 
 /**
  * Attempt to find a value in a map, given a key. Use the provided fallback
@@ -228,7 +255,8 @@ let removeMany: (array('key), t('key, 'value, 'id)) => t('key, 'value, 'id) =
  * `None`, which will perform a `remove`.
  */
 let update:
-  ('key, option('value) => option('value), t('key, 'value, 'id)) => t('key, 'value, 'id) =
+  ('key, option('value) => option('value), t('key, 'value, 'id)) =>
+  t('key, 'value, 'id) =
   (key, updateFn) => Belt.Map.update(_, key, updateFn);
 
 /**
@@ -256,13 +284,15 @@ let merge:
  * TODO: it's not clear from the Belt docs what happens in the case of key
  * conflicts.
  */
-let mergeMany: (array(('key, 'value)), t('key, 'value, 'id)) => t('key, 'value, 'id) =
+let mergeMany:
+  (array(('key, 'value)), t('key, 'value, 'id)) => t('key, 'value, 'id) =
   arr => Belt.Map.mergeMany(_, arr);
 
 /**
  * Remove each key/value pair that doesn't pass the given predicate function.
  */
-let filter: (('key, 'value) => bool, t('key, 'value, 'id)) => t('key, 'value, 'id) =
+let filter:
+  (('key, 'value) => bool, t('key, 'value, 'id)) => t('key, 'value, 'id) =
   fn => Belt.Map.keep(_, fn);
 
 let partition:
@@ -273,26 +303,34 @@ let partition:
 /**
  * Transform each value in the map to a new value using the provided function.
  */
-let map: ('v1 => 'v2, t('key, 'v1, 'id)) => t('key, 'v2, 'id) = fn => Belt.Map.map(_, fn);
+let map: ('v1 => 'v2, t('key, 'v1, 'id)) => t('key, 'v2, 'id) =
+  fn => Belt.Map.map(_, fn);
 
 let mapWithKey: (('key, 'v1) => 'v2, t('key, 'v1, 'id)) => t('key, 'v2, 'id) =
   fn => Belt.Map.mapWithKey(_, fn);
 
 let groupListBy:
-  (Belt.Id.comparable('key, 'id), 'value => 'key, list('value)) => t('key, list('value), 'id) =
+  (Belt.Id.comparable('key, 'id), 'value => 'key, list('value)) =>
+  t('key, list('value), 'id) =
   (comparable, groupBy) => {
     open Relude_Function.Infix;
-    let addItemToGroup = x => getOrElse(x |> groupBy, []) >> (xs => [x, ...xs]);
-    let addItemToMap = (dict, x) => dict |> set(x |> groupBy, addItemToGroup(x, dict));
-    Belt.List.reduce(_, make(comparable), addItemToMap) >> map(Belt.List.reverse);
+    let addItemToGroup = x =>
+      getOrElse(x |> groupBy, []) >> (xs => [x, ...xs]);
+    let addItemToMap = (dict, x) =>
+      dict |> set(x |> groupBy, addItemToGroup(x, dict));
+    Belt.List.reduce(_, make(comparable), addItemToMap)
+    >> map(Belt.List.reverse);
   };
 
 let groupArrayBy:
-  (Belt.Id.comparable('key, 'id), 'value => 'key, array('value)) => t('key, array('value), 'id) =
+  (Belt.Id.comparable('key, 'id), 'value => 'key, array('value)) =>
+  t('key, array('value), 'id) =
   (comparable, groupBy) => {
     open Relude_Function.Infix;
-    let addItemToGroup = x => getOrElse(x |> groupBy, [||]) >> Belt.Array.concat(_, [|x|]);
-    let addItemToMap = (dict, x) => dict |> set(x |> groupBy, addItemToGroup(x, dict));
+    let addItemToGroup = x =>
+      getOrElse(x |> groupBy, [||]) >> Belt.Array.concat(_, [|x|]);
+    let addItemToMap = (dict, x) =>
+      dict |> set(x |> groupBy, addItemToGroup(x, dict));
     Belt.Array.reduce(_, make(comparable), addItemToMap);
   };
 
@@ -311,8 +349,7 @@ module type MAP = {
   let contains: (key, t('value)) => bool;
   let compareInt: (('value, 'value) => int, t('value), t('value)) => int;
   let compareBy:
-    (('value, 'value) => BsAbstract.Interface.ordering, t('value), t('value)) =>
-    BsAbstract.Interface.ordering;
+    (('value, 'value) => ordering, t('value), t('value)) => ordering;
 
   let eqBy: (('value, 'value) => bool, t('value), t('value)) => bool;
   let find: ((key, 'value) => bool, t('value)) => option((key, 'value));
@@ -339,21 +376,26 @@ module type MAP = {
   let getOrElse: (key, 'value, t('value)) => 'value;
   let remove: (key, t('value)) => t('value);
   let removeMany: (array(key), t('value)) => t('value);
-  let update: (key, option('value) => option('value), t('value)) => t('value);
+  let update:
+    (key, option('value) => option('value), t('value)) => t('value);
   let merge:
-    ((key, option('value), option('value)) => option('value), t('value), t('value)) =>
+    (
+      (key, option('value), option('value)) => option('value),
+      t('value),
+      t('value)
+    ) =>
     t('value);
   let mergeMany: (array((key, 'value)), t('value)) => t('value);
   let filter: ((key, 'value) => bool, t('value)) => t('value);
-  let partition: ((key, 'value) => bool, t('value)) => (t('value), t('value));
+  let partition:
+    ((key, 'value) => bool, t('value)) => (t('value), t('value));
   let map: ('v1 => 'v2, t('v1)) => t('v2);
   let mapWithKey: ((key, 'v1) => 'v2, t('v1)) => t('v2);
   let groupListBy: ('a => key, list('a)) => t(list('a));
   let groupArrayBy: ('a => key, array('a)) => t(array('a));
 };
 
-module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
-
+module WithOrd = (M: ORD) : (MAP with type key = M.t) => {
   type key = M.t;
 
   module Comparable =
@@ -365,12 +407,14 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   type nonrec t('value) = t(key, 'value, Comparable.identity);
 
   let make: unit => t('value) = () => make((module Comparable));
-  let singleton: (key, 'value) => t('value) = (key, value) => make() |> set(key, value);
+  let singleton: (key, 'value) => t('value) =
+    (key, value) => make() |> set(key, value);
   let fromArray: array((key, 'value)) => t('value) =
     arr => fromArray((module Comparable), arr);
   let fromValueArray: ('value => key, array('value)) => t('value) =
     (toKey, arr) => fromValueArray((module Comparable), toKey, arr);
-  let fromList: list((key, 'value)) => t('value) = lst => fromList((module Comparable), lst);
+  let fromList: list((key, 'value)) => t('value) =
+    lst => fromList((module Comparable), lst);
   let fromValueList: ('value => key, list('value)) => t('value) =
     (toKey, lst) => fromValueList((module Comparable), toKey, lst);
   let groupListBy: ('value => key, list('value)) => t(list('value)) =
@@ -382,8 +426,7 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   let contains: (key, t('value)) => bool = contains;
   let compareInt: (('value, 'value) => int, t('value), t('value)) => int = compareInt;
   let compareBy:
-    (('value, 'value) => BsAbstract.Interface.ordering, t('value), t('value)) =>
-    BsAbstract.Interface.ordering = compareBy;
+    (('value, 'value) => ordering, t('value), t('value)) => ordering = compareBy;
   let eqBy: (('value, 'value) => bool, t('value), t('value)) => bool = eqBy;
   let find: ((key, 'value) => bool, t('value)) => option((key, 'value)) = find;
   let forEach: ((key, 'value) => unit, t('value)) => unit = forEach;
@@ -405,20 +448,25 @@ module WithOrd = (M: BsAbstract.Interface.ORD) : (MAP with type key = M.t) => {
   let getOrElse: (key, 'value, t('value)) => 'value = getOrElse;
   let remove: (key, t('value)) => t('value) = remove;
   let removeMany: (array(key), t('value)) => t('value) = removeMany;
-  let update: (key, option('value) => option('value), t('value)) => t('value) = update;
+  let update:
+    (key, option('value) => option('value), t('value)) => t('value) = update;
   let merge:
-    ((key, option('value), option('value)) => option('value), t('value), t('value)) =>
+    (
+      (key, option('value), option('value)) => option('value),
+      t('value),
+      t('value)
+    ) =>
     t('value) = merge;
   let mergeMany: (array((key, 'value)), t('value)) => t('value) = mergeMany;
   let filter: ((key, 'value) => bool, t('value)) => t('value) = filter;
-  let partition: ((key, 'value) => bool, t('value)) => (t('value), t('value)) = partition;
+  let partition:
+    ((key, 'value) => bool, t('value)) => (t('value), t('value)) = partition;
   let map: ('v1 => 'v2, t('v1)) => t('v2) = map;
   let mapWithKey: ((key, 'v1) => 'v2, t('v1)) => t('v2) = mapWithKey;
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
-
 };

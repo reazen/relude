@@ -1,8 +1,8 @@
 /**
  * Extensions for any APPLICATIVE
  */
-module ApplicativeExtensions = (A: BsAbstract.Interface.APPLICATIVE) => {
-  module BsApplicativeExtensions = BsAbstract.Functions.Applicative(A);
+module ApplicativeExtensions = (A: BsBastet.Interface.APPLICATIVE) => {
+  module BsApplicativeExtensions = BsBastet.Functions.Applicative(A);
 
   /**
    * Lifts a pure function `'a => 'b` into an applicative context `A.t('a) => A.t('b)`

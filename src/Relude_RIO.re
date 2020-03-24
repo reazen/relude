@@ -1,6 +1,7 @@
+open BsBastet.Interface;
 open Relude_Function.Infix;
 
-module WithError = (ERR: BsAbstract.Interface.TYPE) => {
+module WithError = (ERR: TYPE) => {
   module IOE = Relude_IO.WithError(ERR);
   module M = IOE.MonadError;
   type t('r, 'a) =
@@ -66,7 +67,7 @@ module WithError = (ERR: BsAbstract.Interface.TYPE) => {
    * Locks in the reader environment type, so that we can implement
    * the single-type-parameter typeclasses.
    */
-  module WithEnv = (R: BsAbstract.Interface.TYPE) => {
+  module WithEnv = (R: TYPE) => {
     type nonrec t('a) = t(R.t, 'a);
 
     let make = make;
@@ -78,29 +79,28 @@ module WithError = (ERR: BsAbstract.Interface.TYPE) => {
     let local = local;
     let semiflatMap = semiflatMap;
 
-    module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+    module Apply: APPLY with type t('a) = t('a) = {
       include Functor;
       let apply = apply;
     };
     let apply = Apply.apply;
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-    module Applicative:
-      BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+    module Applicative: APPLICATIVE with type t('a) = t('a) = {
       include Apply;
       let pure = pure;
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+    module Monad: MONAD with type t('a) = t('a) = {
       include Applicative;
       let flat_map = bind;
     };
@@ -119,8 +119,7 @@ module WithError = (ERR: BsAbstract.Interface.TYPE) => {
  * Creates a RIO Monad with the given error and environment.
  * e.g. WithErrorAndEnv(ERR, ENV) = Rio(ENV.t => IO.t('a, ERR.t))
  */
-module WithErrorAndEnv =
-       (ERR: BsAbstract.Interface.TYPE, ENV: BsAbstract.Interface.TYPE) => {
+module WithErrorAndEnv = (ERR: TYPE, ENV: TYPE) => {
   module WithMonad = WithError(ERR);
   include WithMonad.WithEnv(ENV);
 };

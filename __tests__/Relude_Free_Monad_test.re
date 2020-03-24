@@ -19,11 +19,11 @@ module StorageF = {
     };
 
   module WithKeyAndValue =
-         (K: BsAbstract.Interface.TYPE, V: BsAbstract.Interface.TYPE) => {
+         (K: BsBastet.Interface.TYPE, V: BsBastet.Interface.TYPE) => {
     type nonrec t('a) = t(K.t, V.t, 'a);
 
     // With the key/value types locked-in, we can define our functor
-    module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };

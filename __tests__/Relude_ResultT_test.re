@@ -9,7 +9,7 @@ type error = {message: string};
 
 module Error = {
   type t = error;
-  module Type: BsAbstract.Interface.TYPE with type t = t = {
+  module Type: BsBastet.Interface.TYPE with type t = t = {
     type nonrec t = t;
   };
 };

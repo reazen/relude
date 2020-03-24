@@ -1,8 +1,8 @@
 /**
  * Extensions for any FUNCTOR
  */
-module FunctorExtensions = (F: BsAbstract.Interface.FUNCTOR) => {
-  module BsFunctorExtensions = BsAbstract.Functions.Functor(F);
+module FunctorExtensions = (F: BsBastet.Interface.FUNCTOR) => {
+  module BsFunctorExtensions = BsBastet.Functions.Functor(F);
 
   /**
    * Flipped version of the map function which has the functor on the left, and the function on the right.
@@ -34,7 +34,7 @@ module FunctorExtensions = (F: BsAbstract.Interface.FUNCTOR) => {
 /**
  * Infix operator extensions for any FUNCTOR
  */
-module FunctorInfix = (F: BsAbstract.Interface.FUNCTOR) => {
+module FunctorInfix = (F: BsBastet.Interface.FUNCTOR) => {
   module FunctorExtensions = FunctorExtensions(F);
 
   /**

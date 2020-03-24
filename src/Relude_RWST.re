@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 module RWSResult = {
   type t('a, 's, 'w) =
     | RWSResult('a, 's, 'w);
@@ -6,7 +8,7 @@ module RWSResult = {
 /**
  * Creates a RWST (Reader/Writer/State) Monad with the given Monad module.
  */
-module WithMonad = (M: BsAbstract.Interface.MONAD) => {
+module WithMonad = (M: MONAD) => {
   open RWSResult;
 
   type t('a, 'r, 's, 'w) =
@@ -114,44 +116,35 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
       );
 
   module WithEnvAndStateAndLog =
-         (
-           R: BsAbstract.Interface.TYPE,
-           S: BsAbstract.Interface.TYPE,
-           Log: Relude_WriterT.WriterLog.LOG,
-         ) => {
+         (R: TYPE, S: TYPE, Log: Relude_WriterT.WriterLog.LOG) => {
     let runRWST = runRWST;
     let evalRWST = evalRWST;
     let execRWST = execRWST;
     let mapRWST = mapRWST;
     let withRWST = withRWST;
 
-    module Functor:
-      BsAbstract.Interface.FUNCTOR with type t('a) = t('a, R.t, S.t, Log.t) = {
+    module Functor: FUNCTOR with type t('a) = t('a, R.t, S.t, Log.t) = {
       type nonrec t('a) = t('a, R.t, S.t, Log.t);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Apply:
-      BsAbstract.Interface.APPLY with type t('a) = t('a, R.t, S.t, Log.t) = {
+    module Apply: APPLY with type t('a) = t('a, R.t, S.t, Log.t) = {
       include Functor;
       let apply = (ff, fa) => applyWithAppendLog(Log.Monoid.append, ff, fa);
     };
     let apply = Apply.apply;
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-    module Applicative:
-      BsAbstract.Interface.APPLICATIVE with
-        type t('a) = t('a, R.t, S.t, Log.t) = {
+    module Applicative: APPLICATIVE with type t('a) = t('a, R.t, S.t, Log.t) = {
       include Apply;
       let pure = a => pureWithEmptyLog(Log.Monoid.empty, a);
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad:
-      BsAbstract.Interface.MONAD with type t('a) = t('a, R.t, S.t, Log.t) = {
+    module Monad: MONAD with type t('a) = t('a, R.t, S.t, Log.t) = {
       include Applicative;
       let flat_map = (f, ma) => bindWithAppendLog(Log.Monoid.append, f, ma);
     };

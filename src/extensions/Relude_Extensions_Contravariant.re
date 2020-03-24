@@ -1,3 +1,3 @@
-module ContravariantExtensions = (C: BsAbstract.Interface.CONTRAVARIANT) => {};
+module ContravariantExtensions = (C: BsBastet.Interface.CONTRAVARIANT) => {};
 
-module ContravariantInfix = (C: BsAbstract.Interface.CONTRAVARIANT) => {};
+module ContravariantInfix = (C: BsBastet.Interface.CONTRAVARIANT) => {};

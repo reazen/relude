@@ -7,7 +7,7 @@ open Relude_Function.Infix;
 /**
  * Creates a ReaderT Monad with the given Monad module
  */
-module WithMonad = (M: BsAbstract.Interface.MONAD) => {
+module WithMonad = (M: BsBastet.Interface.MONAD) => {
   type t('r, 'a) =
     | ReaderT('r => M.t('a));
 
@@ -50,23 +50,17 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
               rToMB(r);
             },
           ),
-      )
+      );
 
   let semiflatMap: 'r 'a 'b. ('a => M.t('b), t('r, 'a)) => t('r, 'b) =
     (aToMA, ReaderT(rToMA)) =>
-      ReaderT(
-        r =>
-          M.flat_map(
-            rToMA(r),
-            a => aToMA(a),
-          ),
-      );
+      ReaderT(r => M.flat_map(rToMA(r), a => aToMA(a)));
 
   /**
    * Locks in the reader environment type, so that we can implement
    * the single-type-parameter typeclasses.
    */
-  module WithEnv = (R: BsAbstract.Interface.TYPE) => {
+  module WithEnv = (R: BsBastet.Interface.TYPE) => {
     type nonrec t('a) = t(R.t, 'a);
 
     let make = make;
@@ -78,14 +72,14 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let local = local;
     let semiflatMap = semiflatMap;
 
-    module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };
     let map = Functor.map;
     include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-    module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+    module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
       include Functor;
       let apply = apply;
     };
@@ -93,14 +87,14 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
     module Applicative:
-      BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+      BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
       include Apply;
       let pure = pure;
     };
     let pure = Applicative.pure;
     include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+    module Monad: BsBastet.Interface.MONAD with type t('a) = t('a) = {
       include Applicative;
       let flat_map = bind;
     };
@@ -116,7 +110,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
 };
 
 module WithMonadAndEnv =
-       (M: BsAbstract.Interface.MONAD, E: BsAbstract.Interface.TYPE) => {
+       (M: BsBastet.Interface.MONAD, E: BsBastet.Interface.TYPE) => {
   module WithMonad = WithMonad(M);
   include WithMonad.WithEnv(E);
 };

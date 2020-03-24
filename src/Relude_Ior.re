@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * Ior is similar to result, but it has the ability to collect "non-fatal
  * warning" information during applicative validation.
@@ -377,38 +379,29 @@ let mergeWith: 'a 'b 'c. ('a => 'c, 'b => 'c, ('c, 'c) => 'c, t('a, 'b)) => 'c =
  * Creates a module that locks in the That TYPE and SEMIGROUP_ANY modules, so
  * that we can implement the typeclass instances for the single-type-parameter typeclasses.
  */
-module WithThats =
-       (
-         Thats: BsAbstract.Interface.SEMIGROUP_ANY,
-         That: BsAbstract.Interface.TYPE,
-       ) => {
-  module Functor:
-    BsAbstract.Interface.FUNCTOR with type t('a) = t('a, Thats.t(That.t)) = {
+module WithThats = (Thats: SEMIGROUP_ANY, That: TYPE) => {
+  module Functor: FUNCTOR with type t('a) = t('a, Thats.t(That.t)) = {
     type nonrec t('a) = t('a, Thats.t(That.t));
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Apply:
-    BsAbstract.Interface.APPLY with type t('a) = t('a, Thats.t(That.t)) = {
+  module Apply: APPLY with type t('a) = t('a, Thats.t(That.t)) = {
     include Functor;
     let apply = (ff, fa) => applyWithAppendThats(Thats.append, ff, fa);
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with
-      type t('a) = t('a, Thats.t(That.t)) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a, Thats.t(That.t)) = {
     include Apply;
     let pure = pure;
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad:
-    BsAbstract.Interface.MONAD with type t('a) = t('a, Thats.t(That.t)) = {
+  module Monad: MONAD with type t('a) = t('a, Thats.t(That.t)) = {
     include Applicative;
     let flat_map = bind;
   };

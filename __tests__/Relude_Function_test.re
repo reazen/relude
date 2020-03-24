@@ -4,7 +4,7 @@ open Expect;
 module Function = Relude_Function;
 module StringArgument = {
   type t = string;
-  module Type: BsAbstract.Interface.TYPE with type t = t = {
+  module Type: BsBastet.Interface.TYPE with type t = t = {
     type nonrec t = t;
   };
 };

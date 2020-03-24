@@ -1,3 +1,5 @@
+open BsBastet.Interface;
+
 /**
  * Similar to result, but has an Applicative instance that collects the errors
  * using a semigroup, rather than fail-fast semantics.
@@ -429,29 +431,24 @@ let map5:
       fe,
     );
 
-module WithErrors =
-       (
-         Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-         Error: BsAbstract.Interface.TYPE,
-       ) => {
+module WithErrors = (Errors: SEMIGROUP_ANY, Error: TYPE) => {
   type nonrec t('a) = t('a, Errors.t(Error.t));
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = (ff, fa) => applyWithAppendErrors(Errors.append, ff, fa);
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -466,7 +463,7 @@ module WithErrors =
   };
   include Relude_Extensions_Semialign.SemialignExtensions(Semialign);
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+  module Monad: MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };

@@ -400,15 +400,15 @@ module Infix = {
   let (>>) = flipCompose;
 };
 
-module WithArgument = (R: BsAbstract.Interface.TYPE) => {
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = R.t => 'a = {
+module WithArgument = (R: BsBastet.Interface.TYPE) => {
+  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = R.t => 'a = {
     type t('a) = R.t => 'a;
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = R.t => 'a = {
+  module Apply: BsBastet.Interface.APPLY with type t('a) = R.t => 'a = {
     include Functor;
     let apply = apply;
   };
@@ -416,14 +416,14 @@ module WithArgument = (R: BsAbstract.Interface.TYPE) => {
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
   module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = R.t => 'a = {
+    BsBastet.Interface.APPLICATIVE with type t('a) = R.t => 'a = {
     include Apply;
     let pure = pure;
   };
   let pure = Applicative.pure;
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = R.t => 'a = {
+  module Monad: BsBastet.Interface.MONAD with type t('a) = R.t => 'a = {
     include Applicative;
     let flat_map = bind;
   };

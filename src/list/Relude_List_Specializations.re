@@ -1,7 +1,9 @@
+open BsBastet.Interface;
+
 /**
  * List extensions for when you have an EQ instance.
  */
-module ListEqExtensions = (E: BsAbstract.Interface.EQ) => {
+module ListEqExtensions = (E: EQ) => {
   include Relude_List_Instances.FoldableEqExtensions(E);
   /**
    * Gets the distinct items of the list, based on the given EQ module
@@ -29,7 +31,7 @@ module ListEqExtensions = (E: BsAbstract.Interface.EQ) => {
 /**
  * List extensions for when you have an ORD instance.
  */
-module ListOrdExtensions = (O: BsAbstract.Interface.ORD) => {
+module ListOrdExtensions = (O: ORD) => {
   include ListEqExtensions(O);
   include Relude_List_Instances.FoldableOrdExtensions(O);
   /**
@@ -41,7 +43,7 @@ module ListOrdExtensions = (O: BsAbstract.Interface.ORD) => {
 /**
  * List extensions for when you have an MONOID instance.
  */
-module ListMonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
+module ListMonoidExtensions = (M: MONOID) => {
   include Relude_List_Instances.FoldableMonoidExtensions(M);
 };
 
@@ -196,17 +198,13 @@ module IO = {
  * List extensions for `Validation.t('a, 'e)`
  */
 module Validation = {
-  module Traversable =
-         (
-           Errors: BsAbstract.Interface.SEMIGROUP_ANY,
-           Error: BsAbstract.Interface.TYPE,
-         ) => {
+  module Traversable = (Errors: SEMIGROUP_ANY, Error: TYPE) => {
     module ValidationE = Relude_Validation.WithErrors(Errors, Error);
     module ValidationEApplicative = ValidationE.Applicative;
-    include BsAbstract.List.Traversable(ValidationEApplicative);
+    include BsBastet.List.Traversable(ValidationEApplicative);
   };
 
-  module TraversableWithErrorsAsList = (Error: BsAbstract.Interface.TYPE) =>
+  module TraversableWithErrorsAsList = (Error: TYPE) =>
     Traversable(Relude_List_Instances.SemigroupAny, Error);
 
   module TraversableWithErrorsAsListOfStrings =
@@ -214,8 +212,7 @@ module Validation = {
       type t = string;
     });
 
-  module TraversableWithErrorsAsNonEmptyList =
-         (Error: BsAbstract.Interface.TYPE) =>
+  module TraversableWithErrorsAsNonEmptyList = (Error: TYPE) =>
     Traversable(Relude_NonEmpty.List.SemigroupAny, Error);
 
   /**

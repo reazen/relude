@@ -1,42 +1,43 @@
+open BsBastet.Interface;
 open Relude_Function.Infix;
 
 type t('a, 'e) = result('a, 'e) = | Ok('a) | Error('e);
 
 /**
- `ok()` is a synonym for `pure()`.
-*/
+ * `ok()` is a synonym for `pure()`.
+ */
 let ok: 'a 'e. 'a => t('a, 'e) = a => Ok(a);
 
 /**
-  `error(x)` wraps its argument in `Error()`.
-
-  ### Example
-  ```re
-  error("Not even") == Error("Not even");
-  ```
-*/
+ * `error(x)` wraps its argument in `Error()`.
+ *
+ * ### Example
+ * ```re
+ * error("Not even") == Error("Not even");
+ * ```
+ */
 let error: 'a 'e. 'e => t('a, 'e) = e => Error(e);
 
 /**
-  `unit is a shortcut for `Ok(())`.
-
-  ### Example
-  ```re
-  unit == Ok(());
-  ```
-*/
+ * `unit is a shortcut for `Ok(())`.
+ *
+ * ### Example
+ * ```re
+ * unit == Ok(());
+ * ```
+ */
 let unit: 'e. t(unit, 'e) = Ok();
 
 /**
-  `getOk(result)` returns `Some(v)` when `result` is
-  of the form `Ok(v)`; otherwise it returns `None`.
-
-  ### Example
-  ```re
-  getOk(Ok(1066)) == Some(1066);
-  getOk(Error("bad value")) == None;
-  ```
-*/
+ * `getOk(result)` returns `Some(v)` when `result` is
+ * of the form `Ok(v)`; otherwise it returns `None`.
+ *
+ * ### Example
+ * ```re
+ * getOk(Ok(1066)) == Some(1066);
+ * getOk(Error("bad value")) == None;
+ * ```
+ */
 let getOk: 'a 'e. t('a, 'e) => option('a) =
   fun
   | Ok(a) => Some(a)
@@ -48,51 +49,51 @@ let getOk: 'a 'e. t('a, 'e) => option('a) =
 let toOption: 'a 'e. t('a, 'e) => option('a) = getOk;
 
 /**
-  `getError(result)` returns `Some(e)` when `result` is
-  of the form `Error(e)`; otherwise it returns `None`.
+ * `getError(result)` returns `Some(e)` when `result` is
+ * of the form `Error(e)`; otherwise it returns `None`.
 
-  ### Example
-  ```re
-  getError(Ok(1066)) == None;
-  getError(Error("bad value")) == Some("bad value");
-  ```
-*/
+ * ### Example
+ * ```re
+ * getError(Ok(1066)) == None;
+ * getError(Error("bad value")) == Some("bad value");
+ * ```
+ */
 let getError: 'a 'e. t('a, 'e) => option('e) =
   fun
   | Ok(_) => None
   | Error(e) => Some(e);
 
 /**
-  `isOK(result)` returns `true` if `result` is of the form `Ok(val)`,
-  `false` otherwise.
-*/
+ * `isOK(result)` returns `true` if `result` is of the form `Ok(val)`,
+ * `false` otherwise.
+ */
 let isOk: 'a 'e. t('a, 'e) => bool =
   fun
   | Ok(_) => true
   | Error(_) => false;
 
 /**
-  `isError(result)` returns `true` if `result` is of the form `Error(err)`,
-  `false` otherwise.
-*/
+ * `isError(result)` returns `true` if `result` is of the form `Error(err)`,
+ * `false` otherwise.
+ */
 let isError: 'a 'e. t('a, 'e) => bool =
   fun
   | Ok(_) => false
   | Error(_) => true;
 
 /**
-  `fold(errFcn, okFcn, x)` returns `okFcn(v)` when
-  `x` is of the form `Ok(v)`; it returns `errFcn(e)` when
-  `x` is of the form `Error(e)`.
-
-  ### Example
-  ```re
-  let errToInt = (_) => {-1};
-  let cube = (x) => {x * x * x};
-  fold(errToInt, cube, Ok(12)) == 1728;
-  fold(errToInt, cube, Error("bad")) == -1;
-  ```
-*/
+ * `fold(errFcn, okFcn, x)` returns `okFcn(v)` when
+ * `x` is of the form `Ok(v)`; it returns `errFcn(e)` when
+ * `x` is of the form `Error(e)`.
+ *
+ * ### Example
+ * ```re
+ * let errToInt = (_) => {-1};
+ * let cube = (x) => {x * x * x};
+ * fold(errToInt, cube, Ok(12)) == 1728;
+ * fold(errToInt, cube, Error("bad")) == -1;
+ * ```
+ */
 let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
   (ec, ac, r) =>
     switch (r) {
@@ -101,24 +102,24 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
     };
 
 /**
-  `getOrElse(default, result)` returns `v` when
-  `result` is of the form `Ok(v)`; otherwise, it
-  returns `default`.
-
-  ### Example
-  ```re
-  let safeAvg = (total, n): Relude.Result.t(float, string) => {
-    if (n > 0) {
-      Ok(total /. float_of_int(n));
-    } else {
-      Error("Cannot calcuate average");
-    };
-  };
-
-  getOrElse(0.0, safeAvg(32.0, 4)) == 8.0;
-  getOrElse(0.0, safeAvg(0.0, 0)) == 0.0;
-  ```
-*/
+ * `getOrElse(default, result)` returns `v` when
+ * `result` is of the form `Ok(v)`; otherwise, it
+ * returns `default`.
+ *
+ * ### Example
+ * ```re
+ * let safeAvg = (total, n): Relude.Result.t(float, string) => {
+ *   if (n > 0) {
+ *     Ok(total /. float_of_int(n));
+ *   } else {
+ *     Error("Cannot calcuate average");
+ *   };
+ * };
+ *
+ * getOrElse(0.0, safeAvg(32.0, 4)) == 8.0;
+ * getOrElse(0.0, safeAvg(0.0, 0)) == 0.0;
+ * ```
+ */
 let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
   (default, fa) =>
     switch (fa) {
@@ -126,6 +127,12 @@ let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
     | Error(_) => default
     };
 
+/**
+ * `getOrElseLazy` returns the `Ok` value inside the `result` or calls the
+ * provided function to get a value if the result is `Error`. Unlike
+ * `getOrElse`, this only constructs the fallback value if it's needed, which
+ * may be useful if the fallback is expensive to construct.
+ */
 let getOrElseLazy: 'a 'e. (unit => 'a, t('a, 'e)) => 'a =
   (getDefault, fa) =>
     switch (fa) {
@@ -134,31 +141,31 @@ let getOrElseLazy: 'a 'e. (unit => 'a, t('a, 'e)) => 'a =
     };
 
 /**
-  `merge(x)` “unwraps” its argument. If `x` is of the form
-  `Ok(v)`, the result is `v`. If `x` is of the form Error(e),
-  the result is `e`.
-
-  ### Example
-  ```re
-  merge(Ok(2)) == 2;
-  merge(Error("message")) == "message";
-  ```
-*/
+ * `merge(x)` “unwraps” its argument. If `x` is of the form
+ * `Ok(v)`, the result is `v`. If `x` is of the form Error(e),
+ * the result is `e`.
+ *
+ * ### Example
+ * ```re
+ * merge(Ok(2)) == 2;
+ * merge(Error("message")) == "message";
+ * ```
+ */
 let merge: 'a. t('a, 'a) => 'a =
   fun
   | Ok(a) => a
   | Error(a) => a;
 
 /**
-  `flip(x)` flips the values between the `Ok` and `Error` variants.
-  `Ok(val)`.
-
-  ### Example
-  ```re
-  flip(Ok(3)) == Error(3);
-  flip(Error(-1)) == Ok(-1);
-  ```
-*/
+ * `flip(x)` flips the values between the `Ok` and `Error` constructors.
+ * `Ok(val)`.
+ *
+ * ### Example
+ * ```re
+ * flip(Ok(3)) == Error(3);
+ * flip(Error(-1)) == Ok(-1);
+ * ```
+ */
 let flip: 'a 'e. t('a, 'e) => t('e, 'a) =
   fun
   | Ok(a) => Error(a)
@@ -226,20 +233,20 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     };
 
 /**
-  `mapOk` is a synonym for `map`
-*/
+ * `mapOk` is a synonym for `map`
+ */
 let mapOk = map;
 
 /**
-  `mapError(f, x)` returns `Ok(v)` if `x` is of the form `OK(v)`.
-  It returns `Error(f(e))` if `x` is of the form `Error(e)`.
-
-  ### Example
-  ```re
-  mapError((x) => {"Err: " ++ x}, Ok(4)) == Ok(4);
-  mapError((x) => {"Err: " ++ x}, Error("bad")) == Error("Err: bad");
-  ```
-*/
+ * `mapError(f, x)` returns `Ok(v)` if `x` is of the form `OK(v)`.
+ * It returns `Error(f(e))` if `x` is of the form `Error(e)`.
+ *
+ * ### Example
+ * ```re
+ * mapError((x) => {"Err: " ++ x}, Ok(4)) == Ok(4);
+ * mapError((x) => {"Err: " ++ x}, Error("bad")) == Error("Err: bad");
+ * ```
+ */
 let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
   (f, ra) =>
     switch (ra) {
@@ -248,17 +255,17 @@ let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     };
 
 /**
-  `bimap(f, g, x)` returns `Ok(f(v))` if `x` is of the form `Ok(v)`;
-  it returns `Error(g(e))` if `x` is of the form `Error(e)`.
-
-  ### Example
-  ```re
-  let cube = (x) => {x * x * x};
-  let label = (x) => {"Err: " ++ x};
-  bimap(cube, label, Ok(12)) == Ok(1728);
-  bimap(cube, label, Error("bad")) == Error("Err: bad");
-  ```
-*/
+ * `bimap(f, g, x)` returns `Ok(f(v))` if `x` is of the form `Ok(v)`;
+ * it returns `Error(g(e))` if `x` is of the form `Error(e)`.
+ *
+ * ### Example
+ * ```re
+ * let cube = (x) => {x * x * x};
+ * let label = (x) => {"Err: " ++ x};
+ * bimap(cube, label, Ok(12)) == Ok(1728);
+ * bimap(cube, label, Error("bad")) == Error("Err: bad");
+ * ```
+ */
 let bimap: 'a 'b 'e1 'e2. ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2) =
   (mapA, mapE, result) =>
     switch (result) {
@@ -799,53 +806,51 @@ let toValidationNea:
   | Error(error) =>
     Relude_Validation.VError(Relude_NonEmpty.Array.pure(error));
 
-module Bifunctor:
-  BsAbstract.Interface.BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
+module Bifunctor: BIFUNCTOR with type t('a, 'e) = t('a, 'e) = {
   type nonrec t('a, 'e) = t('a, 'e);
   let bimap = bimap;
 };
 let bimap = Bifunctor.bimap;
 include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 
-module Bifoldable:
-  BsAbstract.Interface.BIFOLDABLE with type t('a, 'e) = t('a, 'e) = {
-  include BsAbstract.Result.Bifoldable;
+module Bifoldable: BIFOLDABLE with type t('a, 'e) = t('a, 'e) = {
+  include BsBastet.Result.Bifoldable;
 };
 let bifoldLeft = Bifoldable.bifold_left;
 let bifoldRight = Bifoldable.bifold_right;
 include Relude_Extensions_Bifoldable.BifoldableExtensions(Bifoldable);
 
 /**
-Because Result is a bi-functor, we need to capture the error type in order
-to implement many of the single-type-parameter typeclasses.  Doing it like this
-allows us to unlock a bunch of stuff at once using a single module functor.
+ * Because Result is a bi-functor, we need to capture the error type in order
+ * to implement many of the single-type-parameter typeclasses. Doing it like
+ * this allows us to unlock a bunch of stuff at once using a single module
+ * functor.
  */
-module WithError = (E: BsAbstract.Interface.TYPE) => {
+module WithError = (E: TYPE) => {
   type nonrec t('a) = t('a, E.t);
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
   let map = Functor.map;
   include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
-  module Alt: BsAbstract.Interface.ALT with type t('a) = t('a) = {
+  module Alt: ALT with type t('a) = t('a) = {
     include Functor;
     let alt = alt;
   };
   let alt = Alt.alt;
   include Relude_Extensions_Alt.AltExtensions(Alt);
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
   let apply = Apply.apply;
   include Relude_Extensions_Apply.ApplyExtensions(Apply);
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -859,7 +864,7 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   };
   include Relude_Extensions_Semialign.SemialignExtensions(Semialign);
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+  module Monad: MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };
@@ -883,31 +888,29 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
   let catchError = MonadError.catchError;
   include Relude_Extensions_MonadError.MonadErrorExtensions(MonadError);
 
-  module Semigroupoid:
-    BsAbstract.Interface.SEMIGROUPOID with type t('a, 'b) = t('a => 'b) = {
+  module Semigroupoid: SEMIGROUPOID with type t('a, 'b) = t('a => 'b) = {
     type nonrec t('a, 'b) = t('a => 'b);
     let compose = compose;
   };
   let compose = compose;
   include Relude_Extensions_Semigroupoid.SemigroupoidExtensions(Semigroupoid);
 
-  module Foldable: BsAbstract.Interface.FOLDABLE with type t('a) = t('a) = {
-    include BsAbstract.Result.Foldable(E);
+  module Foldable: FOLDABLE with type t('a) = t('a) = {
+    include BsBastet.Result.Foldable(E);
   };
   let foldLeft = Foldable.fold_left;
   let foldRight = Foldable.fold_right;
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-  module WithApplicative = (A: BsAbstract.Interface.APPLICATIVE) => {
-    module Traversable: BsAbstract.Interface.TRAVERSABLE = {
-      include BsAbstract.Result.Traversable(E, A);
+  module WithApplicative = (A: APPLICATIVE) => {
+    module Traversable: TRAVERSABLE = {
+      include BsBastet.Result.Traversable(E, A);
     };
     let traverse = Traversable.traverse;
     let sequence = Traversable.sequence;
     include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
-
-    module Bitraversable: BsAbstract.Interface.BITRAVERSABLE = {
-      include BsAbstract.Result.Bitraversable(A);
+    module Bitraversable: BITRAVERSABLE = {
+      include BsBastet.Result.Bitraversable(A);
     };
     let bitraverse = Bitraversable.bitraverse;
     let bisequence = Bitraversable.bisequence;
@@ -916,11 +919,11 @@ module WithError = (E: BsAbstract.Interface.TYPE) => {
             );
   };
 
-  module Eq = BsAbstract.Result.Eq;
+  module Eq = BsBastet.Result.Eq;
 
-  module Ord = BsAbstract.Result.Ord;
+  module Ord = BsBastet.Result.Ord;
 
-  module Show = BsAbstract.Result.Show;
+  module Show = BsBastet.Result.Show;
 
   module Infix = {
     include Relude_Extensions_Functor.FunctorInfix(Functor);

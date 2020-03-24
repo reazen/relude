@@ -1,7 +1,7 @@
 /**
  * Creates an OptionT monad with the given outer Monad
  */
-module WithMonad = (M: BsAbstract.Interface.MONAD) => {
+module WithMonad = (M: BsBastet.Interface.MONAD) => {
   type t('a) =
     | OptionT(M.t(option('a)));
 
@@ -20,7 +20,8 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
   let fromOption: 'a. option('a) => t('a) =
     optionA => OptionT(M.pure(optionA));
 
-  let liftF: 'a. M.t('a) => t('a) = mA => OptionT(M.map(a => Some(a), mA));
+  let liftF: 'a. M.t('a) => t('a) =
+    mA => OptionT(M.map(a => Some(a), mA));
 
   let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
     (aToB, OptionT(mOptionA)) =>
@@ -28,9 +29,11 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
 
   let subflatMap: 'a 'b. ('a => option('b), t('a)) => t('b) =
     (aToB, OptionT(mOptionA)) =>
-      OptionT(M.map(optionA => Relude_Option.flatMap(aToB, optionA), mOptionA));
+      OptionT(
+        M.map(optionA => Relude_Option.flatMap(aToB, optionA), mOptionA),
+      );
 
-  module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
@@ -50,7 +53,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
       );
     };
 
-  module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+  module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
     include Functor;
     let apply = apply;
   };
@@ -58,8 +61,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
 
   let pure: 'a. 'a => t('a) = a => OptionT(M.pure(Some(a)));
 
-  module Applicative:
-    BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+  module Applicative: BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
     include Apply;
     let pure = pure;
   };
@@ -78,11 +80,11 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
         ),
       );
     };
-  
+
   let semiflatMap: 'a 'b. ('a => M.t('b), t('a)) => t('b) =
     (aToMB, optionTA) => bind(optionTA, a => liftF(aToMB(a)));
 
-  module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+  module Monad: BsBastet.Interface.MONAD with type t('a) = t('a) = {
     include Applicative;
     let flat_map = bind;
   };

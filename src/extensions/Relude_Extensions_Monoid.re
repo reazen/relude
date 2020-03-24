@@ -1,8 +1,8 @@
 /**
  * Extensions for any MONOID
  */
-module MonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
-  module BsMonoidExtensions = BsAbstract.Functions.Monoid(M);
+module MonoidExtensions = (M: BsBastet.Interface.MONOID) => {
+  module BsMonoidExtensions = BsBastet.Functions.Monoid(M);
 
   /**
    * Returns the monoidal value if the given condition is true, otherwise empty.

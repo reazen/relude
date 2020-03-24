@@ -1,7 +1,8 @@
-type ordering = BsAbstract.Interface.ordering;
+open BsBastet.Interface;
+
 type compare('a) = ('a, 'a) => ordering;
 
-module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
+module OrdExtensions = (O: ORD) => {
   let compareWithConversion: ('b => O.t) => compare('b) =
     bToA => Relude_Ord.by(bToA, O.compare);
 
@@ -10,7 +11,7 @@ module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
   /**
    * Creates a new Ord module which is the reverse of the given Ord
    */
-  module OrdReversed: BsAbstract.Interface.ORD with type t = O.t = {
+  module OrdReversed: ORD with type t = O.t = {
     type t = O.t;
     let eq = O.eq;
     let compare = compareReversed;
@@ -49,7 +50,7 @@ module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
   let between: (~min: O.t, ~max: O.t, O.t) => bool =
     (~min, ~max, v) => Relude_Ord.betweenBy(O.compare, ~min, ~max, v);
 
-  module OrdRingExtensions = (R: BsAbstract.Interface.RING with type t = O.t) => {
+  module OrdRingExtensions = (R: RING with type t = O.t) => {
     let abs: R.t => R.t = v => Relude_Ord.abs((module O), (module R), v);
 
     let signum: R.t => R.t =
@@ -91,7 +92,7 @@ module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
 
   module type ORD_BY_F =
     (A: Relude_Interface.FUNCTION_1 with type b = O.t) =>
-     BsAbstract.Interface.ORD with type t = A.a;
+     ORD with type t = A.a;
 
   /**
    * Creates an ORD for type b given this ORD of type a and an ARROW `b => a` to act as the contravariant
@@ -115,7 +116,7 @@ module OrdExtensions = (O: BsAbstract.Interface.ORD) => {
     };
 };
 
-module OrdInfix = (O: BsAbstract.Interface.ORD) => {
+module OrdInfix = (O: ORD) => {
   module OrdExtensions = OrdExtensions(O);
 
   // Note: if we want to change these, try for consistency with EQ operators

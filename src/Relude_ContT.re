@@ -1,7 +1,7 @@
 /**
  * Creates a ContT (continuation) Monad module with the given Monad module.
  */
-module WithMonad = (M: BsAbstract.Interface.MONAD) => {
+module WithMonad = (M: BsBastet.Interface.MONAD) => {
   /**
    * The type of a continuation.  `'a` is the intermediate result type, and `'r`' is the final result type.
    */
@@ -68,7 +68,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
           ),
       );
 
-  module WithResult = (R: BsAbstract.Interface.TYPE) => {
+  module WithResult = (R: BsBastet.Interface.TYPE) => {
     type nonrec t('a) = t(R.t, 'a); // = | ContT(('a => M.t(R.t)) => M.t(R.t));
 
     let make = make;
@@ -80,26 +80,26 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
     let pure = pure;
     let bind = bind;
 
-    module Functor: BsAbstract.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };
     include Relude_Extensions.Functor.FunctorExtensions(Functor);
 
-    module Apply: BsAbstract.Interface.APPLY with type t('a) = t('a) = {
+    module Apply: BsBastet.Interface.APPLY with type t('a) = t('a) = {
       include Functor;
       let apply = apply;
     };
     include Relude_Extensions.Apply.ApplyExtensions(Apply);
 
     module Applicative:
-      BsAbstract.Interface.APPLICATIVE with type t('a) = t('a) = {
+      BsBastet.Interface.APPLICATIVE with type t('a) = t('a) = {
       include Apply;
       let pure = pure;
     };
     include Relude_Extensions.Applicative.ApplicativeExtensions(Applicative);
 
-    module Monad: BsAbstract.Interface.MONAD with type t('a) = t('a) = {
+    module Monad: BsBastet.Interface.MONAD with type t('a) = t('a) = {
       include Applicative;
       let flat_map = bind;
     };
@@ -114,7 +114,7 @@ module WithMonad = (M: BsAbstract.Interface.MONAD) => {
 };
 
 module WithMonadAndResult =
-       (M: BsAbstract.Interface.MONAD, R: BsAbstract.Interface.TYPE) => {
+       (M: BsBastet.Interface.MONAD, R: BsBastet.Interface.TYPE) => {
   module WithMonad = WithMonad(M);
   include WithMonad.WithResult(R);
 };

@@ -1,8 +1,10 @@
+open BsBastet.Interface;
+
 type t = unit;
 
 let show: t => string = _ => "()";
 
-module Show: BsAbstract.Interface.SHOW with type t = t = {
+module Show: SHOW with type t = t = {
   type nonrec t = unit;
   let show = show;
 };
@@ -10,21 +12,21 @@ include Relude_Extensions_Show.ShowExtensions(Show);
 
 let eq: (t, t) => bool = ((), ()) => true;
 
-module Eq: BsAbstract.Interface.EQ with type t = t = {
+module Eq: EQ with type t = t = {
   type nonrec t = t;
   let eq = eq;
 };
 include Relude_Extensions_Eq.EqExtensions(Eq);
 
-let compare: (t, t) => BsAbstract.Interface.ordering = ((), ()) => `equal_to;
+let compare: (t, t) => ordering = ((), ()) => `equal_to;
 
-module Ord: BsAbstract.Interface.ORD with type t = t = {
+module Ord: ORD with type t = t = {
   include Eq;
   let compare = compare;
 };
 include Relude_Extensions_Ord.OrdExtensions(Ord);
 
-module Bounded: BsAbstract.Interface.BOUNDED with type t = unit = {
+module Bounded: BOUNDED with type t = unit = {
   include Ord;
   let top = ();
   let bottom = ();

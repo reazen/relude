@@ -10,7 +10,7 @@ module Error = {
   type t =
     | Error(string);
 
-  module Type: BsAbstract.Interface.TYPE with type t = t = {
+  module Type: BsBastet.Interface.TYPE with type t = t = {
     type nonrec t = t;
   };
 };
@@ -18,7 +18,7 @@ module Error = {
 module Unit = {
   type t = unit;
 
-  module Type: BsAbstract.Interface.TYPE with type t = t = {
+  module Type: BsBastet.Interface.TYPE with type t = t = {
     type nonrec t = t;
   };
 };

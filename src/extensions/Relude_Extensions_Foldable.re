@@ -1,4 +1,4 @@
-type ordering = BsAbstract.Interface.ordering;
+open BsBastet.Interface;
 
 // break circular dependency
 let optionAlt: (option('a), option('a)) => option('a) =
@@ -11,8 +11,8 @@ let optionAlt: (option('a), option('a)) => option('a) =
 /**
  * Extensions for any FOLDABLE
  */
-module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
-  module BsFoldableExtensions = BsAbstract.Functions.Foldable(F);
+module FoldableExtensions = (F: FOLDABLE) => {
+  module BsFoldableExtensions = BsBastet.Functions.Foldable(F);
 
   /**
    * Indicates if any item in the foldable satisfies the given predicate
@@ -35,8 +35,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Indicates if the foldable contains the given item, using the given EQ module
    */
-  let contains =
-      (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
+  let contains = (type a, eqA: (module EQ with type t = a), x, xs) => {
     module EqA = (val eqA);
     containsBy(EqA.eq, x, xs);
   };
@@ -58,8 +57,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
    * Finds the index of the given item in the foldable using the given EQ module.
    * If the item is not found, the result is None.
    */
-  let indexOf =
-      (type a, eqA: (module BsAbstract.Interface.EQ with type t = a), x, xs) => {
+  let indexOf = (type a, eqA: (module EQ with type t = a), x, xs) => {
     module EqA = (val eqA);
     indexOfBy(EqA.eq, x, xs);
   };
@@ -82,8 +80,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Finds the minimum item in the foldable, using the given ORD module.
    */
-  let min =
-      (type a, ordA: (module BsAbstract.Interface.ORD with type t = a), xs) => {
+  let min = (type a, ordA: (module ORD with type t = a), xs) => {
     module OrdA = (val ordA);
     minBy(OrdA.compare, xs);
   };
@@ -106,8 +103,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Finds the maximum item in the foldable, using the given ORD module.
    */
-  let max =
-      (type a, ordA: (module BsAbstract.Interface.ORD with type t = a), xs) => {
+  let max = (type a, ordA: (module ORD with type t = a), xs) => {
     module OrdA = (val ordA);
     maxBy(OrdA.compare, xs);
   };
@@ -120,7 +116,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
 
   /**
    * Gets the length of the foldable.
-   * 
+   *
    * Alias of size/count
    */
   let length: 'a. F.t('a) => int = xs => countBy(_ => true, xs);
@@ -189,7 +185,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Foldable extensions for when you have a Semigroup instance
    */
-  module FoldableSemigroupExtensions = (S: BsAbstract.Interface.SEMIGROUP) => {
+  module FoldableSemigroupExtensions = (S: SEMIGROUP) => {
     module BsFoldableSemigroupExtensions = BsFoldableExtensions.Semigroup(S);
 
     // Note: Bug in bs-abstract - the universal quantification of 'a here doesn't jive
@@ -202,7 +198,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Foldable extensions for when you have a Monoid instance
    */
-  module FoldableMonoidExtensions = (M: BsAbstract.Interface.MONOID) => {
+  module FoldableMonoidExtensions = (M: MONOID) => {
     module BsFoldableMonoidExtensions = BsFoldableExtensions.Monoid(M);
 
     /**
@@ -233,13 +229,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Maps a function over a foldable, and accumulates the results using the given Monoid module.
    */
-  let foldMap =
-      (
-        type a,
-        monoidA: (module BsAbstract.Interface.MONOID with type t = a),
-        f,
-        xs,
-      ) => {
+  let foldMap = (type a, monoidA: (module MONOID with type t = a), f, xs) => {
     module FoldableMonoidExtensions = FoldableMonoidExtensions((val monoidA));
     FoldableMonoidExtensions.foldMap(f, xs);
   };
@@ -248,11 +238,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
    * Folds a foldable of a monoidal type, accumulating the result using the given Monoid module.
    */
   let foldWithMonoid =
-      (
-        type a,
-        monoidA: (module BsAbstract.Interface.MONOID with type t = a),
-        xs: F.t(a),
-      ) => {
+      (type a, monoidA: (module MONOID with type t = a), xs: F.t(a)) => {
     module FoldableMonoidExtensions = FoldableMonoidExtensions((val monoidA));
     FoldableMonoidExtensions.foldWithMonoid(xs);
   };
@@ -262,12 +248,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
    * separator.
    */
   let intercalate =
-      (
-        type a,
-        monoidA: (module BsAbstract.Interface.MONOID with type t = a),
-        sep,
-        xs,
-      ) => {
+      (type a, monoidA: (module MONOID with type t = a), sep, xs) => {
     module FoldableMonoidExtensions = FoldableMonoidExtensions((val monoidA));
     FoldableMonoidExtensions.intercalate(sep, xs);
   };
@@ -275,7 +256,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Foldable extensions for when you additionally have an Applicative instance.
    */
-  module FoldableApplicativeExtensions = (A: BsAbstract.Interface.APPLICATIVE) => {
+  module FoldableApplicativeExtensions = (A: APPLICATIVE) => {
     module BsFoldableApplicativeExtensions =
       BsFoldableExtensions.Applicative(A);
 
@@ -293,7 +274,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Foldable extensions for when you additionally have a MONAD instance.
    */
-  module FoldableMonadExtensions = (M: BsAbstract.Interface.MONAD) => {
+  module FoldableMonadExtensions = (M: MONAD) => {
     module BsFoldableMonadExtensions = BsFoldableExtensions.Monad(M);
 
     /**
@@ -308,7 +289,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Foldable extensions for when you additionally have an EQ instance.
    */
-  module FoldableEqExtensions = (E: BsAbstract.Interface.EQ) => {
+  module FoldableEqExtensions = (E: EQ) => {
     /**
      * Indicates of the foldable contains the given item using the given EQ module.
      */
@@ -323,7 +304,7 @@ module FoldableExtensions = (F: BsAbstract.Interface.FOLDABLE) => {
   /**
    * Foldable extensions for when you additionally have an ORD instance.
    */
-  module FoldableOrdExtensions = (O: BsAbstract.Interface.ORD) => {
+  module FoldableOrdExtensions = (O: ORD) => {
     /**
      * Gets the minimum value of the foldable, using the given ORD module.
      */
