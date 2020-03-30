@@ -188,9 +188,7 @@ module FoldableExtensions = (F: FOLDABLE) => {
   module FoldableSemigroupExtensions = (S: SEMIGROUP) => {
     module BsFoldableSemigroupExtensions = BsFoldableExtensions.Semigroup(S);
 
-    // Note: Bug in bs-abstract - the universal quantification of 'a here doesn't jive
-    //let surroundMap: 'a. (~delimiter: S.t, 'a => S.t, F.t('a)) => S.t = BsFoldableSemigroupExtensions.surround_map;
-    let surroundMap: (~delimiter: S.t, 'a => S.t, F.t('a)) => S.t = BsFoldableSemigroupExtensions.surround_map;
+    let surroundMap: 'a. (~delimiter: S.t, 'a => S.t, F.t('a)) => S.t = BsFoldableSemigroupExtensions.surround_map;
 
     let surround: (~delimiter: S.t, F.t(S.t)) => S.t = BsFoldableSemigroupExtensions.surround;
   };

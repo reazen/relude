@@ -309,21 +309,7 @@ module Eq: BsBastet.Option.EQ_F =
     let eq = (xs: t, ys: t) => eqBy(EqA.eq, xs, ys);
   };
 
-// TODO: the actual implementation should come from upstream... currently
-// waiting on a bs-abstract release
-module type ORD_F = (O: ORD) => ORD with type t = option(O.t);
-
-module Ord: ORD_F =
-  (O: ORD) => {
-    include Eq(O);
-    let compare = (a, b) =>
-      switch (a, b) {
-      | (Some(a'), Some(b')) => O.compare(a', b')
-      | (None, None) => `equal_to
-      | (None, Some(_)) => `less_than
-      | (Some(_), None) => `greater_than
-      };
-  };
+module Ord: BsBastet.Option.ORD_F = BsBastet.Option.Ord;
 
 /**
  * Converts the option to a string using the given show function
