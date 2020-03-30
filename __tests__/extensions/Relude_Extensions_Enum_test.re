@@ -2,7 +2,7 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-module MonthBase = {
+module Month = {
   type t =
     | Jan
     | Feb
@@ -62,41 +62,51 @@ module MonthBase = {
       let f = toInt1Based;
     });
 
-  let eq = Eq.eq;
-  let compare = Ord.compare;
+  module Bounded: BsBastet.Interface.BOUNDED with type t = t = {
+    include Ord;
+    let bottom = Jan;
+    let top = Dec;
+  };
 
-  let bottom = Jan;
-  let top = Dec;
-  let pred: t => option(t) = month => fromInt1Based(toInt1Based(month) - 1);
-  let succ: t => option(t) = month => fromInt1Based(toInt1Based(month) + 1);
-  let cardinality = 12;
-  let toEnum = fromInt1Based;
+  module Enum: Relude.Interface.ENUM with type t = t = {
+    include Ord;
+    let pred: t => option(t) =
+      month => fromInt1Based(toInt1Based(month) - 1);
 
-  let fromEnum = toInt1Based;
+    let succ: t => option(t) =
+      month => fromInt1Based(toInt1Based(month) + 1);
+  };
 
-  let show: t => string =
-    fun
-    | Jan => "Jan"
-    | Feb => "Feb"
-    | Mar => "Mar"
-    | Apr => "Apr"
-    | May => "May"
-    | Jun => "Jun"
-    | Jul => "Jul"
-    | Aug => "Aug"
-    | Sep => "Sep"
-    | Oct => "Oct"
-    | Nov => "Nov"
-    | Dec => "Dec";
-};
+  module BoundedEnum: Relude.Interface.BOUNDED_ENUM with type t = t = {
+    include Bounded;
+    include (Enum: Relude.Interface.ENUM with type t := t);
+    let cardinality = 12;
+    let toEnum = fromInt1Based;
+    let fromEnum = toInt1Based;
+  };
 
-module Month = {
-  include MonthBase;
-  include Relude.Extensions.Eq.EqExtensions(MonthBase);
-  include Relude.Extensions.Bounded.BoundedExtensions(MonthBase);
-  include Relude.Extensions.Enum.EnumExtensions(MonthBase);
-  include Relude.Extensions.BoundedEnum.BoundedEnumExtensions(MonthBase);
-  include Relude.Extensions.Show.ShowExtensions(MonthBase);
+  module Show: BsBastet.Interface.SHOW with type t = t = {
+    type nonrec t = t;
+    let show: t => string =
+      fun
+      | Jan => "Jan"
+      | Feb => "Feb"
+      | Mar => "Mar"
+      | Apr => "Apr"
+      | May => "May"
+      | Jun => "Jun"
+      | Jul => "Jul"
+      | Aug => "Aug"
+      | Sep => "Sep"
+      | Oct => "Oct"
+      | Nov => "Nov"
+      | Dec => "Dec";
+  };
+  include Relude.Extensions.Eq.EqExtensions(Eq);
+  include Relude.Extensions.Bounded.BoundedExtensions(Bounded);
+  include Relude.Extensions.Enum.EnumExtensions(Enum);
+  include Relude.Extensions.BoundedEnum.BoundedEnumExtensions(BoundedEnum);
+  include Relude.Extensions.Show.ShowExtensions(Show);
 };
 
 open Month;

@@ -20,12 +20,17 @@ module Field = {
       name,
       validator: validator >> Result.map(f),
     };
+
+  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+    type nonrec t('a) = t('a);
+    let map = map;
+  };
 };
 
 // Form is our free-applicative type that we'll use to describe the fields that
 // we will support for form building.
 module Schema = {
-  include Free.Applicative.WithFunctor(Field);
+  include Free.Applicative.WithFunctor(Field.Functor);
 
   // A field is the metadata we capture in the freeap for describing a form
   let field: 'a. (string, Validator.t('a)) => t('a) =
@@ -82,7 +87,9 @@ module ValidationE = Validation.WithErrors(NonEmptyList.SemigroupAny, String);
 // The NT thing is pretty nasty, but I couldn't figure out a simpler way to do it.
 let validateUser =
     (first: string, last: string, age: string): ValidationE.t(User.t) => {
-  module NT = {
+  module NT:
+    Relude.Interface.NATURAL_TRANSFORMATION with
+      type f('a) = Field.t('a) and type g('a) = ValidationE.t('a) = {
     type f('a) = Field.t('a);
     type g('a) = ValidationE.t('a);
     let f = (field: f('a)) =>
