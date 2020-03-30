@@ -6,7 +6,7 @@ It might seem clunky at first to have to define or derive `Show` for all your ty
 
 ## Show typeclass (module type)
 
-Note: bs-abstract uses a convention of all-caps for the core typeclass module types.
+Note: bs-bastet uses a convention of all-caps for the core typeclass module types.
 
 ```reason
 module type SHOW = {

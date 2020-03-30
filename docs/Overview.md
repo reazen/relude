@@ -4,7 +4,7 @@
 
 `Relude` currently works with BuckleScript/ReasonML, so the main focus has been on JavaScript-based platforms, like the browser or Node.js.  We would like to one day support native OCaml/ReasonML native, but we are not there yet.
 
-The core typeclass interfaces used in `Relude` come from the library [bs-abstract](https://github.com/Risto-Stevcev/bs-abstract).
+The core typeclass interfaces used in `Relude` come from the library [bs-bastet](https://github.com/Risto-Stevcev/bs-bastet).
 
 ## Opinions
 
@@ -26,7 +26,7 @@ Also, building our own standard library allows us to build out a set of addition
 
 ## Typeclass modules (instances or implementations)
 
-`Relude` also uses many of the actual typeclass instances (or implementations) provided by `bs-abstract`, while also providing some of our own.
+`Relude` also uses many of the actual typeclass instances (or implementations) provided by `bs-bastet`, while also providing some of our own.
 
 ## Extensions and infix operators
 

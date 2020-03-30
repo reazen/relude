@@ -2,12 +2,7 @@
 
 ## Overview
 
-This guide will not attempt to fully explain what typeclasses and typeclass instances are, and how they fit into functional programming, but it will try to explain how typeclasses are implemented in [bs-abstract](https://github.com/Risto-Stevcev) and `Relude`.  Also, the descriptions here are meant to help readers gain intuition, and are not intended to be 100% rigorously correct.  There are plenty of other resources on these topics which can be sought out for further reading.
-
-## Typeclasss in Relude
-
-- [Alt](Alt.md)
-- [Alternative](Alt.md)
+This guide will not attempt to fully explain what typeclasses and typeclass instances are, and how they fit into functional programming, but it will try to explain how typeclasses are implemented in [bs-bastet](https://github.com/Risto-Stevcev/bs-bastet) and `Relude`.  Also, the descriptions here are meant to help readers gain intuition, and are not intended to be 100% rigorously correct.  There are plenty of other resources on these topics which can be sought out for further reading.
 
 ## What is a typeclass?
 
@@ -23,7 +18,7 @@ One big downsides of OCaml compared to Haskell/PureScript/Scala is the lack of i
 
 Also, the lack of modular implicits and the related lack of [ad-hoc polymorphism](https://en.wikipedia.org/wiki/Ad_hoc_polymorphism) are a few of the reasons why Reason/OCaml have to have different operators for operating on `int` and `float` values.  (They don't have to have different operators, but they do by default so they can both exist "in scope" at the same time.)  These same reasons are also why you can't use the conventional map `<$>`, bind/flatMap `>>=`, and other infix operators freely on different types in OCaml code without locally scoping the operators.
 
-One of Relude's design goals is to provide as many of the most commonly used typeclass instances for the types and combinations of types you might encounter in most applications.  However, we do not attempt to hide the underlying machinery of bs-abstract, so you are free to define your own typeclasses and typeclass instances, and use them interchangably with the rest of the Relude modules.
+One of Relude's design goals is to provide as many of the most commonly used typeclass instances for the types and combinations of types you might encounter in most applications.  However, we do not attempt to hide the underlying machinery of bs-bastet, so you are free to define your own typeclasses and typeclass instances, and use them interchangably with the rest of the Relude modules.
 
 ## Verifying typeclass laws
 
