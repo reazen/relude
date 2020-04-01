@@ -490,4 +490,5 @@ describe("Validation", () => {
         [Error.InvalidAge(200), Error.InvalidLanguage("French")],
       );
     expect(validation) |> toEqual(Validation.VError(expected));
+  });
 });
