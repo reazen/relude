@@ -5,13 +5,20 @@ module FunctorExtensions = (F: BsBastet.Interface.FUNCTOR) => {
   module BsFunctorExtensions = BsBastet.Functions.Functor(F);
 
   /**
-   * Flipped version of the map function which has the functor on the left, and the function on the right.
+   * Flipped version of the map function which has the functor on the left, and
+   * the function on the right.
    */
   let flipMap: 'a 'b. (F.t('a), 'a => 'b) => F.t('b) =
     (fa, f) => F.map(f, fa);
 
   /**
-   * Clears the value(s) of a functor by mapping a function that produces unit for each value in the functor.
+   * Special let binding for functors, allowing simpler, non-nested chaining.
+   */
+  let (let+) = flipMap;
+
+  /**
+   * Clears the value(s) of a functor by mapping a function that produces unit
+   * for each value in the functor.
    */
   let void: 'a. F.t('a) => F.t(unit) = BsFunctorExtensions.void;
 

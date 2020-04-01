@@ -53,9 +53,21 @@ module ApplyExtensions = (A: BsBastet.Interface.APPLY) => {
    = BsApplyExtensions.lift5;
 
   /**
+   * Runs the applicative effects and combines the result in a tuple. Alias for
+   * `tuple2`.
+   */
+  let product: 'a 'b. (A.t('a), A.t('b)) => A.t(('a, 'b)) = BsApplyExtensions.apply_both;
+
+  /**
+   * Special let-like operator that allows easier non-nested chaining of
+   * applicatives.
+   */
+  let (and+) = product;
+
+  /**
    * Runs the applicative effects and combines the results into a tuple.
    */
-  let tuple2: 'a 'b. (A.t('a), A.t('b)) => A.t(('a, 'b)) = BsApplyExtensions.apply_both;
+  let tuple2: 'a 'b. (A.t('a), A.t('b)) => A.t(('a, 'b)) = product;
 
   /**
    * Runs the applicative effects and combines the results into a tuple.

@@ -3506,6 +3506,22 @@ describe("IO FS examples", () => {
        )
   );
 
+  testAsync("read and writeFileSync, with letops", onDone => {
+    let fileIO = {
+      open IOJsExn;
+      let* _ = FS.IO.writeFileSync(testFilePath, "IO Eff test");
+      let* content = FS.IO.readFileSync(testFilePath);
+      pure(expect(content) |> toEqual("IO Eff test"));
+    };
+
+    fileIO
+    |> IO.unsafeRunAsync(
+         fun
+         | Ok(assertion) => onDone(assertion)
+         | Error(_jsExn) => onDone(fail("Failed")),
+       );
+  });
+
   testAsync("readFile", onDone =>
     FS.IO.writeFile(testFilePath, "IO Aff test")
     >>= (_ => FS.IO.readFile(testFilePath))

@@ -101,6 +101,16 @@ module Person = {
       ->ValidationE.apply(validateAge(age))
       ->ValidationE.apply(validateLanguage(language));
     };
+
+  // This version uses the new "let" syntax for applicatives
+  let makeWithValidation3: (string, int, string) => Validation.t(t, errors) =
+    (name, age, language) => {
+      open ValidationE;
+      let+ name = validateName(name)
+      and+ age = validateAge(age)
+      and+ language = validateLanguage(language);
+      makeWithNoValidation(name, age, language);
+    };
 };
 
 describe("Validation", () => {
@@ -449,4 +459,35 @@ describe("Validation", () => {
       );
     expect(validation) |> toEqual(Validation.VError(expected));
   });
+
+  test("makeWithValidation3 success", () => {
+    let validation = Person.makeWithValidation3("Andy", 55, "English");
+    let expected: Person.t = {name: "Andy", age: 55, language: "English"};
+    expect(validation) |> toEqual(Validation.VOk(expected));
+  });
+
+  test("makeWithValidation3 one error", () => {
+    let validation = Person.makeWithValidation3("Andy", 200, "English");
+    let expected: errors = NonEmptyList.pure(Error.InvalidAge(200));
+    expect(validation) |> toEqual(Validation.VError(expected));
+  });
+
+  test("makeWithValidation3 two errors", () => {
+    let validation = Person.makeWithValidation3("Andy", 200, "French");
+    let expected: errors =
+      NonEmptyList.make(
+        Error.InvalidAge(200),
+        [Error.InvalidLanguage("French")],
+      );
+    expect(validation) |> toEqual(Validation.VError(expected));
+  });
+
+  test("makeWithValidation3 all errors", () => {
+    let validation = Person.makeWithValidation3("", 200, "French");
+    let expected: errors =
+      NonEmptyList.make(
+        Error.InvalidName(""),
+        [Error.InvalidAge(200), Error.InvalidLanguage("French")],
+      );
+    expect(validation) |> toEqual(Validation.VError(expected));
 });

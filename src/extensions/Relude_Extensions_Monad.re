@@ -4,6 +4,8 @@
 module MonadExtensions = (M: BsBastet.Interface.MONAD) => {
   module BsMonadExtensions = BsBastet.Functions.Monad(M);
 
+  let ( let* ) = M.flat_map;
+
   /**
    * Flipped version of `bind` which has the function on the left and the monad on the right.
    * We're calling this `flatMap` because the signature closely resembles the signature of
