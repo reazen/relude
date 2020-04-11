@@ -109,6 +109,18 @@ module Foldable: FOLDABLE with type t('a) = list('a) = {
 };
 include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
+/**
+ * Create a list by recursively unfolding with a generator function and seed value
+ */
+let unfold = BsBastet.List.Unfoldable.unfold;
+
+module Unfoldable: UNFOLDABLE with type t('a) = list('a) = {
+  include BsBastet.List.Unfoldable;
+  let unfold = unfold;
+};
+include Relude_Extensions_Unfoldable.UnfoldableExtensions(Unfoldable);
+
+
 module Traversable: BsBastet.List.TRAVERSABLE_F = BsBastet.List.Traversable;
 
 /**

@@ -114,6 +114,16 @@ describe("List", () => {
     |> toEqual([5, 4, 3, 2, 1])
   );
 
+  test("unfold", () =>
+    expect(
+      List.unfold(
+        x => if (x>5) None else Some((x, x+1)),
+        0,
+      ),
+    )
+    |> toEqual([0, 1, 2, 3, 4, 5])
+  );
+
   test("scanLeft", () =>
     expect(
       List.scanLeft(
