@@ -213,10 +213,27 @@ let any: ('value => bool, t('value, 'id)) => bool =
 
 /**
  * Create a new set from another set containing only the values
- * which pass a given test (the predicate funciton).
+ * which pass a given test (the predicate function).
  */
 let filter: ('value => bool, t('value, 'id)) => t('value, 'id) =
   (predicate, set) => Belt.Set.keep(set, predicate);
+
+/**
+ * Alias of filter
+ */
+let keep: ('value => bool, t('value, 'id)) => t('value, 'id) = filter;
+
+/**
+ * Creates a new set from another set containing only the values
+ * which do *not* pass a given test (the predicate function)
+ */
+let filterNot: ('value => bool, t('value, 'id)) => t('value, 'id) =
+  (predicate, set) => Belt.Set.keep(set, x => !predicate(x));
+
+/**
+  * Alias of filterNot
+  */
+let reject: ('value => bool, t('value, 'id)) => t('value, 'id) = filterNot;
 
 /**
  * Immutably divide a set into a tuple of two sets, where the first
@@ -310,6 +327,9 @@ module type SET = {
   let all: (value => bool, t) => bool;
   let any: (value => bool, t) => bool;
   let filter: (value => bool, t) => t;
+  let keep: (value => bool, t) => t;
+  let filterNot: (value => bool, t) => t;
+  let reject: (value => bool, t) => t;
   let partition: (value => bool, t) => (t, t);
   let length: t => int;
   let toArray: t => array(value);
@@ -355,6 +375,9 @@ module WithOrd = (M: BsBastet.Interface.ORD) : (SET with type value = M.t) => {
   let all: (value => bool, t) => bool = all;
   let any: (value => bool, t) => bool = any;
   let filter: (value => bool, t) => t = filter;
+  let keep: (value => bool, t) => t = filter;
+  let filterNot: (value => bool, t) => t = filterNot;
+  let reject: (value => bool, t) => t = filterNot;
   let partition: (value => bool, t) => (t, t) = partition;
   let length: t => int = length;
   let toArray: t => array(value) = toArray;

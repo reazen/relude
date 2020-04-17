@@ -295,6 +295,24 @@ let filter:
   (('key, 'value) => bool, t('key, 'value, 'id)) => t('key, 'value, 'id) =
   fn => Belt.Map.keep(_, fn);
 
+/**
+ * Alias of filter
+ */
+let keep:
+  (('key, 'value) => bool, t('key, 'value, 'id)) => t('key, 'value, 'id) = filter;
+
+/**
+ * Remove each key/value pair that passes the given predicate function
+ */
+let filterNot:
+  (('key, 'value) => bool, t('key, 'value, 'id)) => t('key, 'value, 'id) =
+  fn => Belt.Map.keep(_, (key, value) => !fn(key, value));
+/**
+ * Alias of filterNot
+ */
+let reject:
+  (('key, 'value) => bool, t('key, 'value, 'id)) => t('key, 'value, 'id) = filterNot;
+
 let partition:
   (('key, 'value) => bool, t('key, 'value, 'id)) =>
   (t('key, 'value, 'id), t('key, 'value, 'id)) =
@@ -387,6 +405,9 @@ module type MAP = {
     t('value);
   let mergeMany: (array((key, 'value)), t('value)) => t('value);
   let filter: ((key, 'value) => bool, t('value)) => t('value);
+  let keep: ((key, 'value) => bool, t('value)) => t('value);
+  let filterNot: ((key, 'value) => bool, t('value)) => t('value);
+  let reject: ((key, 'value) => bool, t('value)) => t('value);
   let partition:
     ((key, 'value) => bool, t('value)) => (t('value), t('value));
   let map: ('v1 => 'v2, t('v1)) => t('v2);
@@ -459,6 +480,9 @@ module WithOrd = (M: ORD) : (MAP with type key = M.t) => {
     t('value) = merge;
   let mergeMany: (array((key, 'value)), t('value)) => t('value) = mergeMany;
   let filter: ((key, 'value) => bool, t('value)) => t('value) = filter;
+  let keep: ((key, 'value) => bool, t('value)) => t('value) = keep;
+  let filterNot: ((key, 'value) => bool, t('value)) => t('value) = filterNot;
+  let reject: ((key, 'value) => bool, t('value)) => t('value) = reject;
   let partition:
     ((key, 'value) => bool, t('value)) => (t('value), t('value)) = partition;
   let map: ('v1 => 'v2, t('v1)) => t('v2) = map;
