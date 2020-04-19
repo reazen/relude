@@ -22,6 +22,7 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "bisect_ppx",
     "bs-bastet"
   ],
   "bs-dev-dependencies": [
@@ -32,5 +33,8 @@
     "error": "+A"
   },
   "namespace": false,
-  "refmt": 3
+  "refmt": 3,
+  "ppx-flags": [
+    "bisect_ppx/ppx"
+  ]
 }
