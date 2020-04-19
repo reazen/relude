@@ -13,13 +13,13 @@
     "build": "bsb -make-world",
     "watch": "bsb -make-world -w",
     "test": "jest",
-    "coverage": "npm run cleanbisect && BISECT_ENABLE=yes npm run test",
+    "coverage": "npm run test",
     "docs": "docsify serve ./docs",
     "cleanbisect": "rm bisect*.coverage || true",
     "cleanbuild": "npm run clean && npm run build",
     "cleanwatch": "npm run clean && npm run watch",
     "cleantest": "npm run cleanbuild && npm run test",
-    "cleancoverage": "npm run cleanbuild && npm run coverage",
+    "cleancoverage": "npm run cleanbisect && BISECT_ENABLE=yes npm run cleanbuild && npm run coverage",
     "releasebuild": "npm run cleancoverage"
   },
   "keywords": [
