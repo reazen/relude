@@ -35,6 +35,6 @@
   "namespace": false,
   "refmt": 3,
   "ppx-flags": [
-    "bisect_ppx/ppx"
+    ["bisect_ppx/ppx", "--exclusions", "bisect.exclude"]
   ]
 }
