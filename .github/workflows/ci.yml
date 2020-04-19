@@ -35,7 +35,7 @@ jobs:
       run: npm run cleancoverage
 
     - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        path-to-lcov: ./docs/coverage/lcov.info
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+      run: npx bisect-ppx-report send-to Coveralls
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PULL_REQUEST_NUMBER: ${{ github.event.number }}
