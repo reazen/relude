@@ -5,6 +5,9 @@ module AsyncData = Relude.AsyncData;
 module Int = Relude.Int;
 module String = Relude.String;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 describe("AsyncData", () => {
   test("isEmpty init", () =>
     expect(AsyncData.init |> AsyncData.isEmpty) |> toEqual(true)

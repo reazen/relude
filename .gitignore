@@ -19,4 +19,5 @@ npm-debug.log
 **/testUtils/**/*.txt
 /docs/coverage
 # bisect ppx
-*.coverage 
+bisect*.coverage 
+_coverage

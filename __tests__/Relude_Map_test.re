@@ -2,6 +2,9 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 describe("StringMap", () => {
   let empty = StringMap.make();
   let foo1 = StringMap.set("foo", 1, empty);

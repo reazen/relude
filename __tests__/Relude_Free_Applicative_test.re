@@ -2,6 +2,9 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 module Validator = {
   type t('a) = string => result('a, string);
 };

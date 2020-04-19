@@ -2,6 +2,9 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 describe("NonEmpty.List", () => {
   test("make", () =>
     expect(NonEmpty.List.make(1, [2, 3]))

@@ -3,6 +3,9 @@ open Expect;
 open Relude.Globals;
 open BsBastet.Interface;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 module User = {
   type t = {
     id: string,

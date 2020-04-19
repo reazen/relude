@@ -1,6 +1,9 @@
 open Jest;
 open Expect;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 module Function = Relude_Function;
 module StringArgument = {
   type t = string;
