@@ -15,6 +15,7 @@
     "test": "jest",
     "coverage": "jest --coverage --coverage-reporters=lcov --coverage-reporters=text --coverage-directory ./docs/coverage",
     "docs": "docsify serve ./docs",
+    "cleanbisect": "BISECT_ENABLE=yes rm *.coverage || true && npm run cleantest",
     "cleanbuild": "npm run clean && npm run build",
     "cleanwatch": "npm run clean && npm run watch",
     "cleantest": "npm run cleanbuild && npm run test",
@@ -32,6 +33,7 @@
   "license": "MIT",
   "devDependencies": {
     "@glennsl/bs-jest": "^0.5.1",
+    "bisect_ppx": "^2.3.1",
     "bs-bastet": "^1.2.5",
     "bs-platform": "^7.2.2",
     "docsify-cli": "~4.4.0"
