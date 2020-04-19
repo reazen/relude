@@ -6,6 +6,9 @@ module AsyncResult = Relude.AsyncResult;
 module Option = Relude.Option;
 module Result = Relude.Result;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 module AsyncResultS =
   AsyncResult.WithError({
     type t = string;

@@ -1,6 +1,9 @@
 open Jest;
 open Expect;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 module S = Relude.Sequence;
 module LS = S.List;
 module AS = S.Array;

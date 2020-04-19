@@ -1,6 +1,9 @@
 open Jest;
 open Expect;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 type error = {message: string};
 
 module IO = Relude.IO;

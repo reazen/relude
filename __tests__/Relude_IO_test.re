@@ -2,6 +2,9 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 let throwJSError: unit => int = [%bs.raw
   {| function() { throw new Error("Error from JS"); } |}
 ];
@@ -1964,7 +1967,7 @@ describe("IO tries/exceptions", () => {
          | Error(e) =>
            onDone(
              expect(Js.Exn.message(e))
-             |> toEqual(Some("Unexpected error: MyExn,4,Crap the pants")),
+             |> toEqual(Some("Unexpected error: MyExn,8,Crap the pants")),
            )
          }
        );

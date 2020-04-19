@@ -1,6 +1,9 @@
 open Jest;
 open Expect;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 module HMap = Relude.HMap;
 
 // Test HMap with key info - a string identifier, and a function to convert the values to a string

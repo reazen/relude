@@ -4,6 +4,9 @@ open Expect;
 module Int = Relude.Int;
 module Option = Relude.Option;
 
+[@coverage exclude_file];
+afterAll(Bisect.Runtime.write_coverage_data);
+
 describe("Option", () => {
   test("some", () =>
     expect(Option.some("foo")) |> toEqual(Some("foo"))
