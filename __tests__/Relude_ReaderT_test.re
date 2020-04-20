@@ -17,8 +17,6 @@ module Reader =
     type t = env;
   });
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Reader", () => {
   test("make", () =>
     expect(Reader.make(r => r.intValue * 2) |> Reader.runReaderT(testEnv))

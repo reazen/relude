@@ -2,8 +2,6 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Tuple constructors", () => {
   test("make", () =>
     expect(Tuple.make("A", 0)) |> toEqual(("A", 0))

@@ -3,8 +3,6 @@ open Expect;
 
 module Identity = Relude_Identity;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Identity", () => {
   test("pure", () =>
     expect(Identity.pure(5)) |> toEqual(5)

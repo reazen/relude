@@ -4,8 +4,6 @@ open Expect;
 module Array = Relude.Array;
 module Int = Relude.Int;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Array", () => {
   test("length empty array", () =>
     expect(Array.length([||])) |> toEqual(0)

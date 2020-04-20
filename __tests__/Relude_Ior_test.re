@@ -12,8 +12,6 @@ module That = {
 
 module IorT = Ior.WithThats(NonEmptyList.SemigroupAny, That);
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Ior", () => {
   test("this", () =>
     expect(Ior.this(5)) |> toEqual(This(5))

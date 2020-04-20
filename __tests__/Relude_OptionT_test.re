@@ -15,8 +15,6 @@ module OptionIOE = OptionT.WithMonad(IOE.Monad);
 
 let ((<$>), (<#>), (>>=)) = OptionIOE.Infix.((<$>), (<#>), (>>=));
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("OptionT", () => {
   testAsync("make", onDone =>
     OptionIOE.make(IOE.pure(Some(2)))

@@ -29,8 +29,6 @@ module RIO = Relude_RIO.WithErrorAndEnv(
 
 let ((<$>), (<#>), (>>=)) = RIO.Infix.((<$>), (<#>), (>>=));
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Reader IO", () =>
   testAsync("test flow", onDone =>
     RIO.ask

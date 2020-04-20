@@ -24,8 +24,6 @@ module MyType = {
 
 open Json.DSL;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Json", () => {
   test("show", () =>
     [("a", JE.bool(true)), ("b", JE.bool(false))]

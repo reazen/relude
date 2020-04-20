@@ -26,8 +26,6 @@ module Stack = {
     );
 };
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("StateT", () => {
   test("pure", () => {
     let result = State.pure(2) |> State.runStateT([]);

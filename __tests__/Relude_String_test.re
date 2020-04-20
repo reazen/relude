@@ -3,8 +3,6 @@ open Expect;
 
 module Str = Relude_String;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("String", () => {
   test("length empty string", () =>
     expect(Str.length(Str.empty)) |> toEqual(0)

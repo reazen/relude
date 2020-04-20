@@ -8,8 +8,6 @@ type user = {
   age: int,
 };
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Ord", () => {
   test("by", () => {
     let userCompare = Ord.by(user => user.name, String.compare);

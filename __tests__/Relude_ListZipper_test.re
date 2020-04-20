@@ -13,8 +13,6 @@ module LZFoldMap = LZ.Foldable.Fold_Map(Relude.String.Monoid);
 module LZFoldMapAny = LZ.Foldable.Fold_Map_Any(Relude.List.MonoidAny);
 module LZTraversable = LZ.Traversable(Relude.Option.Applicative);
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("ListZipper", () => {
   test("make", () =>
     expect(LZ.make([2, 1], 3, [4, 5]))

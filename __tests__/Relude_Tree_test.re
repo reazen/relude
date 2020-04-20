@@ -15,8 +15,6 @@ let testTree2 =
     ],
   );
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Tree", () => {
   test("pure", () => {
     expect(Tree.pure(42)) |> toEqual({value: 42, children: []})

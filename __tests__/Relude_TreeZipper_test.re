@@ -56,8 +56,6 @@ let testTree2 =
     ],
   );
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("TreeZipper", () => {
   test("pure", () => {
     expect(TreeZipper.pure(42))

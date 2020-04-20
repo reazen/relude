@@ -11,8 +11,6 @@ module AsyncResultS =
     type t = string;
   });
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("AsyncResult", () => {
   test("Init", () =>
     expect(AsyncResult.init) |> toEqual(AsyncData.init)

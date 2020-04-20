@@ -3,8 +3,6 @@ open Expect;
 
 module Bool = Relude.Bool;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Bool", () => {
   testAll("ifElse", [(true, "yes"), (false, "no")], ((input, expected)) =>
     expect(input |> Bool.ifElse(() => "yes", () => "no"))

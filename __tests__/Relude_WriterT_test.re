@@ -14,8 +14,6 @@ module WriterList = Writer.WithLog(WriterLog);
 let ((<$>), ($>), (<#>), (>>=)) =
   WriterList.Infix.((<$>), ($>), (<#>), (>>=));
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("WriterT", () =>
   test("pure, >>=, tell, $>, runWriterT", () => {
     // This gets a little ugly without having a do notation equivalent

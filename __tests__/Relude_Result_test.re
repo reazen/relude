@@ -7,8 +7,6 @@ module ResultS =
     type t = string;
   });
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Result", () => {
   test("pure", () =>
     expect(Result.pure(1)) |> toEqual(Ok(1))

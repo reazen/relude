@@ -4,8 +4,6 @@ open Expect;
 module Timer = Relude_Timer;
 module Debounce = Relude_Debounce;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Debounce", () => {
   test("debounce (leading=false)", () => {
     Jest.useFakeTimers();

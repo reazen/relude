@@ -92,8 +92,6 @@ let user6 = {id: "6", name: "Bob", age: 99};
 let users1 = [user1, user2, user3, user4, user5, user6];
 let users2 = [user5, user1, user3, user4, user6, user2];
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Extensions_Ord", () => {
   test("compareWithConversion", () => {
     let compare = String.compareWithConversion((user: User.t) => user.name);

@@ -1,8 +1,6 @@
 open Jest;
 open Expect;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module FilePath = {
   type t =
     | FilePath(string);

@@ -3,8 +3,6 @@ open Expect;
 
 module Throttle = Relude.Throttle;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Throttle", () => {
   test("throttle (leading=false)", () => {
     Jest.useFakeTimers();
