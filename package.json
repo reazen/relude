@@ -54,6 +54,6 @@
       "/node_modules/",
       "/testUtils/"
     ],
-    "globalTeardown": "./jestGlobalTeardown.js"
+    "setupFilesAfterEnv": ["./jest.setup.js"]
   }
 }
