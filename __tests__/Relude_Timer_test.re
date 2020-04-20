@@ -1,10 +1,9 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module Timer = Relude_Timer;
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Timer", () => {
   test("delay", () => {

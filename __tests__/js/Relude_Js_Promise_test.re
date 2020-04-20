@@ -4,7 +4,6 @@ open Expect;
 module IO = Relude_IO;
 module RPromise = Relude_Js_Promise;
 
-[@coverage exclude_file];
 afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Js.Promise", () => {

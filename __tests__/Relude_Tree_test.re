@@ -3,9 +3,6 @@ open Expect;
 open Relude.Globals;
 open Relude_Tree;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 let testTree1 = Tree.make(1, [Tree.pure(2), Tree.pure(3)]);
 
 let testTree2 =
@@ -17,6 +14,8 @@ let testTree2 =
       Tree.make(4, [Tree.pure(41), Tree.pure(42)]),
     ],
   );
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Tree", () => {
   test("pure", () => {

@@ -2,9 +2,6 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module Month = {
   type t =
     | Jan
@@ -113,6 +110,8 @@ module Month = {
 };
 
 open Month;
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Relude_Extensions_Enum", () => {
   testAll(

@@ -2,7 +2,6 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-[@coverage exclude_file];
 afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("StringMap", () => {

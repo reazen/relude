@@ -1,9 +1,6 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 type env = {
   intValue: int,
   stringValue: string,
@@ -19,6 +16,8 @@ module Reader =
   Relude.Reader.WithEnv({
     type t = env;
   });
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Reader", () => {
   test("make", () =>

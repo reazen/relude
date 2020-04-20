@@ -1,9 +1,6 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module Json = Relude_Js_Json;
 module List = Relude_List;
 module NonEmptyArray = Relude_NonEmpty.Array;
@@ -26,6 +23,8 @@ module MyType = {
 };
 
 open Json.DSL;
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Json", () => {
   test("show", () =>

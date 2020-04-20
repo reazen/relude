@@ -3,9 +3,6 @@ open Expect;
 open Relude.Globals;
 open Relude.TreeZipper;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 let testTree1 =
   Tree.make(
     1,
@@ -58,6 +55,8 @@ let testTree2 =
       ),
     ],
   );
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("TreeZipper", () => {
   test("pure", () => {

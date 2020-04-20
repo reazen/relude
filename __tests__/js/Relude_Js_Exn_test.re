@@ -1,10 +1,9 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module Exn = Relude_Js_Exn;
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Js.Exn", () => {
   test("make", () => {

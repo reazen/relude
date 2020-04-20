@@ -4,7 +4,6 @@ open Expect;
 module Decimal = Relude.Decimal;
 open Decimal;
 
-[@coverage exclude_file];
 afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Decimal", () => {

@@ -1,9 +1,6 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module StateT = Relude.StateT;
 
 module State =
@@ -28,6 +25,8 @@ module Stack = {
         }
     );
 };
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("StateT", () => {
   test("pure", () => {

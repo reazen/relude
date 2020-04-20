@@ -4,7 +4,6 @@ open Expect;
 module Array = Relude.Array;
 module Int = Relude.Int;
 
-[@coverage exclude_file];
 afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Array", () => {
