@@ -23,8 +23,6 @@ let ft3 = ((a, b, c)) => a + b + c;
 let ft4 = ((a, b, c, d)) => a + b + c + d;
 let ft5 = ((a, b, c, d, e)) => a + b + c + d + e;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Function", () => {
   test("identity returns the input", () =>
     expect(Function.identity(1)) |> toBe(1)

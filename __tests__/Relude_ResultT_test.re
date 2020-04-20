@@ -18,8 +18,6 @@ module IOE = IO.WithError(Error);
 
 module ResultIOE = ResultT.WithMonadAndError(IOE.Monad, Error);
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("ResultT", () => {
   testAsync("make", onDone =>
     ResultIOE.make(IOE.pure(Result.ok(42)))

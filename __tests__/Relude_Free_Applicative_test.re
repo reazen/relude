@@ -105,8 +105,6 @@ let validateUser =
   SchemaValidate.foldFree(User.schema);
 };
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Relude_Free_Applicative", () => {
   test("validateUser success", () =>
     expect(validateUser("Andy", "White", "101"))

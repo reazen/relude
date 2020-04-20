@@ -3,8 +3,6 @@ open Expect;
 
 module Timer = Relude_Timer;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Timer", () => {
   test("delay", () => {
     Jest.useFakeTimers();

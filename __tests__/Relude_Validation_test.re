@@ -103,8 +103,6 @@ module Person = {
     };
 };
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Validation", () => {
   test("isOk success", () =>
     expect(Validation.VOk(123)->Validation.isOk) |> toBe(true)

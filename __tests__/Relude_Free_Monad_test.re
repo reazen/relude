@@ -97,8 +97,6 @@ module StorageAPI = {
   include StorageFWithKeyAndValue.FreeMonad.WithMonad(State.Monad);
 };
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Relude_Free_Monad", () => {
   describe("StorageAPI", () => {
     test("StorageState interpreter", () => {

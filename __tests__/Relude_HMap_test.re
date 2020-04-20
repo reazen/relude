@@ -12,8 +12,6 @@ module HMapS =
     type t('a) = (string, 'a => string);
   });
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("HMap", () => {
   test("empty has size 0", () =>
     expect(HMap.empty |> HMap.size) |> toEqual(0)

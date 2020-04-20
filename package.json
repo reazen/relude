@@ -53,6 +53,7 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/testUtils/"
-    ]
+    ],
+    "globalTeardown": "./jestGlobalTeardown.js"
   }
 }

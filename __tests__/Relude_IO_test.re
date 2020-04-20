@@ -8,8 +8,6 @@ let throwJSError: unit => int = [%bs.raw
 
 Jest.useFakeTimers(); // This applies to the whole file, so any tests that use delay must use the mock timer manipulation functions
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("IO basics", () => {
   testAsync("pure unsafeRunAsync", onDone =>
     IO.pure(42)

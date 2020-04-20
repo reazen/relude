@@ -5,8 +5,6 @@ module Int = Relude_Int;
 module List = Relude.List;
 module IO = Relude.IO;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("List", () => {
   test("length empty list", () =>
     expect(List.length([])) |> toEqual(0)

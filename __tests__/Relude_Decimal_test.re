@@ -4,8 +4,6 @@ open Expect;
 module Decimal = Relude.Decimal;
 open Decimal;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Decimal", () => {
   test("make", () =>
     expect(Decimal.make(12345, -2)) |> toEqual(Decimal(12345, -2))

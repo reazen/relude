@@ -2,8 +2,6 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Unit", () => {
   test("show", () => {
     expect(Unit.show()) |> toEqual("()")

@@ -11,8 +11,6 @@ let user1 = {name: "Andy", age: 42};
 let user2 = {name: "Andy", age: 99};
 let user3 = {name: "Bob", age: 42};
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Eq", () => {
   testAll(
     "by",

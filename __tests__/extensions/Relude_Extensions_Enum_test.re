@@ -111,8 +111,6 @@ module Month = {
 
 open Month;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Relude_Extensions_Enum", () => {
   testAll(
     "fromToAsList",

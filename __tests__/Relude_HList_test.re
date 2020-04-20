@@ -3,8 +3,6 @@ open Expect;
 
 module HList = Relude.HList;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("HList", () => {
   test("empty", () =>
     expect(HList.empty) |> toEqual(HList.HNil)

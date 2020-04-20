@@ -3,8 +3,6 @@ open Expect;
 
 module Int = Relude_Int;
 
-afterAll(Bisect.Runtime.write_coverage_data);
-
 describe("Int", () => {
   test("toFloat", () =>
     expect(Int.toFloat(2)) |> toEqual(2.0)
