@@ -2,9 +2,6 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module Validator = {
   type t('a) = string => result('a, string);
 };
@@ -107,6 +104,8 @@ let validateUser =
     Schema.WithApplicativeAndNT(ValidationE.Applicative, NT);
   SchemaValidate.foldFree(User.schema);
 };
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Relude_Free_Applicative", () => {
   test("validateUser success", () =>

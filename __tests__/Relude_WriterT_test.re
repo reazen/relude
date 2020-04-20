@@ -1,9 +1,6 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module List = Relude.List;
 module WriterT = Relude.WriterT;
 module Writer = WriterT.Writer;
@@ -16,6 +13,8 @@ module WriterList = Writer.WithLog(WriterLog);
 
 let ((<$>), ($>), (<#>), (>>=)) =
   WriterList.Infix.((<$>), ($>), (<#>), (>>=));
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("WriterT", () =>
   test("pure, >>=, tell, $>, runWriterT", () => {

@@ -1,9 +1,6 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module IO = Relude.IO;
 module Result = Relude.Result;
 module ResultT = Relude.ResultT;
@@ -20,6 +17,8 @@ module Error = {
 module IOE = IO.WithError(Error);
 
 module ResultIOE = ResultT.WithMonadAndError(IOE.Monad, Error);
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("ResultT", () => {
   testAsync("make", onDone =>

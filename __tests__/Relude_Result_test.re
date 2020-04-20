@@ -2,13 +2,12 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module ResultS =
   Result.WithError({
     type t = string;
   });
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Result", () => {
   test("pure", () =>

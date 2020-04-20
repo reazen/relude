@@ -1,9 +1,6 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module S = Relude.Sequence;
 module LS = S.List;
 module AS = S.Array;
@@ -15,6 +12,8 @@ open LZ.Infix;
 module LZFoldMap = LZ.Foldable.Fold_Map(Relude.String.Monoid);
 module LZFoldMapAny = LZ.Foldable.Fold_Map_Any(Relude.List.MonoidAny);
 module LZTraversable = LZ.Traversable(Relude.Option.Applicative);
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("ListZipper", () => {
   test("make", () =>

@@ -2,14 +2,13 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 type user = {
   id: string,
   name: string,
   age: int,
 };
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Ord", () => {
   test("by", () => {

@@ -1,10 +1,9 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module Throttle = Relude.Throttle;
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Throttle", () => {
   test("throttle (leading=false)", () => {

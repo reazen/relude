@@ -2,9 +2,6 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module User = {
   type t = {
     name: string,
@@ -41,6 +38,8 @@ open User;
 let user1 = {name: "Andy", age: 42};
 let user2 = {name: "Andy", age: 99};
 let user3 = {name: "Bob", age: 99};
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Extensions_Eq", () => {
   testAll("notEq", [(1, 1, false), (1, 2, true)], ((a, b, expected)) => {

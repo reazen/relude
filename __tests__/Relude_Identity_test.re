@@ -1,10 +1,9 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module Identity = Relude_Identity;
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Identity", () => {
   test("pure", () =>

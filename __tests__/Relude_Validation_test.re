@@ -1,9 +1,6 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module NonEmptyList = Relude_NonEmpty.List;
 module String = Relude_String;
 module Result = Relude_Result;
@@ -105,6 +102,8 @@ module Person = {
       ->ValidationE.apply(validateLanguage(language));
     };
 };
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("Validation", () => {
   test("isOk success", () =>

@@ -1,10 +1,9 @@
 open Jest;
 open Expect;
 
-[@coverage exclude_file];
-afterAll(Bisect.Runtime.write_coverage_data);
-
 module HList = Relude.HList;
+
+afterAll(Bisect.Runtime.write_coverage_data);
 
 describe("HList", () => {
   test("empty", () =>
