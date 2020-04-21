@@ -1,2 +1,0 @@
-file regexp ".*_test\.re$"
-file regexp ".*\/testUtils\/.*\.re$"
