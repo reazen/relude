@@ -903,13 +903,19 @@ module WithError = (E: TYPE) => {
   include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
   module WithApplicative = (A: APPLICATIVE) => {
-    module Traversable: TRAVERSABLE = {
+    module Traversable:
+      TRAVERSABLE with
+        type t('a) = t('a) and type applicative_t('a) = A.t('a) = {
       include BsBastet.Result.Traversable(E, A);
     };
     let traverse = Traversable.traverse;
     let sequence = Traversable.sequence;
     include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
-    module Bitraversable: BITRAVERSABLE = {
+
+    module Bitraversable:
+      BITRAVERSABLE with
+        type t('a, 'b) = result('a, 'b) and
+        type applicative_t('a) = A.t('a) = {
       include BsBastet.Result.Bitraversable(A);
     };
     let bitraverse = Bitraversable.bitraverse;

@@ -13,8 +13,7 @@ describe("Result", () => {
   );
 
   test("map Ok", () =>
-    expect(Result.map(a => a + 2, Ok(1)))
-    |> toEqual(Ok(3))
+    expect(Result.map(a => a + 2, Ok(1))) |> toEqual(Ok(3))
   );
 
   test("map Error", () =>
@@ -176,18 +175,15 @@ describe("Result", () => {
   );
 
   test("flatMap", () =>
-    expect(Result.flatMap(a => Ok(a + 2), Ok(1)))
-    |> toEqual(Ok(3))
+    expect(Result.flatMap(a => Ok(a + 2), Ok(1))) |> toEqual(Ok(3))
   );
 
   test("bind", () =>
-    expect(Result.bind(Ok(1), a => Ok(a + 2)))
-    |> toEqual(Ok(3))
+    expect(Result.bind(Ok(1), a => Ok(a + 2))) |> toEqual(Ok(3))
   );
 
   test("fold Ok", () =>
-    expect(Result.fold(_ => "error", _ => "ok", Ok(1)))
-    |> toEqual("ok")
+    expect(Result.fold(_ => "error", _ => "ok", Ok(1))) |> toEqual("ok")
   );
 
   test("fold Error", () =>
@@ -221,13 +217,11 @@ describe("Result", () => {
   );
 
   test("flip Ok", () =>
-    expect(Result.flip(Ok(1)))
-    |> toEqual(Error(1))
+    expect(Result.flip(Ok(1))) |> toEqual(Error(1))
   );
 
   test("flip Error", () =>
-    expect(Result.flip(Error("my error")))
-    |> toEqual(Ok("my error"))
+    expect(Result.flip(Error("my error"))) |> toEqual(Ok("my error"))
   );
 
   test("isOk when Ok", () =>
@@ -356,5 +350,23 @@ describe("Result", () => {
     let error = Error("hi");
     let actual = (f <<$>> g)(error);
     expect(actual) |> toEqual(Error("hihi"));
+  });
+
+  test("bitraverse", () => {
+    module ResultE =
+      Result.WithError({
+        type t = string;
+      });
+    module ResultA = ResultE.WithApplicative(Option.Applicative);
+    let success: option(result(int, string)) =
+      Ok(42)
+      |> ResultA.bitraverse(i => Some(i + 3), err => Some(err ++ err));
+
+    let failure: option(result(int, string)) =
+      Error("fail")
+      |> ResultA.bitraverse(i => Some(i + 3), err => Some(err ++ err));
+
+    expect((success, failure))
+    |> toEqual((Some(Ok(45)), Some(Error("failfail"))));
   });
 });
