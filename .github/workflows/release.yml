@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  - pull_request
+  # push
+  #   tags: "*"
+
+jobs:
+  deployDocs:
+    name: Build code and generate docs site
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies, build project
+        run: npm install
+        env:
+          CI: true
+
+      - name: Use OCaml
+        uses: fangyi-zhou/actions-ocaml@v1
+        with:
+          ocaml_version: 4.06.1
+
+      - name: Install Odoc
+        run: |
+          opam install odoc --yes
+
+      - name: Install Esy
+        run: |
+          npm install -g esy@0.6.4
+
+      - name: Build bsdoc for Linux
+        run: |
+          git clone https://github.com/reuniverse/bsdoc.git
+          cd bsdoc
+          esy install
+          esy release
+          find _release/_export/ -iname "bsdoc*" -exec tar -zxvf {} --strip-components 1 \;
+
+      - name: Generate docs
+        run: |
+          # clean __tests__ to not have test modules in a wrapping module in docs
+          rm -r ./__tests__/*
+          npm run clean
+          npm run build
+
+          # generate docs
+          ./bsdoc/bin/bsdoc build -v --debug api
+
+          # move wrapping module docs to top-level module dir and generate module links
+          mv ./docs/Rx/Rx/index.html ./docs/api/
+          sed -i -E "s/([a-zA-Z_]*) = ([a-zA-Z_-]*)/\1 = <a href=\"\.\/\2\">\2<\/a>/g" ./docs/api/index.html
+          # adjust css-related links
+          sed -i -E "s/\.\.\/odoc/odoc/g" ./docs/api/index.html
+          sed -i -E "s/\.\.\/highlight/highlight/g" ./docs/api/index.html
+
+      - name: Deploy docs to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@2.0.3
+        env:
+          ACCESS_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
+          BASE_BRANCH: master
+          BRANCH: gh-pages
+          FOLDER: docs
