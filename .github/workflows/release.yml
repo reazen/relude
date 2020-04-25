@@ -57,6 +57,7 @@ jobs:
           npm run build
 
           # generate docs
+          ./bsdoc/bin/bsdoc support-files
           ./bsdoc/bin/bsdoc build -v --debug api
 
           # move wrapping module docs to top-level module dir and generate module links
