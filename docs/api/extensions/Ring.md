@@ -1,3 +1,0 @@
-# Relude.Extensions.Ring
-
-TODO

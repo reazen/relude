@@ -1,3 +1,0 @@
-# Relude.Void
-
-TODO

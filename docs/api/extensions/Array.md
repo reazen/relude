@@ -1,3 +1,0 @@
-# Relude.Extensions.Array
-
-TODO

@@ -1,3 +1,0 @@
-# Relude.Js.Promise
-
-TODO

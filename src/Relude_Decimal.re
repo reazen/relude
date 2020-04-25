@@ -1,4 +1,19 @@
 /**
+`Relude.Decimal` contains a type `t` which represents arbitrary precision
+numeric values, backed by an `int` mantissa and an `int` exponent. This can be
+useful for representing currency values without loss in precision or floating
+point errors.
+
+Because the mantissa and exponent are backed by ints, there is a fairly
+restrictive range of values that can be represented.
+
+```reason
+let a = Decimal(12345, -2); // 123.45
+let b = Decimal(6789, 3); // 6789000
+```
+*/
+
+/**
  * The type of the base of our Decimal
  */
 type mantissa = int;
