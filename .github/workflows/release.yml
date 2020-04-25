@@ -60,7 +60,7 @@ jobs:
           ./bsdoc/bin/bsdoc build -v --debug api
 
           # move wrapping module docs to top-level module dir and generate module links
-          mv ./docs/Rx/Rx/index.html ./docs/api/
+          mv ./docs/api/Relude/index.html ./docs/api/
           sed -i -E "s/([a-zA-Z_]*) = ([a-zA-Z_-]*)/\1 = <a href=\"\.\/\2\">\2<\/a>/g" ./docs/api/index.html
           # adjust css-related links
           sed -i -E "s/\.\.\/odoc/odoc/g" ./docs/api/index.html
