@@ -50,10 +50,6 @@
       "/node_modules/",
       "/testUtils/"
     ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/testUtils/"
-    ],
     "setupFilesAfterEnv": [
       "bisect_ppx/src/runtime/bucklescript/jest.js"
     ]
