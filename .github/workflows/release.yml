@@ -67,9 +67,7 @@ jobs:
           sed -i -E "s/\.\.\/highlight/highlight/g" ./docs/api/index.html
 
       - name: Deploy docs to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@2.0.3
-        env:
-          ACCESS_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
-          BASE_BRANCH: master
-          BRANCH: gh-pages
-          FOLDER: docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
