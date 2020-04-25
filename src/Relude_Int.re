@@ -1,6 +1,10 @@
 open BsBastet.Interface;
 
 /**
+`Relude.Int` contains functions and typeclass instances for the `int` type.
+*/
+
+/**
  * `toFloat` returns the floating-point representation of the int
  */
 let toFloat = float_of_int;

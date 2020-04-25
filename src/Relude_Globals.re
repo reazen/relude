@@ -31,6 +31,15 @@ NB: When making changes to this module, keep in mind that you will likely be
 affecting other people who have globally opened this module, so only expose
 very core/common things, and be careful about accidental shadowing of module
 names or functions.
+
+## Usage
+
+```reason
+open Relude.Globals;
+
+let x = List.map(a => a + 2, [1, 2, 3]); // Relude.List
+let y = IO.pure(42); // Relude.IO
+```
 */
 module Array = Relude_Array;
 module ArrayZipper = Relude_ArrayZipper;

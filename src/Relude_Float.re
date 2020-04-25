@@ -1,4 +1,8 @@
 open BsBastet.Interface;
+/**
+`Relude.Float` contains typeclass instances and utility functions for the
+`float` type.
+*/
 
 /**
  * Indicates if two floats are exactly equal

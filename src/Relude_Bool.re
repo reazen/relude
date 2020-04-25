@@ -1,4 +1,8 @@
 open BsBastet.Interface;
+/**
+ `Relude.Bool` contains typeclass instances and utility functions for working
+ with the `bool` type.
+ */
 
 /**
  * Folds a bool value into a value of a different type, using a function

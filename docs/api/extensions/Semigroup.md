@@ -1,3 +1,0 @@
-# Relude.Extensions.Semigroup
-
-TODO

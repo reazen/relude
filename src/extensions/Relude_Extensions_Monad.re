@@ -1,4 +1,7 @@
 /**
+`Relude.Extensions.Monad` contains a module functor `MonadExtensions` which gives you access to a wide variety of functions and infix operators that you can get "for free" when you have a `Monad` typeclass instance.
+*/
+/**
  * Extensions for any MONAD
  */
 module MonadExtensions = (M: BsBastet.Interface.MONAD) => {
