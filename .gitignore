@@ -17,7 +17,6 @@ npm-debug.log
 # Project files
 # TODO: remove the tests that create these files
 **/testUtils/**/*.txt
-/docs/coverage
 # bisect ppx
 bisect*.coverage 
 _coverage
