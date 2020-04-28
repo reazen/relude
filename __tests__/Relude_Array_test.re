@@ -38,7 +38,19 @@ describe("Array", () => {
   );
 
   test("makeWithIndex creates a array of n items using f", () =>
-    expect(Array.makeWithIndex(3, i => i + 2)) |> toEqual([|2, 3, 4|])
+    expect(Array.makeWithIndex(4, i => i + 2)) |> toEqual([|2, 3, 4, 5|])
+  );
+
+  test("makeWithIndex with pattern matching fn", () =>
+    expect(
+      Array.makeWithIndex(
+        3,
+        fun
+        | 0 => "a"
+        | _ => "b",
+      ),
+    )
+    |> toEqual([|"a", "b", "b"|])
   );
 
   test("makeWithIndex creates an empty array if given a negative count", () =>
@@ -298,6 +310,10 @@ describe("Array", () => {
     expect(Array.drop(1, [|1, 2|])) |> toEqual([|2|])
   );
 
+  test("drop negative from short array ", () =>
+    expect(Array.drop(-1, [|1, 2|])) |> toEqual([|1, 2|])
+  );
+
   test("drop some from equal array ", () =>
     expect(Array.drop(2, [|1, 2|])) |> toEqual([||])
   );
@@ -418,6 +434,19 @@ describe("Array", () => {
   test("splitAt", () =>
     expect(Array.splitAt(3, [|0, 1, 2, 3, 4, 5|]))
     |> toEqual(Some(([|0, 1, 2|], [|3, 4, 5|])))
+  );
+
+  test("splitAt (end of array)", () =>
+    expect(Array.splitAt(3, [|0, 1, 2|]))
+    |> toEqual(Some(([|0, 1, 2|], [||])))
+  );
+
+  test("splitAt (negative index)", () =>
+    expect(Array.splitAt(-1, [||])) |> toEqual(None)
+  );
+
+  test("splitAt (index too high)", () =>
+    expect(Array.splitAt(2, [|1|])) |> toEqual(None)
   );
 
   test("prependToAll", () =>
@@ -737,5 +766,13 @@ describe("Array", () => {
          [|10, 11, 12|],
          [|13|],
        |])
+  );
+
+  test("chunk (empty array)", () =>
+    expect(Array.chunk(3, [||])) |> toEqual([|[||]|])
+  );
+
+  test("chunk (size = 0)", () =>
+    expect(Array.chunk(0, [|1, 2, 3|])) |> toEqual([|[|1, 2, 3|]|])
   );
 });
