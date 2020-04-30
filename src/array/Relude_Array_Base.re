@@ -415,9 +415,9 @@ let rec dropWhile: 'a. ('a => bool, array('a)) => array('a) =
 [Array.filter] returns a new array containing only the values from the provided
 array which satisfy the given predicate.
 
-{|
+{[
   Array.filter(v => v mod 2 == 0, [|1, 2, 3, 4|]) == [|2, 4|];
-|}
+]}
 */
 let filter: 'a. ('a => bool, array('a)) => array('a) =
   (f, xs) => Belt.Array.keep(xs, f);
