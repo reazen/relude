@@ -27,7 +27,7 @@ We welcome contributions, bug fixes, features requests (or implementations), doc
 # The coverage files are .gitignore'd, so you must run this
 # command locally to view the detailed coverage reports.
 
-> npm run coverage && open docs/coverage/lcov-report/index.html
+> npm run coverage && open _coverage/index.html
 
 # Docs (run local server):
 
@@ -43,7 +43,7 @@ We welcome contributions, bug fixes, features requests (or implementations), doc
 > npm run cleantest
 
 # Clean & coverage
-> npm run cleancoverage && open docs/coverage/lcov-report/index.html
+> npm run cleancoverage && open _coverage/index.html
 
 # Release build
 # This does not publish the release, it just makes sure various build artifacts (.js, .rei, etc.) are built or re-generated from scratch
