@@ -1,112 +1,116 @@
 open BsBastet.Interface;
 
 /**
-`Relude.Function` contains many core functions like `identity`, `flip`, `compose`, `andThen`, and some of the associated infix operators like `<<` (`compose`) and `>>` (`andThen`).
+`Relude.Function` contains many core functions like `identity`, `flip`,
+`compose`, `andThen`, and some of the associated infix operators like `<<`
+(`compose`) and `>>` (`andThen`).
 
-It also defines some typeclass instances like `Functor`, `Apply`, `Monad`, etc. for the `'r => 'a` function type.
+It also defines some typeclass instances like `Functor`, `Apply`, `Monad`, etc.
+for the `'r => 'a` function type.
 */
 
 /**
-  `identity(x)` returns `x`. This is useful when you need
-  to supply a function but don’t want to transform any values.
+`identity(x)` returns `x`. This is useful when you need
+to supply a function but don’t want to transform any values.
 */
 let identity: 'a. 'a => 'a = a => a;
 
 /**
-  `id` is a synonym for `identity`.
+`id` is a synonym for `identity`.
 */
 let id: 'a. 'a => 'a = identity;
 
 /**
-  `const(x, y)` returns `x`.
+`const(x, y)` returns `x`.
 
-  ### Example
-  ```re
+{[
   const(3, "ignore") == 3;
   const("keep", -1) == "keep";
-  ```
+]}
 */
 let const: 'a 'b. ('a, 'b) => 'a = (a, _) => a;
 
 /**
-  `flip(f, a, b)` has a two-parameter function `f()` as its
-  first parameter. It calls `f(b, a)`, thus “flipping“ the
-  arguments to `f()`.
+`flip(f, a, b)` has a two-parameter function `f()` as its
+first parameter. It calls `f(b, a)`, thus “flipping“ the
+arguments to `f()`.
 
-  ### Example
-  ```re
+{[
   let formula = (x, y) => {x + 2 * y};
   formula(3, 5) == 13;
   flip(formula, 5, 3) == 13;
-  ```
+]}
 */
 let flip: 'a 'b 'c. (('a, 'b) => 'c, 'b, 'a) => 'c = (f, b, a) => f(a, b);
 
 /**
-  `compose(f, g, a)` is the equivalent of `f(g(a))`.
+`compose(f, g, a)` is the equivalent of `f(g(a))`.
 
-  ### Example
-  ```re
+
+{[
   let square = (x) => {x * x};
   let double = (x) => {2 * x};
   compose(square, double, 3) == 36;
   compose(double, square, 3) == 18;
-  ```
+]}
 */
 let compose: 'a 'b 'c. ('b => 'c, 'a => 'b, 'a) => 'c =
   (f, g, a) => f(g(a));
 
 /**
-  `flipCompose(f, g, a)` is the equivalent of `g(f(a))`.
+`flipCompose(f, g, a)` is the equivalent of `g(f(a))`.
 
-  ### Example
-  ```re
+{[
   let square = (x) => {x * x};
   let double = (x) => {2 * x};
   flipCompose(square, double, 3) == 18;
   flipCompose(double, square, 3) == 36;
-  ```
+]}
 */
 let flipCompose: 'a 'b 'c. ('a => 'b, 'b => 'c, 'a) => 'c =
   (f, g, a) => g(f(a));
 
 /**
-  `andThen` is a synonym for `flipCompose`
+`andThen` is a synonym for `flipCompose`
 
-  You can use this synonym with the “pipe first“ operator:
+You can use this synonym with the “pipe first“ operator:
 
-  ```re
+{[
   let square = (x) => {x * x};
   let double = (x) => {2 * x};
   let addFive = (x) => {x + 5};
 
   let formula = square -> andThen(double) -> andThen(addFive);
   formula(3);
-  ```
+]}
 */
 let andThen: 'a 'b 'c. ('a => 'b, 'b => 'c, 'a) => 'c = flipCompose;
 
 /**
- * Converts a function that takes a tuple 2 as an argument to a normal curried function
- */
+Converts a function that takes a tuple 2 as an argument to a normal curried
+function.
+*/
 let curry2: 'a 'b 'c. ((('a, 'b)) => 'c, 'a, 'b) => 'c =
   (f, a, b) => f((a, b));
 
 /**
- * Converts a function that takes a tuple-3 as an argument to a normal curried function
+Converts a function that takes a tuple-3 as an argument to a normal curried
+function.
  */
 let curry3: 'a 'b 'c 'd. ((('a, 'b, 'c)) => 'd, 'a, 'b, 'c) => 'd =
   (f, a, b, c) => f((a, b, c));
 
 /**
- * Converts a function that takes a tuple-4 as an argument to a normal curried function
- */
+Converts a function that takes a tuple-4 as an argument to a normal curried
+function.
+*/
 let curry4: 'a 'b 'c 'd 'e. ((('a, 'b, 'c, 'd)) => 'e, 'a, 'b, 'c, 'd) => 'e =
   (f, a, b, c, d) => f((a, b, c, d));
 
 /**
- * Converts a function that takes a tuple-5 as an argument to a normal curried function
- */
+Converts a function that takes a tuple-5 as an argument to a normal curried
+function.
+*/
 let curry5:
   'a 'b 'c 'd 'e 'f.
   ((('a, 'b, 'c, 'd, 'e)) => 'f, 'a, 'b, 'c, 'd, 'e) => 'f
@@ -114,26 +118,30 @@ let curry5:
   (f, a, b, c, d, e) => f((a, b, c, d, e));
 
 /**
- * Converts a normal curried function of two arguments to a function that takes a tuple-2 as an argument
- */
+Converts a normal curried function of two arguments to a function that takes a
+tuple-2 as an argument.
+*/
 let uncurry2: 'a 'b 'c. (('a, 'b) => 'c, ('a, 'b)) => 'c =
   (f, (a, b)) => f(a, b);
 
 /**
- * Converts a normal curried function of 3 arguments to a function that takes a tuple-3 as an argument
- */
+Converts a normal curried function of 3 arguments to a function that takes a
+tuple-3 as an argument.
+*/
 let uncurry3: 'a 'b 'c 'd. (('a, 'b, 'c) => 'd, ('a, 'b, 'c)) => 'd =
   (f, (a, b, c)) => f(a, b, c);
 
 /**
- * Converts a normal curried function of 4 arguments to a function that takes a tuple-4 as an argument
- */
+Converts a normal curried function of 4 arguments to a function that takes a
+tuple-4 as an argument.
+*/
 let uncurry4: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd) => 'e, ('a, 'b, 'c, 'd)) => 'e =
   (f, (a, b, c, d)) => f(a, b, c, d);
 
 /**
- * Converts a normal curried function of 5 arguments to a function that takes a tuple-5 as an argument
- */
+Converts a normal curried function of 5 arguments to a function that takes a
+tuple-5 as an argument.
+*/
 let uncurry5:
   'a 'b 'c 'd 'e 'f.
   (('a, 'b, 'c, 'd, 'e) => 'f, ('a, 'b, 'c, 'd, 'e)) => 'f
@@ -141,32 +149,30 @@ let uncurry5:
   (f, (a, b, c, d, e)) => f(a, b, c, d, e);
 
 /**
-  `map` is a synonym for `compose` and is the equivalent of `f(g(a))`.
+`map` is a synonym for `compose` and is the equivalent of `f(g(a))`.
 
-  ### Example
-  ```re
+{[
   let square = (x) => {x * x};
   let double = (x) => {2 * x};
   map(square, double, 3) == 36;
   map(double, square, 3) == 18;
-  ```
+]}
 */
 let map: 'a 'b 'r. ('a => 'b, 'r => 'a, 'r) => 'b =
   (aToB, rToA, r) => aToB(rToA(r)); /* Same as compose */
 
 /**
-  In `apply(hof, f, a)`, `hof` is a higher-order function that takes one argument
-  and returns a new function that also takes one argument.
+In `apply(hof, f, a)`, `hof` is a higher-order function that takes one argument
+and returns a new function that also takes one argument.
 
-  The result of `apply()` is equivalent to:
+The result of `apply()` is equivalent to:
 
-  ```
+{[
   let g = hof(a);
   g(f(a))
-  ```
+]}
 
-  ### Example
-  ```re
+{[
   // This is the higher-order function
   let showResult = (n) => {
     (x: float) => {"input " ++ string_of_int(n)
@@ -177,29 +183,28 @@ let map: 'a 'b 'r. ('a => 'b, 'r => 'a, 'r) => 'b =
   let cube = (x) => { float_of_int(x * x * x) };
 
   apply(showResult, cube, 5) == "input 5 yields 125";
-  ```
+]}
 */
 let apply: 'a 'b 'r. (('r, 'a) => 'b, 'r => 'a, 'r) => 'b =
   (rToAToB, rToA, r) => rToAToB(r, rToA(r));
 
 /**
-  `pure` is a synonym for `const`
+`pure` is a synonym for `const`
 */
 let pure: 'a 'r. ('a, 'r) => 'a = (a, _) => a;
 
 /**
-  In `bind(f, hof, a)`, `hof` is a higher-order function that takes one argument
-  and returns a new function that also takes one argument.
+In `bind(f, hof, a)`, `hof` is a higher-order function that takes one argument
+and returns a new function that also takes one argument.
 
   The result of `bind()` is equivalent to:
 
-  ```
+{[
   let g = hof(f(a));
   g(a)
-  ```
+]}
 
-  ### Example
-  ```re
+{[
   // This is the higher-order function
   let showResult = (x) => {
     (n: int) => {"input " ++ string_of_int(n)
@@ -210,25 +215,24 @@ let pure: 'a 'r. ('a, 'r) => 'a = (a, _) => a;
   let cube = (x) => { float_of_int(x * x * x) };
 
   bind(cube, showResult, 5) == "input 5 yields 125";
-  ```
+]}
 */
 let bind: 'a 'b 'r. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   (rToA, arToB, r) => arToB(rToA(r), r);
 
 /**
-  In `flatMap(hof, f, a)`, `hof` is a higher-order function that takes one argument
-  and returns a new function that also takes one argument. It is the same as
-  `bind()`, but with the first two arguments in reverse order.
+In `flatMap(hof, f, a)`, `hof` is a higher-order function that takes one argument
+and returns a new function that also takes one argument. It is the same as
+`bind()`, but with the first two arguments in reverse order.
 
-  The result of `flatMap()` is equivalent to:
+The result of `flatMap()` is equivalent to:
 
-  ```
+{[
   let g = hof(f(a));
   g(a)
-  ```
+]}
 
-  ### Example
-  ```re
+{[
   // This is the higher-order function
   let showResult = (x) => {
     (n: int) => {"input " ++ string_of_int(n)
@@ -239,16 +243,16 @@ let bind: 'a 'b 'r. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   let cube = (x) => { float_of_int(x * x * x) };
 
   flatMap(showResult, cube, 5) == "input 5 yields 125";
-  ```
+]}
 */
 let flatMap: 'a 'b 'r. (('a, 'r) => 'b, 'r => 'a, 'r) => 'b =
   (f, fa) => bind(fa, f);
 
 /**
- * `memoize0` takes a `unit => 'a` function and returns a new function
- * which once called, will store the result produced and return that cached
- * result for each successive call.
- */
+`memoize0` takes a `unit => 'a` function and returns a new function
+which once called, will store the result produced and return that cached
+result for each successive call.
+*/
 let memoize0 = (f: unit => 'a): (unit => 'a) => {
   let cached = ref(None);
   () => {
@@ -263,13 +267,13 @@ let memoize0 = (f: unit => 'a): (unit => 'a) => {
 };
 
 /**
- * `memoize1` takes a `'a => 'b` function and returns a new `'a => 'b` function
- * which once called, stores the result produced by the given function in
- * a closure-based cache, using a cache key created by the function `makeKey`
- *
- * All successive calls to the function for input values that resolve to the same
- * cache key will return the cached result.
- */
+`memoize1` takes a `'a => 'b` function and returns a new `'a => 'b` function
+which once called, stores the result produced by the given function in
+a closure-based cache, using a cache key created by the function `makeKey`
+
+All successive calls to the function for input values that resolve to the same
+cache key will return the cached result.
+*/
 let memoize1 = (~makeKey: 'a => string, f: 'a => 'b): ('a => 'b) => {
   let cache = ref(Belt.Map.String.empty);
   input => {
@@ -286,10 +290,10 @@ let memoize1 = (~makeKey: 'a => string, f: 'a => 'b): ('a => 'b) => {
 };
 
 /**
- * Takes a function and returns a new function which when called, will allow the first `times`
- * calls to invoke the given function, and any successive calls will be suppressed and the last
- * result will be returned.
- */
+Takes a function and returns a new function which when called, will allow the first `times`
+calls to invoke the given function, and any successive calls will be suppressed and the last
+result will be returned.
+*/
 let before = (~times: int, f: unit => 'a): (unit => 'a) => {
   let callCount = ref(0);
   let lastResultOpt = ref(None);
@@ -314,8 +318,9 @@ let before = (~times: int, f: unit => 'a): (unit => 'a) => {
 };
 
 /**
- * Takes a function and returns a new function that when called, will suppress the first `times` invocations
- */
+Takes a function and returns a new function that when called, will suppress
+the first `times` invocations
+*/
 let after = (~times: int, f: unit => 'a): (unit => option('a)) => {
   let callCount = ref(0);
   () =>
@@ -328,9 +333,10 @@ let after = (~times: int, f: unit => 'a): (unit => option('a)) => {
 };
 
 /**
- * Takes a function and returns a new function which will invoke the given function once, and any successive calls
- * will be suppressed, returning the value of the first call.
- */
+Takes a function and returns a new function which will invoke the given function
+once, and any successive calls will be suppressed, returning the value of the
+first call.
+*/
 let once = (f: unit => 'a): (unit => 'a) => {
   let lastResultOpt = ref(None);
   () => {
@@ -345,9 +351,10 @@ let once = (f: unit => 'a): (unit => 'a) => {
 };
 
 /**
- * Takes a function from `'a => 'b` and a function from `'i => 'a` to modify the input, and a function `'b => 'o` to modify
- * the output, and returns a new function `'i => 'o`
- */
+Takes a function from `'a => 'b` and a function from `'i => 'a` to modify the
+input, and a function `'b => 'o` to modify the output, and returns a new
+function `'i => 'o`
+*/
 let wrap:
   //'i 'a 'b 'o. // TODO: not sure how to make this universal quantification work
   (~before: 'i => 'a, ~after: 'b => 'o, 'a => 'b, 'i) => 'o =
@@ -356,9 +363,9 @@ let wrap:
   };
 
 /**
- * Takes a predicate function, and returns a new predicate function which
- * negates the given predicate.
- */
+Takes a predicate function, and returns a new predicate function which negates
+the given predicate.
+*/
 let negate = (f: 'a => bool): ('a => bool) => {
   a => {
     !f(a);
@@ -366,12 +373,11 @@ let negate = (f: 'a => bool): ('a => bool) => {
 };
 
 /**
-  The `Infix` submodule provides two infix operators
-  for function composition. To use it, you should
+The `Infix` submodule provides two infix operators for function composition.
 
-  ```re
+{[
   open Relude.Function.Infix;
-  ```
+]}
 */
 module Infix = {
   /**
@@ -380,11 +386,11 @@ module Infix = {
 
     `(f << g)(x)` is the equivalent of `f(g(x))`.
 
-    ### Example
-    ```reason
-    let sqrtCompFloor = sqrt << floor;
-    sqrtCompFloor(4.5) == 2.0;
-    ```
+
+    {[
+      let sqrtCompFloor = sqrt << floor;
+      sqrtCompFloor(4.5) == 2.0;
+    ]}
   */
   let (<<) = compose;
 
@@ -394,11 +400,11 @@ module Infix = {
 
   `(f >> g)(x)` is the equivalent of `g(f(x))`.
 
-    ### Example
-    ```reason
-    let floorFlipSqrt = floor >> sqrt;
-    floorFlipSqrt(4.5) == 2.0;
-    ```
+
+    {[
+      let floorFlipSqrt = floor >> sqrt;
+      floorFlipSqrt(4.5) == 2.0;
+    ]}
   */
   let (>>) = flipCompose;
 };
