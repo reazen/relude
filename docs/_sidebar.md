@@ -34,4 +34,4 @@
 
 - API
 
-  - [Generated API Docs](docs/api/index.html)
+  - [Generated API Docs](api/index.html)

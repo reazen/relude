@@ -2,7 +2,42 @@
 
 ## Contributions
 
-We welcome contributions, bug fixes, features requests (or implementations), documentation, issues, discussions or feedback.  If you're not sure what exactly you want, or how to implement it, feel free to [create an issue](https://github.com/reazen/relude/issues).
+We welcome contributions, bug fixes, features requests (or implementations), documentation, issues, discussions or feedback. If you're not sure what exactly you want, or how to implement it, feel free to [create an issue](https://github.com/reazen/relude/issues).
+
+### Documentation
+
+One way you can help is by improving the quality of documentation. We aim for consistency within our docs. For the best output, doc comments in code should look like:
+
+```reason
+/**
+[Module.functionName] does something. This applies the provided function to the
+value of type [t] and returns [something] if...
+
+Note: there are certain special cases to be aware of. See {!val:otherFn} for an
+alternative way to approach this problem.
+
+Running time: O(n{^2})
+
+{[
+  Module.functionName(x => x, Module.someValue) == 4;
+]}
+*/
+```
+
+Specifically:
+
+- Comments should use [odoc syntax](http://caml.inria.fr/pub/docs/manual-ocaml/ocamldoc.html)
+- The first sentence should state the name of the function and succinctly state what it does
+- Use complete sentences
+- Add line breaks at column 80, to match `refmt`'s width used for code
+- Any gotchas should be listed in a separate paragraph
+- Use odoc cross-references to link to other functions and modules
+- If time complexity is of interest, list that last before the examples
+- Try to include multiple examples
+  - Write examples as if `open Relude.Globals` is present
+  - Use the same formatting `refmt` would produce
+  - Show returned values with `== value`
+  - Try to fit each example onto a single line, when possible
 
 ## Development scripts
 
