@@ -226,7 +226,7 @@ let round = v => fractionalPart(v) >= 0.5 ? ceil(v) : floor(v);
 
 /**
 [Float.roundAsInt] rounds a floating point number to the nearest integer.
- */
+*/
 let roundAsInt = v => toInt(round(v));
 
 /**

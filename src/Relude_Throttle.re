@@ -1,8 +1,8 @@
 // TODO: someday we should abstract away the use of Js.Global timeout from this
 
 /**
- * The data returned from the throttle function
- */
+The data returned from the throttle function.
+*/
 type throttled = {
   cancel: unit => unit,
   isThrottled: unit => bool,
@@ -10,14 +10,15 @@ type throttled = {
 };
 
 /**
- * The throttle function takes a unit => unit function and returns a new function (and other control values) which when used,
- * suppresses calls to the given function to only once within the given delayMS.
- *
- * This is useful for sampling a stream of function calls on some interval.
- *
- * If `leading` is given as true, the function will be allowed to run on the first call before the throttling
- * behavior kicks in.
- */
+The throttle function takes a unit => unit function and returns a new function
+(and other control values) which when used, suppresses calls to the given
+function to only once within the given delayMS.
+
+This is useful for sampling a stream of function calls on some interval.
+
+If [leading] is given as true, the function will be allowed to run on the first
+call before the throttling behavior kicks in.
+*/
 let throttle =
     (~delayMS: int, ~leading: bool=false, f: unit => unit): throttled => {
   let isThrottled = ref(false);

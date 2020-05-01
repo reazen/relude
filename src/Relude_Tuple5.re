@@ -1,40 +1,40 @@
 open BsBastet.Interface;
 
 /**
- * Constructs a tuple-5 from 5 values
- */
+Constructs a tuple-5 from 5 values
+*/
 let make: 'a 'b 'c 'd 'e. ('a, 'b, 'c, 'd, 'e) => ('a, 'b, 'c, 'd, 'e) =
   (a, b, c, d, e) => (a, b, c, d, e);
 
 /**
- * Constructs a tuple-5 from an array of exactly 5 values
- */
+Constructs a tuple-5 from an array of exactly 5 values
+*/
 let fromArray: 'a. array('a) => option(('a, 'a, 'a, 'a, 'a)) =
   fun
   | [|a, b, c, d, e|] => Some((a, b, c, d, e))
   | _ => None;
 
 /**
- * Constructs a tuple-5 from an array of at least 5 values
- */
+Constructs a tuple-5 from an array of at least 5 values
+*/
 let fromArrayAtLeast: 'a. array('a) => option(('a, 'a, 'a, 'a, 'a)) =
   xs => Relude_Array.take(5, xs) |> fromArray;
 
 /**
- * Constructs a tuple-5 from a list of exactly 5 values
- */
+Constructs a tuple-5 from a list of exactly 5 values
+*/
 let fromList: 'a. list('a) => option(('a, 'a, 'a, 'a, 'a)) =
   xs => Relude_List.(take(6, xs) |> toArray) |> fromArray;
 
 /**
- * Constructs a tuple-5 from a list of at least 5 values
- */
+Constructs a tuple-5 from a list of at least 5 values
+*/
 let fromListAtLeast: 'a. list('a) => option(('a, 'a, 'a, 'a, 'a)) =
   xs => Relude_List.take(5, xs) |> fromList;
 
 /**
- * Applies a normal 5-argument function to arguments contained in a tuple-5
- */
+Applies a normal 5-argument function to arguments contained in a tuple-5
+*/
 let apply:
   'a 'b 'c 'd 'e 'f.
   (('a, 'b, 'c, 'd, 'e) => 'f, ('a, 'b, 'c, 'd, 'e)) => 'f

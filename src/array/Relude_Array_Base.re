@@ -460,7 +460,7 @@ let filterNotWithIndex: 'a. (('a, int) => bool, array('a)) => array('a) =
 
 /**
 [Array.rejectWithIndex] is an alias for [filterNotWithIndex].
- */
+*/
 let rejectWithIndex: 'a. (('a, int) => bool, array('a)) => array('a) = filterNotWithIndex;
 
 /**
@@ -715,8 +715,9 @@ let removeFirst = (type a, eqA: (module EQ with type t = a), x, xs) => {
 };
 
 /**
- * Removes all occurrences of the given value from the array, using the given EQ module
- */
+Removes all occurrences of the given value from the array, using the given EQ
+module
+*/
 let removeEach = (type a, eqA: (module EQ with type t = a), x, xs) => {
   module EqA = (val eqA);
   removeEachBy(EqA.eq, x, xs);

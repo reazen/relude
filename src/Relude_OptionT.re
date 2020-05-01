@@ -1,8 +1,8 @@
 open BsBastet.Interface;
 
 /**
- * Creates an OptionT monad with the given outer Monad
- */
+Creates an OptionT monad with the given outer Monad
+*/
 module WithMonad = (M: MONAD) => {
   type t('a) =
     | OptionT(M.t(option('a)));

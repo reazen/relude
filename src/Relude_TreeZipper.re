@@ -1,11 +1,11 @@
 /**
- * A zipper for a non-empty multi-way/rose tree
- *
- * The leftSiblings are stored in reverse order for O(1) sideways movements.
- *
- * Based on the ideas/implementation from Tony Morris' talk here:
- * http://data.tmorris.net/talks/zippers/bd054c210649101b84662c614fc45af3c27a5eef/zippers.pdf
- */
+A zipper for a non-empty multi-way/rose tree
+
+The leftSiblings are stored in reverse order for O(1) sideways movements.
+
+Based on the ideas/implementation from Tony Morris' talk here:
+http://data.tmorris.net/talks/zippers/bd054c210649101b84662c614fc45af3c27a5eef/zippers.pdf
+*/
 type t('a) = {
   ancestors:
     list((list(Relude_Tree.t('a)), 'a, list(Relude_Tree.t('a)))),
@@ -16,8 +16,8 @@ type t('a) = {
 };
 
 /**
- * Creates a tree zipper containing a single item
- */
+Creates a tree zipper containing a single item
+*/
 let pure: 'a => t('a) =
   a => {
     ancestors: [],
@@ -28,13 +28,13 @@ let pure: 'a => t('a) =
   };
 
 /**
- * Alias for pure
- */
+Alias for pure
+*/
 let singleton = pure;
 
 /**
- * Constructs a tree zipper from parts
- */
+Constructs a tree zipper from parts
+*/
 let make:
   'a.
   (
@@ -55,8 +55,8 @@ let make:
   };
 
 /**
- * Constructs a tree zipper from (labelled) parts
- */
+Constructs a tree zipper from (labelled) parts
+*/
 let makeWithLabels:
   'a.
   (
@@ -79,8 +79,8 @@ let makeWithLabels:
   };
 
 /**
- * Converts a Tree into a Tree Zipper
- */
+Converts a Tree into a Tree Zipper
+*/
 let fromTree: 'a. Relude_Tree.t('a) => t('a) =
   ({value, children}) =>
     makeWithLabels(
@@ -92,8 +92,8 @@ let fromTree: 'a. Relude_Tree.t('a) => t('a) =
     );
 
 /**
- * Gets the list of ancestor levels for the given TreeZipper
- */
+Gets the list of ancestor levels for the given TreeZipper
+*/
 let getAncestors:
   'a.
   t('a) => list((list(Relude_Tree.t('a)), 'a, list(Relude_Tree.t('a))))
@@ -101,14 +101,14 @@ let getAncestors:
   ({ancestors, leftSiblings: _, focus: _, rightSiblings: _, children: _}) => ancestors;
 
 /**
- * Gets the value at the focus of the TreeZipper
- */
+Gets the value at the focus of the TreeZipper
+*/
 let getFocusValue: 'a. t('a) => 'a =
   ({ancestors: _, leftSiblings: _, focus, rightSiblings: _, children: _}) => focus;
 
 /**
- * Applies a side-effect function with the current focus value, and returns the zipper unchanged
- */
+Applies a side-effect function with the current focus value, and returns the zipper unchanged
+*/
 let tapFocusValue: 'a. ('a => unit, t('a)) => t('a) =
   (f, zipper) => {
     f(zipper |> getFocusValue);
@@ -116,8 +116,8 @@ let tapFocusValue: 'a. ('a => unit, t('a)) => t('a) =
   };
 
 /**
- * Overwrites the focus with the given value
- */
+Overwrites the focus with the given value
+*/
 let setFocusValue: 'a. ('a, t('a)) => t('a) =
   (newFocus, {ancestors, leftSiblings, focus: _, rightSiblings, children}) => {
     ancestors,
@@ -128,8 +128,8 @@ let setFocusValue: 'a. ('a, t('a)) => t('a) =
   };
 
 /**
- * Modifies the focus with the given function
- */
+Modifies the focus with the given function
+*/
 let modifyFocusValue: 'a. ('a => 'a, t('a)) => t('a) =
   (f, {ancestors, leftSiblings, focus, rightSiblings, children}) => {
     ancestors,
@@ -140,8 +140,8 @@ let modifyFocusValue: 'a. ('a => 'a, t('a)) => t('a) =
   };
 
 /**
- * Gets the value and children at the focus of the TreeZipper as a Tree
- */
+Gets the value and children at the focus of the TreeZipper as a Tree
+*/
 let getFocusTree: 'a. t('a) => Relude_Tree.t('a) =
   ({ancestors: _, leftSiblings: _, focus, rightSiblings: _, children}) => {
     value: focus,
@@ -149,22 +149,22 @@ let getFocusTree: 'a. t('a) => Relude_Tree.t('a) =
   };
 
 /**
- * Gets the siblings to the left of the focus value, in reverse order.
- * (the first item of the resulting list is the item that is immediately to the left of the focus).
- */
+Gets the siblings to the left of the focus value, in reverse order.
+(the first item of the resulting list is the item that is immediately to the left of the focus).
+*/
 let getLeftSiblings: 'a. t('a) => list(Relude_Tree.t('a)) =
   ({ancestors: _, leftSiblings, focus: _, rightSiblings: _, children: _}) => leftSiblings;
 
 /**
- * Gets the siblings to the left of the focus value, in order.
- * (the first item of the resulting list is the item that is the leftmost sibling (furthest from focus))
- */
+Gets the siblings to the left of the focus value, in order.
+(the first item of the resulting list is the item that is the leftmost sibling (furthest from focus))
+*/
 let getLeftSiblingsInOrder: 'a. t('a) => list(Relude_Tree.t('a)) =
   tree => tree |> getLeftSiblings |> Relude_List.reverse;
 
 /**
- * Sets the left siblings from a reversed list (where the first item of the list should be closest to the focus)
- */
+Sets the left siblings from a reversed list (where the first item of the list should be closest to the focus)
+*/
 let setLeftSiblings: 'a. (list(Relude_Tree.t('a)), t('a)) => option(t('a)) =
   (
     newLeftSiblings,
@@ -183,8 +183,8 @@ let setLeftSiblings: 'a. (list(Relude_Tree.t('a)), t('a)) => option(t('a)) =
     };
 
 /**
- * Sets the left siblings from an in-order list (where the first item of the list should be farthest from the focus)
- */
+Sets the left siblings from an in-order list (where the first item of the list should be farthest from the focus)
+*/
 let setLeftSiblingsFromInOrder:
   'a.
   (list(Relude_Tree.t('a)), t('a)) => option(t('a))
@@ -206,14 +206,14 @@ let setLeftSiblingsFromInOrder:
     };
 
 /**
- * Gets the siblings to the right of the current focus
- */
+Gets the siblings to the right of the current focus
+*/
 let getRightSiblings: 'a. t('a) => list(Relude_Tree.t('a)) =
   ({ancestors: _, leftSiblings: _, focus: _, rightSiblings, children: _}) => rightSiblings;
 
 /**
- * Sets the right siblings from a reversed list (where the first item of the list should be closest to the focus)
- */
+Sets the right siblings from a reversed list (where the first item of the list should be closest to the focus)
+*/
 let setRightSiblings:
   'a.
   (list(Relude_Tree.t('a)), t('a)) => option(t('a))
@@ -235,22 +235,22 @@ let setRightSiblings:
     };
 
 /**
- * Gets the children sub-trees of the current focus
- */
+Gets the children sub-trees of the current focus
+*/
 let getChildren: 'a. t('a) => list(Relude_Tree.t('a)) =
   ({ancestors: _, leftSiblings: _, focus: _, rightSiblings: _, children}) => children;
 
 /**
- * Sets the children
- */
+Sets the children
+*/
 let setChildren: 'a. (list(Relude_Tree.t('a)), t('a)) => t('a) =
   (newChildren, {ancestors, leftSiblings, focus, rightSiblings, children: _}) => {
     {ancestors, leftSiblings, focus, rightSiblings, children: newChildren};
   };
 
 /**
- * Moves the focus one sibling to the left (if possible)
- */
+Moves the focus one sibling to the left (if possible)
+*/
 let moveLeft: 'a. t('a) => option(t('a)) =
   ({ancestors, leftSiblings, focus, rightSiblings, children}) => {
     leftSiblings
@@ -270,14 +270,14 @@ let moveLeft: 'a. t('a) => option(t('a)) =
   };
 
 /**
- * Moves to the left, unless we are already at the leftmost item
- */
+Moves to the left, unless we are already at the leftmost item
+*/
 let moveLeftWithClamp: 'a. t('a) => t('a) =
   zipper => zipper |> moveLeft |> Relude_Option.getOrElse(zipper);
 
 /**
- * Moves the focus as far as possible to the left
- */
+Moves the focus as far as possible to the left
+*/
 let rec moveLeftToStart: 'a. t('a) => t('a) =
   zipper =>
     zipper
@@ -285,8 +285,8 @@ let rec moveLeftToStart: 'a. t('a) => t('a) =
     |> Relude_Option.foldLazy(() => zipper, moveLeftToStart);
 
 /**
- * Moves left a number of times
- */
+Moves left a number of times
+*/
 let rec moveLeftTimes: 'a. (int, t('a)) => option(t('a)) =
   (times, zipper) =>
     if (times < 0) {
@@ -298,8 +298,8 @@ let rec moveLeftTimes: 'a. (int, t('a)) => option(t('a)) =
     };
 
 /**
- * Move the focus to the left a number of times, stopping if the leftmost sibling is reached
- */
+Move the focus to the left a number of times, stopping if the leftmost sibling is reached
+*/
 let moveLeftTimesWithClamp: 'a. (int, t('a)) => t('a) =
   (times, zipper) => {
     zipper
@@ -308,8 +308,8 @@ let moveLeftTimesWithClamp: 'a. (int, t('a)) => t('a) =
   };
 
 /**
- * Moves the focus one sibling to the right (if possible)
- */
+Moves the focus one sibling to the right (if possible)
+*/
 let moveRight: 'a. t('a) => option(t('a)) =
   ({ancestors, leftSiblings, focus, rightSiblings, children}) => {
     rightSiblings
@@ -329,14 +329,14 @@ let moveRight: 'a. t('a) => option(t('a)) =
   };
 
 /**
- * Moves the zipper to the right one time, unless we are already at the rightmost item
- */
+Moves the zipper to the right one time, unless we are already at the rightmost item
+*/
 let moveRightWithClamp: 'a. t('a) => t('a) =
   zipper => zipper |> moveRight |> Relude_Option.getOrElse(zipper);
 
 /**
- * Moves the focus as far as possible to the right
- */
+Moves the focus as far as possible to the right
+*/
 let rec moveRightToEnd: 'a. t('a) => t('a) =
   zipper =>
     zipper
@@ -344,8 +344,8 @@ let rec moveRightToEnd: 'a. t('a) => t('a) =
     |> Relude_Option.foldLazy(() => zipper, moveRightToEnd);
 
 /**
- * Moves right a number of times
- */
+Moves right a number of times
+*/
 let rec moveRightTimes: 'a. (int, t('a)) => option(t('a)) =
   (times, zipper) =>
     if (times < 0) {
@@ -357,8 +357,8 @@ let rec moveRightTimes: 'a. (int, t('a)) => option(t('a)) =
     };
 
 /**
- * Move the focus to the right a number of times, stopping if the rightmost sibling is reached
- */
+Move the focus to the right a number of times, stopping if the rightmost sibling is reached
+*/
 let moveRightTimesWithClamp: 'a. (int, t('a)) => t('a) =
   (times, zipper) => {
     zipper
@@ -367,8 +367,8 @@ let moveRightTimesWithClamp: 'a. (int, t('a)) => t('a) =
   };
 
 /**
- * Moves the focus up one level to the parent (if possible)
- */
+Moves the focus up one level to the parent (if possible)
+*/
 let moveUp: 'a. t('a) => option(t('a)) =
   ({ancestors, leftSiblings, focus, rightSiblings, children}) => {
     ancestors
@@ -396,21 +396,21 @@ let moveUp: 'a. t('a) => option(t('a)) =
   };
 
 /**
- * Moves the zipper up a level, unless it's already at the top
- */
+Moves the zipper up a level, unless it's already at the top
+*/
 let moveUpWithClamp: 'a. t('a) => t('a) =
   zipper => zipper |> moveUp |> Relude_Option.getOrElse(zipper);
 
 /**
- * Moves the zipper to focus the top of the tree
- */
+Moves the zipper to focus the top of the tree
+*/
 let rec moveUpToTop: 'a. t('a) => t('a) =
   zipper =>
     zipper |> moveUp |> Relude_Option.foldLazy(() => zipper, moveUpToTop);
 
 /**
- * Moves the zipper up a number of times (if possible)
- */
+Moves the zipper up a number of times (if possible)
+*/
 let rec moveUpTimes: 'a. (int, t('a)) => option(t('a)) =
   (times, zipper) =>
     if (times < 0) {
@@ -422,8 +422,8 @@ let rec moveUpTimes: 'a. (int, t('a)) => option(t('a)) =
     };
 
 /**
- * Moves the zipper up a number of times, stopping if the top is reached
- */
+Moves the zipper up a number of times, stopping if the top is reached
+*/
 let moveUpTimesWithClamp: 'a. (int, t('a)) => t('a) =
   (times, zipper) => {
     zipper
@@ -432,8 +432,8 @@ let moveUpTimesWithClamp: 'a. (int, t('a)) => t('a) =
   };
 
 /**
- * Moves the focus down to the first child (if possible)
- */
+Moves the focus down to the first child (if possible)
+*/
 let moveDown: 'a. t('a) => option(t('a)) =
   ({ancestors, leftSiblings, focus, rightSiblings, children}) => {
     children
@@ -450,14 +450,14 @@ let moveDown: 'a. t('a) => option(t('a)) =
   };
 
 /**
- * Moves the zipper down one time, unless there are no children
- */
+Moves the zipper down one time, unless there are no children
+*/
 let moveDownWithClamp: 'a. t('a) => t('a) =
   zipper => zipper |> moveDown |> Relude_Option.getOrElse(zipper);
 
 /**
- * Moves the zipper to focus the bottom of the tree (on the left-most child branches)
- */
+Moves the zipper to focus the bottom of the tree (on the left-most child branches)
+*/
 let rec moveDownToBottom: 'a. t('a) => t('a) =
   zipper =>
     zipper
@@ -465,8 +465,8 @@ let rec moveDownToBottom: 'a. t('a) => t('a) =
     |> Relude_Option.foldLazy(() => zipper, moveDownToBottom);
 
 /**
- * Moves the focus down a number of times (if possible)
- */
+Moves the focus down a number of times (if possible)
+*/
 let rec moveDownTimes: 'a. (int, t('a)) => option(t('a)) =
   (times, zipper) =>
     if (times < 0) {
@@ -478,9 +478,9 @@ let rec moveDownTimes: 'a. (int, t('a)) => option(t('a)) =
     };
 
 /**
- * Moves the zipper down a number of times, stopping when we get as low as we can,
- * staying on the left-most child branches.
- */
+Moves the zipper down a number of times, stopping when we get as low as we can,
+staying on the left-most child branches.
+*/
 let moveDownTimesWithClamp: 'a. (int, t('a)) => t('a) =
   (times, zipper) => {
     zipper
@@ -489,8 +489,8 @@ let moveDownTimesWithClamp: 'a. (int, t('a)) => t('a) =
   };
 
 /**
- * Types of movements we can make in a TreeZipper
- */
+Types of movements we can make in a TreeZipper
+*/
 type movement = [
   | `Up(int)
   | `UpWithClamp(int)
@@ -507,8 +507,8 @@ type movement = [
 ];
 
 /**
- * Applies a single movement command to a zipper
- */
+Applies a single movement command to a zipper
+*/
 let moveOnceBy: 'a. (movement, t('a)) => option(t('a)) =
   (move, zipper) => {
     switch (move) {
@@ -528,8 +528,8 @@ let moveOnceBy: 'a. (movement, t('a)) => option(t('a)) =
   };
 
 /**
- * Applies a list of movement commands to a zipper
- */
+Applies a list of movement commands to a zipper
+*/
 let moveBy: 'a. (list(movement), t('a)) => option(t('a)) =
   (moves, zipper) => {
     moves
@@ -541,8 +541,8 @@ let moveBy: 'a. (list(movement), t('a)) => option(t('a)) =
   };
 
 /**
- * Applies a list of movement commands to a zipper and collects an accumulated value when visiting each new focus
- */
+Applies a list of movement commands to a zipper and collects an accumulated value when visiting each new focus
+*/
 let foldBy:
   'a 'b.
   (list(movement), ('b, 'a) => 'b, 'b, t('a)) => option((t('a), 'b))
@@ -564,8 +564,8 @@ let foldBy:
   };
 
 /**
- * Converts a zipper of 'a to a zipper of 'b using a pure function
- */
+Converts a zipper of 'a to a zipper of 'b using a pure function
+*/
 let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
   (aToB, {ancestors, leftSiblings, focus, rightSiblings, children}) => {
     {
@@ -597,9 +597,9 @@ let findInFocus: 'a. ('a => bool, t('a)) => option(t('a)) =
   (pred, zipper) => pred(getFocusValue(zipper)) ? Some(zipper) : None;
 
 /**
- * Finds a value in the curernt focus and recursively the children.
- * Equivalent to a depth first search in the currently focused tree.
- */
+Finds a value in the curernt focus and recursively the children.
+Equivalent to a depth first search in the currently focused tree.
+*/
 let findInFocusAndChildren: 'a. ('a => bool, t('a)) => option(t('a)) =
   (pred, zipper) => {
     let rec dfs = zipper =>
@@ -618,8 +618,8 @@ let findInFocusAndChildren: 'a. ('a => bool, t('a)) => option(t('a)) =
   };
 
 /**
- * Attempts to find a value by searching the current focus and left siblings
- */
+Attempts to find a value by searching the current focus and left siblings
+*/
 let rec findLeft:
   'a.
   (~checkFocus: bool=?, 'a => bool, t('a)) => option(t('a))
@@ -635,8 +635,8 @@ let rec findLeft:
     }
 
 /**
- * Attempts to find a value by searching the current focus and right siblings
- */
+Attempts to find a value by searching the current focus and right siblings
+*/
 and findRight: 'a. (~checkFocus: bool=?, 'a => bool, t('a)) => option(t('a)) =
   (~checkFocus=true, pred, zipper) =>
     if (checkFocus) {
@@ -649,9 +649,9 @@ and findRight: 'a. (~checkFocus: bool=?, 'a => bool, t('a)) => option(t('a)) =
     }
 
 /**
- * Attempts to find a value by searching the current focus, then the left siblings
- * from the focus outward, then the right siblings from the focus outward.
- */
+Attempts to find a value by searching the current focus, then the left siblings
+from the focus outward, then the right siblings from the focus outward.
+*/
 and findLeftOrRight:
   'a.
   (~checkFocus: bool=?, 'a => bool, t('a)) => option(t('a))
@@ -665,9 +665,9 @@ and findLeftOrRight:
   }
 
 /**
- * Attempts to find a value by moving up a level, then searching left and right on the parent level,
- * then progressing upward.
- */
+Attempts to find a value by moving up a level, then searching left and right on the parent level,
+then progressing upward.
+*/
 and findUp: 'a. ('a => bool, t('a)) => option(t('a)) =
   (pred, zipper) =>
     zipper
@@ -681,9 +681,9 @@ and findUp: 'a. ('a => bool, t('a)) => option(t('a)) =
        })
 
 /**
- * Attempts to find a value by moving down a level, then searching left and right on the child level,
- * then progressing downward.
- */
+Attempts to find a value by moving down a level, then searching left and right on the child level,
+then progressing downward.
+*/
 and findDown: 'a. ('a => bool, t('a)) => option(t('a)) =
   (pred, zipper) => {
     zipper
@@ -698,8 +698,8 @@ and findDown: 'a. ('a => bool, t('a)) => option(t('a)) =
   }
 
 /**
- * Attempts to find a value anywhere in the zipper, left/right/up/down
- */
+Attempts to find a value anywhere in the zipper, left/right/up/down
+*/
 and find: 'a. ('a => bool, t('a)) => option(t('a)) =
   (pred, zipper) => {
     zipper
@@ -709,8 +709,8 @@ and find: 'a. ('a => bool, t('a)) => option(t('a)) =
   };
 
 /**
- * Inserts a new tree, and pushes the current focus to the left
- */
+Inserts a new tree, and pushes the current focus to the left
+*/
 let insertTreeWithPushLeft: 'a. (Relude_Tree.t('a), t('a)) => option(t('a)) =
   (newTree, {ancestors, leftSiblings, focus, rightSiblings, children}) =>
     if (ancestors |> Relude_List.isNotEmpty) {
@@ -726,15 +726,15 @@ let insertTreeWithPushLeft: 'a. (Relude_Tree.t('a), t('a)) => option(t('a)) =
     };
 
 /**
- * Inserts a new value (singleton tree), and pushes the current focus to the left
- */
+Inserts a new value (singleton tree), and pushes the current focus to the left
+*/
 let insertWithPushLeft: 'a. ('a, t('a)) => option(t('a)) =
   (newFocus, tree) =>
     insertTreeWithPushLeft(Relude_Tree.pure(newFocus), tree);
 
 /**
- * Inserts a new tree, and pushes the current focus to the right
- */
+Inserts a new tree, and pushes the current focus to the right
+*/
 let insertTreeWithPushRight:
   'a.
   (Relude_Tree.t('a), t('a)) => option(t('a))
@@ -753,15 +753,15 @@ let insertTreeWithPushRight:
     };
 
 /**
- * Inserts a new value (singleton tree), and pushes the current focus to the right
- */
+Inserts a new value (singleton tree), and pushes the current focus to the right
+*/
 let insertWithPushRight: 'a. ('a, t('a)) => option(t('a)) =
   (newFocus, tree) =>
     insertTreeWithPushRight(Relude_Tree.pure(newFocus), tree);
 
 /**
- * Deletes the tree at the focus, and pulls the left sibling into focus (if possible)
- */
+Deletes the tree at the focus, and pulls the left sibling into focus (if possible)
+*/
 let deleteWithPullLeft: 'a. t('a) => option(t('a)) =
   ({ancestors, leftSiblings, focus: _, rightSiblings, children: _}) =>
     if (ancestors |> Relude_List.isNotEmpty) {
@@ -781,8 +781,8 @@ let deleteWithPullLeft: 'a. t('a) => option(t('a)) =
     };
 
 /**
- * Deletes the tree at the focus, and pulls the right sibling into focus (if possible)
- */
+Deletes the tree at the focus, and pulls the right sibling into focus (if possible)
+*/
 let deleteWithPullRight: 'a. t('a) => option(t('a)) =
   ({ancestors, leftSiblings, focus: _, rightSiblings, children: _}) =>
     if (ancestors |> Relude_List.isNotEmpty) {
@@ -802,10 +802,10 @@ let deleteWithPullRight: 'a. t('a) => option(t('a)) =
     };
 
 /**
- * Attempts to delete by deleting and pulling from the left.  If there is no item on the left,
- * it tries to pull from the right.  If there is no item on the right, it moves the focus up a level,
- * discarding the current focus and children.
- */
+Attempts to delete by deleting and pulling from the left.  If there is no item on the left,
+it tries to pull from the right.  If there is no item on the right, it moves the focus up a level,
+discarding the current focus and children.
+*/
 let delete: 'a. t('a) => option(t('a)) =
   zipper =>
     zipper

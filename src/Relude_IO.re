@@ -142,12 +142,13 @@ types of side effects and "functional effects" using a single Monad.
 This type is inspired by and based on the recent work that has gone into the
 concept of bi-functor IO in the FP community:
 
-- John De Goes' blog posts
+{ul
+ {- John De Goes' blog posts
     - {{: http://degoes.net/articles/bifunctor-io} Bifunctor IO: A Step Away from Dynamically-Typed Error Handling}
-    - {{: http://degoes.net/articles/zio-environment} Beautiful, Simple, Testable Functional Effects for Scala}
-- {{: https://github.com/scalaz/scalaz-zio} ZIO}
-- {{: https://github.com/LukaJCB/cats-bio} cats-bio}
-- {{: https://github.com/slamdata/purescript-aff/issues/137} PureScript Aff Discussion}
+    - {{: http://degoes.net/articles/zio-environment} Beautiful, Simple, Testable Functional Effects for Scala}}
+ {- {{: https://github.com/scalaz/scalaz-zio} ZIO}}
+ {- {{: https://github.com/LukaJCB/cats-bio} cats-bio}}
+ {- {{: https://github.com/slamdata/purescript-aff/issues/137} PureScript Aff Discussion}}}
 |}
 ];
 
@@ -156,11 +157,11 @@ IO is a bi-functor effect type that supports both synchronous and asynchronous e
 
 This is inspired by the following libraries/articles:
 
-  * John De Goes - http://degoes.net/articles/only-one-io and http://degoes.net/articles/bifunctor-io
-  * ZIO/Scalaz 8 IO (Scala) - https://github.com/scalaz/scalaz-zio
-  * cats-bio (Scala) - https://github.com/LukaJCB/cats-bio
-  * purescript-aff discussion (Purescript) - https://github.com/slamdata/purescript-aff/issues/137
- */
+  - John De Goes - http://degoes.net/articles/only-one-io and http://degoes.net/articles/bifunctor-io
+  - ZIO/Scalaz 8 IO (Scala) - https://github.com/scalaz/scalaz-zio
+  - cats-bio (Scala) - https://github.com/LukaJCB/cats-bio
+  - purescript-aff discussion (Purescript) - https://github.com/slamdata/purescript-aff/issues/137
+*/
 type t('a, 'e) =
   | Pure('a): t('a, 'e)
   | Throw('e): t('a, 'e)
@@ -731,7 +732,7 @@ and composeAsync:
 
 /**
 compose specialization for a left-hand-side Map
- */
+*/
 and composeMap:
   'a 'b 'c 'r0 'e.
   (('r0, 'a) => 'b, t('r0, 'e), t('b => 'c, 'e)) => t('a => 'c, 'e)
@@ -1067,7 +1068,7 @@ This is intended to be used with the [|>] pipe operator, like this:
   |> IO.orElse(~fallback=IO.suspend(() => b := true))
   |> IO.unsafeRunAsync(...)
 ]}
- */
+*/
 let orElse: 'a 'e. (~fallback: t('a, 'e), t('a, 'e)) => t('a, 'e) =
   (~fallback, io) => {
     alt(io, fallback);

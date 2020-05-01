@@ -1,5 +1,6 @@
 /**
-Fs.FFI wraps a few functions from the node.js fs module with little to no modification to the fs API.
+Fs.Native wraps a few functions from the node.js fs module with little to no
+modification to the fs API.
 */
 module Native = {
   let dirname: option(string) = [%bs.node __dirname];
@@ -38,11 +39,13 @@ module Native = {
 };
 
 /**
-Fs.Eff wraps the synchronous Native functions in the Eff monad.
-Note: these fs functions can actually fail with exceptions with are not handled by Eff.
+Fs.IO wraps the synchronous Native functions in the IO monad.
+
+Note: these fs functions can actually fail with exceptions with are not handled
+by IO.
 */
 module IO = {
-  /* Read a file with no accomodation for errors */
+  // Read a file with no accomodation for errors
   let readFileSync: string => Relude_IO.t(string, Js.Exn.t) =
     path => Relude_IO.triesJS(() => Native.readFileSync(path, `utf8));
 

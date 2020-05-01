@@ -1,6 +1,6 @@
 /**
- * Relude.Js.Json contains helper functions for dealing with Js.Json.t values
- */;
+Relude.Js.Json contains helper functions for dealing with Js.Json.t values
+*/;
 
 open Relude_Function.Infix;
 
@@ -16,7 +16,7 @@ type dict = Js.Dict.t(json);
 
 /**
 Shows a JSON value with optional space indentation
- */
+*/
 let show = (~indentSpaces: int=2, json: json): string =>
   Js.Json.stringifyWithSpace(json, indentSpaces);
 
@@ -84,9 +84,9 @@ Creates a Js.Json.t number value from a float
 let fromFloat: float => json = Js.Json.number;
 
 /**
- * Creates a Js.Json.t value from an option('a).  If the option is `None`, a null value is returned, otherwise,
- * the value is encoded using the given function.
- */
+Creates a Js.Json.t value from an option('a). If the option is [None], a null
+value is returned, otherwise, the value is encoded using the given function.
+*/
 let fromOption: ('a => json, option('a)) => json =
   (encode, opt) => opt |> Relude_Option.fold(null, encode);
 
@@ -108,7 +108,8 @@ let fromListOfJson: list(json) => json =
   Relude_List.toArray >> fromArrayOfJson;
 
 /**
-Creates a Js.Json.t array value from an list of values that can be converted to Js.Json.t values with the given function
+Creates a Js.Json.t array value from an list of values that can be converted to
+Js.Json.t values with the given function
 */
 let fromListOfJsonBy: 'a. ('a => json, list('a)) => json =
   (f, items) => Relude_List.map(f, items) |> fromListOfJson;
@@ -130,21 +131,23 @@ let fromListOfDictOfJson: list(dict) => json =
   Relude_List.toArray >> Js.Json.objectArray;
 
 /**
-Creates a Js.Json.t object value from an array of key/value (string/Js.Json.t) tuples.
- */
+Creates a Js.Json.t object value from an array of key/value (string/Js.Json.t)
+tuples.
+*/
 let fromArrayOfKeyValueTuples: array((Js.Dict.key, json)) => json =
   tuples => fromDictOfJson(Js.Dict.fromArray(tuples));
 
 /**
-Creates a Js.Json.t object value from an list of key/value (string/Js.Json.t) tuples.
- */
+Creates a Js.Json.t object value from an list of key/value (string/Js.Json.t)
+tuples.
+*/
 let fromListOfKeyValueTuples: list((Js.Dict.key, json)) => json =
   tuples => fromDictOfJson(Js.Dict.fromList(tuples));
 
 ////////////////////////////////////////////////////////////////////////////////
 // Basic conversions from the top-level Js.Json.t type to the specific Json
 // subtypes.  These functions do not unpack nested json objects - i.e. asDict
-// will attempt to convert a `Js.Json.t` value to an `option(Js.Dict.t(Js.Json.t))`
+// will attempt to convert a [Js.Json.t] value to an [option(Js.Dict.t(Js.Json.t))]
 // but does not attempt to decode the resulting dictionary.
 //
 // Note: there are intentially very basic. For more advanced decoding, try a
@@ -152,85 +155,93 @@ let fromListOfKeyValueTuples: list((Js.Dict.key, json)) => json =
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
-Attempts to decode the given Js.Json.t value as a null.  Returns `Some(())` if it is a `null`, otherwise `None`.
+Attempts to decode the given Js.Json.t value as a null.  Returns [Some(())] if
+it is a [null], otherwise [None].
 */
 let toNull: json => option(unit) =
   json => json |> Js.Json.decodeNull |> Relude_Option.void;
 
 /**
-Attempts to decode the given `Js.Json.t` value as a `boolean`
+Attempts to decode the given [Js.Json.t] value as a [boolean]
 */
 let toBool: json => option(bool) = Js.Json.decodeBoolean;
 
 /**
-Attempts to decode the given `Js.Json.t` value as a `string`
+Attempts to decode the given [Js.Json.t] value as a [string]
 */
 let toString: json => option(string) = Js.Json.decodeString;
 
 /**
-Attempts to decode the given `Js.Json.t` value as an `int`
+Attempts to decode the given [Js.Json.t] value as an [int]
 */
 let toInt: json => option(int) =
   json => json |> Js.Json.decodeNumber |> Relude_Option.map(int_of_float);
 
 /**
-Attempts to decode the given `Js.Json.t` value as a `float`
+Attempts to decode the given [Js.Json.t] value as a [float]
 */
 let toFloat: json => option(float) = Js.Json.decodeNumber;
 
 /**
-Attempts to decode the given `Js.Json.t` value as an array of `Js.Json.t` values.
+Attempts to decode the given [Js.Json.t] value as an array of [Js.Json.t]
+values.
 */
 let toArrayOfJson: json => option(array(json)) = Js.Json.decodeArray;
 
 /**
-Attempts to decode the given `Js.Json.t` value as an array of `Js.Json.t` values, with a fallback.
+Attempts to decode the given [Js.Json.t] value as an array of [Js.Json.t]
+values, with a fallback.
 */
 let toArrayOfJsonOrElse: (array(json), json) => array(json) =
   (default, json) =>
     json |> toArrayOfJson |> Relude_Option.getOrElse(default);
 
 /**
-Attempts to decode the given `Js.Json.t` value as an array of `Js.Json.t` values, with a fallback of an empty array.
+Attempts to decode the given [Js.Json.t] value as an array of [Js.Json.t]
+values, with a fallback of an empty array.
 */
 let toArrayOfJsonOrEmpty = toArrayOfJsonOrElse([||]);
 
 /**
-Attempts to decode the given `Js.Json.t` value as a list of `Js.Json.t` values.
+Attempts to decode the given [Js.Json.t] value as a list of [Js.Json.t] values.
 */
 let toListOfJson: json => option(list(json)) =
   json => json |> toArrayOfJson |> Relude_Option.map(Relude_Array.toList);
 
 /**
-Attempts to decode the given `Js.Json.t` value as an list of `Js.Json.t` values, with a fallback.
+Attempts to decode the given [Js.Json.t] value as an list of [Js.Json.t] values,
+with a fallback.
 */
 let toListOfJsonOrElse = (default, json) =>
   json |> toListOfJson |> Relude_Option.getOrElse(default);
 
 /**
-Attempts to decode the given `Js.Json.t` value as a list of `Js.Json.t` values, with a fallback of an empty list.
+Attempts to decode the given [Js.Json.t] value as a list of [Js.Json.t] values,
+with a fallback of an empty list.
 */
 let toListOrEmpty = toListOfJsonOrElse([]);
 
 /**
-Attempts to decode the given `Js.Json.t` value as a `Js.Dict.t(Js.Json.t)`
- */
+Attempts to decode the given [Js.Json.t] value as a [Js.Dict.t(Js.Json.t)]
+*/
 let toDictOfJson: json => option(dict) = Js.Json.decodeObject;
 
 /**
-Attempts to decode the given `Js.Json.t` value as a `Js.Dict.t(Js.Json.t)` with a fallback.
- */
+Attempts to decode the given [Js.Json.t] value as a [Js.Dict.t(Js.Json.t)] with
+a fallback.
+*/
 let toDictOfJsonOrElse = (default, json) =>
   json |> toDictOfJson |> Relude_Option.getOrElse(default);
 
 /**
-Attempts to decode the given `Js.Json.t` value as a `Js.Dict.t(Js.Json.t)` with a fallback of an empty `Js.Dict`.
- */
+Attempts to decode the given [Js.Json.t] value as a [Js.Dict.t(Js.Json.t)] with
+a fallback of an empty [Js.Dict].
+*/
 let toDictOfJsonOrEmpty: json => dict = toDictOfJsonOrElse(Js.Dict.empty());
 
 ////////////////////////////////////////////////////////////////////////////////
 // Basic applicative-validation style decoding of arrays and objects. The
-// applicative behavior of the Validation, when used in a `traverse`, causes the
+// applicative behavior of the Validation, when used in a [traverse], causes the
 // errors to be collected. However, it is not possible to gather deeply-nested
 // contextual error information with this style of decoding.
 //
@@ -257,7 +268,8 @@ module Error = {
 };
 
 module Errors = {
-  // I'm standardizing on NonEmptyArray as the error collector type... this was an arbitrary decision between List and Array
+  // I'm standardizing on NonEmptyArray as the error collector type... this was
+  // an arbitrary decision between List and Array
   type t = Relude_NonEmpty.Array.t(Error.t);
 
   let pure = Relude_NonEmpty.Array.pure;
@@ -278,8 +290,8 @@ module TraversableE = ArrayValidationE.Traversable;
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Validates that the given Js.Json.t value is a null
- */
+Validates that the given Js.Json.t value is a null
+*/
 let validateNull: json => Relude_Validation.t(unit, Errors.t) =
   json =>
     toNull(json)
@@ -288,8 +300,8 @@ let validateNull: json => Relude_Validation.t(unit, Errors.t) =
        );
 
 /**
- * Validates that the given Js.Json.t value is a bool
- */
+Validates that the given Js.Json.t value is a bool
+*/
 let validateBool: json => Relude_Validation.t(bool, Errors.t) =
   json =>
     toBool(json)
@@ -298,8 +310,8 @@ let validateBool: json => Relude_Validation.t(bool, Errors.t) =
        );
 
 /**
- * Validates that the given Js.Json.t value is a string
- */
+Validates that the given Js.Json.t value is a string
+*/
 let validateString: json => Relude_Validation.t(string, Errors.t) =
   json =>
     toString(json)
@@ -308,8 +320,8 @@ let validateString: json => Relude_Validation.t(string, Errors.t) =
        );
 
 /**
- * Validates that the given Js.Json.t value is an int
- */
+Validates that the given Js.Json.t value is an int
+*/
 let validateInt: json => Relude_Validation.t(int, Errors.t) =
   json =>
     toInt(json)
@@ -318,8 +330,8 @@ let validateInt: json => Relude_Validation.t(int, Errors.t) =
        );
 
 /**
- * Validates that the given Js.Json.t value is a float
- */
+Validates that the given Js.Json.t value is a float
+*/
 let validateFloat: json => Relude_Validation.t(float, Errors.t) =
   json =>
     toFloat(json)
@@ -328,10 +340,12 @@ let validateFloat: json => Relude_Validation.t(float, Errors.t) =
        );
 
 /**
- * Validates that the given value is either null or can be decoded using the given decoder.
- *
- * Failed validation can be treated as None or returned as an error using the errorAsNone flag.
- */
+Validates that the given value is either null or can be decoded using the given
+decoder.
+
+Failed validation can be treated as None or returned as an error using the
+[errorAsNone] flag.
+*/
 let validateOptional =
     (
       ~errorAsNone=false,
@@ -346,7 +360,8 @@ let validateOptional =
     switch (validate(json)) {
     | VOk(a) => Relude_Validation.pure(Some(a))
     | VError(_) as e =>
-      // The value was not null, and the real validation failed - decide if we ignore the error or return it
+      // The value was not null, and the real validation failed - decide if we
+      // ignore the error or return it
       if (errorAsNone) {
         Relude_Validation.pure(None);
       } else {
@@ -360,18 +375,18 @@ let validateOptional =
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Validates that the given Js.Json.t value is an array, and attempts to get the value
- * at the given index as a raw Js.Json.t value.
- */
+Validates that the given Js.Json.t value is an array, and attempts to get the
+value at the given index as a raw Js.Json.t value.
+*/
 let getJsonAtIndex: (int, json) => option(json) =
   (index, json) => {
     toArrayOfJson(json) |> Relude_Option.flatMap(Relude_Array.at(index));
   };
 
 /**
- * Validates that the given Js.Json.t value is an array, and attempts to get the value
- * at the given index and validate it with the given validation function.
- */
+Validates that the given Js.Json.t value is an array, and attempts to get the
+value at the given index and validate it with the given validation function.
+*/
 let validateJsonAtIndex:
   (int, json => Relude_Validation.t('a, Errors.t), json) =>
   Relude_Validation.t('a, Errors.t) =
@@ -391,8 +406,9 @@ let validateJsonAtIndex:
   };
 
 /**
- * Validates that the given Js.Json.t value is an array with a null at the given index
- */
+Validates that the given Js.Json.t value is an array with a null at the given
+index.
+*/
 let validateNullAtIndex: (int, json) => Relude_Validation.t(unit, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -406,8 +422,9 @@ let validateNullAtIndex: (int, json) => Relude_Validation.t(unit, Errors.t) =
     );
 
 /**
- * Validates that the given Js.Json.t value is an array with a bool at the given index.
- */
+Validates that the given Js.Json.t value is an array with a bool at the given
+index.
+*/
 let validateBoolAtIndex: (int, json) => Relude_Validation.t(bool, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -421,8 +438,9 @@ let validateBoolAtIndex: (int, json) => Relude_Validation.t(bool, Errors.t) =
     );
 
 /**
- * Validates that the given Js.Json.t value is an array with an int at the given index.
- */
+Validates that the given Js.Json.t value is an array with an int at the given
+index.
+*/
 let validateIntAtIndex: (int, json) => Relude_Validation.t(int, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -436,8 +454,9 @@ let validateIntAtIndex: (int, json) => Relude_Validation.t(int, Errors.t) =
     );
 
 /**
- * Validates that the given Js.Json.t value is an array with a float at the given index.
- */
+Validates that the given Js.Json.t value is an array with a float at the given
+index.
+*/
 let validateFloatAtIndex: (int, json) => Relude_Validation.t(float, Errors.t) =
   (index, json) =>
     validateJsonAtIndex(
@@ -451,8 +470,9 @@ let validateFloatAtIndex: (int, json) => Relude_Validation.t(float, Errors.t) =
     );
 
 /**
- * Validates that the given Js.Json.t value is an array with a string at the given index.
- */
+Validates that the given Js.Json.t value is an array with a string at the given
+index.
+*/
 let validateStringAtIndex:
   (int, json) => Relude_Validation.t(string, Errors.t) =
   (index, json) =>
@@ -467,12 +487,14 @@ let validateStringAtIndex:
     );
 
 /**
- * Validates the given Js.Json.t value at the given index, using the validation function.
- *
- * An invalid index can be treated as None or returned as an error using the missingAsNone flag.
- * A null value can be treated as None or returned as an error using the nullAsNone flag.
- * Failed validation can be treated as None or returned as an error using the errorAsNone flag.
- */
+Validates the given Js.Json.t value at the given index, using the validation
+function.
+
+An invalid index can be treated as None or returned as an error using the
+[missingAsNone] flag. A null value can be treated as None or returned as an
+error using the [nullAsNone] flag. Failed validation can be treated as None or
+returned as an error using the [errorAsNone] flag.
+*/
 let validateOptionalAtIndex =
     (
       ~missingAsNone=true,
@@ -501,7 +523,8 @@ let validateOptionalAtIndex =
         );
       }
     | VError(_) =>
-      // The value was not null, try to validate it, and see if we treat an error as None or return it
+      // The value was not null, try to validate it, and see if we treat an
+      // error as None or return it
       switch (validate(json)) {
       | VOk(a) => Relude_Validation.pure(Some(a))
       | VError(_) as e =>
@@ -529,9 +552,9 @@ let validateOptionalAtIndex =
   };
 
 /**
- * Validates that the given Js.Json.t value is an array, then validates each item of the array
- * using the given validation function.
- */
+Validates that the given Js.Json.t value is an array, then validates each item
+of the array using the given validation function.
+*/
 let validateArrayOfJson:
   'a 'e.
   ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -558,9 +581,10 @@ let validateArrayOfJson:
   };
 
 /**
- * Validates that the given Js.Json.t value is an array, then validates each item of the array
- * using the given validation function, then converts the result to a list.
- */
+Validates that the given Js.Json.t value is an array, then validates each item
+of the array using the given validation function, then converts the result to a
+list.
+*/
 let validateArrayOfJsonAsList:
   'a 'e.
   ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -588,9 +612,10 @@ let validateArrayOfJsonAsList:
   };
 
 /**
- * Validates that the given Js.Json.t value is an array, and then validates the value at the given
- * index is an array, and validates it using the given validation function.
- */
+Validates that the given Js.Json.t value is an array, and then validates the
+value at the given index is an array, and validates it using the given
+validation function.
+*/
 let validateArrayAtIndex:
   'a.
   (int, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -611,9 +636,10 @@ let validateArrayAtIndex:
        );
 
 /**
- * Validates that the Js.Json.t value is an array, then validates that the value at the
- * given index is a Json object, and validates the object using the given validation function.
- */
+Validates that the Js.Json.t value is an array, then validates that the value at
+the given index is a Json object, and validates the object using the given
+validation function.
+*/
 let validateObjectAtIndex:
   'a.
   (int, json => Relude_Validation.t('a, Errors.t), json) =>
@@ -625,9 +651,9 @@ let validateObjectAtIndex:
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Validates that the given Js.Json.t value is an object, and then gets the raw Js.Json.t
- * value for the given key.
- */
+Validates that the given Js.Json.t value is an object, and then gets the raw
+Js.Json.t value for the given key.
+*/
 let getJsonForKey: (string, json) => option(json) =
   (key, json) => {
     toDictOfJson(json)
@@ -635,9 +661,9 @@ let getJsonForKey: (string, json) => option(json) =
   };
 
 /**
- * Validates that the given Js.Json.t value is an object, then validates the value at the
- * given key using the given validation function.
- */
+Validates that the given Js.Json.t value is an object, then validates the value
+at the given key using the given validation function.
+*/
 let validateJsonForKey:
   (string, json => Relude_Validation.t('a, Errors.t), json) =>
   Relude_Validation.t('a, Errors.t) =
@@ -653,8 +679,8 @@ let validateJsonForKey:
   };
 
 /**
- * Validates the given Js.Json.t value is an object with a null at the given key.
- */
+Validates the given Js.Json.t value is an object with a null at the given key.
+*/
 let validateNullForKey: (string, json) => Relude_Validation.t(unit, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -666,8 +692,8 @@ let validateNullForKey: (string, json) => Relude_Validation.t(unit, Errors.t) =
     );
 
 /**
- * Validates the given Js.Json.t value is an object with a bool at the given key.
- */
+Validates the given Js.Json.t value is an object with a bool at the given key.
+*/
 let validateBoolForKey: (string, json) => Relude_Validation.t(bool, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -679,8 +705,8 @@ let validateBoolForKey: (string, json) => Relude_Validation.t(bool, Errors.t) =
     );
 
 /**
- * Validates the given Js.Json.t value is an object with an int at the given key.
- */
+Validates the given Js.Json.t value is an object with an int at the given key.
+*/
 let validateIntForKey: (string, json) => Relude_Validation.t(int, Errors.t) =
   (key, json) =>
     validateJsonForKey(
@@ -692,8 +718,8 @@ let validateIntForKey: (string, json) => Relude_Validation.t(int, Errors.t) =
     );
 
 /**
- * Validates the given Js.Json.t value is an object with a float at the given key.
- */
+Validates the given Js.Json.t value is an object with a float at the given key.
+*/
 let validateFloatForKey:
   (string, json) => Relude_Validation.t(float, Errors.t) =
   (key, json) =>
@@ -706,8 +732,8 @@ let validateFloatForKey:
     );
 
 /**
- * Validates the given Js.Json.t value is an object with a string at the given key.
- */
+Validates the given Js.Json.t value is an object with a string at the given key.
+*/
 let validateStringForKey:
   (string, json) => Relude_Validation.t(string, Errors.t) =
   (key, json) =>
@@ -720,12 +746,18 @@ let validateStringForKey:
     );
 
 /**
- * Validates the given Js.Json.t value at the given key, using the validation function.
- *
- * An missing key or null value can be treated as None or returned as an error using the missingAsNone flag.
- * A null value can be treated as None or returned as an error using the nullAsNone flag.
- * Failed validation can be treated as None or returned as an error using the errorAsNone flag.
- */
+Validates the given Js.Json.t value at the given key, using the validation
+function.
+
+A missing key or null value can be treated as [None] or returned as an error
+using the [missingAsNone] flag.
+
+A null value can be treated as [None] or returned as an error using the
+[nullAsNone] flag.
+
+Failed validation can be treated as [None] or returned as an error using the
+[errorAsNone] flag.
+*/
 let validateOptionalForKey =
     (
       ~missingAsNone=true,
@@ -753,7 +785,8 @@ let validateOptionalForKey =
         );
       }
     | VError(_) =>
-      // The value was not null - try to decode and see if we treat an error as None or as an error
+      // The value was not null - try to decode and see if we treat an error as
+      // None or as an error
       switch (validate(json)) {
       | VOk(a) => Relude_Validation.pure(Some(a))
       | VError(_) as e =>
@@ -776,9 +809,9 @@ let validateOptionalForKey =
   };
 
 /**
- * Validates the given Js.Json.t value is an object with an array at the given key,
- * then validates the array using the given validation function.
- */
+Validates the given Js.Json.t value is an object with an array at the given key,
+then validates the array using the given validation function.
+*/
 let validateArrayForKey:
   'a.
   (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -795,9 +828,10 @@ let validateArrayForKey:
        );
 
 /**
- * Validates the given Js.Json.t value is an object with an array at the given key,
- * then validates the array using the given validation function, returning the result in a list.
- */
+Validates the given Js.Json.t value is an object with an array at the given key,
+then validates the array using the given validation function, returning the
+result in a list.
+*/
 let validateListForKey:
   'a.
   (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -814,9 +848,9 @@ let validateListForKey:
        );
 
 /**
- * Validates the given Js.Json.t value is an object with an object at the given key,
- * then validates the object using the given validation function.
- */
+Validates the given Js.Json.t value is an object with an object at the given
+key, then validates the object using the given validation function.
+*/
 let validateObjectForKey:
   'a.
   (string, json => Relude_Validation.t('a, Errors.t), json) =>
@@ -828,7 +862,8 @@ let validateObjectForKey:
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
-Exposes a set of focused/abbreviated operations for use as a global or local open.
+Exposes a set of focused/abbreviated operations for use as a global or local
+open.
 
 The map/apply operators are provided for applicative style validation
 for decoding objects.
@@ -848,127 +883,132 @@ module DSL = {
   */
   module JE = {
     /**
-     * Creates a JSON null value
-     */
+    Creates a JSON null value
+    */
     let null: json = null;
 
     /**
-     * Encodes a bool as a JSON bool value
-     */
+    Encodes a bool as a JSON bool value
+    */
     let bool: bool => json = fromBool;
 
     /**
-     * Encodes an int as a JSON number value
-     */
+    Encodes an int as a JSON number value
+    */
     let int: int => json = fromInt;
 
     /**
-     * Encodes a float as a JSON number value
-     */
+    Encodes a float as a JSON number value
+    */
     let float: float => json = fromFloat;
 
     /**
-     * Encodes a float as a JSON number value
-     *
-     * Alias of `float`
-     */
+    Encodes a float as a JSON number value
+
+    Alias of [float]
+    */
     let num: float => json = fromFloat;
 
     /**
-     * Encodes a string as a JSON string value
-     */
+    Encodes a string as a JSON string value
+    */
     let string: string => json = fromString;
 
     /**
-     * Encodes an option('a) as JSON, using the given encode function, or returning null for None.
-     */
+    Encodes an option('a) as JSON, using the given encode function, or returning
+    null for None.
+    */
     let opt: ('a => json, option('a)) => json = fromOption;
 
     /**
-     * Encodes an array(Js.Json.t) as a single Js.Json.t (array) value
-     */
+    Encodes an array(Js.Json.t) as a single Js.Json.t (array) value
+    */
     let array: array(json) => json = fromArrayOfJson;
 
     /**
-     * Maps a JSON-conversaion function over an array of values, and then encodes the result as a JSON array
-     */
+    Maps a JSON-conversaion function over an array of values, and then encodes
+    the result as a JSON array
+    */
     let arrayBy: 'a. ('a => json, array('a)) => json = fromArrayOfJsonBy;
 
     /**
-     * Encodes an array(Js.Dict.t(Js.Json.t)) into a Js.Json.t value
-     */
+    Encodes an array(Js.Dict.t(Js.Json.t)) into a Js.Json.t value
+    */
     let arrayOfDict: array(dict) => json = fromArrayOfDictOfJson;
 
     /**
-     * Encodes an array of key/value pairs into a Js.Json.t value
-     */
+    Encodes an array of key/value pairs into a Js.Json.t value
+    */
     let arrayOfTuples: array((Js.Dict.key, json)) => json = fromArrayOfKeyValueTuples;
 
     /**
-     * Encodes a list of Js.Json.t values to a Js.Json.t value
-     */
+    Encodes a list of Js.Json.t values to a Js.Json.t value
+    */
     let list: list(json) => json = fromListOfJson;
 
     /**
-     * Maps a JSON-conversion function over a list of values, then encodes the result as a Js.Json.t array value
-     */
+    Maps a JSON-conversion function over a list of values, then encodes the
+    result as a Js.Json.t array value
+    */
     let listBy = fromListOfJsonBy;
 
     /**
-     * Encodes a list Js.Dict.t(Js.Json.t) values into a Js.Json.t array value
-     */
+    Encodes a list Js.Dict.t(Js.Json.t) values into a Js.Json.t array value
+    */
     let listOfDict: list(dict) => json = fromListOfDictOfJson;
 
     /**
-     * Encodes a list of key/value pairs into a Js.Json.t array value
+    Encodes a list of key/value pairs into a Js.Json.t array value
     */
     let listOfTuples: list((Js.Dict.key, json)) => json = fromListOfKeyValueTuples;
 
     /**
-     * Encodes a dict of Js.Json.t values into a Js.Json.t value
-     */
+    Encodes a dict of Js.Json.t values into a Js.Json.t value
+    */
     let dict: dict => json = fromDictOfJson;
   };
 
   /**
-   * JSON decoding utilities
-   */
+  JSON decoding utilities
+  */
   module JD = {
-    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     // Plain value validation (decoding)
-    ////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Validates the given Js.Json.t value is a null
-     */
+    Validates the given Js.Json.t value is a null
+    */
     let null: json => Relude_Validation.t(unit, Errors.t) = validateNull;
 
     /**
-     * Validates the given Js.Json.t value is a bool
-     */
+    Validates the given Js.Json.t value is a bool
+    */
     let bool: json => Relude_Validation.t(bool, Errors.t) = validateBool;
 
     /**
-     * Validates the given Js.Json.t value as a string
-     */
+    Validates the given Js.Json.t value as a string
+    */
     let int: json => Relude_Validation.t(int, Errors.t) = validateInt;
 
     /**
-     * Validates the given Js.Json.t value as a float
-     */
+    Validates the given Js.Json.t value as a float
+    */
     let float: json => Relude_Validation.t(float, Errors.t) = validateFloat;
 
     /**
-     * Validates the given Js.Json.t value as a string
-     */
+    Validates the given Js.Json.t value as a string
+    */
     let string: json => Relude_Validation.t(string, Errors.t) = validateString;
 
     /**
-     * Validates that the given Js.Json.t value is either null or can be validated using the given function.
-     *
-     * If the validation function fails, the error can either be returned as a successful None value, or the error
-     * can be returned - depending on the errorAsNone flag.
-     */
+    Validates that the given Js.Json.t value is either null or can be validated
+    using the given function.
+
+    If the validation function fails, the error can either be returned as a
+    successful None value, or the error can be returned - depending on the
+    [errorAsNone] flag.
+    */
     let opt =
         (
           ~errorAsNone=false,
@@ -983,12 +1023,13 @@ module DSL = {
     ////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Gets the Js.Json.t value at the given index of a Js.Json.t array
-     */
+    Gets the Js.Json.t value at the given index of a Js.Json.t array
+    */
     let getAt: (int, json) => option(json) = getJsonAtIndex;
 
     /**
-     * Validates the Js.Json.t value at the given index with the given validation function
+    Validates the Js.Json.t value at the given index with the given validation
+    function
     */
     let jsonAt:
       'a.
@@ -997,37 +1038,38 @@ module DSL = {
      = validateJsonAtIndex;
 
     /**
-     * Validates a null value at the given index of a Js.Json.t array value
+    Validates a null value at the given index of a Js.Json.t array value
     */
     let nullAt: (int, json) => Relude_Validation.t(unit, Errors.t) = validateNullAtIndex;
 
     /**
-     * Validates a bool value at the given index of a Js.Json.t array value
-     */
+    Validates a bool value at the given index of a Js.Json.t array value
+    */
     let boolAt: (int, json) => Relude_Validation.t(bool, Errors.t) = validateBoolAtIndex;
 
     /**
-     * Validates a string value at the given index of a Js.Json.t array value
-     */
+    Validates a string value at the given index of a Js.Json.t array value
+    */
     let stringAt: (int, json) => Relude_Validation.t(string, Errors.t) = validateStringAtIndex;
 
     /**
-     * Validates an int value at the given index of a Js.Json.t array value
-     */
+    Validates an int value at the given index of a Js.Json.t array value
+    */
     let intAt: (int, json) => Relude_Validation.t(int, Errors.t) = validateIntAtIndex;
 
     /**
-     * Validates a float value at the given index of a Js.Json.t array value
-     */
+    Validates a float value at the given index of a Js.Json.t array value
+    */
     let floatAt: (int, json) => Relude_Validation.t(float, Errors.t) = validateFloatAtIndex;
 
     /**
-     * Validates that the Js.Json.t value at the given index is either null or can be validated using the given function.
-     *
-     * Bad indices can be treated as None or as an error using missingAsNone
-     * Null value can be treated as None or as an error using nullAsNone
-     * Failed validation can be treated as None or an error using errorAsNone
-     */
+    Validates that the Js.Json.t value at the given index is either null or can
+    be validated using the given function.
+
+    - Bad indices can be treated as None or as an error using [missingAsNone]
+    - Null value can be treated as None or as an error using [nullAsNone]
+    - Failed validation can be treated as None or an error using [perrorAsNone]
+    */
     let optAt =
         (
           ~missingAsNone=true,
@@ -1048,8 +1090,8 @@ module DSL = {
       );
 
     /**
-     * Validates an array at the given index of a Js.Json.t array value
-     */
+    Validates an array at the given index of a Js.Json.t array value
+    */
     let arrayAt:
       'a.
       (int, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -1057,8 +1099,8 @@ module DSL = {
      = validateArrayAtIndex;
 
     /**
-     * Validates an obejct at the given index of a Js.Json.t array value
-     */
+    Validates an obejct at the given index of a Js.Json.t array value
+    */
     let objectAt:
       'a.
       (int, json => Relude_Validation.t('a, Errors.t), json) =>
@@ -1066,8 +1108,8 @@ module DSL = {
      = validateObjectAtIndex;
 
     /**
-     * Validates an Js.Json.t array using the given validation function
-     */
+    Validates an Js.Json.t array using the given validation function
+    */
     let array:
       'a.
       ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -1075,8 +1117,8 @@ module DSL = {
      = validateArrayOfJson;
 
     /**
-     * Validates an Js.Json.t object using the given validation function
-     */
+    Validates an Js.Json.t object using the given validation function
+    */
     let list:
       'a.
       ((int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -1088,13 +1130,14 @@ module DSL = {
     ////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Gets the Js.Json.t value for the given key of a Js.Json.t object value
-     */
+    Gets the Js.Json.t value for the given key of a Js.Json.t object value
+    */
     let getFor: (string, json) => option(json) = getJsonForKey;
 
     /**
-     * Validates the Js.Json.t value for the given key, using the given validation function
-     */
+    Validates the Js.Json.t value for the given key, using the given validation
+    function
+    */
     let jsonFor:
       'a.
       (string, json => Relude_Validation.t('a, Errors.t), json) =>
@@ -1102,37 +1145,38 @@ module DSL = {
      = validateJsonForKey;
 
     /**
-     * Validates a null for the given key of a Js.Json.t object value
-     */
+    Validates a null for the given key of a Js.Json.t object value
+    */
     let nullFor: (string, json) => Relude_Validation.t(unit, Errors.t) = validateNullForKey;
 
     /**
-     * Validates a bool for the given key of a Js.Json.t object value
-     */
+    Validates a bool for the given key of a Js.Json.t object value
+    */
     let boolFor: (string, json) => Relude_Validation.t(bool, Errors.t) = validateBoolForKey;
 
     /**
-     * Validates a string for the given key of a Js.Json.t object value
-     */
+    Validates a string for the given key of a Js.Json.t object value
+    */
     let stringFor: (string, json) => Relude_Validation.t(string, Errors.t) = validateStringForKey;
 
     /**
-     * Validates an int for the given key of a Js.Json.t object value
-     */
+    Validates an int for the given key of a Js.Json.t object value
+    */
     let intFor: (string, json) => Relude_Validation.t(int, Errors.t) = validateIntForKey;
 
     /**
-     * Validates a float for the given key of a Js.Json.t object value
-     */
+    Validates a float for the given key of a Js.Json.t object value
+    */
     let floatFor: (string, json) => Relude_Validation.t(float, Errors.t) = validateFloatForKey;
 
     /**
-     * Validates that the Js.Json.t value at the given key is either null or can be validated using the given function.
-     *
-     * Bad indices can be treated as None or as an error using missingAsNone
-     * Null value can be treated as None or as an error using nullAsNone
-     * Failed validation can be treated as None or an error using errorAsNone
-     */
+    Validates that the Js.Json.t value at the given key is either null or can be
+    validated using the given function.
+
+    - Bad indices can be treated as None or as an error using [missingAsNone]
+    - Null value can be treated as None or as an error using [nullAsNone]
+    - Failed validation can be treated as None or an error using [errorAsNone]
+    */
     let optFor =
         (
           ~missingAsNone=true,
@@ -1153,8 +1197,8 @@ module DSL = {
       );
 
     /**
-     * Validates an array for the given key of a Js.Json.t object value
-     */
+    Validates an array for the given key of a Js.Json.t object value
+    */
     let arrayFor:
       'a.
       (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -1162,8 +1206,8 @@ module DSL = {
      = validateArrayForKey;
 
     /**
-     * Validates an array for the given key of a Js.Json.t object value, as a list
-     */
+    Validates an array for the given key of a Js.Json.t object value, as a list
+    */
     let listFor:
       'a.
       (string, (int, json) => Relude_Validation.t('a, Errors.t), json) =>
@@ -1171,8 +1215,8 @@ module DSL = {
      = validateListForKey;
 
     /**
-     * Validates an object for the given key of a Js.Json.t object value
-     */
+    Validates an object for the given key of a Js.Json.t object value
+    */
     let objectFor = validateObjectForKey;
   };
 };

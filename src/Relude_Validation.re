@@ -9,12 +9,12 @@ type t('a, 'e) =
   | VError('e);
 
 /**
-`ok()` wraps a value in `VOk`
+[ok()] wraps a value in [VOk]
 */
 let ok: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
 
 /**
-`error(val)` wraps the value in a `VError()`.
+[error(val)] wraps the value in a [VError()].
 
 {[
   error("Not even") == VError("Not even");
@@ -24,7 +24,7 @@ let error: 'a 'e. 'e => t('a, 'e) = e => VError(e);
 
 /**
 Puts an error into a NonEmptyList on the error side of the validation
- */
+*/
 let errorNel: 'a 'e. 'e => t('a, Relude_NonEmpty.List.t('e)) =
   e => VError(Relude_NonEmpty.List.pure(e));
 
@@ -35,8 +35,8 @@ let errorNea: 'a 'e. 'e => t('a, Relude_NonEmpty.Array.t('e)) =
   e => VError(Relude_NonEmpty.Array.pure(e));
 
 /**
-`isOk(v)` returns `true` if `v` is of the form `VOk(val)`;
-`false` otherwise.
+[isOk(v)] returns [true] if [v] is of the form [VOk(val)];
+[false] otherwise.
 */
 let isOk: 'a 'e. t('a, 'e) => bool =
   fun
@@ -44,14 +44,14 @@ let isOk: 'a 'e. t('a, 'e) => bool =
   | VError(_) => false;
 
 /**
-`isError(x)` returns `true` if `x` is of the form `VError(val)`;
-`false` otherwise.
+[isError(x)] returns [true] if [x] is of the form [VError(val)];
+[false] otherwise.
 */
 let isError: 'a 'e. t('a, 'e) => bool = a => !isOk(a);
 
 /**
-`map(f, x)` returns `VOk(f(x))` if `x` is of the form `VOk(v)`.
-It returns `VError(e)` if `x` is of the form `VError(e)`.
+[map(f, x)] returns [VOk(f(x))] if [x] is of the form [VOk(v)].
+It returns [VError(e)] if [x] is of the form [VError(e)].
 
 {[
   map((x) => {sqrt(float_of_int(x))}, VOk(4)) == VOk(2.0);
@@ -65,10 +65,10 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
     | VError(_) as e => e;
 
 /**
-In `tap(f, x)`, function `f()` returns `unit`. Thus, `f()`
-is used only for its side effects. If `x` is of the
-form `VOk(v)`, `tap()` calls `f(v)`. The `tap()` function returns
-the argument `x`.
+In [tap(f, x)], function [f()] returns [unit]. Thus, [f()]
+is used only for its side effects. If [x] is of the
+form [VOk(v)], [tap()] calls [f(v)]. The [tap()] function returns
+the argument [x].
 
 {[
   tap(x => Js.log(x), VOk(4)) == VOk(4); // prints 4
@@ -85,8 +85,8 @@ let tap: 'a 'e. ('a => unit, t('a, 'e)) => t('a, 'e) =
       };
 
 /**
-`mapError(f, x)` returns `VOk(v)` if `x` is of the form `VOk(v)`.
-It returns `VError(f(e))` if `x` is of the form `VError(e)`.
+[mapError(f, x)] returns [VOk(v)] if [x] is of the form [VOk(v)].
+It returns [VError(f(e))] if [x] is of the form [VError(e)].
 
 {[
   mapError(x => "Error: " ++ x, VOk(4)) == VOk(4);
@@ -100,8 +100,8 @@ let mapError: 'a 'e1 'e2. ('e1 => 'e2, t('a, 'e1)) => t('a, 'e2) =
     | VError(e) => VError(f(e));
 
 /**
-`mapErrorsAsNea()` applies a function to each error in a `NonEmpty.Array` of errors in the
-error channel of the `Validation`.
+[mapErrorsAsNea()] applies a function to each error in a [NonEmpty.Array] of
+errors in the error channel of the [Validation].
 */
 let mapErrorsNea:
   'a 'e1 'e2.
@@ -114,8 +114,8 @@ let mapErrorsNea:
     | VError(nea) => VError(nea |> Relude_NonEmpty.Array.map(f));
 
 /**
-`mapErrorsAsNel()` applies a function to each error in a `NonEmpty.List` of errors in the error
-channel of the `Validation`.
+[mapErrorsAsNel()] applies a function to each error in a [NonEmpty.List] of errors in the error
+channel of the [Validation].
 */
 let mapErrorsNel:
   'a 'e1 'e2.
@@ -128,10 +128,10 @@ let mapErrorsNel:
     | VError(nea) => VError(nea |> Relude_NonEmpty.List.map(f));
 
 /**
-In `tapError(f, x)`, function `f()` returns `unit`. Thus, `f()`
-is used only for its side effects. If `x` is of the
-form `VError(v)`, `tap()` calls `f(v)`. The `tap()` function returns
-the argument `x`.
+In [tapError(f, x)], function [f()] returns [unit]. Thus, [f()]
+is used only for its side effects. If [x] is of the
+form [VError(v)], [tap()] calls [f(v)]. The [tap()] function returns
+the argument [x].
 
 {[
   tapError(x => Js.log(x), VOk(4)) == VOk(4); // prints nothing
@@ -148,12 +148,12 @@ let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
       };
 
 /**
-`bimap(f, g, x)` returns `VOk(f(v))` if `x` is of the form `VOk(v)`;
-it returns `VError(g(e))` if `x` is of the form `VError(e)`.
+[bimap(f, g, x)] returns [VOk(f(v))] if [x] is of the form [VOk(v)];
+it returns [VError(g(e))] if [x] is of the form [VError(e)].
 
 {[
-  let cube = (x) => {x * x * x};
-  let label = (x) => {"Error: " ++ x};
+  let cube = x => x * x * x;
+  let label = x => "Error: " ++ x;
   bimap(cube, label, VOk(12)) == VOk(1728);
   bimap(cube, label, VError("bad")) == VError("Error: bad");
 ]}
@@ -165,10 +165,10 @@ let bimap: 'a 'b 'e1 'e2. ('a => 'b, 'e1 => 'e2, t('a, 'e1)) => t('b, 'e2) =
     | VError(e) => VError(g(e));
 
 /**
-`bitap(f, g, x)` the functions `f()` and `g()` both return `unit`, so they are
-used only for their side effects. If `x` is of the form `VOk(v)`, `bitap()`
-calls `f(v)`; if `x is of the form `VError(e), `bitap()` calls `g(e)`. In either
-case, `bitap()` returns `x`.
+[bitap(f, g, x)] the functions [f()] and [g()] both return [unit], so they are
+used only for their side effects. If [x] is of the form [VOk(v)], [bitap()]
+calls [f(v)]; if [x] is of the form [VError(e)], [bitap()] calls [g(e)]. In
+either case, [bitap()] returns [x].
 
 {[
   let printCube = x => Js.log(x * x * x);
@@ -190,21 +190,21 @@ let bitap: 'a 'e. ('a => unit, 'e => unit, t('a, 'e)) => t('a, 'e) =
       };
 
 /**
-`apply(valFcn, x, appErrFcn)` provides a way of creating a chain of validation
+[apply(valFcn, x, appErrFcn)] provides a way of creating a chain of validation
 functions, accumulating errors along the way.
 
-If `valFcn` is of the form `VOk(f)`, function `f` is applied to `x`. If `x` is
-`VOk(v)`, the result is `VOk(f(v))`. If `x` is `VError(err)`, the error is
+If [valFcn] is of the form [VOk(f)], function [f] is applied to [x]. If [x] is
+[VOk(v)], the result is [VOk(f(v))]. If [x] is [VError(err)], the error is
 passed onwards.
 
-If `valFcn` is itself of the form `VError(err)` and `x` is `VOk(v)`,
-`VError(err)` is passed on.
+If [valFcn] is itself of the form [VError(err)] and [x] is [VOk(v)],
+[VError(err)] is passed on.
 
-Finally, if both `valFcn` and `x` are `VError(e1)` and `VError(e2)`, the result
-is `VError(appendErrFcn(e1, e2))`.
+Finally, if both [valFcn] and [x] are [VError(e1)] and [VError(e2)], the result
+is [VError(appendErrFcn(e1, e2))].
 
-Using `apply()` properly is somewhat complex. See the example in the
-`__tests__/Relude_Validation_test.re` file for more details.
+Using [apply()] properly is somewhat complex. See the example in the
+[__tests__/Relude_Validation_test.re] file for more details.
 */
 let applyWithAppendErrors:
   'a 'b 'e.
@@ -240,7 +240,7 @@ let alignWithWithAppendErrors:
     alignWithAppendErrors(appendErrors, fa, fb) |> map(f);
 
 /**
-`pure(val)` wraps its argument in a `VOk()`.
+[pure(val)] wraps its argument in a [VOk()].
 
 {[
   pure(3) == VOk(3);
@@ -249,11 +249,11 @@ let alignWithWithAppendErrors:
 let pure: 'a 'e. 'a => t('a, 'e) = a => VOk(a);
 
 /**
-`flatMapV(x, f)` returns `f(v)` when `x` is of the form `VOk(v)`, and returns
-`x` unchanged when it is of the form `VError(v)`.
+[flatMapV(x, f)] returns [f(v)] when [x] is of the form [VOk(v)], and returns
+[x] unchanged when it is of the form [VError(v)].
 
-Note: `Validation` is not a traditional monad in that it's purpose is to collect
-errors during applicative validation. Using `flatMap` will cause all previous
+Note: [Validation] is not a traditional monad in that it's purpose is to collect
+errors during applicative validation. Using [flatMap] will cause all previous
 errors to be discarded.
 
 {[
@@ -264,7 +264,7 @@ errors to be discarded.
   flatMapV(VOk(3), mustBeEven) == VError("not even");
   flatMapV(VError("not an int"), mustBeEven) == VError("not an int");
 ]}
- */
+*/
 let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
   (fa, f) =>
     switch (fa) {
@@ -273,22 +273,22 @@ let bind: 'a 'b 'e. (t('a, 'e), 'a => t('b, 'e)) => t('b, 'e) =
     };
 
 /**
-`bind` is the same as `flatMap` with the arguments flipped.
+[bind] is the same as [flatMap] with the arguments flipped.
 */
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
   (f, fa) => bind(fa, f);
 
 /**
-`fromResult` converts a value of type `result` to a `Validation.t`, returning
-`VOk(x)` if the result was `Ok(x)` and `VError(x)` if the result was `Error(x)`.
- */
+[fromResult] converts a value of type [result] to a [Validation.t], returning
+[VOk(x)] if the result was [Ok(x)] and [VError(x)] if the result was [Error(x)].
+*/
 let fromResult: result('a, 'b) => t('a, 'b) =
   fun
   | Ok(a) => VOk(a)
   | Error(e) => VError(e);
 
 /**
-`toResult` converts a value of type `Validation.t` to `result`.
+[toResult] converts a value of type [Validation.t] to [result].
 */
 let toResult: t('a, 'b) => result('a, 'b) =
   fun
@@ -296,9 +296,9 @@ let toResult: t('a, 'b) => result('a, 'b) =
   | VError(a) => Error(a);
 
 /**
-`fromOption` converts an `option` into a `Validation.t`, returning `VOk(x)`
-if the option was `Some(x)` and `VError` (constructed with the provided
-error) if the option was `None`.
+[fromOption] converts an [option] into a [Validation.t], returning [VOk(x)]
+if the option was [Some(x)] and [VError] (constructed with the provided
+error) if the option was [None].
 */
 let fromOption: 'a 'e. ('e, option('a)) => t('a, 'e) =
   defaultError =>
@@ -307,8 +307,8 @@ let fromOption: 'a 'e. ('e, option('a)) => t('a, 'e) =
     | None => error(defaultError);
 
 /**
-`fromOptionLazy` converts an `option` into a `Validation.t`, similar to
-`fromOption`, except that provided error is constructed lazily by calling a
+[fromOptionLazy] converts an [option] into a [Validation.t], similar to
+[fromOption], except that provided error is constructed lazily by calling a
 function. This is useful if the error is expensive to construct, especially
 since it may not be needed.
 */
@@ -319,8 +319,8 @@ let fromOptionLazy: 'a 'e. (unit => 'e, option('a)) => t('a, 'e) =
     | None => error(getDefaultError());
 
 /**
-`fold(errFn, okFn, x)` returns `okFn(v)` when the provided Validation (`x`)
-is `VOk(v)`; it returns `errFn(e)` when the Validation is `VError(e)`. This
+[fold(errFn, okFn, x)] returns [okFn(v)] when the provided Validation ([x])
+is [VOk(v)]; it returns [errFn(e)] when the Validation is [VError(e)]. This
 is effectively a function that allows you to "handle" both possible states of
 the Validation.
 
@@ -357,7 +357,7 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
     | VError(e) => ec(e);
 
 /**
-`flip` Flips the values between the success and error channels.
+[flip] Flips the values between the success and error channels.
 
 {[
   flip(VOk(12)) == VError(12);

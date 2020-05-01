@@ -1,33 +1,36 @@
 open BsBastet.Interface;
 
-/**
- * Ior is similar to result, but it has the ability to collect "non-fatal
- * warning" information during applicative validation.
- *
- * E.g. if you are doing applicative validation to construct a User model, you
- * could parse a phone number and allow it, but collect a warning that certain
- * phone number formats are deprecated.
- */
+[@ocaml.text
+  {|
+[Ior] is similar to result, but it has the ability to collect "non-fatal
+warning" information during applicative validation.
+
+E.g. if you are doing applicative validation to construct a User model, you
+could parse a phone number and allow it, but collect a warning that certain
+phone number formats are deprecated.
+|}
+];
+
 include Relude_Ior_Type;
 
 /**
- * Constructs a This value with the given success value
- */
+Constructs a This value with the given success value
+*/
 let this: 'a => t('a, 'b) = a => This(a);
 
 /**
- * Constructs an That value with the given that value
- */
+Constructs an That value with the given that value
+*/
 let that: 'b => t('a, 'b) = b => That(b);
 
 /**
- * Constructs an Both value with the given this and that values
- */
+Constructs an Both value with the given this and that values
+*/
 let both: ('a, 'b) => t('a, 'b) = (a, b) => Both(a, b);
 
 /**
- * Indicates if the Ior is This with any value
- */
+Indicates if the Ior is This with any value
+*/
 let isThis: 'a 'b. t('a, 'b) => bool =
   fun
   | This(_) => true
@@ -35,8 +38,8 @@ let isThis: 'a 'b. t('a, 'b) => bool =
   | Both(_, _) => false;
 
 /**
- * Indicates if the Ior is That with any value
- */
+Indicates if the Ior is That with any value
+*/
 let isThat: 'a 'b. t('a, 'b) => bool =
   fun
   | This(_) => false
@@ -44,8 +47,8 @@ let isThat: 'a 'b. t('a, 'b) => bool =
   | Both(_, _) => false;
 
 /**
- * Indicates if the Ior is Both with any values
- */
+Indicates if the Ior is Both with any values
+*/
 let isBoth: 'a 'b. t('a, 'b) => bool =
   fun
   | This(_) => false
@@ -53,8 +56,8 @@ let isBoth: 'a 'b. t('a, 'b) => bool =
   | Both(_, _) => true;
 
 /**
- * Gets the 'a value out of the Ior
- */
+Gets the 'a value out of the Ior
+*/
 let getThis: 'a 'b. t('a, 'b) => option('a) =
   fun
   | This(a) => Some(a)
@@ -62,8 +65,8 @@ let getThis: 'a 'b. t('a, 'b) => option('a) =
   | Both(a, _) => Some(a);
 
 /**
- * Gets the 'b value out of the Ior
- */
+Gets the 'b value out of the Ior
+*/
 let getThat: 'a 'b. t('a, 'b) => option('b) =
   fun
   | This(_) => None
@@ -71,8 +74,8 @@ let getThat: 'a 'b. t('a, 'b) => option('b) =
   | Both(_, b) => Some(b);
 
 /**
- * Partitions a list of Iors into lists of the values for each constructor
- */
+Partitions a list of Iors into lists of the values for each constructor
+*/
 let partition:
   'a 'b.
   list(t('a, 'b)) => (list('a), list('b), list(('a, 'b)))
@@ -90,8 +93,8 @@ let partition:
     );
 
 /**
- * Extracts that 'a values out of a list of Iors
- */
+Extracts that 'a values out of a list of Iors
+*/
 let catThis: 'a 'b. list(t('a, 'b)) => list('a) =
   iors =>
     Relude_List.foldRight(
@@ -106,8 +109,8 @@ let catThis: 'a 'b. list(t('a, 'b)) => list('a) =
     );
 
 /**
- * Extracts that 'b values out of a list of Iors
- */
+Extracts that 'b values out of a list of Iors
+*/
 let catThat: 'a 'b. list(t('a, 'b)) => list('b) =
   iors =>
     Relude_List.foldRight(
@@ -122,8 +125,8 @@ let catThat: 'a 'b. list(t('a, 'b)) => list('b) =
     );
 
 /**
- * Maps a pure function over the `this` channel of the Ior
- */
+Maps a pure function over the [this] channel of the Ior
+*/
 let mapThis: 'a 'b 'c. ('a => 'c, t('a, 'b)) => t('c, 'b) =
   (f, fa) =>
     switch (fa) {
@@ -133,13 +136,13 @@ let mapThis: 'a 'b 'c. ('a => 'c, t('a, 'b)) => t('c, 'b) =
     };
 
 /**
- * Alias for `mapThis`
- */
+Alias for [mapThis]
+*/
 let map = mapThis;
 
 /**
- * Maps a pure function over the `that` channel of the Ior
- */
+Maps a pure function over the [that] channel of the Ior
+*/
 let mapThat: 'a 'b 'c. ('b => 'c, t('a, 'b)) => t('a, 'c) =
   (f, fa) =>
     switch (fa) {
@@ -149,8 +152,8 @@ let mapThat: 'a 'b 'c. ('b => 'c, t('a, 'b)) => t('a, 'c) =
     };
 
 /**
- * Applies a side effect function if the value is This, That, or Both
- */
+Applies a side effect function if the value is This, That, or Both
+*/
 let tap:
   'a 'b.
   ('a => unit, 'b => unit, ('a, 'b) => unit, t('a, 'b)) => t('a, 'b)
@@ -169,8 +172,8 @@ let tap:
     };
 
 /**
- * Applies a side-effect function if the value is This
- */
+Applies a side-effect function if the value is This
+*/
 let tapThis: 'a 'b. ('a => unit, t('a, 'b)) => t('a, 'b) =
   (ifThis, fa) =>
     switch (fa) {
@@ -182,8 +185,8 @@ let tapThis: 'a 'b. ('a => unit, t('a, 'b)) => t('a, 'b) =
     };
 
 /**
- * Applies a side-effect function if the value is That
- */
+Applies a side-effect function if the value is That
+*/
 let tapThat: 'a 'b. ('b => unit, t('a, 'b)) => t('a, 'b) =
   (ifThat, fa) =>
     switch (fa) {
@@ -195,8 +198,8 @@ let tapThat: 'a 'b. ('b => unit, t('a, 'b)) => t('a, 'b) =
     };
 
 /**
- * Applies a side-effect function if the value is Both
- */
+Applies a side-effect function if the value is Both
+*/
 let tapBoth: 'a 'b. (('a, 'b) => unit, t('a, 'b)) => t('a, 'b) =
   (ifBoth, fa) =>
     switch (fa) {
@@ -208,8 +211,8 @@ let tapBoth: 'a 'b. (('a, 'b) => unit, t('a, 'b)) => t('a, 'b) =
     };
 
 /**
- * Applies a side effect function to the 'a value in an This or an Both
- */
+Applies a side effect function to the 'a value in an This or an Both
+*/
 let tapThisOrBoth: 'a 'b. ('a => unit, t('a, 'b)) => t('a, 'b) =
   (ifThis, fa) =>
     switch (fa) {
@@ -223,8 +226,8 @@ let tapThisOrBoth: 'a 'b. ('a => unit, t('a, 'b)) => t('a, 'b) =
     };
 
 /**
- * Applies a side effect function to the 'b value in an That or an Both
- */
+Applies a side effect function to the 'b value in an That or an Both
+*/
 let tapThatOrBoth: 'a 'b. ('b => unit, t('a, 'b)) => t('a, 'b) =
   (ifThat, fa) =>
     switch (fa) {
@@ -238,8 +241,9 @@ let tapThatOrBoth: 'a 'b. ('b => unit, t('a, 'b)) => t('a, 'b) =
     };
 
 /**
- * Applies a wrapped function to the success channel, with `that` collecting semantics.
- */
+Applies a wrapped function to the success channel, with [that] collecting
+semantics.
+*/
 let applyWithAppendThats:
   (('b, 'b) => 'b, t('a => 'c, 'b), t('a, 'b)) => t('c, 'b) =
   (appendThats, ff, fa) =>
@@ -256,13 +260,13 @@ let applyWithAppendThats:
     };
 
 /**
- * Lifts a pure value into an This
- */
+Lifts a pure value into an This
+*/
 let pure: 'a 'b. 'a => t('a, 'b) = a => This(a);
 
 /**
- * Applies a monadic function to the success channel of the Ior
- */
+Applies a monadic function to the success channel of the Ior
+*/
 let bind: (t('a, 'b), 'a => t('c, 'b)) => t('c, 'b) =
   (fa, f) =>
     switch (fa) {
@@ -272,22 +276,22 @@ let bind: (t('a, 'b), 'a => t('c, 'b)) => t('c, 'b) =
     };
 
 /**
- * Applies a monadic function to the success channel of the Ior
- */
+Applies a monadic function to the success channel of the Ior
+*/
 let flatMap: ('a => t('c, 'b), t('a, 'b)) => t('c, 'b) =
   (f, fa) => bind(fa, f);
 
 /**
- * Maps the results of 2 Ior values using the given function
- */
+Maps the results of 2 Ior values using the given function
+*/
 let map2:
   (('x, 'x) => 'x, ('a, 'b) => 'c, t('a, 'x), t('b, 'x)) => t('c, 'x) =
   (appendThats, f, fa, fb) =>
     applyWithAppendThats(appendThats, map(f, fa), fb);
 
 /**
- * Maps the results of 3 Ior values using the given function
- */
+Maps the results of 3 Ior values using the given function
+*/
 let map3:
   (('x, 'x) => 'x, ('a, 'b, 'c) => 'd, t('a, 'x), t('b, 'x), t('c, 'x)) =>
   t('d, 'x) =
@@ -295,8 +299,8 @@ let map3:
     applyWithAppendThats(appendThats, map2(appendThats, f, fa, fb), fc);
 
 /**
- * Maps the results of 4 Ior values using the given function
- */
+Maps the results of 4 Ior values using the given function
+*/
 let map4:
   (
     ('x, 'x) => 'x,
@@ -311,8 +315,8 @@ let map4:
     applyWithAppendThats(appendThats, map3(appendThats, f, fa, fb, fc), fd);
 
 /**
- * Maps the results of 5 Ior values using the given function
- */
+Maps the results of 5 Ior values using the given function
+*/
 let map5:
   (
     ('x, 'x) => 'x,
@@ -332,8 +336,8 @@ let map5:
     );
 
 /**
- * Folds an Ior into a value by applying a function for each case
- */
+Folds an Ior into a value by applying a function for each case
+*/
 let fold: 'a 'b 'c. ('a => 'c, 'b => 'c, ('a, 'b) => 'c, t('a, 'b)) => 'c =
   (aToC, bToC, abToC, ior) =>
     switch (ior) {
@@ -343,8 +347,8 @@ let fold: 'a 'b 'c. ('a => 'c, 'b => 'c, ('a, 'b) => 'c, t('a, 'b)) => 'c =
     };
 
 /**
- * Converts an Ior into a tuple by filling in default values if needed
- */
+Converts an Ior into a tuple by filling in default values if needed
+*/
 let toTuple: 'a 'b. ('a, 'b, t('a, 'b)) => ('a, 'b) =
   (defaultA, defaultB, ior) =>
     switch (ior) {
@@ -354,8 +358,9 @@ let toTuple: 'a 'b. ('a, 'b, t('a, 'b)) => ('a, 'b) =
     };
 
 /**
- * Collapses an Ior containing two same-typed values into a value of that type, combining the values if needed
- */
+Collapses an Ior containing two same-typed values into a value of that type,
+combining the values if needed
+*/
 let merge: 'a. (('a, 'a) => 'a, t('a, 'a)) => 'a =
   (f, ior) =>
     switch (ior) {
@@ -365,8 +370,9 @@ let merge: 'a. (('a, 'a) => 'a, t('a, 'a)) => 'a =
     };
 
 /**
- * Collapses an Ior by converting each side into a same-typed value, and combining them if needed
- */
+Collapses an Ior by converting each side into a same-typed value, and combining
+them if needed
+*/
 let mergeWith: 'a 'b 'c. ('a => 'c, 'b => 'c, ('c, 'c) => 'c, t('a, 'b)) => 'c =
   (aToC, bToC, ccToC, ior) =>
     switch (ior) {
@@ -376,9 +382,10 @@ let mergeWith: 'a 'b 'c. ('a => 'c, 'b => 'c, ('c, 'c) => 'c, t('a, 'b)) => 'c =
     };
 
 /**
- * Creates a module that locks in the That TYPE and SEMIGROUP_ANY modules, so
- * that we can implement the typeclass instances for the single-type-parameter typeclasses.
- */
+Creates a module that locks in the That TYPE and SEMIGROUP_ANY modules, so
+that we can implement the typeclass instances for the single-type-parameter
+type classes.
+*/
 module WithThats = (Thats: SEMIGROUP_ANY, That: TYPE) => {
   module Functor: FUNCTOR with type t('a) = t('a, Thats.t(That.t)) = {
     type nonrec t('a) = t('a, Thats.t(That.t));

@@ -1,13 +1,13 @@
 open BsBastet.Interface;
 
 /**
- * `WriterLog` contains a basic typeclass that has a log type `t` and a Monoid
- * for `t` for use as a log.  Not all writer typeclass instances require a
- * monoid, but I'm going to normalize on it here for simplicity, and to avoid
- * even more module functor noise.  This also contains base implementation for
- * List and Array, which just need to be provided the entry type in order to be
- * used.
- */
+[WriterLog] contains a basic typeclass that has a log type [t] and a Monoid
+for [t] for use as a log.  Not all writer typeclass instances require a
+monoid, but I'm going to normalize on it here for simplicity, and to avoid
+even more module functor noise.  This also contains base implementation for
+List and Array, which just need to be provided the entry type in order to be
+used.
+*/
 module WriterLog = {
   module type LOG = {
     type t;
@@ -234,6 +234,7 @@ module WithMonadAndLog = (Monad: MONAD, Log: WriterLog.LOG) => {
 /**
 Basic Writer using the Identity monad.
 
-In order to use this, you must still provide the Log type info, like `module Writer = Writer.WithLog(...)`
- */
+In order to use this, you must still provide the Log type info,
+like [module Writer = Writer.WithLog(...)]
+*/
 module Writer = WithMonad(Relude_Identity.Monad);

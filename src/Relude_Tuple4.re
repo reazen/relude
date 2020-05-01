@@ -1,34 +1,34 @@
 open BsBastet.Interface;
 
 /**
- * Constructs a tuple-4 from 4 values
- */
+Constructs a tuple-4 from 4 values
+*/
 let make: 'a 'b 'c 'd. ('a, 'b, 'c, 'd) => ('a, 'b, 'c, 'd) =
   (a, b, c, d) => (a, b, c, d);
 
 /**
- * Constructs a tuple-4 from an array of exactly 4 values
- */
+Constructs a tuple-4 from an array of exactly 4 values
+*/
 let fromArray: 'a. array('a) => option(('a, 'a, 'a, 'a)) =
   fun
   | [|a, b, c, d|] => Some((a, b, c, d))
   | _ => None;
 
 /**
- * Constructs a tuple-4 from an array of at least 4 values
- */
+Constructs a tuple-4 from an array of at least 4 values
+*/
 let fromArrayAtLeast: 'a. array('a) => option(('a, 'a, 'a, 'a)) =
   xs => Relude_Array.take(4, xs) |> fromArray;
 
 /**
- * Constructs a tuple-4 from a list of exactly 4 values
- */
+Constructs a tuple-4 from a list of exactly 4 values
+*/
 let fromList: 'a. list('a) => option(('a, 'a, 'a, 'a)) =
   xs => Relude_List.(take(5, xs) |> toArray) |> fromArray;
 
 /**
- * Constructs a tuple-4 from a list of at least 4 values
- */
+Constructs a tuple-4 from a list of at least 4 values
+*/
 let fromListAtLeast: 'a. list('a) => option(('a, 'a, 'a, 'a)) =
   xs => Relude_List.take(4, xs) |> fromList;
 

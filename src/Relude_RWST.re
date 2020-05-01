@@ -6,8 +6,8 @@ module RWSResult = {
 };
 
 /**
- * Creates a RWST (Reader/Writer/State) Monad with the given Monad module.
- */
+Creates a RWST (Reader/Writer/State) Monad with the given Monad module.
+*/
 module WithMonad = (M: MONAD) => {
   open RWSResult;
 
@@ -15,7 +15,8 @@ module WithMonad = (M: MONAD) => {
     | RWST(('r, 's) => M.t(RWSResult.t('a, 's, 'w)));
 
   /**
-  Given a reader environment, and state, run the RWST to produce the monadic value.
+  Given a reader environment, and state, run the RWST to produce the monadic
+  value.
   */
   let runRWST:
     'a 'r 's 'w.
@@ -24,7 +25,8 @@ module WithMonad = (M: MONAD) => {
     (r, s, RWST(f)) => f(r, s);
 
   /**
-  Same as runRWST, but discards the final state value, only returning the final result, and the writer log
+  Same as runRWST, but discards the final state value, only returning the final
+  result, and the writer log.
   */
   let evalRWST: 'a 'r 's 'w. ('r, 's, t('a, 'r, 's, 'w)) => M.t(('a, 'w)) =
     (r, s, RWST(f)) => {
@@ -32,7 +34,8 @@ module WithMonad = (M: MONAD) => {
     };
 
   /**
-  Same as runRWST, but discards the final result value, only returning the final state, and the writer log
+  Same as runRWST, but discards the final result value, only returning the final
+  state, and the writer log.
   */
   let execRWST: 'a 'r 's 'w. ('r, 's, t('a, 'r, 's, 'w)) => M.t(('s, 'w)) =
     (r, s, RWST(f)) => {
@@ -40,8 +43,8 @@ module WithMonad = (M: MONAD) => {
     };
 
   /**
-  Change the result type and writer log type.  Note: this should normally allow changing the monad, but we're
-  not doing that for simplicity.
+  Change the result type and writer log type.  Note: this should normally allow
+  changing the monad, but we're not doing that for simplicity.
   */
   let mapRWST:
     'a1 'a2 'r 's 'w1 'w2.

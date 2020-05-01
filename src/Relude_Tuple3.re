@@ -1,33 +1,33 @@
 open BsBastet.Interface;
 
 /**
- * Constructs a tuple-3 from 3 values
- */
+Constructs a tuple-3 from 3 values
+*/
 let make: 'a 'b 'c. ('a, 'b, 'c) => ('a, 'b, 'c) = (a, b, c) => (a, b, c);
 
 /**
- * Constructs a tuple-3 from an array of exactly 3 values
- */
+Constructs a tuple-3 from an array of exactly 3 values
+*/
 let fromArray: 'a. array('a) => option(('a, 'a, 'a)) =
   fun
   | [|a, b, c|] => Some((a, b, c))
   | _ => None;
 
 /**
- * Constructs a tuple-3 from an array of at least 3 values
- */
+Constructs a tuple-3 from an array of at least 3 values
+*/
 let fromArrayAtLeast: 'a. array('a) => option(('a, 'a, 'a)) =
   xs => Relude_Array.take(3, xs) |> fromArray;
 
 /**
- * Constructs a tuple-3 from a list of exactly 3 values
- */
+Constructs a tuple-3 from a list of exactly 3 values
+*/
 let fromList: 'a. list('a) => option(('a, 'a, 'a)) =
   xs => Relude_List.(take(4, xs) |> toArray) |> fromArray;
 
 /**
- * Constructs a tuple-3 from a list of at least 3 values
- */
+Constructs a tuple-3 from a list of at least 3 values
+*/
 let fromListAtLeast: 'a. list('a) => option(('a, 'a, 'a)) =
   xs => Relude_List.take(3, xs) |> fromList;
 
