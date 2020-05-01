@@ -35,8 +35,8 @@ module OrdExtensions = (O: ORD) => {
   let compareReversed = O.compare |> Relude_Ord.reverse;
 
   /**
-   Creates a new Ord module which is the reverse of the given Ord
-   */
+  Creates a new Ord module which is the reverse of the given Ord
+  */
   module OrdReversed: ORD with type t = O.t = {
     type t = O.t;
     let eq = O.eq;
