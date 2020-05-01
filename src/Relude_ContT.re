@@ -1,36 +1,37 @@
 open BsBastet.Interface;
 
 /**
- * Creates a ContT (continuation) Monad module with the given Monad module.
- */
+Creates a ContT (continuation) Monad module with the given Monad module.
+*/
 module WithMonad = (M: MONAD) => {
   /**
-   * The type of a continuation.  `'a` is the intermediate result type, and `'r`' is the final result type.
-   */
+  The type of a continuation. ['a] is the intermediate result type, and ['r] is
+  the final result type.
+  */
   type t('r, 'a) =
     | ContT(('a => M.t('r)) => M.t('r));
 
   /**
-   * Constructs a ContT
-   */
+  Constructs a ContT
+  */
   let make: (('a => M.t('r)) => M.t('r)) => t('r, 'a) =
     onDone => ContT(onDone);
 
   /**
-   * Runs the computation by providing a final continuation callback
-   */
+  Runs the computation by providing a final continuation callback
+  */
   let runContT: 'a 'r. ('a => M.t('r), t('r, 'a)) => M.t('r) =
     (k, ContT(f)) => f(k);
 
   /**
-   * Modify the underlying action in a ContT monad
-   */
+  Modify the underlying action in a ContT monad
+  */
   let mapContT: 'a 'r. (M.t('r) => M.t('r), t('r, 'a)) => t('r, 'a) =
     (f, ContT(m)) => ContT(k => f(m(k)));
 
   /**
-   * Modify the continuation in a ContT monad
-   */
+  Modify the continuation in a ContT monad
+  */
   let withContT:
     'r 'a 'b.
     (('b => M.t('r), 'a) => M.t('r), t('r, 'a)) => t('r, 'b)
@@ -38,15 +39,15 @@ module WithMonad = (M: MONAD) => {
     (f, ContT(m)) => ContT(k => m(f(k)));
 
   /**
-   * Maps a pure function over the intermediate type `'a` of the `ContT`
-   */
+  Maps a pure function over the intermediate type ['a] of the [ContT]
+  */
   let map: 'r 'a 'b. ('a => 'b, t('r, 'a)) => t('r, 'b) =
     (aToB, ContT(aToMRToMR)) =>
       ContT(bToMR => aToMRToMR(a => bToMR(aToB(a))));
 
   /**
-   * Applies a wrapped function over the intermediate type `'a` of the `ContT`
-   */
+  Applies a wrapped function over the intermediate type ['a] of the [ContT]
+  */
   let apply: 'r 'a 'b. (t('r, 'a => 'b), t('r, 'a)) => t('r, 'b) =
     (ContT(aToBToMRToMR), ContT(aToMRToMR)) =>
       ContT(bToMR => aToBToMRToMR(aToB => aToMRToMR(a => bToMR(aToB(a)))));

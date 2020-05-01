@@ -1,9 +1,4 @@
 type t('value, 'id) = Belt.Set.t('value, 'id);
-module X =
-  Belt.Id.MakeComparable({
-    type t = string;
-    let cmp = Relude_String.compareAsInt;
-  });
 
 /**
 [Set.empty] constructs a new, empty set given an identity module.

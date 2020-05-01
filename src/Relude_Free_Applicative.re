@@ -45,31 +45,31 @@ module WithFunctor = (F: FUNCTOR) => {
   include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 
   /**
-   * Lifts a value of our algebra into our free monad type
-   *
-   * This is useful to creating "smart constructors" for our algebra
-   */
+  Lifts a value of our algebra into our free monad type
+
+  This is useful to creating "smart constructors" for our algebra
+  */
   let liftF: 'a. F.t('a) => t('a) = fa => Apply(fa, Pure(a => a));
 
   /**
-   * Specifies an applicative into which we will interpret our free monadic program
-   *
-   * We also need a Natural Transformation module here, because putting that function inline
-   * doesn't seem to work with the existential type captured by the FreeAp
-   * (at least I couldn't figure it out).
-   */
+  Specifies an applicative into which we will interpret our free monadic program
+
+  We also need a Natural Transformation module here, because putting that
+  function inline doesn't seem to work with the existential type captured by the
+  FreeAp (at least I couldn't figure it out).
+  */
   module WithApplicative = (A: APPLICATIVE) => {
     /**
-     * We also need a natural transformation in order to create our interpreters
-     * for the free applicative. Because of the existential type captured by the
-     * free applicative and what appear to be limitations of OCaml, the NT is
-     * provided via a module, so that we can achieve the `forall a. f a -> g a`.
-     *
-     * I tried to get this to work using a `F.t('a) => A.t('a)` function as a normal
-     * function argument, but I couldn't figure it out. This worked for free monad,
-     * but I think the problem here is the existential "x" type that is captured by
-     * this type.
-     */
+    We also need a natural transformation in order to create our interpreters
+    for the free applicative. Because of the existential type captured by the
+    free applicative and what appear to be limitations of OCaml, the NT is
+    provided via a module, so that we can achieve the [forall a. f a -> g a].
+
+    I tried to get this to work using a [F.t('a) => A.t('a)] function as a
+    normal function argument, but I couldn't figure it out. This worked for free
+    monad, but I think the problem here is the existential "x" type that is
+    captured by this type.
+    */
     module WithNT =
            (
              NT:
@@ -77,9 +77,9 @@ module WithFunctor = (F: FUNCTOR) => {
                  type f('a) = F.t('a) and type g('a) = A.t('a),
            ) => {
       /**
-       * Applies an interpreter function (natural transformation) to interpret each value of our algebra into
-       * a target applicative.
-       */
+      Applies an interpreter function (natural transformation) to interpret each
+      value of our algebra into a target applicative.
+      */
       let rec foldFree: 'a. t('a) => A.t('a) =
         freeA =>
           switch (freeA) {

@@ -1,13 +1,13 @@
 open BsBastet.Interface;
 
 /**
- * Module type signature for a type constructor with a single type hole.
- */
+Module type signature for a type constructor with a single type hole.
+*/
 module type TYPE_ANY = {type t('a);};
 
 /**
- * Module type which captures a simple a => b function
- */
+Module type which captures a simple a => b function
+*/
 module type FUNCTION_1 = {
   type a;
   type b;
@@ -15,17 +15,18 @@ module type FUNCTION_1 = {
 };
 
 /**
- * Module type functor which captures a simple a => b function
- */
+Module type functor which captures a simple a => b function
+*/
 module type FUNCTION_1_F =
   (A: TYPE, B: TYPE) => FUNCTION_1 with type a = A.t and type b = B.t;
 
 /**
- * Captures a natural tranformation
- *
- * It seems surprisingly hard to do `forall a. f a -> g a` in OCaml, but maybe I'm missing something.
- * See the Relude_Free_Applicative for an example usage.
- */
+Captures a natural tranformation
+
+It seems surprisingly hard to do [forall a. f a -> g a] in OCaml, but maybe I'm
+missing something. See the {!module:Relude_Free_Applicative} for an example
+usage.
+*/
 module type NATURAL_TRANSFORMATION = {
   type f('a);
   type g('a);
@@ -38,8 +39,9 @@ module type NATURAL_TRANSFORMATION = {
 };
 
 /**
- * Module type signature for a module that represents a sequence of values and related functions.
- */
+Module type signature for a module that represents a sequence of values and
+related functions.
+*/
 module type SEQUENCE = {
   type t('a);
 
@@ -87,8 +89,8 @@ module type SEQUENCE = {
 };
 
 /**
- * Module type signature for a module that is isomorphic with an array
- */
+Module type signature for a module that is isomorphic with an array
+*/
 module type ISO_ARRAY = {
   type t('a);
   let fromArray: array('a) => t('a);
@@ -96,8 +98,8 @@ module type ISO_ARRAY = {
 };
 
 /**
- * Module type signature for a module that is isomorphic with a list
- */
+Module type signature for a module that is isomorphic with a list
+*/
 module type ISO_LIST = {
   type t('a);
   let fromList: list('a) => t('a);
@@ -105,8 +107,8 @@ module type ISO_LIST = {
 };
 
 /**
- * Module type signature for Ior-based zipping and unzipping
- */
+Module type signature for Ior-based zipping and unzipping
+*/
 module type SEMIALIGN = {
   include FUNCTOR;
   let align: (t('a), t('b)) => t(Relude_Ior_Type.t('a, 'b));
@@ -114,22 +116,22 @@ module type SEMIALIGN = {
 };
 
 /**
- * Module type signature for an extension of ALIGN that adds an empty `nil` value.
- *
- * Note that this has a parallel to the applicative typeclasses:
- *
- * APPLY/APPLICATIVE/TRAVERSABLE
- *
- * SEMIALIGN/ALIGN/CROSSWALK (or maybe ALIGNABLE?)
- */
+Module type signature for an extension of ALIGN that adds an empty [nil] value.
+
+Note that this has a parallel to the applicative typeclasses:
+
+APPLY/APPLICATIVE/TRAVERSABLE
+
+SEMIALIGN/ALIGN/CROSSWALK (or maybe ALIGNABLE?)
+*/
 module type ALIGN = {
   include SEMIALIGN;
   let nil: t('a);
 };
 
 /**
- * Module type signature for a Monad that can produce an error in a monadic context
- */
+Module type signature for a Monad that can produce an error in a monadic context
+*/
 module type MONAD_THROW = {
   include MONAD;
   type e;
@@ -137,33 +139,34 @@ module type MONAD_THROW = {
 };
 
 /**
- * Module type signature for a Monad that can handle an error by creating a new monadic value.
- */
+Module type signature for a Monad that can handle an error by creating a new
+monadic value.
+*/
 module type MONAD_ERROR = {
   include MONAD_THROW;
   let catchError: (e => t('a), t('a)) => t('a);
 };
 
 /**
- * Represents types that have a lower bound, like strings or positive ints
- */
+Represents types that have a lower bound, like strings or positive ints
+*/
 module type LOWER_BOUNDED = {
   type t;
   let bottom: t;
 };
 
 /**
- * Represents types that have an upper bound
- */
+Represents types that have an upper bound
+*/
 module type UPPER_BOUNDED = {
   type t;
   let top: t;
 };
 
 /**
- * Module type which describes a type that can be ordered and for which we can determine
- * a lawful chain of successors and predecessors
- */
+Module type which describes a type that can be ordered and for which we can
+determine a lawful chain of successors and predecessors
+*/
 module type ENUM = {
   include ORD;
   let succ: t => option(t);
@@ -171,9 +174,10 @@ module type ENUM = {
 };
 
 /**
- * Module type which describes a type that can be ordered and for which we can determine
- * a lawful chain of successors and predecessors, and there is a top and bottom bound.
- */
+Module type which describes a type that can be ordered and for which we can
+determine a lawful chain of successors and predecessors, and there is a top and
+bottom bound.
+*/
 module type BOUNDED_ENUM = {
   include BOUNDED;
   include ENUM with type t := t;

@@ -1,13 +1,18 @@
 open BsBastet.Interface;
 /**
- `Relude.Bool` contains typeclass instances and utility functions for working
- with the `bool` type.
- */
+[Relude.Bool] contains typeclass instances and utility functions for working
+with the [bool] type.
+*/
 
 /**
- * Folds a bool value into a value of a different type, using a function
- * for the true and false cases.
- */
+Folds a bool value into a value of a different type, using a function for the
+true and false cases.
+
+{[
+  Bool.ifElse(() => "yes", () => "no", true) == "yes";
+  Bool.ifElse(() => "yes", () => "no", false) == "no";
+]}
+*/
 let ifElse: (unit => 'a, unit => 'a, bool) => 'a =
   (onTrue, onFalse, value) =>
     if (value) {
@@ -17,57 +22,55 @@ let ifElse: (unit => 'a, unit => 'a, bool) => 'a =
     };
 
 /**
- * Negates the bool value
- *
- * Not named `not`, because refmt rewrites this as (!)
- */
+[Bool.inverse] negates the boolean.
+
+This function isn't named [not], because refmt would rewrite it as [(!)].
+*/
 let inverse: bool => bool = (!);
 
 /**
- * Negates the bool value
- *
- * Alias for `inverse`.  Not named `not`, because refmt rewrites this as (!)
- */
+[Bool.not_] is an alias for {!val:inverse}.
+*/
 let not_: bool => bool = inverse;
 
 /**
- * Combines two boolean using an AND
- */
+Combines two boolean using an AND
+*/
 let and_: (bool, bool) => bool = (&&);
 
 /**
- * Combines two boolean using an OR
- */
+Combines two boolean using an OR
+*/
 let or_: (bool, bool) => bool = (||);
 
 /**
- * Combines two booleans using an NAND
- */
+Combines two booleans using an NAND
+*/
 let nand: (bool, bool) => bool = (a, b) => !(a && b);
 
 /**
- * Combines two booleans using an NOR
- */
+Combines two booleans using an NOR
+*/
 let nor: (bool, bool) => bool = (a, b) => !(a || b);
 
 /**
- * Combines two booleans using an XOR
- */
+Combines two booleans using an XOR
+*/
 let xor: (bool, bool) => bool = (a, b) => !a && b || a && !b;
 
 /**
- * Combines two booleans using an XNOR
- */
+Combines two booleans using an XNOR
+*/
 let xnor: (bool, bool) => bool = (a, b) => !xor(a, b);
 
 /**
- * Combines two booleans using an implication
- */
+Combines two booleans using an implication
+*/
 let implies: (bool, bool) => bool = (a, b) => !a || b;
 
 /**
- * Compares two booleans for equality
- */
+Compares two booleans for equality
+*/
 let eq: (bool, bool) => bool =
   (a, b) =>
     switch (a, b) {
@@ -78,16 +81,16 @@ let eq: (bool, bool) => bool =
     };
 
 /**
- * EQ instance for booleans
- */
+EQ instance for booleans
+*/
 module Eq: EQ with type t = bool = {
   type t = bool;
   let eq = eq;
 };
 
 /**
- * Compares two booleans for equality
- */
+Compares two booleans for equality
+*/
 let compare: (bool, bool) => ordering =
   (a, b) =>
     switch (a, b) {
@@ -98,21 +101,21 @@ let compare: (bool, bool) => ordering =
     };
 
 /**
- * ORD instance for booleans
- */
+ORD instance for booleans
+*/
 module Ord: ORD with type t = bool = {
   include Eq;
   let compare = compare;
 };
 
 /**
- * Converts a boolean value to a string
- */
+Converts a boolean value to a string
+*/
 let show: bool => string = b => b ? "true" : "false";
 
 /**
- * SHOW instance for booleans
- */
+SHOW instance for booleans
+*/
 module Show: SHOW with type t = bool = {
   type t = bool;
   let show = show;

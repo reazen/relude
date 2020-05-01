@@ -1,28 +1,33 @@
-/**
- * Contains functions and typeclass instances for the `ordering` type - the enum
- * with inhabitants [ | `less_than, | `equal_to, | `greater_than ]
- *
- * Functions that deal with comparing values don't belong here - these go in Relude_Ord/OrdExtensions.
- * This module is just for working with values of type `ordering`.
- */
+[@ocaml.text
+  {|
+Contains functions and typeclass instances for the [ordering] type - the enum
+with inhabitants [`less_than], [`equal_to], and [`greater_than].
+
+Functions that deal with comparing values don't belong here - these go in
+{!module:Relude_Ord} and {!module:Relude_Extensions_Ord}. This module is just
+for working with values of type [ordering].
+|}
+];
+
 type t = BsBastet.Interface.ordering;
 
 /**
- * Converts an int to a type-safe ordering value
- */
+[Ordering.fromInt] converts an int to a type-safe ordering value. This can be
+helpful for working with other functions in the OCaml world that normally use
+[-1] to indicate [`less_than], [0] to indicate [`equal_to], and [1] to indicate
+[`greater_than].
+*/
 let fromInt: int => t =
-  i =>
-    if (i < 0) {
-      `less_than;
-    } else if (i == 0) {
-      `equal_to;
-    } else {
-      `greater_than;
-    };
+  fun
+  | i when i < 0 => `less_than
+  | i when i == 0 => `equal_to
+  | _ => `greater_than;
 
 /**
- * Converts a type-safe ordering value to an int
- */
+[Ordering.toInt] converts a type-safe ordering value to an int. This is useful
+when working with OCaml libraries that expect [-1] for {e less than}, [0] for
+{e equal} and [1] for {e greater than}.
+*/
 let toInt: t => int =
   fun
   | `less_than => (-1)
@@ -30,8 +35,9 @@ let toInt: t => int =
   | `greater_than => 1;
 
 /**
- * Reverses the value of the ordering (`greater_than becomes `less_than and vice versa)
- */
+[Ordering.reverse] reverses the value of the ordering ([`greater_than] becomes
+[`less_than] and vice versa).
+*/
 let reverse: t => t =
   fun
   | `less_than => `greater_than
@@ -39,18 +45,9 @@ let reverse: t => t =
   | `greater_than => `less_than;
 
 /**
- * Compares two orderings for equality
- */
-let eq: (t, t) => bool =
-  (o1, o2) =>
-    switch (o1, o2) {
-    | (`less_than, `less_than) => true
-    | (`equal_to, `equal_to) => true
-    | (`greater_than, `greater_than) => true
-    | (`less_than, _) => false
-    | (`equal_to, _) => false
-    | (`greater_than, _) => false
-    };
+[Ordering.eq] compares two orderings for equality
+*/
+let eq: (t, t) => bool = (a, b) => a == b;
 
 module Eq: BsBastet.Interface.EQ with type t = t = {
   type nonrec t = t;
@@ -59,8 +56,9 @@ module Eq: BsBastet.Interface.EQ with type t = t = {
 include Relude_Extensions_Eq.EqExtensions(Eq);
 
 /**
- * Compares two orderings (`less_than < `equal_to < `greater_than)
- */
+[Ordering.compare] ompares two orderings
+([`less_than < `equal_to < `greater_than]).
+*/
 let compare: (t, t) => t =
   (o1, o2) =>
     switch (o1, o2) {

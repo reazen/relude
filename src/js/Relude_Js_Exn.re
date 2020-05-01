@@ -1,20 +1,20 @@
 /**
- * Creates a JS Error with the given string message.
- */
+Creates a JS Error with the given string message.
+*/
 let make: string => Js.Exn.t = [%raw
   {| function(message) { return new Error(message); } |}
 ];
 
 /**
- * Creates and throw a JS Error with the given string message.
- */
+Creates and throw a JS Error with the given string message.
+*/
 let throw: string => unit = [%raw
   {| function(message) { throw new Error(message); } |}
 ];
 
 /**
- * Unsafely Converts an OCaml exn into a Js.Exn.t
- */
+Unsafely Converts an OCaml exn into a Js.Exn.t
+*/
 let unsafeFromExn: exn => Js.Exn.t =
   exn => {
     let makeUnknownJsExn: exn => Js.Exn.t = [%raw
@@ -27,6 +27,6 @@ let unsafeFromExn: exn => Js.Exn.t =
   };
 
 /**
- * Unsafely coerces a Js.Exn.t to an OCaml exn without regard to consequences of such actions.
- */
+Unsafely coerces a Js.Exn.t to an OCaml exn without regard to consequences of such actions.
+*/
 external unsafeToExn: Js.Exn.t => exn = "%identity";

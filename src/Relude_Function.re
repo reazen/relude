@@ -96,7 +96,7 @@ let curry2: 'a 'b 'c. ((('a, 'b)) => 'c, 'a, 'b) => 'c =
 /**
 Converts a function that takes a tuple-3 as an argument to a normal curried
 function.
- */
+*/
 let curry3: 'a 'b 'c 'd. ((('a, 'b, 'c)) => 'd, 'a, 'b, 'c) => 'd =
   (f, a, b, c) => f((a, b, c));
 

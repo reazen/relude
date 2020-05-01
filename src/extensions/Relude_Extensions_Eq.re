@@ -62,12 +62,12 @@ module EqInfix = (Eq: EQ) => {
   // Note: if we want to change these, try for consistency with ORD operators
 
   /**
-   Equals operator
-   */
+  Equals operator
+  */
   let (|=|) = Eq.eq;
 
   /**
-   Not-equals operator
-   */
+  Not-equals operator
+  */
   let (|!=|) = EqExtensions.notEq;
 };

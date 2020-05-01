@@ -14,7 +14,7 @@ let none: 'a. option('a) = None;
 let empty: 'a. option('a) = None;
 
 /**
-[Option.isSome] returns [true] if the provided option is not `None`.
+[Option.isSome] returns [true] if the provided option is not [None].
 */
 let isSome: 'a. option('a) => bool =
   fun
@@ -69,14 +69,14 @@ let foldLazy: 'a 'b. (unit => 'b, 'a => 'b, option('a)) => 'b =
     | None => getDefault();
 
 /**
-`getOrElse(default, opt)` returns `v` when `opt` is
-`Some(v)`. If `opt` is `None`, `getOrelse()` returns `default`.
+[getOrElse(default, opt)] returns [v] when [opt] is [Some(v)]. If [opt] is
+[None], [getOrelse] returns [default].
 
-If `opt` is `None`, `getOrElse()` returns `default`, which must be of
-the same type that as `v`.
+If the option is [None], [getOrElse] returns [default], which must be of the
+same type that as [v].
 
-This is not a lazy function, as the `default` value is always
-evaluated, no matter what `opt`’s value is.
+This is not a lazy function, as the [default] value is always
+evaluated, no matter what [opt]’s value is.
 
 
 {[
@@ -112,14 +112,14 @@ let getOrElseLazy: 'a. (unit => 'a, option('a)) => 'a =
     | None => getDefault();
 
 /**
-`getOrThrow(opt)` returns the value of the option or throws an exception.
+[getOrThrow(opt)] returns the value of the option or throws an exception.
 
 This should only be used if you are absolutely sure there is a value in the option.
 */
 let getOrThrow: 'a. option('a) => 'a = Belt.Option.getExn;
 
 /**
-Similar to alt, but with the arguments reversed and labelled for use with `|>`
+Similar to alt, but with the arguments reversed and labelled for use with [|>]
 */
 let orElse: 'a. (~fallback: option('a), option('a)) => option('a) =
   (~fallback) =>
@@ -128,7 +128,7 @@ let orElse: 'a. (~fallback: option('a), option('a)) => option('a) =
     | None => fallback;
 
 /**
-Similar to alt, but with the arguments reversed and labelled for use with `|>`.
+Similar to alt, but with the arguments reversed and labelled for use with [|>].
 The fallback value is also lazy for expensive constructions.
 */
 let orElseLazy:
@@ -141,7 +141,7 @@ let orElseLazy:
     | None => fallback();
 
 /**
-`tap(f, opt)` applies a side-effect function to the value in a `Some`, and returns
+[tap(f, opt)] applies a side-effect function to the value in a [Some], and returns
 the original option value untouched.
 */
 let tap: 'a. ('a => unit, option('a)) => option('a) =
@@ -154,12 +154,12 @@ let tap: 'a. ('a => unit, option('a)) => option('a) =
     };
 
 /**
-`tapSome` is an alias for `tap`
+[tapSome] is an alias for {!val:tap}.
 */
 let tapSome: 'a. ('a => unit, option('a)) => option('a) = tap;
 
 /**
-`tap(f, opt)` applies a side-effect function if the value of the option is None, and returns
+[tap(f, opt)] applies a side-effect function if the value of the option is None, and returns
 the original option value untouched.
 */
 let tapNone: 'a. (unit => unit, option('a)) => option('a) =
@@ -172,9 +172,9 @@ let tapNone: 'a. (unit => unit, option('a)) => option('a) =
     };
 
 /**
-`bitap(ifNone, ifSome, opt)` applies a side effect function for each of the cases of the option, and
+[bitap(ifNone, ifSome, opt)] applies a side effect function for each of the cases of the option, and
 returns the original option untouched.
- */
+*/
 let bitap: 'a. (unit => unit, 'a => unit, option('a)) => option('a) =
   (ifNone, ifSome) =>
     fun
@@ -188,11 +188,11 @@ let bitap: 'a. (unit => unit, 'a => unit, option('a)) => option('a) =
       };
 
 /**
-`filter(f, opt)` works as follows:
+[filter(f, opt)] works as follows:
 
-- If `opt` is `Some(v)` and `f(v)` is `true`, the result is `Some(v)`.
-- If `opt` is `Some(v)` and `f(v)` is `false`, the result is `None`.
-- If `opt` is `None`, the result is `None`.
+- If [opt] is [Some(v)] and [f(v)] is [true], the result is [Some(v)].
+- If [opt] is [Some(v)] and [f(v)] is [false], the result is [None].
+- If [opt] is [None], the result is [None].
 
 
 {[
@@ -210,13 +210,13 @@ let filter: 'a. ('a => bool, option('a)) => option('a) =
     );
 
 /**
-Alias of filter
+[Option.keep] is an alias for {!val:filter}.
 */
 let keep: 'a. ('a => bool, option('a)) => option('a) = filter;
 
 /**
-`filterNot` is the inverse of `filter`, meaning `Some` values are preserved
-if the provided predicate function returns false.
+[filterNot] is the inverse of [filter], meaning [Some] values are preserved if
+the provided predicate function returns false.
 
 {[
   let isEven = x => x mod 2 == 0;

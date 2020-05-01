@@ -26,8 +26,8 @@ module Unit = {
 module Cont = Relude.Cont.WithResult(Unit.Type);
 
 /**
- * Callback-based API for reading a file (with a success)
- */
+Callback-based API for reading a file (with a success)
+*/
 let readFileSuccess =
     (
       FilePath(filePath): FilePath.t,
@@ -37,8 +37,8 @@ let readFileSuccess =
   onDone(Ok("Read file: " ++ filePath));
 
 /**
- * Callback-based API for reading a file (with an error)
- */
+Callback-based API for reading a file (with an error)
+*/
 let readFileError =
     (
       FilePath(filePath): FilePath.t,
@@ -48,8 +48,8 @@ let readFileError =
   onDone(Error(Error("Failed to read file: " ++ filePath)));
 
 /**
- * Callback-based API for writing a file (with success)
- */
+Callback-based API for writing a file (with success)
+*/
 let writeFileSuccess =
     (
       FilePath(_filePath): FilePath.t,
@@ -60,8 +60,8 @@ let writeFileSuccess =
   onDone(Ok());
 
 /**
- * Callback-based API for writing a file (with an error)
- */
+Callback-based API for writing a file (with an error)
+*/
 let writeFileError =
     (
       FilePath(filePath): FilePath.t,
@@ -72,27 +72,27 @@ let writeFileError =
   onDone(Error(Error("Failed to write file: " ++ filePath)));
 
 /**
- * Continuation Monad for the callback-based API for reading a file (success)
- */
+Continuation Monad for the callback-based API for reading a file (success)
+*/
 let readFileSuccessCont: FilePath.t => Cont.t(result(string, Error.t)) =
   filePath => Cont.make(readFileSuccess(filePath));
 
 /**
- * Continuation Monad for the callback-based API for reading a file (error)
- */
+Continuation Monad for the callback-based API for reading a file (error)
+*/
 let readFileError: FilePath.t => Cont.t(result(string, Error.t)) =
   filePath => Cont.make(readFileError(filePath));
 
 /**
- * Continuation Monad for the callback-based API for writing a file (success)
- */
+Continuation Monad for the callback-based API for writing a file (success)
+*/
 let writeFileSuccessCont:
   (FilePath.t, string) => Cont.t(result(unit, Error.t)) =
   (filePath, content) => Cont.make(writeFileSuccess(filePath, content));
 
 /**
- * Continuation Monad for the callback-based API for writing a file (error)
- */
+Continuation Monad for the callback-based API for writing a file (error)
+*/
 let writeFileErrorCont: (FilePath.t, string) => Cont.t(result(unit, Error.t)) =
   (filePath, content) => Cont.make(writeFileError(filePath, content));
 
@@ -164,9 +164,9 @@ module IOE = IO.WithError(Error.Type);
 module ContIO = ContT.WithMonadAndResult(IOE.Monad, Unit.Type);
 
 /**
- * A callback-based API for converting a string to an int and running some IO effect
- * on the result.
- */
+A callback-based API for converting a string to an int and running some IO effect
+on the result.
+*/
 let stringToIntCB:
   (string, Result.t(int, Error.t) => IO.t(unit, Error.t)) =>
   IO.t(unit, Error.t) =
@@ -177,14 +177,14 @@ let stringToIntCB:
   };
 
 /**
- * A ContT version of the above ContT(IO) CB API
- */
+A ContT version of the above ContT(IO) CB API
+*/
 let stringToIntCont: string => ContIO.t(result(int, Error.t)) =
   str => ContIO.make(stringToIntCB(str));
 
 /**
- * Simulates an effectful assertion function that compares two ints
- */
+Simulates an effectful assertion function that compares two ints
+*/
 let assertIntIO =
     (expected: int, actual: int, onDone: assertion => unit)
     : IO.t(unit, Error.t) => {
@@ -193,8 +193,8 @@ let assertIntIO =
 };
 
 /**
- * Simulates an effectful assertion function that fails
- */
+Simulates an effectful assertion function that fails
+*/
 let failIO = (onDone: assertion => unit): IO.t(unit, Error.t) => {
   onDone(fail("Failed"));
   IO.unit;

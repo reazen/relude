@@ -53,9 +53,7 @@ let fromInt: int => t = intValue => Decimal(intValue, 0);
 /**
 [Decimal.fromString] attempts to parse a [Decimal] from a [string]
 */
-/*
- let fromString: string => option(t) = _ => None; // TODO
- */
+// let fromString: string => option(t) = _ => None; // TODO
 
 /**
 [Decimal.show] renders the [Decimal] value to a [string], as if the [Decimal]
@@ -86,9 +84,7 @@ let show: t => string =
 /**
 [Decimal.round] rounds a [Decimal] using the given rounding strategy.
 */
-/*
- let round: (rounding, t) => t = (_rounding, decimal) => decimal; // TODO
- */
+// let round: (rounding, t) => t = (_rounding, decimal) => decimal; // TODO
 
 /**
 [Decimal.tenToThePowerOfPositive] computes the value of [10^exponent].
@@ -171,13 +167,11 @@ overflow.
 
 Note: the arguments are in order of [lhs], [rhs]
 */;
-/*
- let multiply: (t, t) => t =
-   (lhs, _rhs) => {
-     // TODO
-     lhs;
-   };
-   */
+// TODO
+//  let multiply: (t, t) => t =
+//    (lhs, _rhs) => {
+//      lhs;
+//    };
 
 /**
 Infix operator for [multiply]
@@ -189,13 +183,11 @@ Divides two [Decimal] values using the given [rounding] preference.
 
 Note: the arguments are in order of [lhs], [rhs]
 */;
-/*
- let divide: (t, t, rounding) => t =
-   (lhs, _rhs, _rounding) => {
-     // TODO
-     lhs;
-   };
-   */
+// TODO
+//  let divide: (t, t, rounding) => t =
+//    (lhs, _rhs, _rounding) => {
+//      lhs;
+//    };
 
 /**
 Infix operator for [divide]

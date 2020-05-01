@@ -3,9 +3,9 @@ let listAppend = (value, list) => List.concat([list, [value]]);
 
 module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
   /**
-   * Generates a list of enum values starting at ~start, then going to ~next, then using that
-   * step size to generate the rest of the list.
-   */
+  Generates a list of enum values starting at [~start], then going to [~next],
+  then using that step size to generate the rest of the list.
+  */
   let fromThenToAsList: (~start: E.t, ~next: E.t, ~finish: E.t) => list(E.t) =
     (~start, ~next, ~finish) => {
       let startInt = E.fromEnum(start);

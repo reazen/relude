@@ -57,21 +57,21 @@ module WithFunctor = (F: FUNCTOR) => {
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
   /**
-   * Lifts a value of our algebra into our free monad type
-   *
-   * This is useful to creating "smart constructors" for our algebra
-   */
+  Lifts a value of our algebra into our free monad type
+
+  This is useful to creating "smart constructors" for our algebra
+  */
   let liftF: 'a. F.t('a) => t('a) =
     fa => FlatMap(fa |> F.map(a => Pure(a)));
 
   /**
-   * Specifies a monad into which we will interpret our free monadic program
-   */
+  Specifies a monad into which we will interpret our free monadic program
+  */
   module WithMonad = (M: MONAD) => {
     /**
-     * Applies an interpreter function to interpret each value of our algebra into
-     * a target monad.
-     */
+    Applies an interpreter function to interpret each value of our algebra into
+    a target monad.
+    */
     let rec foldFree: (F.t('x) => M.t('x), t('a)) => M.t('a) =
       (nat, freeA) =>
         switch (freeA) {

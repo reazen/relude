@@ -1,4 +1,4 @@
 /**
- * Extensions for any MONAD_THROW
- */
+Extensions for any MONAD_THROW
+*/
 module MonadThrowExtensions = (M: Relude_Interface.MONAD_THROW) => {};

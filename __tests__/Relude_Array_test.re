@@ -158,7 +158,7 @@ describe("Array", () => {
     expect(Array.at(10, [|0, 10, 20, 30|])) |> toEqual(None)
   );
 
-  /* Apparently setAt 0 doesn't work on an empty array... */
+  // Apparently setAt 0 doesn't work on an empty array...
   test("setAt empty array", () =>
     expect(Array.setAt(0, "a", [||])) |> toEqual(None)
   );

@@ -1,45 +1,45 @@
 open BsBastet.Interface;
 
 /**
- * A non-empty multi-way (aka "rose") tree which contains a "top" value and
- * a list of child trees.
- */
+A non-empty multi-way (aka "rose") tree which contains a "top" value and
+a list of child trees.
+*/
 type t('a) = {
   value: 'a,
   children: list(t('a)),
 };
 
 /**
- * Constructs a tree containing a single value
- */
+Constructs a tree containing a single value
+*/
 let pure: 'a. 'a => t('a) = a => {value: a, children: []};
 
 /**
- * Alias for pure
- */
+Alias for pure
+*/
 let singleton = pure;
 
 /**
- * Checks if this tree contains a single item
- */
+Checks if this tree contains a single item
+*/
 let isSingleton: 'a. t('a) => bool =
   ({value: _, children}) => Relude_List.isEmpty(children);
 
 /**
- * Constructs a tree from a value and children
- */
+Constructs a tree from a value and children
+*/
 let make: 'a. ('a, list(t('a))) => t('a) =
   (value, children) => {value, children};
 
 /**
- * Destructures a tree into a tuple of the value and children
- */
+Destructures a tree into a tuple of the value and children
+*/
 let unmake: 'a. t('a) => ('a, list(t('a))) =
   ({value, children}) => (value, children);
 
 /**
- * Creates a tree using a seed value and a function to produce child seed values
- */
+Creates a tree using a seed value and a function to produce child seed values
+*/
 let rec fill: 'a. ('a => list('a), 'a) => t('a) =
   (getChildrenSeeds, seed) => {
     value: seed,
@@ -48,49 +48,49 @@ let rec fill: 'a. ('a => list('a), 'a) => t('a) =
   };
 
 /**
- * Gets the top value of the tree
- */
+Gets the top value of the tree
+*/
 let getValue: 'a. t('a) => 'a = ({value, children: _}) => value;
 
 /**
- * Replaces only the top value of the tree
- */
+Replaces only the top value of the tree
+*/
 let setValue: 'a. ('a, t('a)) => t('a) =
   (newValue, {value: _, children}) => {value: newValue, children};
 
 /**
- * Updates only the top value of the tree
- */
+Updates only the top value of the tree
+*/
 let modifyValue: 'a. ('a => 'a, t('a)) => t('a) =
   (f, {value, children}) => {value: f(value), children};
 
 /**
- * Gets the list of child trees
- */
+Gets the list of child trees
+*/
 let getChildren: 'a. t('a) => list(t('a)) =
   ({value: _, children}) => children;
 
 /**
- * Gets the child at the given index
- */
+Gets the child at the given index
+*/
 let getChildAt: 'a. (int, t('a)) => option(t('a)) =
   (index, {value: _, children}) => children |> Relude_List.at(index);
 
 /**
- * Replaces all the children with the given list of new children
- */
+Replaces all the children with the given list of new children
+*/
 let setChildren: 'a. (list(t('a)), t('a)) => t('a) =
   (newChildren, {value, children: _}) => {value, children: newChildren};
 
 /**
- * Modifies the children using the given function
- */
+Modifies the children using the given function
+*/
 let modifyChildren: 'a. (list(t('a)) => list(t('a)), t('a)) => t('a) =
   (f, {value, children}) => {value, children: f(children)};
 
 /**
- * Adds a child on the left side
- */
+Adds a child on the left side
+*/
 let prependChild: 'a. (~child: t('a), t('a)) => t('a) =
   (~child, {value, children}) => {
     value,
@@ -98,8 +98,8 @@ let prependChild: 'a. (~child: t('a), t('a)) => t('a) =
   };
 
 /**
- * Adds a child on the right side
- */
+Adds a child on the right side
+*/
 let appendChild: 'a. (~child: t('a), t('a)) => t('a) =
   (~child, {value, children}) => {
     value,
@@ -107,8 +107,8 @@ let appendChild: 'a. (~child: t('a), t('a)) => t('a) =
   };
 
 /**
- * Prepends new children to the left side of the existing children
- */
+Prepends new children to the left side of the existing children
+*/
 let prependChildren: 'a. (list(t('a)), t('a)) => t('a) =
   (newChildren, {value, children}) => {
     value,
@@ -116,8 +116,8 @@ let prependChildren: 'a. (list(t('a)), t('a)) => t('a) =
   };
 
 /**
- * Appends new children to the right side of the existing children
- */
+Appends new children to the right side of the existing children
+*/
 let appendChildren: 'a. (list(t('a)), t('a)) => t('a) =
   (newChildren, {value, children}) => {
     value,
@@ -125,8 +125,8 @@ let appendChildren: 'a. (list(t('a)), t('a)) => t('a) =
   };
 
 /**
- * Dumps the tree to a flattened non-empty list, with the top value first, proceeding downward and left-to-right
- */
+Dumps the tree to a flattened non-empty list, with the top value first, proceeding downward and left-to-right
+*/
 let toNonEmptyList: 'a. t('a) => Relude_NonEmpty.List.t('a) =
   ({value, children}) => {
     let rec flatten' = ({value, children}) =>
@@ -141,14 +141,14 @@ let toNonEmptyList: 'a. t('a) => Relude_NonEmpty.List.t('a) =
   };
 
 /**
- * Dumps the tree to a flattened non-empty array, with the top value first, proceeding downward and left-to-right
- */
+Dumps the tree to a flattened non-empty array, with the top value first, proceeding downward and left-to-right
+*/
 let toNonEmptyArray: 'a. t('a) => Relude_NonEmpty.Array.t('a) =
   tree => tree |> toNonEmptyList |> Relude_NonEmpty.Array.fromNonEmptyList;
 
 /**
- * Zips two tree together position-by-position using the given function
- */
+Zips two tree together position-by-position using the given function
+*/
 let rec zipWith: 'a 'b 'c. (('a, 'b) => 'c, t('a), t('b)) => t('c) =
   (
     f,
@@ -162,14 +162,14 @@ let rec zipWith: 'a 'b 'c. (('a, 'b) => 'c, t('a), t('b)) => t('c) =
   };
 
 /**
- * Zips two tree together position-by-position to make a tree of tuples
- */
+Zips two tree together position-by-position to make a tree of tuples
+*/
 let zip: 'a 'b. (t('a), t('b)) => t(('a, 'b)) =
   (ta, tb) => zipWith((a, b) => (a, b), ta, tb);
 
 /**
- * Maps a function over all values of the tree
- */
+Maps a function over all values of the tree
+*/
 let rec map: 'a 'b. ('a => 'b, t('a)) => t('b) =
   (aToB, {value, children}) => {
     value: aToB(value),
@@ -183,8 +183,8 @@ module Functor: FUNCTOR with type t('a) = t('a) = {
 include Relude_Extensions_Functor.FunctorExtensions(Functor);
 
 /**
- * Applies a tree of functions to a tree of values position-by-position, trimming off non-matching branches.
- */
+Applies a tree of functions to a tree of values position-by-position, trimming off non-matching branches.
+*/
 let rec apply: 'a 'b. (t('a => 'b), t('a)) => t('b) =
   (
     {value: aToB, children: aToBChildTrees},
@@ -251,8 +251,8 @@ module Comonad: COMONAD with type t('a) = t('a) = {
 include Relude_Extensions_Comonad.ComonadExtensions(Comonad);
 
 /**
- * Folds a tree from left to right, depth first
- */
+Folds a tree from left to right, depth first
+*/
 let rec foldLeft: 'a 'b. (('b, 'a) => 'b, 'b, t('a)) => 'b =
   (f, init, {value, children}) => {
     let acc =
@@ -262,8 +262,8 @@ let rec foldLeft: 'a 'b. (('b, 'a) => 'b, 'b, t('a)) => 'b =
   };
 
 /**
- * Folds a tree from right to left, depth first
- */
+Folds a tree from right to left, depth first
+*/
 let rec foldRight: 'a 'b. (('a, 'b) => 'b, 'b, t('a)) => 'b =
   (f, init, {value, children}) => {
     let acc =
@@ -339,9 +339,9 @@ module WithApplicative = (A: APPLICATIVE) => {
 };
 
 /**
- * Filters the tree to only contain values which pass the given predicate. If a value
- * doesn't pass the predicate, the entire subtree is trimmed.
- */
+Filters the tree to only contain values which pass the given predicate. If a value
+doesn't pass the predicate, the entire subtree is trimmed.
+*/
 let rec filter: 'a. ('a => bool, t('a)) => option(t('a)) =
   (pred, {value, children}) =>
     if (pred(value)) {
@@ -354,8 +354,8 @@ let rec filter: 'a. ('a => bool, t('a)) => option(t('a)) =
     };
 
 /**
- * Shows a tree using the given function for the contained values
- */
+Shows a tree using the given function for the contained values
+*/
 let rec showBy: 'a. ('a => string, t('a)) => string =
   (showA, {value, children}) => {
     "Tree "
@@ -399,8 +399,8 @@ module ShowPretty: SHOW_F =
   };
 
 /**
- * Compares two trees for quality using the given function
- */
+Compares two trees for quality using the given function
+*/
 let rec eqBy: 'a. (('a, 'a) => bool, t('a), t('a)) => bool =
   (
     eqA,

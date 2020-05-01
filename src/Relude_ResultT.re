@@ -1,8 +1,8 @@
 open BsBastet.Interface;
 
 /**
- * Creates a ResultT Monad with the given outer Monad module.
- */
+Creates a ResultT Monad with the given outer Monad module.
+*/
 module WithMonad = (M: MONAD) => {
   type t('a, 'e) =
     | ResultT(M.t(result('a, 'e)));

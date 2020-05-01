@@ -42,6 +42,10 @@ describe("List", () => {
     expect(List.repeat(3, "a")) |> toEqual(["a", "a", "a"])
   );
 
+  test("repeat (negative count is empty)", () =>
+    expect(List.repeat(-1, "a")) |> toEqual([])
+  );
+
   test("makeWithIndex creates a list of n items using f", () =>
     expect(List.makeWithIndex(3, i => i + 2)) |> toEqual([2, 3, 4])
   );
@@ -117,7 +121,12 @@ describe("List", () => {
   test("unfold", () =>
     expect(
       List.unfold(
-        x => if (x>5) None else Some((x, x+1)),
+        x =>
+          if (x > 5) {
+            None;
+          } else {
+            Some((x, x + 1));
+          },
         0,
       ),
     )

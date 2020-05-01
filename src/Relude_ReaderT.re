@@ -6,8 +6,8 @@ open Relude_Function.Infix;
 // just be the only thing.
 
 /**
- * Creates a ReaderT Monad with the given Monad module
- */
+Creates a ReaderT Monad with the given Monad module
+*/
 module WithMonad = (M: MONAD) => {
   type t('r, 'a) =
     | ReaderT('r => M.t('a));
@@ -58,9 +58,9 @@ module WithMonad = (M: MONAD) => {
       ReaderT(r => M.flat_map(rToMA(r), a => aToMA(a)));
 
   /**
-   * Locks in the reader environment type, so that we can implement
-   * the single-type-parameter typeclasses.
-   */
+  Locks in the reader environment type, so that we can implement the
+  single-type-parameter type classes.
+  */
   module WithEnv = (R: TYPE) => {
     type nonrec t('a) = t(R.t, 'a);
 

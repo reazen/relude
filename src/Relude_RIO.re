@@ -64,9 +64,9 @@ module WithError = (ERR: TYPE) => {
   };
 
   /**
-   * Locks in the reader environment type, so that we can implement
-   * the single-type-parameter typeclasses.
-   */
+  Locks in the reader environment type, so that we can implement the
+  single-type-parameter type classes.
+  */
   module WithEnv = (R: TYPE) => {
     type nonrec t('a) = t(R.t, 'a);
 
@@ -116,9 +116,9 @@ module WithError = (ERR: TYPE) => {
 };
 
 /**
- * Creates a RIO Monad with the given error and environment.
- * e.g. WithErrorAndEnv(ERR, ENV) = Rio(ENV.t => IO.t('a, ERR.t))
- */
+Creates a RIO Monad with the given error and environment. e.g.
+[WithErrorAndEnv(ERR, ENV) = Rio(ENV.t => IO.t('a, ERR.t))].
+*/
 module WithErrorAndEnv = (ERR: TYPE, ENV: TYPE) => {
   module WithMonad = WithError(ERR);
   include WithMonad.WithEnv(ENV);
