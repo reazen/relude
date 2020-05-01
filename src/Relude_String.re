@@ -3,32 +3,31 @@ open BsBastet.Interface;
 type t = string;
 
 /**
-Returns the empty string
+[String.empty] is the empty string value [""].
 */
 let empty: string = "";
 
 /**
-`length(str)` returns the length of the string. Since this function
-calls the JavaScript `String.length` function, it works properly with
-Unicode characters.
+[String.length] returns the length of the string. Since this function calls the
+JavaScript [String.length] function, it works properly with Unicode characters.
 
 {[
-  length("example") == 7;
-  length({js|Glück|js}) == 5;
-  length({js|대한민국|js}) == 4;
+  String.length("example") == 7;
+  String.length({js|Glück|js}) == 5;
+  String.length({js|대한민국|js}) == 4;
 ]}
 */
 let length: string => int = Js.String.length;
 
 /**
-`isEmpty(str)` returns `true` if `str` is the empty string `""`;
-`false` otherwise.
+[String.isEmpty] returns [true] if the provided string is the empty string [""],
+and returns [false] otherwise.
 */
 let isEmpty: string => bool = s => length(s) == 0;
 
 /**
-`isNotEmpty(str)` returns `true` if `str` is not the empty string `""`;
-`false` if it is empty.
+[isNotEmpty(str)] returns [true] if [str] is not the empty string [""];
+[false] if it is empty.
 */
 let isNonEmpty: string => bool = s => !isEmpty(s);
 
@@ -38,8 +37,8 @@ Alias for isNonEmpty
 let isNotEmpty = isNonEmpty;
 
 /**
-`toNonEmpty(str)` returns `Some(str)` if `str` is not the empty string `""`.
-It returns `None` if `str` is the empty string.
+[toNonEmpty(str)] returns [Some(str)] if [str] is not the empty string [""].
+It returns [None] if [str] is the empty string.
 
 {[
   toNonEmpty("abc") == Some("abc");
@@ -49,9 +48,9 @@ It returns `None` if `str` is the empty string.
 let toNonEmpty: string => option(string) = s => isEmpty(s) ? None : Some(s);
 
 /**
-`trim(str)` returns a new string with leading and trailing whitespace
+[trim(str)] returns a new string with leading and trailing whitespace
 (blank, tab, newline, non-breaking space and others as described
-in <https://www.ecma-international.org/ecma-262/5.1/#sec-7.2>) removed from `s`.
+in <https://www.ecma-international.org/ecma-262/5.1/#sec-7.2>) removed from [s].
 
 {[
   trim("  abc  ") == "abc";
@@ -68,7 +67,7 @@ let trim: string => string = Js.String.trim;
 //let trimRight: string => string = ???
 
 /**
-`isWhitespace(str)` returns true if the string consists
+[isWhitespace(str)] returns true if the string consists
 entirely of whitespace characters as described
 in <https://www.ecma-international.org/ecma-262/5.1/#sec-7.2>
 
@@ -86,8 +85,8 @@ Indicates if the string contains any non-whitespace characters
 let isNonWhitespace: string => bool = s => !isWhitespace(s);
 
 /**
-`toNonWhiteSpace(str)` returns `Some(str)` if `str` has any non-whitespace
-characters in it. The function returns `None` if `str` consists entirely
+[toNonWhiteSpace(str)] returns [Some(str)] if [str] has any non-whitespace
+characters in it. The function returns [None] if [str] consists entirely
 of whitespace.
 
 {[
@@ -99,7 +98,7 @@ let toNonWhitespace: string => option(string) =
   s => isWhitespace(s) ? None : Some(s);
 
 /**
-`concat(str1, str2)` concatenate the two strings, returning
+[concat(str1, str2)] concatenate the two strings, returning
 a new string.
 
 {[
@@ -123,8 +122,8 @@ module Monoid: MONOID with type t = string = {
 include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
 
 /**
-`concatArray(xs)` returns a new string that is the result
-of concatenating all the strings in `xs`
+[concatArray(xs)] returns a new string that is the result of concatenating all
+the strings in [xs].
 
 {[
   concatArray([|"cat", "en", "ate"|]) == "catenate";
@@ -137,16 +136,15 @@ let concatArray: array(string) => string =
     Relude_Array_Instances.foldLeft((acc, str) => acc ++ str, "", array);
 
 /**
-Like `concatArray`, but for `list`
+[String.concatList] is the [list] version of {!val:concatArray}.
 */
 let concatList: list(string) => string =
   list => Relude_List_Instances.foldLeft((acc, str) => acc ++ str, "", list);
 
 /**
-`make(x)` converts `x` to a string. If `x` is not a
-primitive type such as integer, float, string, or boolean,
-the result will reflect ReasonML’s internal format for
-that data type.
+[make(x)] converts [x] to a string. If [x] is not a primitive type such as
+integer, float, string, or boolean, the result will reflect ReasonML’s internal
+format for that data type.
 
 {[
   make(32.5) == "32.5";
@@ -160,9 +158,9 @@ that data type.
 let make: 'a => string = Js.String.make;
 
 /**
-`makeWithIndex(n, f)` returns a string that is the result
-of concatenating `f(0)`, `f(1)`, ... `f(n - 1)`, where
-function `f()` takes an integer argument and returns a string.
+[makeWithIndex(n, f)] returns a string that is the result of concatenating
+[f(0)], [f(1)], ... [f(n - 1)], where function [f()] takes an integer argument
+and returns a string.
 
 {[
   let squareChar = (n) => {fromCharCode(97 + n * n)};
@@ -177,8 +175,7 @@ let makeWithIndex: (int, int => string) => string =
   };
 
 /**
-`repeat(n, str)` returns a string consisting of `n` repetitions
-of `str`.
+[repeat(n, str)] returns a string consisting of [n] repetitions of [str].
 
 {[
   repeat(3, "ha") == "hahaha";
@@ -194,11 +191,10 @@ let repeat: (int, string) => string =
   };
 
 /**
-`toUpperCase(str)` converts `str` to upper case using
-the locale-insensitive case mappings in the Unicode
-Character Database. Notice that the conversion can
-expand the number of letters in the result; for example,
-the German `ß` capitalizes to two `S`es in a row.
+[toUpperCase(str)] converts [str] to upper case using the locale-insensitive
+case mappings in the Unicode Character Database. Notice that the conversion can
+expand the number of letters in the result; for example, the German ["ß"]
+capitalizes to two ["S"]es in a row.
 
 {[
   toUpperCase("abc") == "ABC";
@@ -210,13 +206,12 @@ the German `ß` capitalizes to two `S`es in a row.
 let toUpperCase: string => string = Js.String.toUpperCase;
 
 /**
-`toLowerCase(str)` converts `str` to lower case using
-the locale-insensitive case mappings in the Unicode
-Character Database. Notice that the conversion might not
-lessen the number of letters in the result; for example,
-in some German words, two `S`es in a row can convert
-to the single lowercase glyph `ß`, but `toLowerCase()`
-will not do this transformation..
+[toLowerCase(str)] converts [str] to lower case using the locale-insensitive
+case mappings in the Unicode Character Database.
+
+Note that the conversion might not lessen the number of letters in the result;
+for example, in some German words, two ["S"]es in a row can convert to the
+single lowercase glyph [ß], but [toLowerCase()] will not do this transformation.
 
 {[
   toLowerCase("ABC") == "abc";
@@ -228,11 +223,11 @@ will not do this transformation..
 let toLowerCase: string => string = Js.String.toLowerCase;
 
 /**
-`fromCharCode(n)` creates a string containing the character
-corresponding to that number; n ranges from 0 to 65535.
-If out of range, the lower 16 bits of the value are used.
-Thus, `fromCharCode(0x1F63A)` gives the same result as
-`fromCharCode(0xF63A)`.
+[fromCharCode(n)] creates a string containing the character corresponding to
+that number; n ranges from 0 to 65535. If out of range, the lower 16 bits of the
+value are used.
+
+Thus, [fromCharCode(0x1F63A)] gives the same result as [fromCharCode(0xF63A)].
 
 {[
   fromCharCode(65) == "A";
@@ -244,9 +239,9 @@ Thus, `fromCharCode(0x1F63A)` gives the same result as
 let fromCharCode: int => string = Js.String.fromCharCode;
 
 /**
-`charCodeAt(n, str)` returns (optionally) the numeric character code at the
+[charCodeAt(n, str)] returns (optionally) the numeric character code at the
 given 0-based position in a string. If the provided position is out of the
-range of the size of the string (too high or negative), `None` is returned.
+range of the size of the string (too high or negative), [None] is returned.
 
 {[
   charCodeAt(0, "abc") == Some(97);
@@ -261,11 +256,11 @@ let charCodeAt: (int, string) => option(int) =
   };
 
 /**
-`charAt(n, str)` returns `Some(chStr)`, where `chStr` is a string
-consisting of the character at location `n` in the string. The
-first character in a string has position zero.
+[charAt(n, str)] returns [Some(chStr)], where [chStr] is a string consisting of
+the character at location [n] in the string. The first character in a string has
+position zero.
 
-If `n` is out of bounds, `charAt()` returns `None`.
+If [n] is out of bounds, [charAt()] returns [None].
 
 {[
   charAt(0, "abc") == Some("a");
@@ -280,7 +275,7 @@ let charAt: (int, string) => option(string) =
     Js.String.get(str, i) |> Js.Nullable.return |> Js.Nullable.toOption;
 
 /**
-`charAtOrEmpty(n, str)` returns the string containing the character at the
+[charAtOrEmpty(n, str)] returns the string containing the character at the
 given index or the empty string if the index is out of range.
 
 {[
@@ -298,11 +293,11 @@ let charAtOrEmpty: (int, string) => string =
     };
 
 /**
-`charAtNullable(n, str)` returns `Js.Nullable.return(chStr)`,
-where `chStr` is a string consisting of the character at
-location `n` in the string. The first character in a string has position zero.
+[charAtNullable(n, str)] returns [Js.Nullable.return(chStr)], where [chStr] is a
+string consisting of the character at location [n] in the string. The first
+character in a string has position zero.
 
-If `n` is out of bounds, `charAtNullable()` returns `Js.Nullable.undefined`.
+If [n] is out of bounds, [charAtNullable()] returns [Js.Nullable.undefined].
 
 {[
   charAtNullable(0, "abc") == Js.Nullable.return("a");
@@ -316,10 +311,10 @@ let charAtNullable: (int, string) => Js.Nullable.t(string) =
   (i, str) => Js.String.get(str, i) |> Js.Nullable.return;
 
 /**
-`charAtOrThrow(n, str)` returns a string consisting of the character at
-location `n` in the string. The first character in a string has position zero.
+[charAtOrThrow(n, str)] returns a string consisting of the character at
+location [n] in the string. The first character in a string has position zero.
 
-If `n` is out of bounds, `charAtOrThrow()` throws a `RangeError`.
+If [n] is out of bounds, [charAtOrThrow()] throws a [RangeError].
 
 {[
   charAtOrThrow(0, "abc") == "a";
@@ -344,7 +339,7 @@ let charAtOrThrow: (int, string) => string =
     };
 
 /**
-`toList(str)` creates a list with one character of `str` per element.
+[toList(str)] creates a list with one character of [str] per element.
 
 {[
   toList("abc") == ["a", "b", "c"];
@@ -357,7 +352,7 @@ let toList: string => list(string) =
     Relude_List_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 /**
-`toArray(str)` creates an array with one character of `str` per element.
+[toArray(str)] creates an array with one character of [str] per element.
 
 {[
   toArray("abc") == [|"a", "b", "c"|];
@@ -370,12 +365,12 @@ let toArray: string => array(string) =
     Relude_Array_Base.makeWithIndex(length(str), i => charAtOrThrow(i, str));
 
 /**
-In `foldLeft(f, init, str)`, `f()` is a function that takes an accumulated
-value and a string as its arguments.  `foldLeft()` starts with `init` as the
-value of an accumulator. It then calls `f()` repeatedly with each character
-in the string, moving from left to right, with the result `f(accumulator, chStr)`
-becoming the new value of the accumulator.  When all characters have been processed,
-the return value is the value of the accumulator.
+In [foldLeft(f, init, str)], [f()] is a function that takes an accumulated
+value and a string as its arguments. [foldLeft] starts with [init] as the
+value of an accumulator. It then calls [f] repeatedly with each character in the
+string, moving from left to right, with the result [f(accumulator, chStr)]
+becoming the new value of the accumulator. When all characters have been
+processed, the return value is the value of the accumulator.
 
 {[
   let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(0, chStr))};
@@ -387,12 +382,12 @@ let foldLeft: (('b, string) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List_Instances.foldLeft(f, init, toList(str));
 
 /**
-In `foldRight(f, init, str)`, `f()` is a function that takes a string and
-an accumulator as its arguments.  `foldRight()` starts with `init` as the
-value of an accumulator. It then calls `f()` repeatedly with each character
-in the string, moving from right to left, with the result `f(chStr, accumulator)`
-becoming the new value of the accumulator.  When all characters have been processed,
-the return value is the value of the accumulator.
+In [foldRight(f, init, str)], [f()] is a function that takes a string and an
+accumulator as its arguments. [foldRight] starts with [init] as the value of an
+accumulator. It then calls [f] repeatedly with each character in the string,
+moving from right to left, with the result [f(chStr, accumulator)] becoming the
+new value of the accumulator. When all characters have been processed, the
+return value is the value of the accumulator.
 
 {[
   let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(0, chStr))};
@@ -404,20 +399,20 @@ let foldRight: ((string, 'b) => 'b, 'b, string) => 'b =
   (f, init, str) => Relude_List_Instances.foldRight(f, init, toList(str));
 
 /**
- * Show function for string (identity)
- */
+Show function for string (identity)
+*/
 let show: string => string = a => a;
 
 /**
- * SHOW module for string
- */
+SHOW module for string
+*/
 module Show: SHOW with type t = string = {
   type t = string;
   let show = show;
 };
 
 /**
-  `eq(s1, s2)` is a synonym for `s1 == s2`
+[eq(s1, s2)] is a synonym for [s1 == s2]
 */
 let eq: (string, string) => bool = (a, b) => a == b;
 
@@ -428,8 +423,8 @@ module Eq: EQ with type t = string = {
 include Relude_Extensions_Eq.EqExtensions(Eq);
 
 /**
- * Compares two strings
- */
+Compares two strings
+*/
 let compare = BsBastet.String.Ord.compare;
 
 module Ord: ORD with type t = string = {
@@ -439,73 +434,68 @@ module Ord: ORD with type t = string = {
 include Relude_Extensions_Ord.OrdExtensions(Ord);
 
 /**
- * Map module with a string key
- */
+Map module with a string key
+*/
 module Map = Relude_Map.WithOrd(Ord);
 
 /**
- * Set module for strings
- */
+Set module for strings
+*/
 module Set = Relude_Set.WithOrd(Ord);
 
 /**
-  `endsWith(~search, input)` returns `true` if `input` ends with the characters in `target`;
-  `false` otherwise.
+[endsWith(~search, input)] returns [true] if [input] ends with the characters in
+[target]; [false] otherwise.
 
-  ### Example
-  ```re
+{[
   endsWith(~search="ing", "programming") == true;
   endsWith(~search="ing", "program") == false;
   endsWith(~search="ing", "in") == false;
   endsWith(~search="", "everything") == true;
-  ```
+]}
 */
 let endsWith = (~search: string, input: string): bool =>
   Js.String.endsWith(search, input);
 
 /**
-  `startsWith(~search, input)` returns `true` if `input` starts with the characters in `search`;
-  `false` otherwise.
+[startsWith(~search, input)] returns [true] if [input] starts with the
+characters in [search]; [false] otherwise.
 
-  ### Example
-  ```re
+{[
   startsWith(~search="pro", "programming") == true;
   startsWith(~search="pre", "program") == false;
   startsWith(~search="pre", "pr") == false;
   startsWith(~search="", "everything") == true;
-  ```
+]}
 */
 let startsWith = (~search: string, input: string): bool =>
   Js.String.startsWith(search, input);
 
 /**
-  `contains(~search, input)` returns `true` if `search`
-  appears anywhere in `input`; `false` otherwise.
+[contains(~search, input)] returns [true] if [search] appears anywhere in
+[input]; [false] otherwise.
 
-  ### Example
-  ```re
+{[
   contains(~search="cat", "catalog") == true;
   contains(~search="cat", "scatter") == true;
   contains(~search="log", "catalog") == true;
   contains(~search="ato", "fraction") == false;
-  ```
+]}
 */
 let contains = (~search: string, input: string): bool =>
   Js.String.includes(search, input);
 
 /**
-  `indexOf(test, str)` returns `Some(n)`, where `n`
-  is the starting position of the first occurrence of `test`
-  within `str`. If `test` is not in `str`, the return value
-  is `None`.
+[indexOf(test, str)] returns [Some(n)], where [n] is the starting position of
+the first occurrence of [test] within [str]. If [test] is not in [str], the
+return value is [None].
 
-  ### Example
-  ```re
+{[
   indexOf("cat", "catalog") == Some(0);
   indexOf("cat", "scatter") == Some(1);
   indexOf("in", "stringing") == Some(3);
   indexOf("xyz", "blah") == None;
-  ```
+]}
 */
 let indexOf = (~search: string, input: string): option(int) => {
   let index = Js.String.indexOf(search, input);
@@ -517,18 +507,16 @@ let indexOf = (~search: string, input: string): option(int) => {
 };
 
 /**
-  `lastIndexOf(test, str)` returns `Some(n)`, where `n`
-  is the starting position of the last occurrence of `test`
-  within `str`. If `test` is not in `str`, the return value
-  is `false`.
+[lastIndexOf(test, str)] returns [Some(n)], where [n] is the starting position
+of the last occurrence of [test] within [str]. If [test] is not in [str], the
+return value is [false].
 
-  ### Example
-  ```re
+{[
   lastIndexOf("cat", "catalog") == Some(0);
   lastIndexOf("cat", "scatter") == Some(1);
   lastIndexOf("in", "stringing") == Some(6);
   lastIndexOf("xyz", "blah") == None;
-  ```
+]}
 */
 let lastIndexOf = (~search: string, input: string): option(int) => {
   let index = Js.String.lastIndexOf(search, input);
@@ -540,109 +528,102 @@ let lastIndexOf = (~search: string, input: string): option(int) => {
 };
 
 /**
-  `slice(n1, n2, str)` returns the substring of `str` starting at
-  character `n1` up to but not including `n2`.
+[slice(n1, n2, str)] returns the substring of [str] starting at character [n1]
+up to but not including [n2].
 
-  If either `n1` or `n2` is negative, then it is evaluated as
-  `length(str) - n1` (or `length(str) - n2`).
+If either [n1] or [n2] is negative, then it is evaluated as [length(str) - n1]
+(or [length(str) - n2]).
 
-  If `n2` is greater than the length of `str`, then it is treated as `length(str)`.
+If [n2] is greater than the length of [str], then it is treated as
+[length(str)].
 
-  If `n1` is greater than n2`, `slice()` returns the empty string.
+If [n1] is greater than [n2], [slice()] returns the empty string.
 
-  ### Example
-  ```re
+{[
   slice(2, 5, "abcdefg") == "cde";
   slice(2, 9, "abcdefg") == "cdefg";
   slice(-4, -2, "abcdefg") == "de";
   slice(5, 1, "abcdefg") == "";
-  ```
+]}
 */
 let slice: (int, int, string) => string =
   (fromIndex, toIndex, input) =>
     Js.String.slice(~from=fromIndex, ~to_=toIndex, input);
 
 /**
-  `sliceToEnd(n, str)` returns the substring of `str` starting
-  at character `n` to the end of the string
+[sliceToEnd(n, str)] returns the substring of [str] starting at character [n] to
+the end of the string
 
-  If `n` is negative, then it is evaluated as `length(str) - n`.
+If [n] is negative, then it is evaluated as [length(str) - n].
 
-  If `n` is greater than the length of `str`, then `sliceToEnd()`
-  returns the empty string.
+If [n] is greater than the length of [str], then [sliceToEnd()]
+returns the empty string.
 
-  ### Example
-  ```re
+{[
   sliceToEnd(4, "abcdefg") == "efg";
   sliceToEnd(-2, "abcdefg") == "fg";
   sliceToEnd(7, "abcdefg") == "";
-  ```
+]}
 */
 let sliceToEnd: (int, string) => string =
   (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
 
 /**
-  `splitArray(delimiter, str)` splits the given `str`
-  at every occurrence of `delimiter` and returns an array
-  of the resulting substrings.
+[splitArray(delimiter, str)] splits the given [str] at every occurrence of
+[delimiter] and returns an array of the resulting substrings.
 
-  ### Example
-  ```re
+{[
   splitArray("-", "2019-01-02") == [|"2019", "01", "02"|];
   splitArray(",", "a,b,,c") == [|"a", "b", "", "c"|];
   splitArray("::", "good::better::best") == [|"good", "better", "best"|];
   splitArray(";", "has-no-delimiter") == [|"has-no-delimiter"|];
-  ```
+]}
 */
 let splitArray = (~delimiter: string, input: string): array(string) =>
   Js.String.split(delimiter, input);
 
 /**
- * Alias for splitArray
- */
+[String.splitAsArray] is an alias for {!val:splitArray}.
+*/
 let splitAsArray = splitArray;
 
 /**
-  `splitList(delimiter, str)` splits the given `str`
-  at every occurrence of `delimiter` and returns a list
-  of the resulting substrings.
+[splitList(delimiter, str)] splits the given [str] at every occurrence of
+[delimiter] and returns a list of the resulting substrings.
 
-  ### Example
-  ```re
+{[
   splitList("-", "2019-01-02") == ["2019", "01", "02"];
   splitList(",", "a,b,,c") == ["a", "b", "", "c"];
   splitList("::", "good::better::best") == ["good", "better", "best"];
   splitList(";", "has-no-delimiter") == ["has-no-delimiter"];
-  ```
+]}
 */
 let splitList = (~delimiter: string, input: string): list(string) =>
   splitArray(~delimiter, input) |> Relude_List_Instances.fromArray;
 
 /**
- * Alias for splitlist
- */
+[String.splitAsList] is an alias for {!val:splitList}.
+*/
 let splitAsList = splitList;
 
 /**
-  `splitAt(index, str)` splits the string at the given index,
-  returning a tuple of the parts. If `index` is negative,
-  it is evaluated as `length(str) - index`.
+[splitAt(index, str)] splits the string at the given index, returning a tuple of
+the parts. If [index] is negative, it is evaluated as [length(str) - index].
 
-  ### Example
-  ```re
+{[
   splitAt(4, "abcdefg") == ("abcd", "efg");
   splitAt(0, "abcdefg") == ("", "abcdefg");
   splitAt(7, "abcdefg") == ("abcdefg", "");
   splitAt(8, "abcdefg") == ("abcdefg", "");
   splitAt(-3, "abcdefg") == ("abcd", "efg");
   splitAt(-9, "abcdefg") == ("", "abcdefg");
-  ```
+]}
 */
 let splitAt: (int, string) => (string, string) =
   (index, input) => (slice(0, index, input), sliceToEnd(index, input));
 
 /**
-`mapChars(f, str)` applies the function `f()` to each character of the string,
+[mapChars(f, str)] applies the function [f()] to each character of the string,
 returning a new string.
 
 {[
@@ -657,8 +638,9 @@ let mapChars: (string => string, string) => string =
     toList(str) |> Relude_List_Instances.foldMap((module Monoid), f);
 
 /**
- * Pads the string to `targetLength` using `padWith` as a repeated padding on the left side of the `input` string
- */
+Pads the string to [targetLength] using [padWith] as a repeated padding on the
+left side of the [input] string
+*/
 let padStart: (~targetLength: int, ~padWith: string=?, string) => string =
   (~targetLength, ~padWith=" ", input) => {
     let inputLength = input |> length;
@@ -678,8 +660,9 @@ let padStart: (~targetLength: int, ~padWith: string=?, string) => string =
   };
 
 /**
- * Pads the string to `targetLength` using `padWith` as a repeated padding on the right side of the `input` string
- */
+Pads the string to [targetLength] using [padWith] as a repeated padding on the
+right side of the [input] string
+*/
 let padEnd: (~targetLength: int, ~padWith: string=?, string) => string =
   (~targetLength, ~padWith=" ", input) => {
     let inputLength = input |> length;
@@ -699,97 +682,90 @@ let padEnd: (~targetLength: int, ~padWith: string=?, string) => string =
   };
 
 /**
-  `replaceFirst(target, newValue, str)` replaces the first occurrence of `target` with
-  `newValue` in `str`, returning a new string.
+[replaceFirst(target, newValue, str)] replaces the first occurrence of [target]
+with [newValue] in [str], returning a new string.
 
-  ### Example
-  ```re
+{[
   replaceFirst("in", "t", "the rain in spain") == "the rat in spain";
   replaceFirst("in", "t", "playground") == "playground";
-  ```
- */
+]}
+*/
 let replaceFirst =
     (~search: string, ~replaceWith: string, input: string): string =>
   Js.String.replace(search, replaceWith, input);
 
 /**
-  `replaceEach(target, newValue, str)`replaces each occurrence of
-  `target` with `newValue` in `str`, returning a new string.
+[replaceEach(target, newValue, str)]replaces each occurrence of [target] with
+[newValue] in [str], returning a new string.
 
-  ### Example
-  ```re
+{[
   replaceEach("in", "t", "the rain in spain") == "the rat t spat";
   replaceEach("in", "t", "playground") == "playground";
-  ```
+]}
 */
 let replaceEach =
     (~search: string, ~replaceWith: string, input: string): string =>
   splitList(~delimiter=search, input) |> String.concat(replaceWith);
 
 /**
-  `replaceRegex(targetRe, newValue, str)` replaces the matched
-  regular expression `targetRe` with `newValue` in `str`, returning a new string.
+[replaceRegex(targetRe, newValue, str)] replaces the matched regular expression
+[targetRe] with [newValue] in [str], returning a new string.
 
-  If you use parentheses to store matching substrings in your pattern (as in the
-  last two examples), you may refer to them as `$1`, `$2` etc. in your replacement
-  pattern.
+If you use parentheses to store matching substrings in your pattern (as in the
+last two examples), you may refer to them as [$1], [$2] etc. in your replacement
+pattern.
 
-  ### Example
-  ```re
+{[
   replaceRegex([%re"/b[aeiou]g/"], "---", "The big bog bug") == "The --- bog bug";
   replaceRegex([%re"/b[aeiou]g/g"], "---", "The big bog bug") == "The --- --- ---";
   replaceRegex([%re"/b([aeiou])g/g"], "$1", "The big bog bug") == "The i o u";
   replaceRegex([%re"/(\\w+)\\s+(\\w+)/"], "$2, $1", "Clyde Tolson") == "Tolson, Clyde";
-  ```
+]}
 */
 let replaceRegex =
     (~search: Js.Re.t, ~replaceWith: string, input: string): string =>
   Js.String.replaceByRe(search, replaceWith, input);
 
 /**
-  `removeFirst(target, str)` returns a new string with the first occurrence of `target`
-  removed from `str`.
+[removeFirst(target, str)] returns a new string with the first occurrence of
+[target] removed from [str].
 
-  ### Example
-  ```re
+{[
   removeFirst("the ", "Paris in the the spring") == "Paris in the spring";
   removeFirst("the ", "ReasonML is cool") == "ReasonML is cool";
-  ```
+]}
 */
 let removeFirst = (~search: string, input: string): string =>
   replaceFirst(~search, ~replaceWith="", input);
 
 /**
-  `removeEach(target, str)` returns a new string with every occurrence of `target`
-  removed from `str`.
+[removeEach(target, str)] returns a new string with every occurrence of [target]
+removed from [str].
 
-  ### Example
-  ```re
+{[
   removeEach("the ", "Paris in the the spring") == "Paris in spring";
   removeEach("the ", "ReasonML is cool") == "ReasonML is cool";
-  ```
+]}
 */
 let removeEach = (~search: string, input: string): string =>
   replaceEach(~search, ~replaceWith="", input);
 
 /**
-  `fromInt(n)` returns `n` as a string. This function is
-  a synonym for the built-in `string_of_int()`.
+[fromInt(n)] returns [n] as a string. This function is a synonym for the
+built-in [string_of_int()].
 */
 let fromInt: int => string = string_of_int;
 
 /**
-  `toInt(str)` returns `Some(n)` if `str` is a valid
-  string representation of the integer `n`. Otherwise,
-  the return value is `None`.
+[toInt(str)] returns [Some(n)] if [str] is a valid string representation of the
+integer [n]. Otherwise, the return value is [None].
 
-  ### Example
-  ```re
+{[
   toInt("42") == Some(42);
   toInt("42.3") == None;
   toInt("four") == None;
   toInt("") == None;
-  ```
+]}
 */
 let toInt: string => option(int) =
   v =>
@@ -798,33 +774,29 @@ let toInt: string => option(int) =
     };
 
 /**
-  `fromFloat(x)` converts the value to a string representation.
-  Note that, as in the last examples, it may not be
-  exactly the same as the representation you used
-  when specifying `x`.
+[fromFloat(x)] converts the value to a string representation. Note that, as in
+the last examples, it may not be exactly the same as the representation you used
+when specifying [x].
 
-  ### Example
-  ```re
+{[
   fromFloat(-3.5) == "-3.5";
   fromFloat(6.02E23) == "6.02e+23";
   fromFloat(1.0e3) == "1000";
-  ```
+]}
 */
 let fromFloat: float => string = Js.Float.toString;
 
 /**
-  `toFloat(str)` returns `Some(x)` if `str` is a valid
-  string representation of the float value `x`. Otherwise,
-  the return value is `None`.
+[toFloat(str)] returns [Some(x)] if [str] is a valid string representation of
+the float value [x]. Otherwise, the return value is [None].
 
-  ### Example
-  ```re
+{[
   toFloat("42") == Some(42.0);
   toFloat("42.3") == Some(42.3);
   toFloat("123400000") == Some(123400000.0);
   toFloat("four") == None;
   toFloat("") == None;
-  ```
+]}
 */
 let toFloat: string => option(float) =
   v =>

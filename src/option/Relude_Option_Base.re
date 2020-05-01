@@ -35,7 +35,7 @@ let isNone: 'a. option('a) => bool =
 option is [Some], or returns the provided default value if the option is [None].
 
 This is not a lazy function, as the [default] value is always constructed,
-whether or not that value is needed. See [foldLazy] for an alternative.
+whether or not that value is needed. See {!val:foldLazy} for an alternative.
 
 {[
   Option.fold(0.0, x => 1.0 /. x, Some(2.0)) == 0.5;

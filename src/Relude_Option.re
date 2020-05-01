@@ -10,13 +10,12 @@ module Infix = {
   include Relude_Extensions_Monad.MonadInfix(Monad);
 
   /**
-    Infix operator for `getOrElse()`
+  [Option.(|?)] is the infix operator for [getOrElse].
 
-    ### Example
-    ```re
+  {[
     Some(3) |? 0 == 3;
     None |? 0 == 0;
-    ```
+  ]}
   */
   let (|?) = (opt, default) => getOrElse(default, opt);
 };
