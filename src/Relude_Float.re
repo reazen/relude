@@ -1,8 +1,11 @@
 open BsBastet.Interface;
-/**
+
+[@ocaml.text
+  {|
 [Relude.Float] contains typeclass instances and utility functions for the
 [float] type.
-*/
+|}
+];
 
 /**
 [Float.eq] indicates whether the two provided floats are exactly equal.

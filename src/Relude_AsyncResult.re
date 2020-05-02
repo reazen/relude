@@ -1,5 +1,7 @@
 open BsBastet.Interface;
-/**
+
+[@ocaml.text
+  {|
 [AsyncResult] is a module containing a type [t('a, 'e)], which is basically an
 alias and specialization of [AsyncData.t(result('a, 'e))]. This variant type can
 be used to represent the different states in which a data value can exist while
@@ -17,7 +19,8 @@ retaining the current/previous value or error.
 The [map], [bimap] [apply], [flatMap]/[bind], etc. functions have been
 specialized to operate on the innermost ['a] and ['e] types, so you rarely need
 to do nested pattern matches with this type.
-*/
+|}
+];
 
 /**
 AsyncResult is a specialization of AsyncData that uses a [result] as the

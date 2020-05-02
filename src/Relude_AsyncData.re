@@ -1,35 +1,62 @@
 open BsBastet.Interface;
 
-/**
-`Relude.AsyncData` contains an variant type `t('a)` for representing the different states in which a value can be during an asynchronous data load.  Because the type only has a single type parameter `'a`, it cannot represent failures by default, but you can choose to use any type for `'a`, including `option('b)` (for data that may or may not load), `result('b, 'e)` (for data that can fail to load), etc.  If you need to represent an error condition along with the success condition, see [AsyncResult](api/AsyncResult.md).
+[@ocaml.text
+  {|
+[Relude.AsyncData] contains an variant type [t('a)] for representing the
+different states in which a value can be during an asynchronous data load.
+Because the type only has a single type parameter ['a], it cannot represent
+failures by default, but you can choose to use any type for ['a], including
+[option('b)] (for data that may or may not load), [result('b, 'e)] (for data
+that can fail to load), etc.
 
-The variant type has the following constructors: `Init`, `Loading`, `Reloading('a)`, and `Complete('a)`.
+If you need to represent an error condition along with the success condition,
+see {!module:Relude_AsyncResult}.
 
-This type is similar to the [Elm RemoteData](https://github.com/krisajenkins/remotedata) type, with a few key differences:
+The variant type has the following constructors:
 
-1. `AsyncData` does not have a way to represent failures - see [AsyncResult](api/AsyncResult.md)
-1. `AsyncData` has a `Reloading('a)` state which can be used to indicate that data is being refreshed/reloaded/saved while retaining a current (or previous) value.  E.g. if you have loaded some data, and need to reload it but want to keep the current value around for display purposes, you might use the `Reloading('a)` state rather than the `Loading` state which does not carry any data.
+- [Init]
+- [Loading]
+- [Reloading('a)]
+- [Complete('a)]
 
-`AsyncData` has instances of various typeclasses like `Functor`, `Applicative`, `Monad` etc.  which unlock the ability to compose and combine `AsyncData` values using functions like `map2`-`map5`, `flatMap`, `traverse`, etc.  For example, if you have multiple pieces of data that are being loaded asynchronously, you can combine the results of several `AsyncData` values into a single tupled `AsyncData` value using `map2`, `map3`, etc. or any of the other combinators.
-*/
+This type is similar to the {{: https://github.com/krisajenkins/remotedata} Elm
+RemoteData} type, with a few key differences:
+
++ [AsyncData] does not inherently have the concept of failure (again, see
+{!module:Relude_AsyncResult} if that's something you want).
++ [AsyncData] has a [Reloading('a)] state which can be used to indicate that
+data is being refreshed/reloaded/saved while retaining a current (or previous)
+value. E.g. if you have loaded some data, and need to reload it but want to keep
+the current value around for display purposes, you might use the [Reloading('a)]
+state rather than the [Loading] state which does not carry any data.
+
+[AsyncData] has instances of various typeclasses like [Functor], [Applicative],
+[Monad] etc. which unlock the ability to compose and combine [AsyncData] values
+using functions like [map2]-[map5], [flatMap], [traverse], etc.
+
+For example, if you have multiple pieces of data that are being loaded
+asynchronously, you can combine the results of several [AsyncData] values into a
+single tupled [AsyncData] value using [map2], [map3], etc. or any of the other
+combinators.
+|}
+];
 
 /**
 AsyncData represents the state of data that is being loaded asynchronously.
-While Promise and IO represent the effect of loading that data, `AsyncData`
+While Promise and IO represent the effect of loading that data, [AsyncData]
 represents what that data looks like at one particular snapshot in time. This
 is particularly useful when storing application state (e.g. in a React
 component).
 
 By default, this type does not represent failures. If you want to represent
-the possibility for an async value to fail, you can use a `result` in the
-`'a` type (or see `AsyncResult`, which does this for you).
+the possibility for an async value to fail, you can use a [result] in the
+['a] type (or see {!module:AsyncResult}, which does this for you).
 
 The reason for this is that not all async data loading mechanisms will
 necessarily fail.
 
-The other interesting bit is that `Reloading` can be used if you already have
-data (e.g. an Ok or Error Result), but you need to reload the data to get a
-new result.
+The other interesting bit is that [Reloading] can be used if you already have
+data, but you need to reload the data to get a new value.
 */
 type t('a) =
   | Init
@@ -133,8 +160,8 @@ let isNotEmpty: 'a. t('a) => bool =
   | Complete(_) => true;
 
 /**
-Creates a new `AsyncData` by transitioning the given `AsyncData` into a busy
-state (`Loading` or `Reloading`), and carrying over the internal data if
+Creates a new [AsyncData] by transitioning the given [AsyncData] into a busy
+state ([Loading] or [Reloading]), and carrying over the internal data if
 available.
 */
 let toBusy: 'a. t('a) => t('a) =
@@ -145,8 +172,8 @@ let toBusy: 'a. t('a) => t('a) =
   | Complete(a) => Reloading(a);
 
 /**
-Creates a new `AsyncData` by transitioning the given `AsyncData` into an idle
-state (`Init` or `Complete`), and carrying over the internal data if available.
+Creates a new [AsyncData] by transitioning the given [AsyncData] into an idle
+state ([Init] or [Complete]), and carrying over the internal data if available.
 */
 let toIdle: 'a. t('a) => t('a) =
   fun
@@ -156,8 +183,8 @@ let toIdle: 'a. t('a) => t('a) =
   | Complete(_) as a => a;
 
 /**
-Get a value of type `'a`, using the `Complete` value if the AsyncData is
-complete, or the last known complete value in `Reloading`.
+Get a value of type ['a], using the [Complete] value if the AsyncData is
+complete, or the last known complete value in [Reloading].
 */
 let getValue: 'a. t('a) => option('a) =
   fun
@@ -167,8 +194,8 @@ let getValue: 'a. t('a) => option('a) =
   | Complete(v) => Some(v);
 
 /**
-Get `Some` value of type `'a` only from the `Reloading` state, and `None` in
-all other cases, including `Complete`
+Get [Some] value of type ['a] only from the [Reloading] state, and [None] in
+all other cases, including [Complete]
 */
 let getReloading: 'a. t('a) => option('a) =
   fun
@@ -178,8 +205,8 @@ let getReloading: 'a. t('a) => option('a) =
   | Complete(_) => None;
 
 /**
-Get `Some` value of type `'a` only from the `Complete` state, and `None` in
-all other cases, including `Reloading`.
+Get [Some] value of type ['a] only from the [Complete] state, and [None] in
+all other cases, including [Reloading].
 */
 let getComplete: 'a. t('a) => option('a) =
   fun
@@ -189,7 +216,7 @@ let getComplete: 'a. t('a) => option('a) =
   | Complete(a) => Some(a);
 
 /**
-Fold the `AsyncData` into a new type by providing a strict value or function to
+Fold the [AsyncData] into a new type by providing a strict value or function to
 handle each case.
 */
 let fold: 'a 'b. ('b, 'b, 'a => 'b, 'a => 'b, t('a)) => 'b =
@@ -202,7 +229,7 @@ let fold: 'a 'b. ('b, 'b, 'a => 'b, 'a => 'b, t('a)) => 'b =
     };
 
 /**
-Fold the `AsyncData` into a new value by providing a function to handle each
+Fold the [AsyncData] into a new value by providing a function to handle each
 case.
 */
 let foldLazy: 'a 'b. (unit => 'b, unit => 'b, 'a => 'b, 'a => 'b, t('a)) => 'b =
@@ -215,7 +242,7 @@ let foldLazy: 'a 'b. (unit => 'b, unit => 'b, 'a => 'b, 'a => 'b, t('a)) => 'b =
     };
 
 /**
-Fold the `AsyncData` into a new value by providing a strict value to use when
+Fold the [AsyncData] into a new value by providing a strict value to use when
 there is no data, or function to handle when there is data.
 */
 let foldByValue: 'a 'b. ('b, 'a => 'b, t('a)) => 'b =
@@ -223,7 +250,7 @@ let foldByValue: 'a 'b. ('b, 'a => 'b, t('a)) => 'b =
     fold(defaultValue, defaultValue, onValue, onValue, fa);
 
 /**
-Fold the `AsyncData` into a new value by providing a lazy value to use when
+Fold the [AsyncData] into a new value by providing a lazy value to use when
 there is no data, or function to handle when there is data.
 */
 let foldByValueLazy: 'a 'b. (unit => 'b, 'a => 'b, t('a)) => 'b =

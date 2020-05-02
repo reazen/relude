@@ -1,10 +1,12 @@
 open BsBastet.Interface;
 
-/**
+[@ocaml.text
+  {|
 [Relude.Ord] contains functions and sub-modules to help work with comparison
 functions that take two values of the same type and return a value of [Bastet]'s
 [ordering] type.
-*/
+|}
+];
 
 /**
 The ordering type represents the result of a comparison - [`less_than],

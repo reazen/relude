@@ -1,6 +1,7 @@
 open BsBastet.Interface;
 
-/**
+[@ocaml.text
+  {|
 [Relude.Extensions.Foldable] contains module functors which give you access to a
 wide variety of functions that you can get "for free" when you have a [Foldable]
 type class instance. For example, if you have a [Foldable] instance for
@@ -12,7 +13,8 @@ If you have additional type class instances like a [Monoid], [Eq], [Ord], etc.
 for the innner type of the [Foldable], you can get access to additional
 functions using other module functors like [FoldableMonoidExtensions],
 [FoldableEqExtensions], etc.
-*/
+|}
+];
 
 // break circular dependency
 let optionAlt: (option('a), option('a)) => option('a) =
