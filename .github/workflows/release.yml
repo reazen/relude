@@ -34,12 +34,10 @@ jobs:
           ocaml_version: 4.06.1
 
       - name: Install Odoc
-        run: |
-          opam install odoc --yes
+        run: opam install odoc --yes
 
       - name: Install Esy
-        run: |
-          npm install -g esy@0.6.4
+        run: npm install -g esy@0.6.4
 
       - name: Build bsdoc for Linux
         run: |
@@ -66,6 +64,8 @@ jobs:
           # adjust css-related links
           sed -i -E "s/\.\.\/odoc/odoc/g" ./docs/api/index.html
           sed -i -E "s/\.\.\/highlight/highlight/g" ./docs/api/index.html
+          # add highlight.js style to end of stylesheet
+          echo '@import url("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/atom-one-light.min.css");\n' >> ./docs/odoc.css
 
       - name: Deploy docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
