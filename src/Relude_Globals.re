@@ -94,4 +94,4 @@ let id = Relude_Function.id;
 let const = Relude_Function.const;
 let flip = Relude_Function.flip;
 let absurd = Void.absurd;
-let inverse = Bool.inverse; // can't use `not` because `refmt` rewrites it
+let inverse = Bool.inverse; // can't use [not] because [refmt] rewrites it

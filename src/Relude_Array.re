@@ -1,7 +1,10 @@
-/**
-`Relude.Array` contains typeclass instances and utility functions for the
-`array('a)` type.
-*/
+[@ocaml.text
+  {|
+[Relude.Array] contains typeclass instances and utility functions for the
+[array('a)] type.
+|}
+];
+
 include Relude_Array_Instances;
 include Relude_Array_Base;
 include Relude_Array_Specializations;

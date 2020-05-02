@@ -77,7 +77,7 @@ let makeWithIndex: 'a. (int, int => 'a) => array('a) = Belt.Array.makeBy;
 
 /**
 [Array.mapWithIndex] maps a pure function over the array which accepts both the
-current item (as normal `map` does) along with the current array index. The
+current item (as normal [map] does) along with the current array index. The
 returned array is a new array of the same size with the value returned by the
 provided function in each array slot.
 
@@ -486,7 +486,7 @@ let mapOption: 'a 'b. ('a => option('b), array('a)) => array('b) =
 
 /**
 [Array.catOption] creates a new array from an array of options, filtering out
-all of the `None` values.
+all of the [None] values.
 
 Running time: O(n)
 
@@ -514,7 +514,7 @@ let partition: 'a. ('a => bool, array('a)) => (array('a), array('a)) =
 
 /**
 [Array.splitAt] optionally returns two arrays, with the original array divided
-at the given index. If the index is out of range, `None` is returned.
+at the given index. If the index is out of range, [None] is returned.
 
 {[
   Array.splitAt(3, [|0, 1, 2, 3, 4|]) == Some([|0, 1, 2|], [|3, 4|]);

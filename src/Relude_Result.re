@@ -97,7 +97,7 @@ update your application state.
       data => UpdateData(data)
     );
 
-  // now, regardless of whether our result was successful, we have an `action`
+  // now, regardless of whether our result was successful, we have an action
   dispatch(nextAction);
 ]}
 */

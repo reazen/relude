@@ -1,6 +1,10 @@
-/**
-`Relude.Extensions` is a namespace module which provides access to all of the extension module functors.
-*/
+[@ocaml.text
+  {|
+[Relude.Extensions] is a namespace module which provides access to all of the
+extension module functors.
+|}
+];
+
 module Alt = Relude_Extensions_Alt;
 module Alternative = Relude_Extensions_Alternative;
 module Applicative = Relude_Extensions_Applicative;
