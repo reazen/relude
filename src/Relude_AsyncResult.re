@@ -8,7 +8,7 @@ be used to represent the different states in which a data value can exist while
 being loaded asynchronously, with the possibility of either success (['a]) or
 failure (['e]).
 
-Like [AsyncData](api/AsyncData.md), [AsyncResult] is similar to the
+Like {!module:Relude_AsyncData}, [AsyncResult] is similar to the
 {{: https://github.com/krisajenkins/remotedata} Elm RemoteData}, with the
 following key difference:
 
