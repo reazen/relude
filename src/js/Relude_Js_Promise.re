@@ -1,6 +1,9 @@
-/**
-Utilities for interoperating with [Js.Promise]
-*/;
+[@ocaml.doc
+  {|
+[Relude.Js.Promise] contains utilities for interoperating with [Js.Promise].
+Many of these functions will help you convert to and from [Relude.IO].
+|}
+]
 
 /**
 Lifts a [Js.Promise] into a [Relude.IO]

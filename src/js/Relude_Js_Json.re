@@ -1,7 +1,8 @@
-/**
-Relude.Js.Json contains helper functions for dealing with Js.Json.t values
-*/;
-
+[@ocaml.doc
+  {|
+[Relude.Js.Json] contains helper functions for dealing with [Js.Json.t] values.
+|}
+]
 open Relude_Function.Infix;
 
 /**

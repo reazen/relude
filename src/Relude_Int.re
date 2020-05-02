@@ -1,8 +1,10 @@
 open BsBastet.Interface;
 
-/**
+[@ocaml.text
+  {|
 [Relude.Int] contains functions and typeclass instances for the [int] type.
-*/
+|}
+]
 
 /**
 [toFloat] returns the floating-point representation of the int

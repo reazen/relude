@@ -1,27 +1,29 @@
 open BsBastet.Interface;
 
-/**
-`Relude.Function` contains many core functions like `identity`, `flip`,
-`compose`, `andThen`, and some of the associated infix operators like `<<`
-(`compose`) and `>>` (`andThen`).
+[@ocaml.text
+  {|
+[Relude.Function] contains many core functions like [identity], [flip],
+[compose], [andThen], and some of the associated infix operators like [<<]
+([compose]) and [>>] ([andThen]).
 
-It also defines some typeclass instances like `Functor`, `Apply`, `Monad`, etc.
-for the `'r => 'a` function type.
-*/
+It also defines some typeclass instances like [Functor], [Apply], [Monad], etc.
+for the ['r => 'a] function type.
+|}
+];
 
 /**
-`identity(x)` returns `x`. This is useful when you need
+[identity(x)] returns [x]. This is useful when you need
 to supply a function but don’t want to transform any values.
 */
 let identity: 'a. 'a => 'a = a => a;
 
 /**
-`id` is a synonym for `identity`.
+[id] is a synonym for [identity].
 */
 let id: 'a. 'a => 'a = identity;
 
 /**
-`const(x, y)` returns `x`.
+[const(x, y)] returns [x].
 
 {[
   const(3, "ignore") == 3;
@@ -31,9 +33,9 @@ let id: 'a. 'a => 'a = identity;
 let const: 'a 'b. ('a, 'b) => 'a = (a, _) => a;
 
 /**
-`flip(f, a, b)` has a two-parameter function `f()` as its
-first parameter. It calls `f(b, a)`, thus “flipping“ the
-arguments to `f()`.
+[flip(f, a, b)] has a two-parameter function [f()] as its
+first parameter. It calls [f(b, a)], thus “flipping“ the
+arguments to [f()].
 
 {[
   let formula = (x, y) => {x + 2 * y};
@@ -44,7 +46,7 @@ arguments to `f()`.
 let flip: 'a 'b 'c. (('a, 'b) => 'c, 'b, 'a) => 'c = (f, b, a) => f(a, b);
 
 /**
-`compose(f, g, a)` is the equivalent of `f(g(a))`.
+[compose(f, g, a)] is the equivalent of [f(g(a))].
 
 
 {[
@@ -58,7 +60,7 @@ let compose: 'a 'b 'c. ('b => 'c, 'a => 'b, 'a) => 'c =
   (f, g, a) => f(g(a));
 
 /**
-`flipCompose(f, g, a)` is the equivalent of `g(f(a))`.
+[flipCompose(f, g, a)] is the equivalent of [g(f(a))].
 
 {[
   let square = (x) => {x * x};
@@ -71,7 +73,7 @@ let flipCompose: 'a 'b 'c. ('a => 'b, 'b => 'c, 'a) => 'c =
   (f, g, a) => g(f(a));
 
 /**
-`andThen` is a synonym for `flipCompose`
+[andThen] is a synonym for [flipCompose]
 
 You can use this synonym with the “pipe first“ operator:
 
@@ -149,7 +151,7 @@ let uncurry5:
   (f, (a, b, c, d, e)) => f(a, b, c, d, e);
 
 /**
-`map` is a synonym for `compose` and is the equivalent of `f(g(a))`.
+[map] is a synonym for [compose] and is the equivalent of [f(g(a))].
 
 {[
   let square = (x) => {x * x};
@@ -162,10 +164,10 @@ let map: 'a 'b 'r. ('a => 'b, 'r => 'a, 'r) => 'b =
   (aToB, rToA, r) => aToB(rToA(r)); /* Same as compose */
 
 /**
-In `apply(hof, f, a)`, `hof` is a higher-order function that takes one argument
+In [apply(hof, f, a)], [hof] is a higher-order function that takes one argument
 and returns a new function that also takes one argument.
 
-The result of `apply()` is equivalent to:
+The result of [apply()] is equivalent to:
 
 {[
   let g = hof(a);
@@ -189,15 +191,15 @@ let apply: 'a 'b 'r. (('r, 'a) => 'b, 'r => 'a, 'r) => 'b =
   (rToAToB, rToA, r) => rToAToB(r, rToA(r));
 
 /**
-`pure` is a synonym for `const`
+[pure] is a synonym for [const]
 */
 let pure: 'a 'r. ('a, 'r) => 'a = (a, _) => a;
 
 /**
-In `bind(f, hof, a)`, `hof` is a higher-order function that takes one argument
+In [bind(f, hof, a)], [hof] is a higher-order function that takes one argument
 and returns a new function that also takes one argument.
 
-  The result of `bind()` is equivalent to:
+  The result of [bind()] is equivalent to:
 
 {[
   let g = hof(f(a));
@@ -221,16 +223,9 @@ let bind: 'a 'b 'r. ('r => 'a, ('a, 'r) => 'b, 'r) => 'b =
   (rToA, arToB, r) => arToB(rToA(r), r);
 
 /**
-In `flatMap(hof, f, a)`, `hof` is a higher-order function that takes one argument
-and returns a new function that also takes one argument. It is the same as
-`bind()`, but with the first two arguments in reverse order.
-
-The result of `flatMap()` is equivalent to:
-
-{[
-  let g = hof(f(a));
-  g(a)
-]}
+In [flatMap(hof, f, a)], [hof] is a higher-order function that takes one
+argument and returns a new function that also takes one argument. It is the same
+as [bind], but with the first two arguments in reverse order.
 
 {[
   // This is the higher-order function
@@ -249,7 +244,7 @@ let flatMap: 'a 'b 'r. (('a, 'r) => 'b, 'r => 'a, 'r) => 'b =
   (f, fa) => bind(fa, f);
 
 /**
-`memoize0` takes a `unit => 'a` function and returns a new function
+[memoize0] takes a [unit => 'a] function and returns a new function
 which once called, will store the result produced and return that cached
 result for each successive call.
 */
@@ -267,9 +262,9 @@ let memoize0 = (f: unit => 'a): (unit => 'a) => {
 };
 
 /**
-`memoize1` takes a `'a => 'b` function and returns a new `'a => 'b` function
+[memoize1] takes a ['a => 'b] function and returns a new ['a => 'b] function
 which once called, stores the result produced by the given function in
-a closure-based cache, using a cache key created by the function `makeKey`
+a closure-based cache, using a cache key created by the function [makeKey]
 
 All successive calls to the function for input values that resolve to the same
 cache key will return the cached result.
@@ -290,9 +285,9 @@ let memoize1 = (~makeKey: 'a => string, f: 'a => 'b): ('a => 'b) => {
 };
 
 /**
-Takes a function and returns a new function which when called, will allow the first `times`
-calls to invoke the given function, and any successive calls will be suppressed and the last
-result will be returned.
+Takes a function and returns a new function which when called, will allow the
+first [times] calls to invoke the given function, and any successive calls will
+be suppressed and the last result will be returned.
 */
 let before = (~times: int, f: unit => 'a): (unit => 'a) => {
   let callCount = ref(0);
@@ -319,7 +314,7 @@ let before = (~times: int, f: unit => 'a): (unit => 'a) => {
 
 /**
 Takes a function and returns a new function that when called, will suppress
-the first `times` invocations
+the first [times] invocations.
 */
 let after = (~times: int, f: unit => 'a): (unit => option('a)) => {
   let callCount = ref(0);
@@ -351,9 +346,9 @@ let once = (f: unit => 'a): (unit => 'a) => {
 };
 
 /**
-Takes a function from `'a => 'b` and a function from `'i => 'a` to modify the
-input, and a function `'b => 'o` to modify the output, and returns a new
-function `'i => 'o`
+Takes a function from ['a => 'b] and a function from ['i => 'a] to modify the
+input, and a function ['b => 'o] to modify the output, and returns a new
+function ['i => 'o]
 */
 let wrap:
   //'i 'a 'b 'o. // TODO: not sure how to make this universal quantification work
@@ -373,7 +368,7 @@ let negate = (f: 'a => bool): ('a => bool) => {
 };
 
 /**
-The `Infix` submodule provides two infix operators for function composition.
+The [Infix] submodule provides two infix operators for function composition.
 
 {[
   open Relude.Function.Infix;
@@ -381,10 +376,10 @@ The `Infix` submodule provides two infix operators for function composition.
 */
 module Infix = {
   /**
-    The `<<` operator returns a function that is the equivalent of
-    calling `compose()` with its function arguments.
+    The [<<] operator returns a function that is the equivalent of
+    calling [compose()] with its function arguments.
 
-    `(f << g)(x)` is the equivalent of `f(g(x))`.
+    [(f << g)(x)] is the equivalent of [f(g(x))].
 
 
     {[
@@ -395,10 +390,10 @@ module Infix = {
   let (<<) = compose;
 
   /**
-    The `>>` operator returns a function that is the equivalent of
-    calling `flipCompose()` with its function arguments.
+    The [>>] operator returns a function that is the equivalent of
+    calling [flipCompose()] with its function arguments.
 
-  `(f >> g)(x)` is the equivalent of `g(f(x))`.
+  [(f >> g)(x)] is the equivalent of [g(f(x))].
 
 
     {[
