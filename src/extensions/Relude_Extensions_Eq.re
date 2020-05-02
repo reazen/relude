@@ -33,8 +33,8 @@ module EqExtensions = (Eq: EQ) => {
      EQ with type t = A.a;
 
   /**
-  Creates a new Eq for a type b, given an Eq for type a and a Arrow for `b => a`
-
+  Creates a new Eq for a type [b], given an Eq for type [a] and a function
+  [b => a].
 
   {[
     // Create an Eq for User, given an Eq for string and a function from User => string

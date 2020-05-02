@@ -120,7 +120,8 @@ module OrdExtensions = (O: ORD) => {
      ORD with type t = A.a;
 
   /**
-  Creates an ORD for type b given this ORD of type a and an ARROW `b => a` to act as the contravariant
+  Creates an ORD for type [b] given this [ORD] of type [a] and a function
+  [b => a] to act as the contravariant.
 
   {[
     // Create an Ord for a user using an Ord for string and a function from User => string
