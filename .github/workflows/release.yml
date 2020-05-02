@@ -1,9 +1,9 @@
 name: Release
 
 on:
-  - pull_request
-  # push
-  #   tags: "*"
+  push:
+    tags:
+      - "*"
 
 jobs:
   deployDocs:
@@ -65,7 +65,7 @@ jobs:
           sed -i -E "s/\.\.\/odoc/odoc/g" ./docs/api/index.html
           sed -i -E "s/\.\.\/highlight/highlight/g" ./docs/api/index.html
           # add highlight.js style to end of stylesheet
-          echo '@import url("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/atom-one-light.min.css");\n' >> ./docs/odoc.css
+          echo '@import url("https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/atom-one-light.min.css");' >> ./docs/odoc.css
 
       - name: Deploy docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
