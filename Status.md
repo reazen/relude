@@ -2,8 +2,10 @@
 
 ## Project Status
 
-Relude has a fairly complete test suite and is being used in production by at least two companies. However, it's still a relatively young project, is subject to breaking changes, and likely has some bugs. Some of the function implementations are not optimized, as we have been more focused on the interfaces rather than the implementations initially. We hope to improve implementations and performance over time.
+Relude has a fairly complete test suite and is being used in production by multiple companies. However, it's still a relatively young project, is subject to breaking changes, and likely has some rough edges. Some of the function implementations are not optimized, as we have been more focused on the interfaces rather than the implementations initially. Implementations and performance will continue improving over time.
 
 ## Documentation Status
 
-The documentation for Relude is a work in progress.  We have started to document the code with inline documentation comments, but HTML generation for in-code documentation is currently on-hold.  We're waiting to see what shakes out as the preferred documentation extraction/rendering tool for the ReasonML/BuckleScript community.  We are also working on a separate [documentation site](https://reazen.github.io/relude) to act as more of a high-level guide for the modules defined in Relude.
+Documentation for Relude continues to be a work-in-progress, but this work truly is progressing! We currently offer high-level guides and explanations of techniques in [the documentation site](https://reazen.github.io/relude), with recipes and more to come soon. Additionally, we publish [generated API docs](https://reazen.github.io/relude/api).
+
+We plan to continue improving both the guides and the generated documentation with improved explanations and more examples. If you find things that are unclear or missing in the docs, please [open an issue](https://github.com/reazen/relude/issues). It's possible something slipped through, and at the very least, this helps us know what areas to prioritize.
