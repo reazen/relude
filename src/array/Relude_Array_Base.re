@@ -204,7 +204,7 @@ item of the provided array. If the given array is empty (has no tail), [None] is
 returned.
 
 If you would prefer to avoid the [option] and fall back to an empty array
-instead, see [Array.tailOrEmpty].
+instead, see {!val:Array.tailOrEmpty}.
 
 {[
   Array.tail([||]) == None;
@@ -423,7 +423,7 @@ let filter: 'a. ('a => bool, array('a)) => array('a) =
   (f, xs) => Belt.Array.keep(xs, f);
 
 /**
-[Array.keep] is an alias for [filter].
+[Array.keep] is an alias for {!val:filter}.
 */
 let keep: 'a. ('a => bool, array('a)) => array('a) = filter;
 
