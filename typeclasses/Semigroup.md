@@ -1,3 +1,0 @@
-# Semigroup
-
-TODO

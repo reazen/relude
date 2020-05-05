@@ -1,3 +1,0 @@
-# Monad
-
-TODO
