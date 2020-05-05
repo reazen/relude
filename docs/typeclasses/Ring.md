@@ -1,3 +1,0 @@
-# Ring
-
-TODO

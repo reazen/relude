@@ -1,3 +1,0 @@
-# Applicative
-
-TODO

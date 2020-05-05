@@ -1,3 +1,0 @@
-# Bifunctor
-
-TODO

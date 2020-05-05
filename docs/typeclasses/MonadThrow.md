@@ -1,3 +1,0 @@
-# MonadThrow
-
-TODO

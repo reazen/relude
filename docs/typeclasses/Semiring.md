@@ -1,3 +1,0 @@
-# Semiring
-
-TODO

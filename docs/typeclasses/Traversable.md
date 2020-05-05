@@ -1,3 +1,0 @@
-# Traversable
-
-TODO

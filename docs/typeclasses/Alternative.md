@@ -1,3 +1,0 @@
-# Alternative
-
-TODO
