@@ -146,7 +146,7 @@ concept of bi-functor IO in the FP community:
  {- John De Goes' blog posts
     - {{: http://degoes.net/articles/bifunctor-io} Bifunctor IO: A Step Away from Dynamically-Typed Error Handling}
     - {{: http://degoes.net/articles/zio-environment} Beautiful, Simple, Testable Functional Effects for Scala}}
- {- {{: https://github.com/scalaz/scalaz-zio} ZIO}}
+ {- {{: https://github.com/zio/zio} ZIO}}
  {- {{: https://github.com/LukaJCB/cats-bio} cats-bio}}
  {- {{: https://github.com/slamdata/purescript-aff/issues/137} PureScript Aff Discussion}}}
 |}
@@ -158,7 +158,7 @@ IO is a bi-functor effect type that supports both synchronous and asynchronous e
 This is inspired by the following libraries/articles:
 
   - John De Goes - http://degoes.net/articles/only-one-io and http://degoes.net/articles/bifunctor-io
-  - ZIO/Scalaz 8 IO (Scala) - https://github.com/scalaz/scalaz-zio
+  - ZIO/Scalaz 8 IO (Scala) - https://github.com/zio/zio
   - cats-bio (Scala) - https://github.com/LukaJCB/cats-bio
   - purescript-aff discussion (Purescript) - https://github.com/slamdata/purescript-aff/issues/137
 */
