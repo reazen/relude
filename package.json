@@ -42,7 +42,7 @@
     "bs-platform": "^7.2.2"
   },
   "dependencies": {
-    "bisect_ppx": "^2.4.0"
+    "bisect_ppx": "^2.4.1"
   },
   "jest": {
     "verbose": false,
@@ -51,7 +51,7 @@
       "/testUtils/"
     ],
     "setupFilesAfterEnv": [
-      "bisect_ppx/src/runtime/bucklescript/jest.js"
+      "bisect_ppx/lib/js/src/runtime/bucklescript/jest.js"
     ]
   }
 }
