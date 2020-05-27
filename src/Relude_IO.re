@@ -258,7 +258,7 @@ let async: 'a 'e. ((result('a, 'e) => unit) => unit) => t('a, 'e) =
   onDone => Async(onDone);
 
 /**
-[IO.fromOption] onverts an [option('a)] to an [IO.t('a, 'e)] by providing a
+[IO.fromOption] converts an [option('a)] to an [IO.t('a, 'e)] by providing a
 callback to use when the [option] is [None].
 
 Because the option is already evaluated, no effort is made to suspend any
@@ -310,7 +310,7 @@ let apply: 'a 'b 'e. (t('a => 'b, 'e), t('a, 'e)) => t('b, 'e) =
 let (<*>) = apply;
 
 /**
-[IO.flatMap] pplies an effectful function ['a => IO.t('b, 'e)] on the ['a] value
+[IO.flatMap] applies an effectful function ['a => IO.t('b, 'e)] on the ['a] value
 inside the [IO] to produce an [IO.t('b, 'e)].
 */
 let flatMap: 'a 'b 'e. ('a => t('b, 'e), t('a, 'e)) => t('b, 'e) =
