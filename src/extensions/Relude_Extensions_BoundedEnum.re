@@ -84,8 +84,8 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
     };
 
   /**
-   [BoundedEnum.inverseMapToOrd] takes a [~compare] function of type
-   [(a, a) => Relude.Ordering.t], along with a mapping function of type
+   [BoundedEnum.inverseMapWithComparator] takes a [~compare] function of
+   type [(a, a) => Relude.Ordering.t], along with a mapping function of type
    [t => a], where each [a] is a unique value, and returns a new function
    of type [a => option(t)].
 
@@ -97,7 +97,7 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    Running time for staging: O(n)
    Running time for returned lookup function: O(log(n))
    */
-  let inverseMapToOrd:
+  let inverseMapWithComparator:
     type a.
       (~compare: (a, a) => BsBastet.Interface.ordering, E.t => a, a) =>
       option(E.t) =
