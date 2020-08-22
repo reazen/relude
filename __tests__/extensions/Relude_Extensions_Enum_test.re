@@ -262,12 +262,14 @@ describe("Relude_Extensions_BoundedEnum", () => {
   );
   describe("Relude_Extensions_BoundedEnum", () => {
     let show = Show.show;
-    let parse = inverseMap(show);
-    let parseOrdered =
-      inverseMapWithComparator(~compare=Relude.String.compare, show);
+    let parseOrd = inverseMapOrd(~ordA=(module Relude_String.Ord), show);
+    let parseOrdBy = inverseMapOrdBy(Relude.String.compare, show);
+    let parseEq = inverseMapEq(~eqA=(module Relude_String.Eq), show);
+    let parseEqBy = inverseMapEqBy(Relude.String.eq, show);
+    let parseString = inverseMapString(show);
 
     testAll(
-      "inverseMap",
+      "inverseMapOrd",
       [
         ("Jan", Some(Jan)),
         ("Feb", Some(Feb)),
@@ -296,7 +298,7 @@ describe("Relude_Extensions_BoundedEnum", () => {
         ("dec", None),
       ],
       ((string, expected)) => {
-        let actual = parse(string);
+        let actual = parseOrd(string);
         expect(actual) |> toEqual(expected);
       },
     );
@@ -331,7 +333,7 @@ describe("Relude_Extensions_BoundedEnum", () => {
         ("dec", None),
       ],
       ((string, expected)) => {
-        let actual = parseOrdered(string);
+        let actual = parseOrdBy(string);
         expect(actual) |> toEqual(expected);
       },
     );
@@ -366,9 +368,25 @@ describe("Relude_Extensions_BoundedEnum", () => {
         "dec",
       ],
       string => {
-        let usingInverseMap = parse(string);
-        let usingInverseMapWithComparator = parseOrdered(string);
-        expect(usingInverseMap) |> toEqual(usingInverseMapWithComparator);
+        let usingInverseMapOrd = parseOrd(string);
+        let usingInverseMapOrdBy = parseOrdBy(string);
+        let usingInverseMapEq = parseEq(string);
+        let usingInverseMapEqBy = parseEqBy(string);
+        let usingInverseMapString = parseString(string);
+        expect((
+          usingInverseMapOrd,
+          usingInverseMapOrdBy,
+          usingInverseMapEq,
+          usingInverseMapEqBy,
+          usingInverseMapString,
+        ))
+        |> toEqual((
+             usingInverseMapOrdBy,
+             usingInverseMapEq,
+             usingInverseMapEqBy,
+             usingInverseMapString,
+             usingInverseMapOrd,
+           ));
       },
     );
   });
