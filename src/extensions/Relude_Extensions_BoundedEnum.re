@@ -91,6 +91,7 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
 
   let inverseMapEqBy2: type a. ((a, a) => bool, E.t => a, a) => option(E.t) =
     (eqA, eToA) => {
+      // create an associative array for reverse lookups:
       let arr =
         upFromIncludingAsList(E.bottom)
         |> Belt.List.mapU(_, (. e) => (e, eToA(e)))
