@@ -175,7 +175,6 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
              };
          })): (module Map.S with type key = a)
       );
-
       /**
        Produce an 'a' value for each 'enum' value that exists,
        then insert each of them into the Map.
@@ -192,6 +191,32 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
 
       loop(M.empty, Some(E.bottom));
     };
+
+  let inverseMapOrdBy2:
+    type a.
+      ((a, a) => BsBastet.Interface.ordering, E.t => a, a) => option(E.t) =
+    (cmp, eToA) => {
+      // Generate the Map data structure:
+      let (module M) = (
+        (module
+         Map.Make({
+           type t = a;
+           let compare = (a, b) =>
+             switch (cmp(a, b)) {
+             | `equal_to => 0
+             | `less_than => (-1)
+             | `greater_than => 1
+             };
+         })): (module Map.S with type key = a)
+      );
+      let lst = upFromIncludingAsList(E.bottom);
+      let store = Belt.List.reduceU(lst, M.empty, (. acc, e) => {
+        let a = eToA(e);
+        M.add(a, e, acc);
+      });
+
+      M.find_opt(_, store);
+  };
 
   /**
    [BoundedEnumExtensions.inverseMapOrd] takes a first-class [ORD] module
