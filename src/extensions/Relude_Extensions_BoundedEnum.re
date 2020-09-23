@@ -17,7 +17,10 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
         | `equal_to => listAppend(current, acc)
         | `less_than
         | `greater_than =>
-          // Since step can be positive or negative, we handle less_than and greater_than the same way by just adding the step
+        /**
+        Since step can be positive or negative, we handle less_than
+        and greater_than the same way by just adding the step
+        */
           let nextInt = currentInt + stepInt;
           switch (E.toEnum(nextInt)) {
           | Some(next) => go(listAppend(current, acc), next, nextInt)
@@ -29,7 +32,7 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
     };
 
   /**
-   [BoundedEnumExtensions.inverseMapEqBy] takes a equality function of type
+   [BoundedEnumExtensions.inverseMapEqBy] takes an equality function of type
    [(a, a) => bool] along with a function of type [t => a], where each [a]
    is a unique value, and returns a new function of type [a => option(t)].
 
@@ -59,7 +62,7 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
           // generate the closure to pass back to the caller:
           let arr = Belt.List.toArray(lst);
           let len = Belt.Array.length(arr);
-          let return = a => {
+          let result = a => {
             let rec find = (arr, i, limit) =>
               if (i < limit) {
                 let (e__, a__) = Belt.Array.getUnsafe(arr, i);
@@ -73,7 +76,7 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
               };
             find(arr, 0, len);
           };
-          return;
+          result;
         | Some(e) =>
           // Continue building the associative list:
           loop([(e, eToA(e)), ...lst], getNextE(e), getNextE)
