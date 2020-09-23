@@ -2,6 +2,9 @@ let listAppend = (value, list) => List.concat([list, [value]]);
 //let arrayAppend = (value, array) => Array.concat([array, [|value|]]);
 
 module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
+
+  include Relude_Extensions_Enum.EnumExtensions(E);
+
   /**
   Generates a list of enum values starting at [~start], then going to [~next],
   then using that step size to generate the rest of the list.
