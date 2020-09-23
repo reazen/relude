@@ -2,7 +2,6 @@ let listAppend = (value, list) => List.concat([list, [value]]);
 //let arrayAppend = (value, array) => Array.concat([array, [|value|]]);
 
 module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
-
   include Relude_Extensions_Enum.EnumExtensions(E);
 
   /**
@@ -20,7 +19,7 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
         | `equal_to => listAppend(current, acc)
         | `less_than
         | `greater_than =>
-        /**
+          /**
         Since step can be positive or negative, we handle less_than
         and greater_than the same way by just adding the step
         */
@@ -92,8 +91,9 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
 
   let inverseMapEqBy2: type a. ((a, a) => bool, E.t => a, a) => option(E.t) =
     (eqA, eToA) => {
-      let arr = upFromIncludingAsList(E.bottom)
-        |> Belt.List.mapU(_,  (. e) => (e, eToA(e)))
+      let arr =
+        upFromIncludingAsList(E.bottom)
+        |> Belt.List.mapU(_, (. e) => (e, eToA(e)))
         |> Belt.List.toArray;
       let len = Belt.Array.length(arr);
       // generate the closure to pass back to the caller:
@@ -209,14 +209,18 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
              };
          })): (module Map.S with type key = a)
       );
-      let lst = upFromIncludingAsList(E.bottom);
-      let store = Belt.List.reduceU(lst, M.empty, (. acc, e) => {
-        let a = eToA(e);
-        M.add(a, e, acc);
-      });
+      let store =
+        upFromIncludingAsList(E.bottom)
+        ->Belt.List.reduceU(
+            M.empty,
+            (. acc, e) => {
+              let a = eToA(e);
+              M.add(a, e, acc);
+            },
+          );
 
       M.find_opt(_, store);
-  };
+    };
 
   /**
    [BoundedEnumExtensions.inverseMapOrd] takes a first-class [ORD] module
