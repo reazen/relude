@@ -90,6 +90,30 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
       loop([], Some(E.bottom), E.succ);
     };
 
+  let inverseMapEqBy2: type a. ((a, a) => bool, E.t => a, a) => option(E.t) =
+    (eqA, eToA) => {
+      let arr = upFromIncludingAsList(E.bottom)
+        |> Belt.List.mapU(_,  (. e) => (e, eToA(e)))
+        |> Belt.List.toArray;
+      let len = Belt.Array.length(arr);
+      // generate the closure to pass back to the caller:
+      let result = a => {
+        let rec find = (arr, i, limit) =>
+          if (i < limit) {
+            let (e__, a__) = Belt.Array.getUnsafe(arr, i);
+            if (eqA(a__, a)) {
+              Some(e__);
+            } else {
+              find(arr, succ(i), limit);
+            };
+          } else {
+            None;
+          };
+        find(arr, 0, len);
+      };
+      result;
+    };
+
   /**
    [BoundedEnumExtensions.inverseMapEq] takes a first-class [EQ] module for
    type [a], along with a function of type [t => a] where each [a] is a
