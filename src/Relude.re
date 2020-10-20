@@ -13,7 +13,7 @@ the [Array] module provided by the OCaml stdlib.
 In many cases, however, you {e will} want to shadow the existing stdlib modules
 with their Relude equivalents. In this case, you could [open Relude;] but doing
 so may shadow more than you want (e.g. the [Js] module provided by BuckleScript
-will also be shadowed). See {{: ../Relude_Globals} [Relude.Globals]} for a
+will also be shadowed). See {{: Relude_Globals} [Relude.Globals]} for a
 better solution.
 |}
 ];
