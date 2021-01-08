@@ -216,6 +216,13 @@ describe("Result", () => {
     |> toEqual(5)
   );
 
+  test("getErrorOrElse Ok", () =>
+    expect(Result.ok(42) |> Result.getErrorOrElse(5)) |> toEqual(5)
+  );
+
+  test("getErrorOrElse Error", () =>
+    expect(Result.error(42) |> Result.getErrorOrElse(5)) |> toEqual(42)
+  );
   test("merge Error", () =>
     expect(Result.merge(Error(1))) |> toEqual(1)
   );
