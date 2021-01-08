@@ -113,7 +113,7 @@ let fold: 'a 'e 'c. ('e => 'c, 'a => 'c, t('a, 'e)) => 'c =
 result is an [Error], the provided default value is returned instead.
 
 {[
-  // imagine a function to calculate an average from a array of floats, but it
+  // Imagine a function to calculate an average from a array of floats, but it
   // safely prevents division by zero by returning a result
   let safeAvg = (values: array(float)) =>
     switch (Array.length(values)) {
@@ -134,6 +134,49 @@ let getOrElse: 'a 'e. ('a, t('a, 'e)) => 'a =
     | Error(_) => default
     };
 
+
+/**
+[Result.getOrElseBy] attempts to get the [Ok] value out of a [result]. If the
+result is an [Error], the provided function is applied to the [Error] and
+the result of that is returned.
+
+{[
+  // Imagine an authorization endpoint, which calls into a function that 
+  // authorizes a user with the following return type;
+  type fnError = 
+   | ParseError(string) // Could not parse the {email,  password}
+   | UserBlocked // Users account has been blocked
+   | WrongPassword // Account exists, but password is wrong
+   | EmailNotFound // Account doesn't exist
+
+  // It's nice to have such a verbose error state, but not everything should
+  // be forwarded to the user. Also, we might want to map these back to a 
+  // string depending on the error.
+  let mapErrorForOutput = fun
+   | ParseError(x) => "We could not parse this request: " ++ x
+   | UserBlocked => "This action is not allowed"
+   | WrongPassword 
+   | EmailNotFound => "Incorrect email or pasword"
+
+   Ok("Login Successfull")
+   |> Result.getOrElseBy(fnErrorToHttp) 
+    == "Login Successfull"
+
+  Error(ParseError("Invalid Email")) 
+   |> Result.getOrElseBy(fnErrorToHttp) 
+    == "We could not parse this request: Invalid Email"
+
+  Error(WrongPassword) 
+   |> Result.getOrElseBy(fnErrorToHttp) 
+    == "Incorrect email or pasword"
+]}
+*/
+let getOrElseBy: 'a 'e. ('e => 'a, t('a, 'e)) => 'a =
+  (fn, fa) =>
+    switch (fa) {
+    | Ok(a) => a
+    | Error(e) => fn(e)
+    };
 /**
 [Result.getOrElseLazy] attempts to get the [Ok] value out of a [result]. If the
 result is an [Error], a default value is returned by calling the provided

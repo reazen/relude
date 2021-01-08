@@ -191,6 +191,14 @@ describe("Result", () => {
     |> toEqual("error")
   );
 
+  test("getOrElseBy Ok", () =>
+    expect(Result.ok(42) |> Result.getOrElseBy(_ => 5)) |> toEqual(42)
+  );
+
+  test("getOrElseBy Error", () =>
+    expect(Result.error(42) |> Result.getOrElseBy(x => x / 7)) |> toEqual(6)
+  );
+
   test("getOrElse Ok", () =>
     expect(Result.ok(42) |> Result.getOrElse(5)) |> toEqual(42)
   );
