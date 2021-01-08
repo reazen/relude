@@ -215,6 +215,34 @@ let getErrorOrElse: 'e 'e. ('e, t('a, 'e)) => 'e =
     | Ok(_) => default 
     | Error(e) => e
     };
+
+/**
+[Result.getErrorOrElse] attempts to get the [Error] value out of a [result]. If
+the result is an [Ok], the provided default value is returned instead. It's 
+similar to {!val:getOrElse}, but better suited when conceptually, it's the 
+error flow you want to handle.
+
+{[
+  // Imagine a part of your application that is only interested in error logging
+  // It receives an error and logs it if it is one. If not, it logs 
+  // that it's handled, but includes the request id.
+  type response('a) = Result(String, {id: string, payload: 'a})
+  let handleResErr = res => "Handled: " ++ id;
+
+  Result.getErrorOrElse(handleResErr, Err("Not Found")) 
+    == "Not Found";
+
+  Result.getErrorOrElse(handleResErr, Ok({id: 1, payload: "foo"})) 
+    == "Handled: 1";
+]}
+*/
+let getErrorOrElseBy: 'e 'e. ('a => 'e, t('a, 'e)) => 'e =
+  (fn, fa) =>
+    switch (fa) {
+    | Ok(a) => fn(a) 
+    | Error(e) => e
+    };
+
 /**
 [Result.merge] returns the inner value from the [result]. This requires both the
 [Ok] and [Error] channels to hold the same type of value.
