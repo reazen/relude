@@ -223,6 +223,17 @@ describe("Result", () => {
   test("getErrorOrElse Error", () =>
     expect(Result.error(42) |> Result.getErrorOrElse(5)) |> toEqual(42)
   );
+
+  test("getErrorOrElseBy Ok", () =>
+    expect(Result.ok(42) |> Result.getErrorOrElseBy(x => x / 7))
+    |> toEqual(6)
+  );
+
+  test("getErrorOrElseBy Error", () =>
+    expect(Result.error(42) |> Result.getErrorOrElseBy(x => x / 7))
+    |> toEqual(42)
+  );
+
   test("merge Error", () =>
     expect(Result.merge(Error(1))) |> toEqual(1)
   );
