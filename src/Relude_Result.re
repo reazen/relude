@@ -209,7 +209,7 @@ error flow you want to handle.
   Result.getErrorOrElse("Handled", Ok({id, payload})) == "Handled";
 ]}
 */
-let getErrorOrElse: 'e 'e. ('e, t('a, 'e)) => 'e =
+let getErrorOrElse: 'a 'e. ('e, t('a, 'e)) => 'e =
   (default, fa) =>
     switch (fa) {
     | Ok(_) => default 
@@ -237,7 +237,7 @@ suited when conceptually, it's the error flow you want to handle.
     == "Handled: 1";
 ]}
 */
-let getErrorOrElseBy: 'e 'e. ('a => 'e, t('a, 'e)) => 'e =
+let getErrorOrElseBy: 'a 'e. ('a => 'e, t('a, 'e)) => 'e =
   (fn, fa) =>
     switch (fa) {
     | Ok(a) => fn(a) 
