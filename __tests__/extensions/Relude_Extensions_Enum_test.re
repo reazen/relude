@@ -304,7 +304,7 @@ describe("Relude_Extensions_BoundedEnum", () => {
     );
 
     testAll(
-      "inverseMapWithComparator",
+      "inverseMapOrdBy",
       [
         ("Jan", Some(Jan)),
         ("Feb", Some(Feb)),
@@ -339,7 +339,7 @@ describe("Relude_Extensions_BoundedEnum", () => {
     );
 
     testAll(
-      "inverseMapWithComparator",
+      "inverseMap all tests",
       [
         "Jan",
         "Feb",

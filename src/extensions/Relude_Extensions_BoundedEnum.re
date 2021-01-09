@@ -58,61 +58,17 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    */
   let inverseMapEqBy: type a. ((a, a) => bool, E.t => a, a) => option(E.t) =
     (eqA, eToA) => {
-      let rec loop = (lst, maybeE, getNextE) => {
-        switch (maybeE) {
-        | None =>
-          // generate the closure to pass back to the caller:
-          let arr = Belt.List.toArray(lst);
-          let len = Belt.Array.length(arr);
-          let result = a => {
-            let rec find = (arr, i, limit) =>
-              if (i < limit) {
-                let (e__, a__) = Belt.Array.getUnsafe(arr, i);
-                if (eqA(a__, a)) {
-                  Some(e__);
-                } else {
-                  find(arr, succ(i), limit);
-                };
-              } else {
-                None;
-              };
-            find(arr, 0, len);
-          };
-          result;
-        | Some(e) =>
-          // Continue building the associative list:
-          loop([(e, eToA(e)), ...lst], getNextE(e), getNextE)
-        };
-      };
-
-      // Build associative list and pass a lookup function to the caller:
-      loop([], Some(E.bottom), E.succ);
-    };
-
-  let inverseMapEqBy2: type a. ((a, a) => bool, E.t => a, a) => option(E.t) =
-    (eqA, eToA) => {
-      // create an associative array for reverse lookups:
-      let arr =
+      // Create a list of tuples [a, E.t] used for doign lookup
+      let lookupList: list((a, E.t)) =
         upFromIncludingAsList(E.bottom)
-        |> Belt.List.mapU(_, (. e) => (e, eToA(e)))
-        |> Belt.List.toArray;
-      let len = Belt.Array.length(arr);
-      // generate the closure to pass back to the caller:
-      let result = a => {
-        let rec find = (arr, i, limit) =>
-          if (i < limit) {
-            let (e__, a__) = Belt.Array.getUnsafe(arr, i);
-            if (eqA(a__, a)) {
-              Some(e__);
-            } else {
-              find(arr, succ(i), limit);
-            };
-          } else {
-            None;
-          };
-        find(arr, 0, len);
-      };
-      result;
+        |> Relude_List_Instances.map(e => (eToA(e), e))
+
+      // Create the lookup function which closes over the lookupList
+      let lookup = (a) => {
+        lookupList |> Relude_List_Instances.find(((a', _)) => eqA(a', a)) |> Relude_Option_Instances.map(snd)
+      }
+
+      lookup
     };
 
   /**
@@ -160,67 +116,32 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    Running time for returned lookup function: O(log(n))
    */
   let inverseMapOrdBy:
-    type a.
-      ((a, a) => BsBastet.Interface.ordering, E.t => a, a) => option(E.t) =
-    (cmp, eToA) => {
-      // Generate the Map data structure:
+      type a. ((a, a) => BsBastet.Interface.ordering, E.t => a, a) => option(E.t) =
+    (compareA, eToA) => {
+      // Create the Map module used for doing lookups of a => E.t
+      // This is necessary because of how OCaml maps work
       let (module M) = (
         (module
          Map.Make({
            type t = a;
            let compare = (a, b) =>
-             switch (cmp(a, b)) {
+             switch (compareA(a, b)) {
              | `equal_to => 0
              | `less_than => (-1)
              | `greater_than => 1
              };
          })): (module Map.S with type key = a)
       );
-      /**
-       Produce an 'a' value for each 'enum' value that exists,
-       then insert each of them into the Map.
-       */
-      let rec loop = (store, current) => {
-        switch (current) {
-        | None => M.find_opt(_, store)
-        | Some(e) =>
-          let a = eToA(e);
-          let st = M.add(a, e, store);
-          loop(st, E.succ(e));
-        };
-      };
 
-      loop(M.empty, Some(E.bottom));
-    };
+      // Enumerate the E.t values and create the lookup map
+      let lookupMap =
+        upFromIncludingAsList(E.bottom) |>
+        Relude_List_Instances.foldRight((e, acc) => M.add(eToA(e), e, acc), M.empty)
 
-  let inverseMapOrdBy2:
-    type a.
-      ((a, a) => BsBastet.Interface.ordering, E.t => a, a) => option(E.t) =
-    (cmp, eToA) => {
-      // Generate the Map data structure:
-      let (module M) = (
-        (module
-         Map.Make({
-           type t = a;
-           let compare = (a, b) =>
-             switch (cmp(a, b)) {
-             | `equal_to => 0
-             | `less_than => (-1)
-             | `greater_than => 1
-             };
-         })): (module Map.S with type key = a)
-      );
-      let store =
-        upFromIncludingAsList(E.bottom)
-        ->Belt.List.reduceU(
-            M.empty,
-            (. acc, e) => {
-              let a = eToA(e);
-              M.add(a, e, acc);
-            },
-          );
+      // Lookup function which closes over the lookup map
+      let lookup = (a) => M.find_opt(a, lookupMap)
 
-      M.find_opt(_, store);
+      lookup
     };
 
   /**
@@ -257,15 +178,6 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    */
   let inverseMapString: (E.t => string, string) => option(E.t) =
     (eToString: E.t => string) => {
-      let strMap = Belt.MutableMap.String.make();
-      let rec loop = (store, maybeE) => {
-        switch (maybeE) {
-        | None => (string => Belt.MutableMap.String.get(store, string))
-        | Some(e) =>
-          Belt.MutableMap.String.set(store, eToString(e), e);
-          loop(store, E.succ(e));
-        };
-      };
-      loop(strMap, Some(E.bottom));
+      inverseMapOrdBy(BsBastet.String.Ord.compare, eToString)
     };
 };
