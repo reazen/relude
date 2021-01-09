@@ -259,5 +259,135 @@ describe("Relude_Extensions_BoundedEnum", () => {
       let actual = Month.fromThenToAsList(~start, ~next, ~finish);
       expect(actual) |> toEqual(expected);
     },
-  )
+  );
+  describe("Relude_Extensions_BoundedEnum", () => {
+    let show = Show.show;
+    let parseOrd = inverseMapOrd(~ordA=(module Relude_String.Ord), show);
+    let parseOrdBy = inverseMapOrdBy(Relude.String.compare, show);
+    let parseEq = inverseMapEq(~eqA=(module Relude_String.Eq), show);
+    let parseEqBy = inverseMapEqBy(Relude.String.eq, show);
+    let parseString = inverseMapString(show);
+
+    testAll(
+      "inverseMapOrd",
+      [
+        ("Jan", Some(Jan)),
+        ("Feb", Some(Feb)),
+        ("Mar", Some(Mar)),
+        ("Apr", Some(Apr)),
+        ("May", Some(May)),
+        ("Jun", Some(Jun)),
+        ("Jul", Some(Jul)),
+        ("Aug", Some(Aug)),
+        ("Sep", Some(Sep)),
+        ("Oct", Some(Oct)),
+        ("Nov", Some(Nov)),
+        ("Dec", Some(Dec)),
+        ("", None),
+        ("jan", None),
+        ("feb", None),
+        ("mar", None),
+        ("apr", None),
+        ("may", None),
+        ("jun", None),
+        ("jul", None),
+        ("aug", None),
+        ("sep", None),
+        ("oct", None),
+        ("nov", None),
+        ("dec", None),
+      ],
+      ((string, expected)) => {
+        let actual = parseOrd(string);
+        expect(actual) |> toEqual(expected);
+      },
+    );
+
+    testAll(
+      "inverseMapWithComparator",
+      [
+        ("Jan", Some(Jan)),
+        ("Feb", Some(Feb)),
+        ("Mar", Some(Mar)),
+        ("Apr", Some(Apr)),
+        ("May", Some(May)),
+        ("Jun", Some(Jun)),
+        ("Jul", Some(Jul)),
+        ("Aug", Some(Aug)),
+        ("Sep", Some(Sep)),
+        ("Oct", Some(Oct)),
+        ("Nov", Some(Nov)),
+        ("Dec", Some(Dec)),
+        ("", None),
+        ("jan", None),
+        ("feb", None),
+        ("mar", None),
+        ("apr", None),
+        ("may", None),
+        ("jun", None),
+        ("jul", None),
+        ("aug", None),
+        ("sep", None),
+        ("oct", None),
+        ("nov", None),
+        ("dec", None),
+      ],
+      ((string, expected)) => {
+        let actual = parseOrdBy(string);
+        expect(actual) |> toEqual(expected);
+      },
+    );
+
+    testAll(
+      "inverseMapWithComparator",
+      [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+        "",
+        "jan",
+        "feb",
+        "mar",
+        "apr",
+        "may",
+        "jun",
+        "jul",
+        "aug",
+        "sep",
+        "oct",
+        "nov",
+        "dec",
+      ],
+      string => {
+        let usingInverseMapOrd = parseOrd(string);
+        let usingInverseMapOrdBy = parseOrdBy(string);
+        let usingInverseMapEq = parseEq(string);
+        let usingInverseMapEqBy = parseEqBy(string);
+        let usingInverseMapString = parseString(string);
+        expect((
+          usingInverseMapOrd,
+          usingInverseMapOrdBy,
+          usingInverseMapEq,
+          usingInverseMapEqBy,
+          usingInverseMapString,
+        ))
+        |> toEqual((
+             usingInverseMapOrdBy,
+             usingInverseMapEq,
+             usingInverseMapEqBy,
+             usingInverseMapString,
+             usingInverseMapOrd,
+           ));
+      },
+    );
+  });
 });
