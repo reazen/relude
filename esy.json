@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "bs-platform": "*"
+  },
+  "resolutions": {
+    "bs-platform": "melange-re/melange#080d2ac",
+    "ocaml": "melange-re/ocaml#75f22c8"
+  },
+  "esy": {
+    "buildsInSource": "unsafe",
+    "build": [
+      "ln -sfn #{bs-platform.install} node_modules/bs-platform"
+    ]
+  },
+  "installConfig": {
+    "pnp": false
+  }
+}
