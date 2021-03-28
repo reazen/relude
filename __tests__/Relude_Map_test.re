@@ -1,6 +1,6 @@
 open Jest;
 open Expect;
-open Relude.Globals;
+open! Relude.Globals;
 
 describe("StringMap", () => {
   let empty = StringMap.make();

@@ -1,6 +1,6 @@
 open Jest;
 open Expect;
-open Relude.Globals;
+open! Relude.Globals;
 
 let throwJSError: unit => int = [%bs.raw
   {| function() { throw new Error("Error from JS"); } |}
@@ -118,11 +118,11 @@ describe("IO basics", () => {
        )
   );
 
-  testAsync("pure map <#> unsafeRunAsync", onDone => {
-    let (<#>) = IO.(<#>);
+  testAsync("pure map <$$> unsafeRunAsync", onDone => {
+    let (<$$>) = IO.(<$$>);
 
     IO.pure(42)
-    <#> (a => a + 10)
+    <$$> (a => a + 10)
     |> IO.unsafeRunAsync(
          fun
          | Ok(value) => onDone(expect(value) |> toEqual(52))

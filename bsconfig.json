@@ -29,7 +29,7 @@
     "@glennsl/bs-jest"
   ],
   "warnings": {
-    "number": "+A-4-40-42-60",
+    "number": "+A-4-29-40-42-60",
     "error": "+A"
   },
   "namespace": false,

@@ -6,21 +6,21 @@ module Native = {
   let dirname: option(string) = [%bs.node __dirname];
   let dirnameOrDot = Js.Option.getWithDefault(".", dirname);
 
-  [@bs.val] [@bs.module "fs"]
+  [@bs.val] [@bs.module "fs"] [@warning "-103"]
   external readFileSync:
-    (string, [@bs.string] [ | `hex | `utf8 | `ascii]) => string =
+    (string, [ | `hex | `utf8 | `ascii]) => string =
     "readFileSync";
 
   [@bs.val] [@bs.module "fs"]
   external writeFileSync:
-    (string, string, [@bs.string] [ | `hex | `utf8 | `ascii]) => unit =
+    (string, string, [ | `hex | `utf8 | `ascii]) => unit =
     "writeFileSync";
 
   [@bs.val] [@bs.module "fs"]
   external readFile:
     (
       string,
-      [@bs.string] [ | `hex | `utf8 | `ascii],
+      [ | `hex | `utf8 | `ascii],
       (Js.null(Js.Exn.t), string) => unit
     ) =>
     unit =
@@ -31,7 +31,7 @@ module Native = {
     (
       string,
       string,
-      [@bs.string] [ | `hex | `utf8 | `ascii],
+      [ | `hex | `utf8 | `ascii],
       Js.null(Js.Exn.t) => unit
     ) =>
     unit =

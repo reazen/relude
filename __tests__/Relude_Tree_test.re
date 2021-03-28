@@ -1,6 +1,6 @@
 open Jest;
 open Expect;
-open Relude.Globals;
+open! Relude.Globals;
 open Relude_Tree;
 
 let testTree1 = Tree.make(1, [Tree.pure(2), Tree.pure(3)]);

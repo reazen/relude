@@ -27,7 +27,7 @@ module RIO = Relude_RIO.WithErrorAndEnv(
 );
 
 
-let ((<$>), (<#>), (>>=)) = RIO.Infix.((<$>), (<#>), (>>=));
+let ((<$>), (<$$>), (>>=)) = RIO.Infix.((<$>), (<$$>), (>>=));
 
 describe("Reader IO", () =>
   testAsync("test flow", onDone =>
@@ -35,8 +35,8 @@ describe("Reader IO", () =>
     >>= (
       env => {
         RIO.pure((-1) * env.intValue)
-        <#> string_of_int
-        <#> (a => a ++ env.stringValue);
+        <$$> string_of_int
+        <$$> (a => a ++ env.stringValue);
       }
     )
     |> RIO.semiflatMap(c => Relude_IO.pure(c ++ "semi"))

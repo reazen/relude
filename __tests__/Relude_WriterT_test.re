@@ -11,8 +11,8 @@ module WriterLog =
   });
 module WriterList = Writer.WithLog(WriterLog);
 
-let ((<$>), ($>), (<#>), (>>=)) =
-  WriterList.Infix.((<$>), ($>), (<#>), (>>=));
+let ((<$>), ($>), (<$$>), (>>=)) =
+  WriterList.Infix.((<$>), ($>), (<$$>), (>>=));
 
 describe("WriterT", () =>
   test("pure, >>=, tell, $>, runWriterT", () => {

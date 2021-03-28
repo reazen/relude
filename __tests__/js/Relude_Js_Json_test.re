@@ -659,7 +659,7 @@ describe("Json", () => {
     let actual: Validation.t(MyType.t, NonEmptyArray.t(string)) =
       MyType.make
       <$> (JD.stringFor("a", json) >>= (a => VOk(a ++ a)))  // flatMap a value
-      <*> (JD.intFor("b", json) <#> (a => a * 2))  // map a value
+      <*> (JD.intFor("b", json) <$$> (a => a * 2))  // map a value
       <*> JD.boolFor("c", json)
       <*> JD.arrayFor("d", (_index, json) => JD.string(json), json)
       <*> JD.floatFor("e", json)
@@ -792,7 +792,7 @@ describe("Json", () => {
     let actual =
       MyType.make
       <$> (JD.stringAt(0, json) >>= (a => VOk(a ++ a)))  // bind (flatMap) a value here just for fun
-      <*> (JD.intAt(1, json) <#> (a => a * 2))  // map a value here - <#> is flipMap - we need to flip it b/c the Validation comes first here
+      <*> (JD.intAt(1, json) <$$> (a => a * 2))  // map a value here - <#> is flipMap - we need to flip it b/c the Validation comes first here
       <*> JD.boolAt(2, json)
       <*> JD.arrayAt(3, (_index, json) => JD.string(json), json)
       <*> JD.floatAt(4, json)

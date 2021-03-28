@@ -13,7 +13,7 @@ module IOE =
 
 module OptionIOE = OptionT.WithMonad(IOE.Monad);
 
-let ((<$>), (<#>), (>>=)) = OptionIOE.Infix.((<$>), (<#>), (>>=));
+let ((<$>), (<$$>), (>>=)) = OptionIOE.Infix.((<$>), (<$$>), (>>=));
 
 describe("OptionT", () => {
   testAsync("make", onDone =>
@@ -76,9 +76,9 @@ describe("OptionT", () => {
 
   testAsync("operators", onDone =>
     OptionIOE.pure(2)
-    <#> (a => a * 3)
+    <$$> (a => a * 3)
     >>= (a => OptionIOE.pure(a + 7))
-    <#> (a => expect(a) |> toEqual(13))
+    <$$> (a => expect(a) |> toEqual(13))
     |> OptionIOE.runOptionT
     |> IO.unsafeRunAsync(
          fun
@@ -90,7 +90,7 @@ describe("OptionT", () => {
   testAsync("subflatMap", onDone =>
     OptionIOE.pure(2)
     |> OptionIOE.subflatMap(a => Some(a * 3))
-    <#> (a => expect(a) |> toEqual(6))
+    <$$> (a => expect(a) |> toEqual(6))
     |> OptionIOE.runOptionT
     |> IO.unsafeRunAsync(
          fun
@@ -102,7 +102,7 @@ describe("OptionT", () => {
   testAsync("semiflatMap", onDone =>
     OptionIOE.pure(2)
     |> OptionIOE.semiflatMap(a => IO.pure(a * 3))
-    <#> (a => expect(a) |> toEqual(6))
+    <$$> (a => expect(a) |> toEqual(6))
     |> OptionIOE.runOptionT
     |> IO.unsafeRunAsync(
          fun

@@ -8,8 +8,8 @@ module State =
     type t = list(int);
   });
 
-let ((<$>), ($>), (<#>), ( *> ), (>>=)) =
-  State.Infix.((<$>), ($>), (<#>), ( *> ), (>>=));
+let ((<$>), ($>), (<$$>), ( *> ), (>>=)) =
+  State.Infix.((<$>), ($>), (<$$>), ( *> ), (>>=));
 
 module Stack = {
   let push: int => StateT.State.t(int, list(int)) =
@@ -86,7 +86,7 @@ describe("StateT", () => {
       >>= (_ => Stack.pop)
       >>= (_ => Stack.pop)
       >>= (_ => Stack.push(4))
-      >>= (_ => Stack.push(5) <#> a => a * 100)
+      >>= (_ => Stack.push(5) <$$> a => a * 100)
       |> State.runStateT([]);
     expect(result) |> toEqual((500, [5, 4, 1]));
   });

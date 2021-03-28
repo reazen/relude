@@ -96,7 +96,7 @@ module ReaderIOE =
     },
   );
 
-let ((<$>), (<#>), (>>=)) = ReaderIOE.Infix.((<$>), (<#>), (>>=));
+let ((<$>), (<$$>), (>>=)) = ReaderIOE.Infix.((<$>), (<$$>), (>>=));
 
 describe("Reader IO", () =>
   testAsync("test flow", onDone =>
@@ -104,8 +104,8 @@ describe("Reader IO", () =>
     >>= (
       env => {
         ReaderIOE.pure((-1) * env.intValue)
-        <#> string_of_int
-        <#> (a => a ++ env.stringValue);
+        <$$> string_of_int
+        <$$> (a => a ++ env.stringValue);
       }
     )
     |> ReaderIOE.semiflatMap(c => IOE.pure(c ++ "semi"))
