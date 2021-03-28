@@ -286,7 +286,7 @@ let map: 'a 'b 'e. ('a => 'b, t('a, 'e)) => t('b, 'e) =
 
 let (<$>) = map;
 
-let (<#>) = (ioA, aToB) => map(aToB, ioA);
+let (<$$>) = (ioA, aToB) => map(aToB, ioA);
 
 /**
 Applies a side-effect function ['a => unit] on an [IO.t('a, 'e)], and propagates

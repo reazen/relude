@@ -50,7 +50,7 @@ module FunctorInfix = (F: BsBastet.Interface.FUNCTOR) => {
   Operator version of the [flipMap] function, which has the functor on the left,
   and function on the right.
   */
-  let (<#>) = FunctorExtensions.flipMap;
+  let (<$$>) = FunctorExtensions.flipMap;
 
   /**
   Operator version of voidRight, which replaces the values of the functor on the

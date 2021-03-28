@@ -875,7 +875,7 @@ module DSL = {
 
   // Bring some infix operators into scope
   let (<$>) = ValidationE.Infix.(<$>); // map
-  let (<#>) = ValidationE.Infix.(<#>); // flipMap - useful for mapping values after decoding them
+  let (<$$>) = ValidationE.Infix.(<$$>); // flipMap - useful for mapping values after decoding them
   let (<*>) = ValidationE.Infix.(<*>); // apply
   let (>>=) = ValidationE.Infix.(>>=); // bind
 

@@ -29,12 +29,18 @@
     "@glennsl/bs-jest"
   ],
   "warnings": {
-    "number": "+A-4-40-42",
+    "number": "+A-4-40-42-60",
     "error": "+A"
   },
   "namespace": false,
   "refmt": 3,
   "ppx-flags": [
-    ["bisect_ppx/ppx", "--exclude-files", ".*_test\\.re$$", "--exclude-files", ".*\\/testUtils\\/.*\\.re$$"]
+    [
+      "bisect_ppx/ppx",
+      "--exclude-files",
+      ".*_test.re$$",
+      "--exclude-files",
+      ".*/testUtils/.*.re$$"
+    ]
   ]
 }
