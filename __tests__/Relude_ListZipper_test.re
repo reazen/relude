@@ -88,7 +88,7 @@ describe("ListZipper", () => {
   );
 
   test("map", () =>
-    expect(LZ.make([2, 1], 3, [4, 5]) <#> (a => a * 10))
+    expect(LZ.make([2, 1], 3, [4, 5]) <$$> (a => a * 10))
     |> toEqual(LZ.make([20, 10], 30, [40, 50]))
   );
 

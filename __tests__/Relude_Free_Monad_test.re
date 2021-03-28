@@ -81,14 +81,14 @@ module StorageAPI = {
     storage =>
       State.Infix.(
         switch (storage) {
-        | Get(key, next) => getState(key) <#> (valueOpt => next(valueOpt))
-        | Put(key, value, next) => putState(key, value) <#> (_ => next) // Map the result into our next free operation, so we can propagate the state
-        | Delete(key, next) => deleteState(key) <#> (_ => next) // Map the result into our next free operation, so we can propagate the state
+        | Get(key, next) => getState(key) <$$> (valueOpt => next(valueOpt))
+        | Put(key, value, next) => putState(key, value) <$$> (_ => next) // Map the result into our next free operation, so we can propagate the state
+        | Delete(key, next) => deleteState(key) <$$> (_ => next) // Map the result into our next free operation, so we can propagate the state
         }
       );
 
   // Include the smart constructors and operators for our algebra
-  // This gets us our get/put/delete functions and things like <$>/<#>/>>=/<*>/etc.
+  // This gets us our get/put/delete functions and things like <$>/<$$>/>>=/<*>/etc.
   // For use when creating our programs
   include StorageFWithKeyAndValue;
 
@@ -113,7 +113,7 @@ describe("Relude_Free_Monad", () => {
               >>= (_ => get("key1"))
               >>= (
                 value2 =>
-                  get("key2") <#> (value3 => (value1, value2, value3))
+                  get("key2") <$$> (value3 => (value1, value2, value3))
               )
           )
         );

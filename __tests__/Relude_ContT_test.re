@@ -101,20 +101,20 @@ describe("ContT Identity", () => {
 
   testAsync("pure", onDone =>
     Cont.pure(42)
-    <#> (value => expect(value) |> toEqual(42))
-    <#> onDone
+    <$$> (value => expect(value) |> toEqual(42))
+    <$$> onDone
     |> Cont.runContT(() => ())
   );
 
-  testAsync("map (<#>) success", onDone => {
+  testAsync("map (<$$>) success", onDone => {
     let filePath = FilePath.FilePath("test.txt");
     readFileSuccessCont(filePath)
-    <#> (
+    <$$> (
       fun
       | Ok(value) => expect(value) |> toEqual("Read file: test.txt")
       | Error(_) => fail("Failed")
     )
-    <#> onDone
+    <$$> onDone
     |> Cont.runContT(() => ());
   });
 
@@ -133,7 +133,7 @@ describe("ContT Identity", () => {
           fun
           | Ok(content2) =>
             readFileSuccessCont(filePath3)
-            <#> (
+            <$$> (
               fun
               | Ok(content3) => {
                   let result =
@@ -149,7 +149,7 @@ describe("ContT Identity", () => {
         )
       | Error(_) => Cont.pure(fail("Failed 1"))
     )
-    <#> onDone
+    <$$> onDone
     |> Cont.runContT(() => ());
   });
 });
@@ -205,7 +205,7 @@ describe("ContT IO", () => {
 
   testAsync("map", onDone =>
     stringToIntCont("42")
-    <#> (res => res |> Result.map(a => a * 2))
+    <$$> (res => res |> Result.map(a => a * 2))
     |> ContIO.runContT(
          fun
          | Ok(i) => assertIntIO(84, i, onDone)

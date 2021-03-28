@@ -1,6 +1,6 @@
 open Jest;
 open Expect;
-open Relude.Globals;
+open! Relude.Globals;
 
 module Validator = {
   type t('a) = string => result('a, string);
