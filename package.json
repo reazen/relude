@@ -20,6 +20,7 @@
     "cleanwatch": "npm run clean && npm run watch",
     "cleantest": "npm run cleanbuild && npm run test",
     "cleancoverage": "npm run cleanbisect && BISECT_ENABLE=yes npm run cleanbuild && npm run coverage",
+    "prepack": "node scripts/prepack.js",
     "releasebuild": "npm run cleancoverage"
   },
   "keywords": [
