@@ -31,6 +31,21 @@ Constructs a tuple-3 from a list of at least 3 values
 let fromListAtLeast: 'a. list('a) => option(('a, 'a, 'a)) =
   xs => Relude_List.take(3, xs) |> fromList;
 
+/**
+Gets the first value of a tuple-3
+*/
+let first: 'a 'b 'c. (('a, 'b, 'c)) => 'a = ((a, _b, _c)) => a;
+
+/**
+Gets the second value of a tuple-3
+*/
+let second: 'a 'b 'c. (('a, 'b, 'c)) => 'b = ((_a, b, _c)) => b;
+
+/**
+Gets the third value of a tuple-3
+*/
+let third: 'a 'b 'c. (('a, 'b, 'c)) => 'c = ((_a, _b, c)) => c;
+
 let showBy:
   'a 'b 'c.
   ('a => string, 'b => string, 'c => string, ('a, 'b, 'c)) => string

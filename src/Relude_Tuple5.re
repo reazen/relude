@@ -41,6 +41,36 @@ let apply:
  =
   (f, (a, b, c, d, e)) => f(a, b, c, d, e);
 
+/**
+Gets the first value of a tuple-5
+*/
+let first: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd, 'e)) => 'a =
+  ((a, _b, _c, _d, _e)) => a;
+
+/**
+Gets the second value of a tuple-5
+*/
+let second: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd, 'e)) => 'b =
+  ((_a, b, _c, _d, _e)) => b;
+
+/**
+Gets the third value of a tuple-5
+*/
+let third: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd, 'e)) => 'c =
+  ((_a, _b, c, _d, _e)) => c;
+
+/**
+Gets the fourth value of a tuple-5
+*/
+let fourth: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd, 'e)) => 'd =
+  ((_a, _b, _c, d, _e)) => d;
+
+/**
+Gets the fifth value of a tuple-5
+*/
+let fifth: 'a 'b 'c 'd 'e. (('a, 'b, 'c, 'd, 'e)) => 'e =
+  ((_a, _b, _c, _d, e)) => e;
+
 let showBy:
   'a 'b 'c 'd 'e.
   (

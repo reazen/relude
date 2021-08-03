@@ -45,6 +45,30 @@ let apply3 = Relude_Function.uncurry3;
 let apply4 = Relude_Function.uncurry4;
 let apply5 = Relude_Function.uncurry5;
 
+let first = Tuple2.first;
+let first2 = Tuple2.first;
+let first3 = Tuple3.first;
+let first4 = Tuple4.first;
+let first5 = Tuple5.first;
+
+let second = Tuple2.second;
+let second2 = Tuple2.second;
+let second3 = Tuple3.second;
+let second4 = Tuple4.second;
+let second5 = Tuple5.second;
+
+let third = Tuple3.third;
+let third3 = Tuple3.third;
+let third4 = Tuple4.third;
+let third5 = Tuple5.third;
+
+let fourth = Tuple4.fourth;
+let fourth4 = Tuple4.fourth;
+let fourth5 = Tuple5.fourth;
+
+let fifth = Tuple5.fifth;
+let fifth5 = Tuple5.fifth;
+
 let showBy = Tuple2.showBy;
 let showBy2 = Tuple2.showBy;
 let showBy3 = Tuple3.showBy;
