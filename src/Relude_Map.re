@@ -416,7 +416,9 @@ module type MAP = {
   let groupArrayBy: ('a => key, array('a)) => t(array('a));
 };
 
-module WithOrd = (M: ORD) : (MAP with type key = M.t) => {
+module WithOrd =
+       (M: ORD)
+       : (MAP with type key = M.t and type Comparable.t = M.t) => {
   type key = M.t;
 
   module Comparable =
