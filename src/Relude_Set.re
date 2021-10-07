@@ -334,7 +334,9 @@ module type SET = {
   let split: (value, t) => ((t, t), bool);
 };
 
-module WithOrd = (M: BsBastet.Interface.ORD) : (SET with type value = M.t) => {
+module WithOrd =
+       (M: BsBastet.Interface.ORD)
+       : (SET with type value = M.t and type Comparable.t = M.t) => {
   type value = M.t;
 
   module Comparable =
