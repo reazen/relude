@@ -32,6 +32,26 @@ Constructs a tuple-4 from a list of at least 4 values
 let fromListAtLeast: 'a. list('a) => option(('a, 'a, 'a, 'a)) =
   xs => Relude_List.take(4, xs) |> fromList;
 
+/**
+Gets the first value of a tuple-4
+*/
+let first: 'a 'b 'c 'd. (('a, 'b, 'c, 'd)) => 'a = ((a, _b, _c, _d)) => a;
+
+/**
+Gets the second value of a tuple-4
+*/
+let second: 'a 'b 'c 'd. (('a, 'b, 'c, 'd)) => 'b = ((_a, b, _c, _d)) => b;
+
+/**
+Gets the third value of a tuple-4
+*/
+let third: 'a 'b 'c 'd. (('a, 'b, 'c, 'd)) => 'c = ((_a, _b, c, _d)) => c;
+
+/**
+Gets the fourth value of a tuple-4
+*/
+let fourth: 'a 'b 'c 'd. (('a, 'b, 'c, 'd)) => 'd = ((_a, _b, _c, d)) => d;
+
 let showBy:
   'a 'b 'c 'd.
   (

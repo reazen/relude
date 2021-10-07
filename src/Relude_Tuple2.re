@@ -32,6 +32,16 @@ let fromListAtLeast: 'a. list('a) => option(('a, 'a)) =
   xs => Relude_List.take(2, xs) |> fromList;
 
 /**
+Gets the first value of a tuple-2
+*/
+let first: 'a 'b. (('a, 'b)) => 'a = ((a, _b)) => a;
+
+/**
+Gets the second value of a tuple-2
+*/
+let second: 'a 'b. (('a, 'b)) => 'b = ((_a, b)) => b;
+
+/**
 Shows a tuple ('a, 'b) using show functions for 'a and 'b
 */
 let showBy: 'a 'b. ('a => string, 'b => string, ('a, 'b)) => string =

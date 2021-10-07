@@ -158,6 +158,72 @@ describe("Tuple apply", () => {
   );
 });
 
+describe("Tuple first", () => {
+  test("first2", () => {
+    expect(Tuple.first2((42, "hi"))) |> toEqual(42)
+  });
+
+  test("first3", () => {
+    expect(Tuple.first3((42, "hi", true))) |> toEqual(42)
+  });
+
+  test("first4", () => {
+    expect(Tuple.first4((42, "hi", true, ()))) |> toEqual(42)
+  });
+
+  test("first5", () => {
+    expect(Tuple.first5((42, "hi", true, (), 99.9))) |> toEqual(42)
+  });
+});
+
+describe("Tuple second", () => {
+  test("second2", () => {
+    expect(Tuple.second2((42, "hi"))) |> toEqual("hi")
+  });
+
+  test("second3", () => {
+    expect(Tuple.second3((42, "hi", true))) |> toEqual("hi")
+  });
+
+  test("second4", () => {
+    expect(Tuple.second4((42, "hi", true, ()))) |> toEqual("hi")
+  });
+
+  test("second5", () => {
+    expect(Tuple.second5((42, "hi", true, (), 99.9))) |> toEqual("hi")
+  });
+});
+
+describe("Tuple third", () => {
+  test("third3", () => {
+    expect(Tuple.third3((42, "hi", true))) |> toEqual(true)
+  });
+
+  test("third4", () => {
+    expect(Tuple.third4((42, "hi", true, ()))) |> toEqual(true)
+  });
+
+  test("third5", () => {
+    expect(Tuple.third5((42, "hi", true, (), 99.9))) |> toEqual(true)
+  });
+});
+
+describe("Tuple fourth", () => {
+  test("fourth4", () => {
+    expect(Tuple.fourth4((42, "hi", true, ()))) |> toEqual()
+  });
+
+  test("fourth5", () => {
+    expect(Tuple.fourth5((42, "hi", true, (), 99.9))) |> toEqual()
+  });
+});
+
+describe("Tuple fifth", () => {
+  test("fifth5", () => {
+    expect(Tuple.fifth5((42, "hi", true, (), 99.9))) |> toEqual(99.9)
+  })
+});
+
 describe("Tuple showBy", () => {
   test("showBy2", () => {
     expect(Tuple.showBy2(Int.show, String.show, (42, "hi")))
