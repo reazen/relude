@@ -12,7 +12,7 @@ describe("Js.Exn", () => {
   test("throw", () => {
     expect(() =>
       Exn.throw("my error")
-    ) |> toThrowMessage("my error")
+    ) |> toThrow
   });
 
   test("unsafeFromExn Js.Exn.Error", () => {
