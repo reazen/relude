@@ -9,7 +9,7 @@ the duplicate package issues that surface when using a statically typed language
 1. Install `bs-bastet` and `relude` via `npm` or `yarn`
 
 ```sh
-> npm install --save bs-bastet relude
+> yarn add bs-bastet relude
 ```
 
 2. **IMPORTANT**: add `relude` **and** `bs-bastet` to your `bsconfig.json`:
