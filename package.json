@@ -31,6 +31,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": "v16.10.0"
+  },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.7.0",
     "bs-bastet": "^2.0.0",
