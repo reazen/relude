@@ -32,7 +32,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@glennsl/bs-jest": "^0.5.1",
+    "@glennsl/bs-jest": "^0.7.0",
     "bs-bastet": "^2.0.0",
     "bs-platform": "^8.2.2",
     "docsify-cli": "~4.4.0"
@@ -42,7 +42,7 @@
     "bs-platform": "^8.2.2"
   },
   "dependencies": {
-    "bisect_ppx": "^2.6.0"
+    "bisect_ppx": "^2.7.1"
   },
   "jest": {
     "verbose": false,
@@ -51,7 +51,7 @@
       "/testUtils/"
     ],
     "setupFilesAfterEnv": [
-      "bisect_ppx/lib/js/src/runtime/bucklescript/jest.js"
+      "bisect_ppx/lib/js/src/runtime/js/jest.bs.js"
     ]
   }
 }
