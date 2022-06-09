@@ -104,6 +104,14 @@ describe("List", () => {
     expect(List.appendOption(None, [2, 3])) |> toEqual([2, 3])
   );
 
+  test("consOption Some conss element", () =>
+    expect(List.consOption(Some(1), [2, 3])) |> toEqual([1, 2, 3])
+  );
+
+  test("consOption None no-ops", () =>
+    expect(List.consOption(None, [2, 3])) |> toEqual([2, 3])
+  );
+
   test("foldLeft", () =>
     expect(
       List.foldLeft(

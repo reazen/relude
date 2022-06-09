@@ -14,6 +14,21 @@ Running time: O(1)
 let cons: 'a. ('a, list('a)) => list('a) = (x, xs) => [x, ...xs];
 
 /**
+[List.consOption] prepends the given item to the start of the given list when
+the item is Some. This preserves the memory used by the existing list.
+
+Running time: O(1)
+
+{[
+  List.consOption(Some("x"), ["y", "z"]) == ["x", "y", "z"];
+  List.consOption(None, ["y", "z"]) == ["y", "z"];
+  List.consOption(Some(0), []) == [0];
+]}
+*/
+let consOption: 'a. (option('a), list('a)) => list('a) =
+  (x, xs) => x |> Relude_Option_Base.fold(xs, x => [x, ...xs]);
+
+/**
 [List.prepend] is an alias for {!val:cons}.
 */
 let prepend: 'a. ('a, list('a)) => list('a) = cons;
