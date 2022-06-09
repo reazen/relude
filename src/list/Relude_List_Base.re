@@ -50,6 +50,22 @@ let append: 'a. ('a, list('a)) => list('a) =
   (x, xs) => Relude_List_Instances.SemigroupAny.append(xs, [x]);
 
 /**
+[List.appendOption] adds an item to the end of the list when it is Some.
+This requires a full copy to be made of the provided list,
+which means that the returned list will have no relationship in
+memory to the original list.
+
+Running time: O(n)
+
+{[
+  List.appendOption(Some(4), [1, 2, 3]) == [1, 2, 3, 4];
+  List.appendOption(None, [1, 2, 3]) == [1, 2, 3];
+]}
+*/
+let appendOption: 'a. (option('a), list('a)) => list('a) =
+  (x, xs) => x |> Relude_Option_Base.fold(xs, append(_, xs));
+
+/**
 [List.repeat] accepts a count and a value, and it creates a new list that
 contains the provided value, duplicated [count] times.
 

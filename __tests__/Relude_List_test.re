@@ -96,6 +96,14 @@ describe("List", () => {
     expect(List.append(1, [2, 3])) |> toEqual([2, 3, 1])
   );
 
+  test("appendOption Some appends element", () =>
+    expect(List.appendOption(Some(1), [2, 3])) |> toEqual([2, 3, 1])
+  );
+
+  test("appendOption None no-ops", () =>
+    expect(List.appendOption(None, [2, 3])) |> toEqual([2, 3])
+  );
+
   test("foldLeft", () =>
     expect(
       List.foldLeft(
