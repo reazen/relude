@@ -5,7 +5,10 @@
     "cwd": "${workspaceRoot}"
   },
   "type": "shell",
-  "args": ["run", "start"],
+  "args": [
+    "run",
+    "start"
+  ],
   "presentation": {
     "echo": true,
     "reveal": "always",
@@ -42,7 +45,10 @@
       "label": "npm",
       "type": "shell",
       "command": "npm",
-      "args": ["run", "start"],
+      "args": [
+        "run",
+        "start"
+      ],
       "isBackground": true,
       "problemMatcher": {
         "fileLocation": "absolute",

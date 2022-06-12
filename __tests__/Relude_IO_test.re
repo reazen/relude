@@ -1928,9 +1928,7 @@ describe("IO tries/exceptions", () => {
          switch (result) {
          | Ok(_) => onDone(fail("Should not be Ok"))
          | Error(e) =>
-           onDone(
-             expect(Js.Exn.message(e)) |> toEqual(Some("Fail")),
-           );
+           onDone(expect(Js.Exn.message(e)) |> toEqual(Some("Fail")))
          }
        )
   );
@@ -1965,11 +1963,11 @@ describe("IO tries/exceptions", () => {
          switch (result) {
          | Ok(_) => onDone(fail("Should not be Ok"))
          | Error(e) =>
-          Js.log(e);
+           Js.log(e);
            onDone(
              expect(Js.Exn.message(e))
              |> toEqual(Some("Unexpected error: MyExn,8,Custom error")),
-           )
+           );
          }
        );
   });

@@ -8,7 +8,12 @@ npm-debug.log
 # OCaml/BuckleScript/ReasonML
 .merlin
 .bsb.lock
+dune
+dune.mel
+.melange.eobjs
 /lib/bs/
+_build
+_esy
 *.bs.js
 
 # Git
@@ -26,6 +31,3 @@ _coverage
 /docs/api
 /docs/odoc.css
 /docs/highlight.pack.js
-
-_build
-_esy

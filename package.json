@@ -32,7 +32,7 @@
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": "v16.10.0"
+    "node": "v16.15.0"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.7.0",
@@ -54,7 +54,7 @@
       "/testUtils/"
     ],
     "setupFilesAfterEnv": [
-      "bisect_ppx/lib/js/src/runtime/js/jest.bs.js"
+      "<rootDir>/_build/default/node_modules/bisect_ppx/src/runtime/js/jest.bs.js"
     ]
   }
 }
