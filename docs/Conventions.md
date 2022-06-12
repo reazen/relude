@@ -4,7 +4,7 @@ This page will attempt to outline common usage patterns for using Relude.  You w
 
 ## Naming conventions
 
-`Relude` uses camel and title case naming conventions for pretty much everything.  This may not be in-line with much of the OCaml ecosystem, but it's the style that we're more familiar with, and it has the side benefit of being more familiar to JavaScript developers, which is one of the core target audiences of ReasonML/BuckleScript.
+`Relude` uses camel and title case naming conventions for pretty much everything.  This may not be in-line with much of the OCaml ecosystem, but it's the style that we're more familiar with, and it has the side benefit of being more familiar to JavaScript developers, which is one of the core target audiences of ReasonML.
 
 ## Utilities
 
@@ -12,7 +12,7 @@ Utilies for common modules will be found in the corresponding top-level module o
 
 ## "Pipe" operator (|>)
 
-Unlike [Belt](https://bucklescript.github.io/bucklescript/api/Belt.html), Relude prefers **significant-data-last** (i.e. **pipe last** or **thread last**) semantics.  This means you'll tend to use the `|>` operator with Relude functions, instead of `->`.  This was a conscious decision in favor of more natural (partial) application and composition of functions without the need for compiler magic, and is also more in line with the conventions of other FP languages.  If you would like to learn more about the tradeoffs between `|>` and `->`, here is a great article on the topic by [Javier Chávarri](https://www.javierchavarri.com/): [Data-first and data-last: a comparison](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).
+Unlike [Belt](https://rescript-lang.org/docs/manual/latest/api/belt), Relude prefers **significant-data-last** (i.e. **pipe last** or **thread last**) semantics.  This means you'll tend to use the `|>` operator with Relude functions, instead of `->`.  This was a conscious decision in favor of more natural (partial) application and composition of functions without the need for compiler magic, and is also more in line with the conventions of other FP languages.  If you would like to learn more about the tradeoffs between `|>` and `->`, here is a great article on the topic by [Javier Chávarri](https://www.javierchavarri.com/): [Data-first and data-last: a comparison](https://www.javierchavarri.com/data-first-and-data-last-a-comparison/).
 
 Note that the `|>` operator does not actually thread the value into the last argument of the function - it simply passes the value into the next unfilled argument of the given function.  This allows you to partially apply all but one of the arguments of a function, and then feed the "significant data" into what is typically the last argument of the function.  However, you can use `|>` to fill any argument of any function - it doesn't need to be the last argument; although, the most common usecase is to fill the last.
 

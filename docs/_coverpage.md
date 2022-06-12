@@ -1,6 +1,6 @@
 # Relude <small></small>
 
-> A functional programming prelude for ReasonML and Bucklescript OCaml
+> A functional programming prelude for ReasonML and OCaml
 
 - Core modules
 - Utility types and functions

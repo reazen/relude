@@ -89,8 +89,8 @@ cause all the effects to be re-run, and a new value (or error) will be produced.
 
 A [Promise] can fail (be rejected) with any type of value, and in JavaScript,
 the only way to tell what type of error occurred is to inspect the error value
-and/or its type at runtime. For this reason, the BuckleScript bindings choose
-to represent a [Promise] error as an {{: https://bucklescript.github.io/bucklescript/api/Js.Promise.html#TYPEerror} opaque type}.
+and/or its type at runtime. For this reason, the ReScript bindings choose to
+represent a [Promise] error as an {{: https://rescript-lang.org/docs/manual/latest/api/js/promise} opaque type}.
 Opaque types require runtime inspection or unsafe casting before they can be
 used.
 

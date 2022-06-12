@@ -92,9 +92,8 @@ let sqrt = sqrt;
 let top: float = max_float;
 
 /**
-[Float.bottom] is the minimum float value. Note that when using Bucklescript,
-this value is hard-coded and is not necessarily equal to [Number.MIN_VALUE] in
-JS.
+[Float.bottom] is the minimum float value. Note that when using Melange, this
+value is hard-coded and is not necessarily equal to [Number.MIN_VALUE] in JS.
 */
 let bottom: float = min_float;
 

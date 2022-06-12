@@ -2,7 +2,7 @@
   {|
 [Relude.Js] provides modules to interop with JS platform features. If you open
 [Relude.Globals], this module will be aliased as [RJs] to avoid conflicting with
-the [Js] module provided by Bucklescript.
+the [Js] module provided by Melange.
 |}
 ];
 

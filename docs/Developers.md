@@ -41,6 +41,21 @@ Specifically:
 
 ## Development scripts
 
+In order to build `Relude`, after cloning, run:
+
+```sh
+# Install Relude's dependencies (bs-bastet, bisect_ppx)
+> yarn
+
+# esy, to grab OCaml, Reason syntax (which depends on `npm install -g esy`)
+> esy
+
+# the actual build/watch of Relude itself
+> yarn cleanbuild
+```
+
+From there, use the following scripts to build/clean/test the project:
+
 ```sh
 # Clean
 
