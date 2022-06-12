@@ -34,6 +34,9 @@ jobs:
     - name: npm install
       run: npm install
 
+    - name: Initial esy build
+      run: esy
+
     - name: npm run cleancoverage
       run: npm run cleancoverage
 
