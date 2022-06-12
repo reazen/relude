@@ -8,7 +8,6 @@ npm-debug.log
 # OCaml/Melange/ReasonML
 .merlin
 .bsb.lock
-dune
 dune.mel
 .melange.eobjs
 /lib/bs/
