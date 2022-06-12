@@ -1,8 +1,8 @@
 # Overview
 
-`Relude` is a standard library for ReasonML/BuckleScript inspired by the preludes of Haskell, Purescript, Elm, Scala cats/scalaz, and others.  `Relude` was created from a desire to combine the powerful typeclass-style abstractions found in these ecosystems with the practical utilities we deemed necessary and desirable for everyday application-level work.
+`Relude` is a standard library for ReasonML inspired by the preludes of Haskell, Purescript, Elm, Scala cats/scalaz, and others.  `Relude` was created from a desire to combine the powerful typeclass-style abstractions found in these ecosystems with the practical utilities we deemed necessary and desirable for everyday application-level work.
 
-`Relude` currently works with BuckleScript/ReasonML, so the main focus has been on JavaScript-based platforms, like the browser or Node.js.  We would like to one day support native OCaml/ReasonML native, but we are not there yet.
+`Relude` currently works with ReasonML, so the main focus has been on JavaScript-based platforms, like the browser or Node.js.  We would like to one day support native OCaml/ReasonML native, but we are not there yet.
 
 The core typeclass interfaces used in `Relude` come from the library [bs-bastet](https://github.com/Risto-Stevcev/bs-bastet).
 

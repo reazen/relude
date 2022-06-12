@@ -15,7 +15,7 @@ We use peer dependencies in all `Relude` libraries, so that the top-level host l
 
 ## What's the difference between `Relude.Result` and `Belt.Result`, `Relude.Option` and OCaml stdlib `option`, `Relude.Js.Json` and `Js.Json`, etc.?
 
-`Relude` has many modules that augment existing types from `Belt` or the OCaml standard library, which are both available by default within BuckleScript/ReasonML projects.  Sometimes we alias the types from `Belt` or the OCaml stdlib, and sometimes our corresponding modules simply add additional functions for these common types.
+`Relude` has many modules that augment existing types from `Belt` or the OCaml standard library, which are both available by default within Melange/ReasonML projects.  Sometimes we alias the types from `Belt` or the OCaml stdlib, and sometimes our corresponding modules simply add additional functions for these common types.
 
 `Relude` also has many of its own types, which have their own modules, like `Relude.AsyncResult`, `Relude.ReaderT`, etc.
 
@@ -27,7 +27,7 @@ If you are trying to compile and get an error like:
 This has type array(t) but somewhere wanted BsBastet.Array.Foldable.t(string)`
 ```
 
-you likely need to add `bs-bastet` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because BuckleScript is not able to find the types defined in the `BsBastet` module, so it can't determine that `array(t)` is the same type as `BsBastet.Array.Foldable.t(string)`.
+you likely need to add `bs-bastet` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because Melange is not able to find the types defined in the `BsBastet` module, so it can't determine that `array(t)` is the same type as `BsBastet.Array.Foldable.t(string)`.
 
 Because we are not using .rei interface files, we are not able to abstract these types away for functions that get included into our implementation modules.  (See .rei topic below).
 

@@ -24,7 +24,7 @@
   },
   "keywords": [
     "ReasonML",
-    "BuckleScript",
+    "Melange",
     "Utility",
     "Prelude",
     "Standard Library"
@@ -37,12 +37,10 @@
   "devDependencies": {
     "@glennsl/bs-jest": "^0.7.0",
     "bs-bastet": "^2.0.0",
-    "bs-platform": "^8.2.2",
     "docsify-cli": "~4.4.0"
   },
   "peerDependencies": {
-    "bs-bastet": "^2.0.0",
-    "bs-platform": "^8.2.2"
+    "bs-bastet": "^2.0.0"
   },
   "dependencies": {
     "bisect_ppx": "^2.7.1"

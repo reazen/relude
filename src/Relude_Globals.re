@@ -15,8 +15,8 @@ with the corresponding Relude module that we want to explicitly shadow other
 similarly-named modules.
 
 For some other modules, like [Js] we are prefixing our version with [R] because
-the Relude [Js] module is not a replacement for the BuckleScript [Js] module, it
-is more an extension to it.
+the Relude [Js] module is not a replacement for the ReScript [Js] module, it is
+more an extension to it.
 
 NB: When making changes to this module, keep in mind that you will likely be
 affecting other people who have globally opened this module, so only expose

@@ -4,10 +4,10 @@
 [![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)
 [![Coveralls](https://img.shields.io/coveralls/github/reazen/relude.svg)](https://coveralls.io/github/reazen/relude)
 
-Relude is a **ReasonML**/**BuckleScript**/**OCaml** standard library
+Relude is a **ReasonML**/**OCaml** standard library
 replacement ("prelude") written in [ReasonML](https://reasonml.github.io/),
 targeting compilation to **JavaScript** via the
-[BuckleScript](https://bucklescript.github.io/) compiler.
+[Melange](https://github.com/melange-re/melange) compiler.
 
 Relude aims to provide a robust collection of modules, types, and functions
 built on top of reusable typeclass-style abstractions, with a focus on
@@ -37,20 +37,6 @@ advice (if we feel qualified). The beauty of using these common abstractions
 is that we don't have to take the full responsibility for explaining
 everything from scratch, as there are countless other resources and FP
 experts out there to help too.
-
-The documentation is currently incomplete - we're hoping a simple, modern,
-and BuckleScript-friendly tool will soon surface to aid with the generation
-of API docs from source code. We are currently working on more documentation
-on how to use these things in more of a blog/tutorial style ([Andy's blog is
-here (and is very new)](https://andywhite.xyz/posts), and Michael's blog is
-coming soon). In the meantime, we highly suggest just perusing the [source
-code](https://github.com/reazen/relude/tree/master/src) and the
-[tests](https://github.com/reazen/relude/tree/master/__tests__), as we feel
-they are intuitively organized and commented. The more abstract concepts
-are lacking in explanation, but there should be lots of examples in
-the code and tests, and external resources are also valuable in learning
-these concepts, as we tried to keep the implementations inline with the rest
-of the typed FP community.
 
 The API is comprehensive in terms of the tools you likely need for day-to-day
 application development - we have utilities for all the core data types
@@ -82,7 +68,7 @@ The [Reazen](https://github.com/reazen) GitHub organization, and some individual
 
 |GitHub|Build|Package|Description|
 |-------|-----|-------|-----------|
-|[relude](https://github.com/reazen/relude)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude/CI/master)](https://github.com/reazen/relude/actions)|[![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)|ReasonML/Bucklescript prelude/standard library|
+|[relude](https://github.com/reazen/relude)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude/CI/master)](https://github.com/reazen/relude/actions)|[![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)|ReasonML prelude/standard library|
 |[relude-csv](https://github.com/reazen/relude-csv)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude-csv/CI/master)](https://github.com/reazen/relude-csv/actions)|[![npm](https://img.shields.io/npm/v/relude-csv.svg)](https://www.npmjs.com/package/relude-csv)|Pure functional CSV parser library|
 |[relude-eon](https://github.com/reazen/relude-eon)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude-eon/CI/master)](https://github.com/reazen/relude-eon/actions)|[![npm](https://img.shields.io/npm/v/relude-eon.svg)](https://www.npmjs.com/package/relude-eon)|a native Reason/OCaml date/time library|
 |[relude-fetch](https://github.com/reazen/relude-fetch)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude-fetch/CI/master)](https://github.com/reazen/relude-fetch/actions)|[![npm](https://img.shields.io/npm/v/relude-fetch.svg)](https://www.npmjs.com/package/relude-fetch)|an interop and utility library for the [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) API|

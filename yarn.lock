@@ -933,11 +933,6 @@ bs-bastet@^2.0.0:
     bisect_ppx "^2.1.0"
     bs-stdlib-shims "^0.1.0"
 
-bs-platform@^8.2.2:
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-8.4.2.tgz#778dabd1dfb3bc95e0086c58dabae74e4ebdee8a"
-  integrity sha512-9q7S4/LLV/a68CweN382NJdCCr/lOSsJR3oQYnmPK98ChfO/AdiA3lYQkQTp6T+U0I5Z5RypUAUprNstwDtMDQ==
-
 bs-stdlib-shims@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/bs-stdlib-shims/-/bs-stdlib-shims-0.1.0.tgz#f64166392652a07c37b9be462beebb6c0c66a74e"
