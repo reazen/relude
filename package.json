@@ -9,9 +9,9 @@
     "url": "https://github.com/reazen/relude.git"
   },
   "scripts": {
-    "clean": "bsb -clean-world",
-    "build": "bsb -make-world",
-    "watch": "bsb -make-world -w",
+    "clean": "esy mel clean",
+    "build": "esy mel build",
+    "watch": "esy mel build -w",
     "test": "jest",
     "coverage": "npm run test",
     "docs": "docsify serve ./docs",

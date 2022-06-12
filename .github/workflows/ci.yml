@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [16.x]
@@ -13,24 +13,27 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
 
     # TODO: not sure if this actually does anything useful
-    - name: Cache ~/.npm 
+    - name: Cache ~/.npm
       uses: actions/cache@v1
       with:
         path: ~/.npm
         key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-npm-
-      
+
+    - name: Install esy
+      run: npm install -g esy
+
     - name: npm install
       run: npm install
-      
+
     - name: npm run cleancoverage
       run: npm run cleancoverage
 
