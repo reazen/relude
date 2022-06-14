@@ -1,0 +1,6 @@
+{
+  "ocaml.sandbox": {
+    "kind": "custom",
+    "template": "esy $prog $args --fallback-read-dot-merlin"
+  }
+}
