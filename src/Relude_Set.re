@@ -9,6 +9,17 @@ let empty:
   Belt.Set.make(~id=_);
 
 /**
+[Set.singleton] constructs a new set from a single value
+*/
+let singleton:
+  (
+    (module Belt.Id.Comparable with type t = 'value and type identity = 'id),
+    'value
+  ) =>
+  Belt.Set.t('value, 'id) =
+  (id, value) => Belt.Set.make(~id) |> Belt.Set.add(_, value);
+
+/**
 [Set.fromArray] converts an array of values into a new set of those values,
 ordered by the comparator function from the provided [Comparable] module.
 */
@@ -298,6 +309,7 @@ module type SET = {
   type value;
   type t = Belt.Set.t(value, Comparable.identity);
   let empty: t;
+  let singleton: value => t;
   let fromArray: array(value) => t;
   let fromList: list(value) => t;
   let isEmpty: t => bool;
@@ -348,6 +360,7 @@ module WithOrd =
   type nonrec t = t(value, Comparable.identity);
 
   let empty: t = empty((module Comparable));
+  let singleton: value => t = singleton((module Comparable));
   let fromArray: array(value) => t = fromArray((module Comparable));
   let fromList: list(value) => t = fromList((module Comparable));
   let isEmpty: t => bool = isEmpty;
