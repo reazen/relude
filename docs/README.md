@@ -1,6 +1,6 @@
 # Relude
 
-[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude/CI/master)](https://github.com/reazen/relude/actions)
+[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude/CI/main)](https://github.com/reazen/relude/actions)
 [![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)
 [![Coveralls](https://img.shields.io/coveralls/github/reazen/relude.svg)](https://coveralls.io/github/reazen/relude)
 
@@ -68,7 +68,7 @@ The [Reazen](https://github.com/reazen) GitHub organization, and some individual
 
 |GitHub|Build|Package|Description|
 |-------|-----|-------|-----------|
-|[relude](https://github.com/reazen/relude)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude/CI/master)](https://github.com/reazen/relude/actions)|[![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)|ReasonML prelude/standard library|
+|[relude](https://github.com/reazen/relude)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude/CI/main)](https://github.com/reazen/relude/actions)|[![npm](https://img.shields.io/npm/v/relude.svg)](https://www.npmjs.com/package/relude)|ReasonML prelude/standard library|
 |[relude-csv](https://github.com/reazen/relude-csv)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude-csv/CI/master)](https://github.com/reazen/relude-csv/actions)|[![npm](https://img.shields.io/npm/v/relude-csv.svg)](https://www.npmjs.com/package/relude-csv)|Pure functional CSV parser library|
 |[relude-eon](https://github.com/reazen/relude-eon)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude-eon/CI/master)](https://github.com/reazen/relude-eon/actions)|[![npm](https://img.shields.io/npm/v/relude-eon.svg)](https://www.npmjs.com/package/relude-eon)|a native Reason/OCaml date/time library|
 |[relude-fetch](https://github.com/reazen/relude-fetch)|[![GitHub CI](https://img.shields.io/github/workflow/status/reazen/relude-fetch/CI/master)](https://github.com/reazen/relude-fetch/actions)|[![npm](https://img.shields.io/npm/v/relude-fetch.svg)](https://www.npmjs.com/package/relude-fetch)|an interop and utility library for the [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) API|
