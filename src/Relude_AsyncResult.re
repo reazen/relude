@@ -571,6 +571,36 @@ let toAsyncData: 'a. t('a, 'a) => Relude_AsyncData.t('a) =
   | Complete(Ok(a)) => Complete(a);
 
 /**
+[AsyncResult.alt] compares two AsyncResult values and returns the "most
+successful" of the two. In practice, this means that [Complete] is preferred
+over all else, [Reloading] is preferred over [Loading], and [Loading] is
+preferred over [Init]. The exception to this rule is the case where one of the
+provided AsyncResult values has an inner [Result] in an error state, in which
+case the other value is always preferred.
+*/
+let alt: 'a 'e. (t('a, 'e), t('a, 'e)) => t('a, 'e) =
+  (fa, fb) =>
+    switch (fa, fb) {
+    // when both are errors, prefer "complete" over "reloading"
+    | (Reloading(Error(_)), Complete(Error(_)) as b) => b
+    | (Complete(Error(_)) as a, Reloading(Error(_))) => a
+
+    // if both are the same error type, prefer the first
+    | (Reloading(Error(_)) as a, Reloading(Error(_))) => a
+    | (Complete(Error(_)) as a, Complete(Error(_))) => a
+
+    // prefer any non-error over an error
+    | (Reloading(Error(_)), b)
+    | (Complete(Error(_)), b) => b
+
+    | (a, Reloading(Error(_)))
+    | (a, Complete(Error(_))) => a
+
+    // otherwise, no errors, fall back to AsyncData.alt
+    | (a, b) => Relude_AsyncData.alt(a, b)
+    };
+
+/**
 Indicates if two AsyncResult values are in the same state, and have the same contained value.
 */
 let eqBy:
@@ -614,8 +644,15 @@ module WithError = (E: TYPE) => {
   let bind = Monad.flat_map;
   include Relude_Extensions_Monad.MonadExtensions(Monad);
 
+  module Alt: ALT with type t('a) = t('a, E.t) = {
+    include Functor;
+    let alt = alt;
+  };
+  include Relude_Extensions_Alt.AltExtensions(Alt);
+
   module Infix = {
     include Relude_Extensions_Functor.FunctorInfix(Functor);
+    include Relude_Extensions_Alt.AltInfix(Alt);
     include Relude_Extensions_Apply.ApplyInfix(Apply);
     include Relude_Extensions_Monad.MonadInfix(Monad);
   };
