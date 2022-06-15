@@ -1090,6 +1090,98 @@ describe("AsyncResult", () => {
     |> toEqual(13)
   );
 
+  test("alt (Init, Init)", () =>
+    AsyncResult.(alt(Init, Init) |> expect |> toEqual(init))
+  );
+
+  test("alt (Init, Loading)", () =>
+    AsyncResult.(alt(Init, Loading) |> expect |> toEqual(loading))
+  );
+
+  test("alt (Init, Reloading(Error))", () =>
+    AsyncResult.(alt(Init, Reloading(Error(0))) |> expect |> toEqual(init))
+  );
+
+  test("alt (Init, Reloading(Ok))", () =>
+    AsyncResult.(
+      alt(Init, Reloading(Ok(0))) |> expect |> toEqual(reloadingOk(0))
+    )
+  );
+
+  test("alt (Init, Complete(Error))", () =>
+    AsyncResult.(alt(Init, Complete(Error(0))) |> expect |> toEqual(init))
+  );
+
+  test("alt (Init, Complete(Ok))", () =>
+    AsyncResult.(
+      alt(Init, Complete(Ok(0))) |> expect |> toEqual(completeOk(0))
+    )
+  );
+
+  test("alt (Loading, Init)", () =>
+    AsyncResult.(alt(Loading, Init) |> expect |> toEqual(loading))
+  );
+
+  test("alt (Reloading(Error), Init)", () =>
+    AsyncResult.(alt(Reloading(Error(1)), Init) |> expect |> toEqual(init))
+  );
+
+  test("alt (Reloading(Error), Loading)", () =>
+    AsyncResult.(
+      alt(Reloading(Error(1)), Loading) |> expect |> toEqual(loading)
+    )
+  );
+
+  test("alt (Reloading(Error), Reloading(Error))", () =>
+    AsyncResult.(
+      alt(Reloading(Error(1)), Reloading(Error(2)))
+      |> expect
+      |> toEqual(reloadingError(1))
+    )
+  );
+
+  test("alt (Reloading(Error), Complete(Error))", () =>
+    AsyncResult.(
+      alt(Reloading(Error(1)), Complete(Error(2)))
+      |> expect
+      |> toEqual(completeError(2))
+    )
+  );
+
+  test("alt (Complete(Error), Init)", () =>
+    AsyncResult.(alt(Complete(Error(1)), Init) |> expect |> toEqual(init))
+  );
+
+  test("alt (Complete(Error), Loading)", () =>
+    AsyncResult.(
+      alt(Complete(Error(1)), Loading) |> expect |> toEqual(loading)
+    )
+  );
+
+  test("alt (Complete(Error), Reloading(Error))", () =>
+    AsyncResult.(
+      alt(Complete(Error(1)), Reloading(Error(2)))
+      |> expect
+      |> toEqual(completeError(1))
+    )
+  );
+
+  test("alt (Complete(Error), Reloading(Ok))", () =>
+    AsyncResult.(
+      alt(Complete(Error(1)), Reloading(Ok(2)))
+      |> expect
+      |> toEqual(reloadingOk(2))
+    )
+  );
+
+  test("alt (Complete(Error), Complete(Error))", () =>
+    AsyncResult.(
+      alt(Complete(Error(1)), Complete(Error(2)))
+      |> expect
+      |> toEqual(completeError(1))
+    )
+  );
+
   test("fromAsyncData Init", () =>
     AsyncData.init
     |> AsyncResult.fromAsyncData
