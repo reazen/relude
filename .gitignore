@@ -30,3 +30,5 @@ _coverage
 /docs/api
 /docs/odoc.css
 /docs/highlight.pack.js
+
+/esy.lock
