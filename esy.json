@@ -5,6 +5,7 @@
     "@opam/reason": ">3.8.0",
     "@opam/core": "*",
     "@opam/bastet": "^2.0.0",
+    "bisect_ppx": "^2.7.1",
     "melange": "melange-re/melange"
   },
   "devDependencies": {
