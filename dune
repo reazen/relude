@@ -1,4 +1,4 @@
-(dirs :standard __tests__)
+(dirs native)
 ;;;;{BSB GENERATED: NO EDIT
 (include dune.mel)
 ;;;;BSB GENERATED: NO EDIT}
