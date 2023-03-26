@@ -31,7 +31,7 @@ jobs:
       - name: Use OCaml
         uses: fangyi-zhou/actions-ocaml@v1
         with:
-          ocaml_version: 4.06.1
+          ocaml_version: 4.14.0
 
       - name: Install Odoc
         run: opam install odoc --yes
