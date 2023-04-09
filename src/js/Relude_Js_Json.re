@@ -263,7 +263,7 @@ let toDictOfJsonOrEmpty: json => dict = toDictOfJsonOrElse(Js.Dict.empty());
 module Error = {
   type t = string;
 
-  module Type: BsBastet.Interface.TYPE with type t = t = {
+  module Type: Bastet.Interface.TYPE with type t = t = {
     type nonrec t = t;
   };
 };

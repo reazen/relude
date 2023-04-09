@@ -95,10 +95,10 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    */
   let inverseMapEq:
     type a.
-      (~eqA: (module BsBastet.Interface.EQ with type t = a), E.t => a, a) =>
+      (~eqA: (module Bastet.Interface.EQ with type t = a), E.t => a, a) =>
       option(E.t) =
     (~eqA, eToA) => {
-      let (module EqA) = (eqA: (module BsBastet.Interface.EQ with type t = a));
+      let (module EqA) = (eqA: (module Bastet.Interface.EQ with type t = a));
       inverseMapEqBy(EqA.eq, eToA);
     };
 
@@ -116,7 +116,7 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    Running time for returned lookup function: O(log(n))
    */
   let inverseMapOrdBy:
-      type a. ((a, a) => BsBastet.Interface.ordering, E.t => a, a) => option(E.t) =
+      type a. ((a, a) => Bastet.Interface.ordering, E.t => a, a) => option(E.t) =
     (compareA, eToA) => {
       // Create the Map module used for doing lookups of a => E.t
       // This is necessary because of how OCaml maps work
@@ -157,11 +157,11 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    */
   let inverseMapOrd:
     type a.
-      (~ordA: (module BsBastet.Interface.ORD with type t = a), E.t => a, a) =>
+      (~ordA: (module Bastet.Interface.ORD with type t = a), E.t => a, a) =>
       option(E.t) =
     (~ordA, eToA) => {
       let (module OrdA) = (
-        ordA: (module BsBastet.Interface.ORD with type t = a)
+        ordA: (module Bastet.Interface.ORD with type t = a)
       );
       inverseMapOrdBy(OrdA.compare, eToA);
     };
@@ -178,6 +178,6 @@ module BoundedEnumExtensions = (E: Relude_Interface.BOUNDED_ENUM) => {
    */
   let inverseMapString: (E.t => string, string) => option(E.t) =
     (eToString: E.t => string) => {
-      inverseMapOrdBy(BsBastet.String.Ord.compare, eToString)
+      inverseMapOrdBy(Bastet.String.Ord.compare, eToString)
     };
 };

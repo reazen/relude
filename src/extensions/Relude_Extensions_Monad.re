@@ -6,8 +6,8 @@ free" when you have a [Monad] typeclass instance.
 /**
 Extensions for any MONAD
 */
-module MonadExtensions = (M: BsBastet.Interface.MONAD) => {
-  module BsMonadExtensions = BsBastet.Functions.Monad(M);
+module MonadExtensions = (M: Bastet.Interface.MONAD) => {
+  module BsMonadExtensions = Bastet.Functions.Monad(M);
 
   /**
   Flipped version of [bind] which has the function on the left and the monad on
@@ -63,7 +63,7 @@ module MonadExtensions = (M: BsBastet.Interface.MONAD) => {
 /**
 Infix operator extensions for MONAD
 */
-module MonadInfix = (M: BsBastet.Interface.MONAD) => {
+module MonadInfix = (M: Bastet.Interface.MONAD) => {
   module MonadExtensions = MonadExtensions(M);
 
   /**

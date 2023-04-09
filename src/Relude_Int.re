@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 [@ocaml.text
   {|
@@ -122,7 +122,7 @@ let rec rangeAsArray: (int, int) => array(int) =
 /**
 [eq(a, b)] returns [true] if the arguments are equal, [false] otherwise.
 */
-let eq: (int, int) => bool = BsBastet.Int.Eq.eq;
+let eq: (int, int) => bool = Bastet.Int.Eq.eq;
 
 module Eq: EQ with type t = int = {
   type t = int;
@@ -141,7 +141,7 @@ two ints are the same.
   Int.compare(5, 3) == `greater_than;
 ]}
 */
-let compare: (int, int) => ordering = BsBastet.Int.Ord.compare;
+let compare: (int, int) => ordering = Bastet.Int.Ord.compare;
 
 module Ord: ORD with type t = int = {
   include Eq;
@@ -254,23 +254,23 @@ let fromString: string => option(int) =
     };
 
 module Additive = {
-  include BsBastet.Int.Additive;
+  include Bastet.Int.Additive;
 };
 
 module Multiplicative = {
-  include BsBastet.Int.Multiplicative;
+  include Bastet.Int.Multiplicative;
 };
 
 module Subtractive = {
-  include BsBastet.Int.Subtractive;
+  include Bastet.Int.Subtractive;
 };
 
 module Divisive = {
-  include BsBastet.Int.Divisive;
+  include Bastet.Int.Divisive;
 };
 
 module Infix = {
-  include BsBastet.Int.Infix;
+  include Bastet.Int.Infix;
   include Relude_Extensions_Eq.EqInfix(Eq);
   include Relude_Extensions_Ord.OrdInfix(Ord);
 };

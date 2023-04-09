@@ -1,1 +1,1 @@
-module BoundedExtensions = (B: BsBastet.Interface.BOUNDED) => {};
+module BoundedExtensions = (B: Bastet.Interface.BOUNDED) => {};

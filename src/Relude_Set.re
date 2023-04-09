@@ -347,7 +347,7 @@ module type SET = {
 };
 
 module WithOrd =
-       (M: BsBastet.Interface.ORD)
+       (M: Bastet.Interface.ORD)
        : (SET with type value = M.t and type Comparable.t = M.t) => {
   type value = M.t;
 

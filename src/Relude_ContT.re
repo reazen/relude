@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Creates a ContT (continuation) Monad module with the given Monad module.

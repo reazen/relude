@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Creates a Zipper using the given SEQUENCE as the backing implementation.
@@ -208,7 +208,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
 
     module Fold_Map = (M: MONOID) => {
       module D =
-        BsBastet.Default.Fold_Map(
+        Bastet.Default.Fold_Map(
           M,
           {
             type nonrec t('a) = t('a);
@@ -219,7 +219,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     };
     module Fold_Map_Any = (M: MONOID_ANY) => {
       module D =
-        BsBastet.Default.Fold_Map_Any(
+        Bastet.Default.Fold_Map_Any(
           M,
           {
             type nonrec t('a) = t('a);
@@ -230,7 +230,7 @@ module WithSequence = (S: Relude_Interface.SEQUENCE) => {
     };
     module Fold_Map_Plus = (P: PLUS) => {
       module D =
-        BsBastet.Default.Fold_Map_Plus(
+        Bastet.Default.Fold_Map_Plus(
           P,
           {
             type nonrec t('a) = t('a);

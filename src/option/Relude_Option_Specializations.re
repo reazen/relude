@@ -1,9 +1,9 @@
-module OptionEqExtensions = (E: BsBastet.Interface.EQ) => {
+module OptionEqExtensions = (E: Bastet.Interface.EQ) => {
   let eq: (option(E.t), option(E.t)) => bool =
     Relude_Option_Instances.eqBy(E.eq);
 };
 
-module OptionOrdExtensions = (O: BsBastet.Interface.ORD) => {
+module OptionOrdExtensions = (O: Bastet.Interface.ORD) => {
   module OptionOrd = Relude_Option_Instances.Ord(O);
 
   let compare = OptionOrd.compare;
@@ -32,7 +32,7 @@ module IO = {
       Relude_IO.WithError({
         type t = e;
       });
-    module TraverseIO = BsBastet.Option.Traversable(IoE.Applicative);
+    module TraverseIO = Bastet.Option.Traversable(IoE.Applicative);
     TraverseIO.traverse(f, opt);
   };
 
@@ -43,7 +43,7 @@ module IO = {
       Relude_IO.WithError({
         type t = e;
       });
-    module TraverseIO = BsBastet.Option.Traversable(IoE.Applicative);
+    module TraverseIO = Bastet.Option.Traversable(IoE.Applicative);
     TraverseIO.sequence(opt);
   };
 };

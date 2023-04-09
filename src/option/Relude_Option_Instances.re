@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 open Relude_Function.Infix;
 
 let compose:
@@ -53,7 +53,7 @@ include Relude_Extensions_Functor.FunctorExtensions(Functor);
   apply(None, None) == None;
 ]}
 */
-let apply: 'a 'b. (option('a => 'b), option('a)) => option('b) = BsBastet.Option.Apply.apply;
+let apply: 'a 'b. (option('a => 'b), option('a)) => option('b) = Bastet.Option.Apply.apply;
 
 module Apply: APPLY with type t('a) = option('a) = {
   include Functor;
@@ -153,7 +153,7 @@ If [opt] is [None], [foldLeft()] returns [accumulator].
 ]}
 */
 let foldLeft: 'a 'b. (('b, 'a) => 'b, 'b, option('a)) => 'b =
-  (fn, default) => BsBastet.Option.Foldable.fold_left(fn, default);
+  (fn, default) => Bastet.Option.Foldable.fold_left(fn, default);
 
 /**
 [foldRight(f, init, opt)] takes as its first argument a function [f]
@@ -172,9 +172,9 @@ If [opt] is [None], [foldLeft()] returns [accumulator].
 ]}
 */
 let foldRight: 'a 'b. (('a, 'b) => 'b, 'b, option('a)) => 'b =
-  (fn, default) => BsBastet.Option.Foldable.fold_right(fn, default);
+  (fn, default) => Bastet.Option.Foldable.fold_right(fn, default);
 
-module Foldable = BsBastet.Option.Foldable;
+module Foldable = Bastet.Option.Foldable;
 include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
 /**
@@ -220,16 +220,16 @@ module Monoid_Any = {
   let empty = None;
 };
 
-module Alt = BsBastet.Option.Alt;
+module Alt = Bastet.Option.Alt;
 include Relude_Extensions_Alt.AltExtensions(Alt);
 
-module Plus = BsBastet.Option.Plus;
+module Plus = Bastet.Option.Plus;
 include Relude_Extensions_Plus.PlusExtensions(Plus);
 
-module Alternative = BsBastet.Option.Alternative;
+module Alternative = Bastet.Option.Alternative;
 include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
 
-module Traversable: BsBastet.Option.TRAVERSABLE_F = BsBastet.Option.Traversable;
+module Traversable: Bastet.Option.TRAVERSABLE_F = Bastet.Option.Traversable;
 
 /**
 In [eqBy(f, opt1, opt2)], [f] is a function that compares two arguments
@@ -288,17 +288,17 @@ let eq =
       fa2: option(a),
     )
     : bool => {
-  module Eq = BsBastet.Option.Eq((val showA));
+  module Eq = Bastet.Option.Eq((val showA));
   Eq.eq(fa1, fa2);
 };
 
-module Eq: BsBastet.Option.EQ_F =
+module Eq: Bastet.Option.EQ_F =
   (EqA: EQ) => {
     type t = option(EqA.t);
     let eq = (xs: t, ys: t) => eqBy(EqA.eq, xs, ys);
   };
 
-module Ord: BsBastet.Option.ORD_F = BsBastet.Option.Ord;
+module Ord: Bastet.Option.ORD_F = Bastet.Option.Ord;
 
 /**
 Converts the option to a string using the given show function
@@ -314,21 +314,21 @@ Converts the option to a string using the given SHOW module
 */
 let show =
     (type a, showA: (module SHOW with type t = a), fa: option(a)): string => {
-  module Show = BsBastet.Option.Show((val showA));
+  module Show = Bastet.Option.Show((val showA));
   Show.show(fa);
 };
 
-module Show = BsBastet.Option.Show;
+module Show = Bastet.Option.Show;
 
 module WithSemigroup = (S: SEMIGROUP) => {
-  module Semigroup = BsBastet.Option.Semigroup(S);
+  module Semigroup = Bastet.Option.Semigroup(S);
   include Relude_Extensions_Semigroup.SemigroupExtensions(Semigroup);
 
-  module Monoid = BsBastet.Option.Monoid(S);
+  module Monoid = Bastet.Option.Monoid(S);
   include Relude_Extensions_Monoid.MonoidExtensions(Monoid);
 };
 
 module WithApplicative = (A: APPLICATIVE) => {
-  module Traversable = BsBastet.Option.Traversable(A);
+  module Traversable = Bastet.Option.Traversable(A);
   include Relude_Extensions_Traversable.TraversableExtensions(Traversable);
 };

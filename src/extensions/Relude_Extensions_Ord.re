@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 [Extensions.Ord] is a module functor that accepts any [ORD]-compatible module

@@ -1,12 +1,7 @@
-; (melange.emit
-;  (target output)
-;  (alias relude)
-;  (libraries
-;   melange
-;   bsBastet)
-;  (module_systems es6))
+(include_subdirs unqualified)
 
 (library
  (name relude)
  (public_name relude)
- (modes :standard melange))
+ (libraries bastet)
+ (modes melange))

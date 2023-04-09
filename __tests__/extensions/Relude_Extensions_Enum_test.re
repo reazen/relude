@@ -48,21 +48,21 @@ module Month = {
     | 12 => Some(Dec)
     | _ => None;
 
-  module Eq: BsBastet.Interface.EQ with type t = t =
+  module Eq: Bastet.Interface.EQ with type t = t =
     Int.EqBy({
       type a = t;
       type b = int;
       let f = toInt1Based;
     });
 
-  module Ord: BsBastet.Interface.ORD with type t = t =
+  module Ord: Bastet.Interface.ORD with type t = t =
     Int.OrdBy({
       type a = t;
       type b = int;
       let f = toInt1Based;
     });
 
-  module Bounded: BsBastet.Interface.BOUNDED with type t = t = {
+  module Bounded: Bastet.Interface.BOUNDED with type t = t = {
     include Ord;
     let bottom = Jan;
     let top = Dec;
@@ -85,7 +85,7 @@ module Month = {
     let fromEnum = toInt1Based;
   };
 
-  module Show: BsBastet.Interface.SHOW with type t = t = {
+  module Show: Bastet.Interface.SHOW with type t = t = {
     type nonrec t = t;
     let show: t => string =
       fun

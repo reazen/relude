@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 A non-empty multi-way (aka "rose") tree which contains a "top" value and

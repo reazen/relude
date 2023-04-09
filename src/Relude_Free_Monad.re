@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 module WithFunctor = (F: FUNCTOR) => {
   type t('a) =

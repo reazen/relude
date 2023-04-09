@@ -1,4 +1,4 @@
 /**
 Extensions for any PLUS
 */
-module PlusExtensions = (P: BsBastet.Interface.PLUS) => {};
+module PlusExtensions = (P: Bastet.Interface.PLUS) => {};

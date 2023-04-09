@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Concatenates two lists with the left-side first and the right-side last.
@@ -26,7 +26,7 @@ include Relude_Extensions_MonoidAny.MonoidAnyExtensions(MonoidAny);
 /**
 Maps a pure function over a list
 */
-let map = BsBastet.List.Functor.map;
+let map = Bastet.List.Functor.map;
 
 module Functor: FUNCTOR with type t('a) = list('a) = {
   type t('a) = list('a);
@@ -37,7 +37,7 @@ include Relude_Extensions_Functor.FunctorExtensions(Functor);
 /**
 Applies a list of functions to a list of values.
 */
-let apply = BsBastet.List.Apply.apply;
+let apply = Bastet.List.Apply.apply;
 
 module Apply: APPLY with type t('a) = list('a) = {
   include Functor;
@@ -48,7 +48,7 @@ include Relude_Extensions_Apply.ApplyExtensions(Apply);
 /**
 Lifts a single pure value into a list of one value.
 */
-let pure = BsBastet.List.Applicative.pure;
+let pure = Bastet.List.Applicative.pure;
 
 module Applicative: APPLICATIVE with type t('a) = list('a) = {
   include Apply;
@@ -59,7 +59,7 @@ include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 /**
 Maps a monadic function over a list of values and flattens the result.
 */
-let bind = BsBastet.List.Monad.flat_map;
+let bind = Bastet.List.Monad.flat_map;
 
 module Monad: MONAD with type t('a) = list('a) = {
   include Applicative;
@@ -70,7 +70,7 @@ include Relude_Extensions_Monad.MonadExtensions(Monad);
 /**
 alt for lists concatenates the lists.
 */
-let alt = BsBastet.List.Alt.alt;
+let alt = Bastet.List.Alt.alt;
 
 module Alt: ALT with type t('a) = list('a) = {
   include Functor;
@@ -95,15 +95,15 @@ include Relude_Extensions_Alternative.AlternativeExtensions(Alternative);
 /**
 Folds a list from left-to-right into a single value using an accumulator
 */
-let foldLeft = BsBastet.List.Foldable.fold_left;
+let foldLeft = Bastet.List.Foldable.fold_left;
 
 /**
 Folds a list from right-to-left into a single value using an accumulator
 */
-let foldRight = BsBastet.List.Foldable.fold_right;
+let foldRight = Bastet.List.Foldable.fold_right;
 
 module Foldable: FOLDABLE with type t('a) = list('a) = {
-  include BsBastet.List.Foldable;
+  include Bastet.List.Foldable;
   let fold_left = foldLeft;
   let fold_right = foldRight;
 };
@@ -112,15 +112,15 @@ include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 /**
 Create a list by recursively unfolding with a generator function and seed value
 */
-let unfold = BsBastet.List.Unfoldable.unfold;
+let unfold = Bastet.List.Unfoldable.unfold;
 
 module Unfoldable: UNFOLDABLE with type t('a) = list('a) = {
-  include BsBastet.List.Unfoldable;
+  include Bastet.List.Unfoldable;
   let unfold = unfold;
 };
 include Relude_Extensions_Unfoldable.UnfoldableExtensions(Unfoldable);
 
-module Traversable: BsBastet.List.TRAVERSABLE_F = BsBastet.List.Traversable;
+module Traversable: Bastet.List.TRAVERSABLE_F = Bastet.List.Traversable;
 
 /**
 Compares two lists for length and pair-wise equality using the given equality function
@@ -151,7 +151,7 @@ Converts a list to a string using the given show function
 */
 let showBy: ('a => string, list('a)) => string =
   (innerShow, xs) => {
-    let join = intercalate((module BsBastet.String.Monoid));
+    let join = intercalate((module Bastet.String.Monoid));
     "[" ++ join(", ", map(innerShow, xs)) ++ "]";
   };
 
