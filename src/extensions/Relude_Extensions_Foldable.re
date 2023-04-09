@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 [@ocaml.text
   {|
@@ -28,7 +28,7 @@ let optionAlt: (option('a), option('a)) => option('a) =
 Extensions for any FOLDABLE
 */
 module FoldableExtensions = (F: FOLDABLE) => {
-  module BsFoldableExtensions = BsBastet.Functions.Foldable(F);
+  module BsFoldableExtensions = Bastet.Functions.Foldable(F);
 
   /**
   Indicates if any item in the foldable satisfies the given predicate.

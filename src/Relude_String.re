@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 type t = string;
 
@@ -425,7 +425,7 @@ include Relude_Extensions_Eq.EqExtensions(Eq);
 /**
 Compares two strings
 */
-let compare = BsBastet.String.Ord.compare;
+let compare = Bastet.String.Ord.compare;
 
 module Ord: ORD with type t = string = {
   include Eq;

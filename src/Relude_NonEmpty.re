@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Creates a NonEmpty module with the given SEQUENCE module to handle the tail part.

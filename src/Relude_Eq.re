@@ -26,7 +26,7 @@ let by: 'a 'b. ('b => 'a, eq('a)) => eq('b) =
 let cmap = by;
 
 module Contravariant:
-  BsBastet.Interface.CONTRAVARIANT with type t('a) = eq('a) = {
+  Bastet.Interface.CONTRAVARIANT with type t('a) = eq('a) = {
   type t('a) = eq('a);
   let cmap = cmap;
 };

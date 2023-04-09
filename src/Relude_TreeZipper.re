@@ -585,7 +585,7 @@ let map: 'a 'b. ('a => 'b, t('a)) => t('b) =
     };
   };
 
-module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+module Functor: Bastet.Interface.FUNCTOR with type t('a) = t('a) = {
   type nonrec t('a) = t('a);
   let map = map;
 };

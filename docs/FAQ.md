@@ -19,15 +19,15 @@ We use peer dependencies in all `Relude` libraries, so that the top-level host l
 
 `Relude` also has many of its own types, which have their own modules, like `Relude.AsyncResult`, `Relude.ReaderT`, etc.
 
-## I'm getting strange errors about types like `array(string)` not being the same as `BsBastet.Array.Foldable.t`
+## I'm getting strange errors about types like `array(string)` not being the same as `Bastet.Array.Foldable.t`
 
 If you are trying to compile and get an error like:
 
 ```reasonml
-This has type array(t) but somewhere wanted BsBastet.Array.Foldable.t(string)`
+This has type array(t) but somewhere wanted Bastet.Array.Foldable.t(string)`
 ```
 
-you likely need to add `bs-bastet` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because Melange is not able to find the types defined in the `BsBastet` module, so it can't determine that `array(t)` is the same type as `BsBastet.Array.Foldable.t(string)`.
+you likely need to add `bs-bastet` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because Melange is not able to find the types defined in the `Bastet_js` module, so it can't determine that `array(t)` is the same type as `Bastet.Array.Foldable.t(string)`.
 
 Because we are not using .rei interface files, we are not able to abstract these types away for functions that get included into our implementation modules.  (See .rei topic below).
 

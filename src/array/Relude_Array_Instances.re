@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Concatenates two arrays with the left side array first, and the right side last
@@ -14,7 +14,7 @@ include Relude_Extensions_SemigroupAny.SemigroupAnyExtensions(SemigroupAny);
 /**
 Applies a pure function to each value in the array
 */
-let map: 'a 'b. ('a => 'b, array('a)) => array('b) = BsBastet.Array.Functor.map;
+let map: 'a 'b. ('a => 'b, array('a)) => array('b) = Bastet.Array.Functor.map;
 
 module Functor: FUNCTOR with type t('a) = array('a) = {
   type t('a) = array('a);
@@ -25,7 +25,7 @@ include Relude_Extensions_Functor.FunctorExtensions(Functor);
 /**
 Applies an array of functions to an array of values to produce a new array of values.
 */
-let apply: 'a 'b. (array('a => 'b), array('a)) => array('b) = BsBastet.Array.Apply.apply;
+let apply: 'a 'b. (array('a => 'b), array('a)) => array('b) = Bastet.Array.Apply.apply;
 
 module Apply: APPLY with type t('a) = array('a) = {
   include Functor;
@@ -47,7 +47,7 @@ include Relude_Extensions_Applicative.ApplicativeExtensions(Applicative);
 /**
 Maps a monadic function over each element of the array, and flattens (concatenates) the result.
 */
-let bind: 'a 'b. (array('a), 'a => array('b)) => array('b) = BsBastet.Array.Monad.flat_map;
+let bind: 'a 'b. (array('a), 'a => array('b)) => array('b) = Bastet.Array.Monad.flat_map;
 
 module Monad: MONAD with type t('a) = array('a) = {
   include Applicative;
@@ -58,7 +58,7 @@ include Relude_Extensions_Monad.MonadExtensions(Monad);
 /**
 Alt for arrays concatenates the two arrays
 */
-let alt: 'a. (array('a), array('a)) => array('a) = BsBastet.Array.Alt.alt;
+let alt: 'a. (array('a), array('a)) => array('a) = Bastet.Array.Alt.alt;
 
 module Alt: ALT with type t('a) = array('a) = {
   include Functor;
@@ -69,7 +69,7 @@ include Relude_Extensions_Alt.AltExtensions(Alt);
 /**
 Imap is the invariant map function for arrays.
 */
-let imap: 'a 'b. ('a => 'b, 'b => 'a, array('a)) => array('b) = BsBastet.Array.Invariant.imap;
+let imap: 'a 'b. ('a => 'b, 'b => 'a, array('a)) => array('b) = Bastet.Array.Invariant.imap;
 
 module Invariant: INVARIANT with type t('a) = array('a) = {
   type t('a) = array('a);
@@ -79,7 +79,7 @@ module Invariant: INVARIANT with type t('a) = array('a) = {
 /**
 Extend is the dual of the monadic bind function.
 */
-let extend: 'a 'b. (array('a) => 'b, array('a)) => array('b) = BsBastet.Array.Extend.extend;
+let extend: 'a 'b. (array('a) => 'b, array('a)) => array('b) = Bastet.Array.Extend.extend;
 
 module Extend: EXTEND with type t('a) = array('a) = {
   include Functor;
@@ -89,21 +89,21 @@ module Extend: EXTEND with type t('a) = array('a) = {
 /**
 Folds an array from left to right into an accumulator value
 */
-let foldLeft = BsBastet.Array.Foldable.fold_left;
+let foldLeft = Bastet.Array.Foldable.fold_left;
 
 /**
 Folds an array from right-to-left into an accumulator value
 */
-let foldRight = BsBastet.Array.Foldable.fold_right;
+let foldRight = Bastet.Array.Foldable.fold_right;
 
 module Foldable: FOLDABLE with type t('a) = array('a) = {
-  include BsBastet.Array.Foldable;
+  include Bastet.Array.Foldable;
   let fold_left = foldLeft;
   let fold_right = foldRight;
 };
 include Relude_Extensions_Foldable.FoldableExtensions(Foldable);
 
-module Traversable = BsBastet.Array.Traversable;
+module Traversable = Bastet.Array.Traversable;
 
 /**
 Indicates if two arrays are pair-wise equal, using the given equality function
@@ -133,7 +133,7 @@ module Eq = (EqA: EQ) => {
   let eq = eqBy(EqA.eq);
 };
 
-module Ord = BsBastet.Array.Ord;
+module Ord = Bastet.Array.Ord;
 
 /**
 Converts an array to a string, using the given show function for converting the array items
@@ -141,7 +141,7 @@ Converts an array to a string, using the given show function for converting the 
 let showBy: 'a. ('a => string, array('a)) => string =
   (innerShow, xs) => {
     // TODO
-    let join = intercalate((module BsBastet.String.Monoid));
+    let join = intercalate((module Bastet.String.Monoid));
     "[" ++ join(", ", map(innerShow, xs)) ++ "]";
   };
 

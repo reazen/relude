@@ -1,3 +1,3 @@
-module ComonadExtensions = (C: BsBastet.Interface.COMONAD) => {};
+module ComonadExtensions = (C: Bastet.Interface.COMONAD) => {};
 
-module ComonadInfix = (C: BsBastet.Interface.COMONAD) => {};
+module ComonadInfix = (C: Bastet.Interface.COMONAD) => {};

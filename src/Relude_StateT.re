@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 open Relude_Function.Infix;
 
 module WithMonad = (M: MONAD) => {

@@ -1,4 +1,4 @@
 /**
 Extensions for any ALTERNATIVE
 */
-module AlternativeExtensions = (A: BsBastet.Interface.ALTERNATIVE) => {};
+module AlternativeExtensions = (A: Bastet.Interface.ALTERNATIVE) => {};

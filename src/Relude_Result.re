@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 open Relude_Function.Infix;
 
 type t('a, 'e) = result('a, 'e) = | Ok('a) | Error('e);
@@ -909,7 +909,7 @@ let bimap = Bifunctor.bimap;
 include Relude_Extensions_Bifunctor.BifunctorExtensions(Bifunctor);
 
 module Bifoldable: BIFOLDABLE with type t('a, 'e) = t('a, 'e) = {
-  include BsBastet.Result.Bifoldable;
+  include Bastet.Result.Bifoldable;
 };
 let bifoldLeft = Bifoldable.bifold_left;
 let bifoldRight = Bifoldable.bifold_right;
@@ -991,7 +991,7 @@ module WithError = (E: TYPE) => {
   include Relude_Extensions_Semigroupoid.SemigroupoidExtensions(Semigroupoid);
 
   module Foldable: FOLDABLE with type t('a) = t('a) = {
-    include BsBastet.Result.Foldable(E);
+    include Bastet.Result.Foldable(E);
   };
   let foldLeft = Foldable.fold_left;
   let foldRight = Foldable.fold_right;
@@ -1001,7 +1001,7 @@ module WithError = (E: TYPE) => {
     module Traversable:
       TRAVERSABLE with
         type t('a) = t('a) and type applicative_t('a) = A.t('a) = {
-      include BsBastet.Result.Traversable(E, A);
+      include Bastet.Result.Traversable(E, A);
     };
     let traverse = Traversable.traverse;
     let sequence = Traversable.sequence;
@@ -1011,7 +1011,7 @@ module WithError = (E: TYPE) => {
       BITRAVERSABLE with
         type t('a, 'b) = result('a, 'b) and
         type applicative_t('a) = A.t('a) = {
-      include BsBastet.Result.Bitraversable(A);
+      include Bastet.Result.Bitraversable(A);
     };
     let bitraverse = Bitraversable.bitraverse;
     let bisequence = Bitraversable.bisequence;
@@ -1020,11 +1020,11 @@ module WithError = (E: TYPE) => {
             );
   };
 
-  module Eq = BsBastet.Result.Eq;
+  module Eq = Bastet.Result.Eq;
 
-  module Ord = BsBastet.Result.Ord;
+  module Ord = Bastet.Result.Ord;
 
-  module Show = BsBastet.Result.Show;
+  module Show = Bastet.Result.Show;
 
   module Infix = {
     include Relude_Extensions_Functor.FunctorInfix(Functor);
