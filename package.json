@@ -36,7 +36,6 @@
     "docsify-cli": "~4.4.0"
   },
   "dependencies": {
-    "bs-bastet": "jchavarri/bastet#melange",
     "bisect_ppx": "^2.7.1"
   },
   "jest": {
