@@ -14,6 +14,7 @@ dune.mel
 _build
 _esy
 *.bs.js
+_opam/
 
 # Git
 *.orig
@@ -30,3 +31,5 @@ _coverage
 /docs/api
 /docs/odoc.css
 /docs/highlight.pack.js
+
+

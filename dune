@@ -1,4 +1,27 @@
-(dirs :standard __tests__)
-;;;;{BSB GENERATED: NO EDIT
-(include dune.mel)
-;;;;BSB GENERATED: NO EDIT}
+; (dirs :standard __tests__)
+; (subdir
+;  node_modules
+;  (dirs reason-react)
+;  (vendored_dirs reason-react)
+;  (subdir
+;   reason-react/src
+;   (include_subdirs unqualified)
+;   (library
+;    (name reason_react)
+;    (wrapped false)
+;    (modes melange))))
+(data_only_dirs node_modules)
+
+(subdir
+ node_modules
+ (dirs
+  bs-bastet)
+ (data_only_dirs bs-bastet))
+
+(melange.emit
+ (target output)
+ (alias relude)
+ (libraries
+  melange
+  bsBastet)
+ (module_systems es6))

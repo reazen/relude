@@ -1,0 +1,37 @@
+opam-version: "2.0"
+synopsis: "relude!"
+maintainer: [""]
+authors: [""]
+license: ""
+tags: []
+homepage: "https://github.com/reazen/relude"
+doc: ""
+bug-reports: "https://github.com/reazen/relude/issues"
+depends: [
+  "ocaml" {>= "4.14.0" & < "5.0.0"}
+  "reason" {>= "3.8.1" & < "4.0.0"}
+  "bisect_ppx" {>= "2.1.0"}
+  "odoc" {>= "1.5.0" & with-doc}
+  "dune" {dev}
+  "melange-compiler-libs" {dev}
+  "melange" {dev}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+]
+pin-depends: [
+  [ "dune.dev" "git+https://github.com/ocaml/dune.git#7533eb9910d773a3c644a8e82e5bb686a3b4cf00" ]
+  [ "melange-compiler-libs.dev" "git+https://github.com/melange-re/melange-compiler-libs.git#48ff923f2c25136de8ab96678f623f54cdac438c" ]
+  [ "melange.dev" "git+https://github.com/melange-re/melange.git#227b7cb862c4a81f74c19fa051a75005918a18ff" ]
+]
