@@ -1,4 +1,4 @@
 /**
 Extensions for any BITRAVERSABLE
 */
-module BitraversableExtensions = (B: BsBastet.Interface.BITRAVERSABLE) => {};
+module BitraversableExtensions = (B: Bastet.Interface.BITRAVERSABLE) => {};

@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Constructs a tuple-3 from 3 values

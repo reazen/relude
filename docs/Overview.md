@@ -22,7 +22,7 @@ Also, building our own standard library allows us to build out a set of addition
 
 ## Typeclass module types (interfaces)
 
-`Relude` uses many of the typeclass interface definitions and implementations provided by `bs-bastet`, while also adding some of it's own typeclasses.  Using the typeclass module types from [BsBastet.Interface](https://github.com/Risto-Stevcev/bastet/blob/master/bastet/src/Interface.re) allows us to gain compatibility with any other libraries which happen to use the same typeclass signatures "for free."  E.g. if something implements a `MONAD` in another library, it should be compatible with any of the utiltiies provided by `Relude`, which use the `MONAD` module type.
+`Relude` uses many of the typeclass interface definitions and implementations provided by `bs-bastet`, while also adding some of it's own typeclasses.  Using the typeclass module types from [Bastet.Interface](https://github.com/Risto-Stevcev/bastet/blob/master/bastet/src/Interface.re) allows us to gain compatibility with any other libraries which happen to use the same typeclass signatures "for free."  E.g. if something implements a `MONAD` in another library, it should be compatible with any of the utiltiies provided by `Relude`, which use the `MONAD` module type.
 
 ## Typeclass modules (instances or implementations)
 
@@ -30,7 +30,7 @@ Also, building our own standard library allows us to build out a set of addition
 
 ## Extensions and infix operators
 
-Using typeclass-style abstractions allows us to provide a ton of extra functionality "for free" for many modules.  For example, for any module that has an implementation of the module type `BsBastet.Interface.MONAD`, we can `include` a wide variety of extension functions and infix operators for free for that module, all implemented consistently and predictably.  If you've ever found yourself implementing `map2`, `flatten`, `length`, `toArray`, etc. for your types, it's likely that you could instead get these functions for free by implementing the corresponding typeclass.
+Using typeclass-style abstractions allows us to provide a ton of extra functionality "for free" for many modules.  For example, for any module that has an implementation of the module type `Bastet.Interface.MONAD`, we can `include` a wide variety of extension functions and infix operators for free for that module, all implemented consistently and predictably.  If you've ever found yourself implementing `map2`, `flatten`, `length`, `toArray`, etc. for your types, it's likely that you could instead get these functions for free by implementing the corresponding typeclass.
 
 ## IO
 

@@ -1,4 +1,4 @@
 /**
 Extensions for any Bifoldable
 */
-module BifoldableExtensions = (B: BsBastet.Interface.BIFOLDABLE) => {};
+module BifoldableExtensions = (B: Bastet.Interface.BIFOLDABLE) => {};

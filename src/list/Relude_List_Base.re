@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 [List.cons] prepends the given item to the start of the given list. This

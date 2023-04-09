@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 List extensions for when you have an EQ instance.
@@ -204,7 +204,7 @@ module Validation = {
   module Traversable = (Errors: SEMIGROUP_ANY, Error: TYPE) => {
     module ValidationE = Relude_Validation.WithErrors(Errors, Error);
     module ValidationEApplicative = ValidationE.Applicative;
-    include BsBastet.List.Traversable(ValidationEApplicative);
+    include Bastet.List.Traversable(ValidationEApplicative);
   };
 
   module TraversableWithErrorsAsList = (Error: TYPE) =>

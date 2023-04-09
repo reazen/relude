@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 [Array.cons] prepends a single item to the start of an array. This is an

@@ -1,7 +1,7 @@
 /**
 Extensions for any Bifunctor
 */
-module BifunctorExtensions = (B: BsBastet.Interface.BIFUNCTOR) => {
+module BifunctorExtensions = (B: Bastet.Interface.BIFUNCTOR) => {
   /**
   Maps a function over the left-side type.
   */
@@ -26,7 +26,7 @@ module BifunctorExtensions = (B: BsBastet.Interface.BIFUNCTOR) => {
 /**
 Infix operator extensions for any BIFUNCTOR
 */
-module BifunctorInfix = (B: BsBastet.Interface.BIFUNCTOR) => {
+module BifunctorInfix = (B: Bastet.Interface.BIFUNCTOR) => {
   /**
   Operator version of bimap
   */

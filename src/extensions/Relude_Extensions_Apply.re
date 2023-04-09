@@ -1,8 +1,8 @@
 /**
 Extensions for any APPLY
 */
-module ApplyExtensions = (A: BsBastet.Interface.APPLY) => {
-  module BsApplyExtensions = BsBastet.Functions.Apply(A);
+module ApplyExtensions = (A: Bastet.Interface.APPLY) => {
+  module BsApplyExtensions = Bastet.Functions.Apply(A);
 
   /**
   Runs the two applicative effects, but only keeps the result from the left
@@ -135,7 +135,7 @@ module ApplyExtensions = (A: BsBastet.Interface.APPLY) => {
 /**
 Infix operator extensions for any APPLY
 */
-module ApplyInfix = (A: BsBastet.Interface.APPLY) => {
+module ApplyInfix = (A: Bastet.Interface.APPLY) => {
   module ApplyExtensions = ApplyExtensions(A);
 
   /**

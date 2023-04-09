@@ -9,7 +9,7 @@ for working with values of type [ordering].
 |}
 ];
 
-type t = BsBastet.Interface.ordering;
+type t = Bastet.Interface.ordering;
 
 /**
 [Ordering.fromInt] converts an int to a type-safe ordering value. This can be
@@ -49,7 +49,7 @@ let reverse: t => t =
 */
 let eq: (t, t) => bool = (a, b) => a == b;
 
-module Eq: BsBastet.Interface.EQ with type t = t = {
+module Eq: Bastet.Interface.EQ with type t = t = {
   type nonrec t = t;
   let eq = eq;
 };
@@ -73,7 +73,7 @@ let compare: (t, t) => t =
     | (`greater_than, `greater_than) => `equal_to
     };
 
-module Ord: BsBastet.Interface.ORD with type t = t = {
+module Ord: Bastet.Interface.ORD with type t = t = {
   include Eq;
   let compare = compare;
 };
@@ -83,7 +83,7 @@ let top = `greater_than;
 
 let bottom = `less_than;
 
-module Bounded: BsBastet.Interface.BOUNDED with type t = t = {
+module Bounded: Bastet.Interface.BOUNDED with type t = t = {
   include Ord;
   let top = top;
   let bottom = bottom;

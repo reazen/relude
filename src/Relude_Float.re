@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 [@ocaml.text
   {|
@@ -114,7 +114,7 @@ let isNaN: float => bool = x => x != x;
 /**
 Compates two floats
 */
-let compare: (float, float) => ordering = BsBastet.Float.Ord.compare;
+let compare: (float, float) => ordering = Bastet.Float.Ord.compare;
 
 module Ord: ORD with type t = float = {
   include Eq;
@@ -288,21 +288,21 @@ let fromString: string => option(float) =
     };
 
 module Additive = {
-  include BsBastet.Float.Additive;
+  include Bastet.Float.Additive;
 };
 
 module Multiplicative = {
-  include BsBastet.Float.Multiplicative;
+  include Bastet.Float.Multiplicative;
 };
 
 module Subtractive = {
-  include BsBastet.Float.Subtractive;
+  include Bastet.Float.Subtractive;
 };
 
 module Divisive = {
-  include BsBastet.Float.Divisive;
+  include Bastet.Float.Divisive;
 };
 
 module Infix = {
-  include BsBastet.Float.Infix;
+  include Bastet.Float.Infix;
 };

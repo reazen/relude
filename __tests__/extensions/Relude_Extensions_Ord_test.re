@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 open! Relude.Globals;
-open BsBastet.Interface;
+open Bastet.Interface;
 
 module User = {
   type t = {

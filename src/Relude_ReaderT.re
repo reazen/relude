@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 open Relude_Function.Infix;
 
 // TODO: not sure whether to just make this functor include the "Env" type R here along with the Monad, or

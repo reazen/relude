@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 [WriterLog] contains a basic typeclass that has a log type [t] and a Monoid
