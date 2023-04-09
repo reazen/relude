@@ -10,18 +10,27 @@
 ;    (name reason_react)
 ;    (wrapped false)
 ;    (modes melange))))
-(data_only_dirs node_modules)
+
+; (data_only_dirs node_modules)
 
 (subdir
  node_modules
- (dirs
-  bs-bastet)
  (data_only_dirs bs-bastet))
+
+(subdir
+ node_modules/bs-bastet/bastet/src
+ ; (dirs bs-bastet)
+ ; (data_only_dirs bs-bastet)
+ ; (subdir
+ ;  bs-bastet/bastet/src
+ ; (copy_files# ../../bastet_js/src/*.ml{,i})
+ (library
+  (name bsBastet)
+  (modes melange)
+  (flags -w -67)))
 
 (melange.emit
  (target output)
  (alias relude)
- (libraries
-  melange
-  bsBastet)
+ (libraries melange bsBastet)
  (module_systems es6))

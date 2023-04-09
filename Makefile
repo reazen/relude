@@ -6,4 +6,4 @@ create-switch:
 install: ## Install development dependencies
 	yarn install --legacy-peer-deps
 	opam update
-	opam install -y . --deps-only
+	opam install -y .
