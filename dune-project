@@ -20,6 +20,7 @@
  (name relude)
  (synopsis "Relude")
  (description "Alternative standard library (prelude) for ReasonML"))
+
  ; (tags
  ;  ("category theory" "abstract algebra" "algebra" "cats"))
  ; (depends
