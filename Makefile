@@ -36,6 +36,6 @@ test-coverage:
 	yarn test --coverage
 
 .PHONY: docs
-test:
+docs:
 	yarn docs
 
