@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Str = Relude_String;
+module Str = Relude.String;
 
 describe("String", () => {
   test("length empty string", () =>
@@ -192,7 +192,7 @@ describe("String", () => {
   test("foldLeft", () =>
     expect(
       Str.foldLeft(
-        (acc, str) => Relude_List.concat(acc, [str]),
+        (acc, str) => Relude.List.concat(acc, [str]),
         [],
         "abc",
       ),
@@ -203,7 +203,7 @@ describe("String", () => {
   test("foldRight", () =>
     expect(
       Str.foldRight(
-        (str, acc) => Relude_List.concat(acc, [str]),
+        (str, acc) => Relude.List.concat(acc, [str]),
         [],
         "abc",
       ),

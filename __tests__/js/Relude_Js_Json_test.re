@@ -1,12 +1,12 @@
 open Jest;
 open Expect;
 
-module Json = Relude_Js_Json;
-module List = Relude_List;
-module NonEmptyArray = Relude_NonEmpty.Array;
-module Option = Relude_Option;
-module Result = Relude_Result;
-module Validation = Relude_Validation;
+module Json = Relude.Js.Json;
+module List = Relude.List;
+module NonEmptyArray = Relude.NonEmpty.Array;
+module Option = Relude.Option;
+module Result = Relude.Result;
+module Validation = Relude.Validation;
 
 module MyType = {
   type t = {

@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Int = Relude_Int;
+module Int = Relude.Int;
 module List = Relude.List;
 module IO = Relude.IO;
 
@@ -556,11 +556,11 @@ describe("List", () => {
   );
 
   test("min empty", () =>
-    expect(List.min((module Relude_String.Ord), [])) |> toEqual(None)
+    expect(List.min((module Relude.String.Ord), [])) |> toEqual(None)
   );
 
   test("min many", () =>
-    expect(List.min((module Relude_String.Ord), ["b", "a", "c"]))
+    expect(List.min((module Relude.String.Ord), ["b", "a", "c"]))
     |> toEqual(Some("a"))
   );
 
@@ -762,7 +762,7 @@ describe("List", () => {
   );
 
   test("mapOption keep int", () =>
-    expect(List.mapOption(Relude_String.toInt, ["1", "a", "2", "", "3"]))
+    expect(List.mapOption(Relude.String.toInt, ["1", "a", "2", "", "3"]))
     |> toEqual([1, 2, 3])
   );
 
@@ -972,7 +972,7 @@ describe("List", () => {
 
   test("Validation.traverse success", () =>
     expect(List.Validation.traverse(a => Ok(a), [1, 2, 3, 4, 5]))
-    |> toEqual(Relude_Validation.VOk([1, 2, 3, 4, 5]))
+    |> toEqual(Relude.Validation.VOk([1, 2, 3, 4, 5]))
   );
 
   test("Validation.traverse failure", () =>
@@ -983,8 +983,8 @@ describe("List", () => {
       ),
     )
     |> toEqual(
-         Relude_Validation.VError(
-           Relude_NonEmpty.List.make(
+         Relude.Validation.VError(
+           Relude.NonEmpty.List.make(
              "1 is bad",
              ["2 is bad", "3 is bad", "4 is bad", "5 is bad"],
            ),

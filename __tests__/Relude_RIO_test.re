@@ -17,7 +17,7 @@ module Reader =
     type t = env;
   });
 
-module RIO = Relude_RIO.WithErrorAndEnv(
+module RIO = Relude.RIO.WithErrorAndEnv(
   {
     type t = error;
   },
@@ -39,10 +39,10 @@ describe("Reader IO", () =>
         <$$> (a => a ++ env.stringValue);
       }
     )
-    |> RIO.semiflatMap(c => Relude_IO.pure(c ++ "semi"))
+    |> RIO.semiflatMap(c => Relude.IO.pure(c ++ "semi"))
     |> RIO.runRIO(testEnv)
-    |> Relude_IO.map(a => expect(a) |> toEqual("-42abcsemi"))
-    |> Relude_IO.unsafeRunAsync(
+    |> Relude.IO.map(a => expect(a) |> toEqual("-42abcsemi"))
+    |> Relude.IO.unsafeRunAsync(
          fun
          | Ok(assertion) => onDone(assertion)
          | Error(_) => onDone(fail("fail")),

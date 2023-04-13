@@ -40,12 +40,11 @@
   },
   "jest": {
     "verbose": false,
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/testUtils/"
+    "testMatch": [
+      "<rootDir>/_build/default/__tests__/output/__tests__/**/*_test.[jt]s?(x)"
     ],
     "setupFilesAfterEnv": [
-      "<rootDir>/_build/default/node_modules/bisect_ppx/src/runtime/js/jest.bs.js"
+      "<rootDir>/_build/default/__tests__/output/node_modules/bisect_ppx/src/runtime/js/jest.js"
     ]
   }
 }

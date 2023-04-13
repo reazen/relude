@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Function = Relude_Function;
+module Function = Relude.Function;
 module StringArgument = {
   type t = string;
   module Type: Bastet.Interface.TYPE with type t = t = {

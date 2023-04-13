@@ -46,16 +46,16 @@ by IO.
 */
 module IO = {
   // Read a file with no accomodation for errors
-  let readFileSync: string => Relude_IO.t(string, Js.Exn.t) =
-    path => Relude_IO.triesJS(() => Native.readFileSync(path, `utf8));
+  let readFileSync: string => Relude.IO.t(string, Js.Exn.t) =
+    path => Relude.IO.triesJS(() => Native.readFileSync(path, `utf8));
 
-  let writeFileSync: (string, string) => Relude_IO.t(unit, Js.Exn.t) =
+  let writeFileSync: (string, string) => Relude.IO.t(unit, Js.Exn.t) =
     (path, content) =>
-      Relude_IO.triesJS(() => Native.writeFileSync(path, content, `utf8));
+      Relude.IO.triesJS(() => Native.writeFileSync(path, content, `utf8));
 
-  let readFile: string => Relude_IO.t(string, Js.Exn.t) =
+  let readFile: string => Relude.IO.t(string, Js.Exn.t) =
     path =>
-      Relude_IO.async(onDone =>
+      Relude.IO.async(onDone =>
         Native.readFile(path, `utf8, (err, content) =>
           switch (Js.Null.toOption(err), content) {
           | (Some(err'), _) =>
@@ -63,7 +63,7 @@ module IO = {
               "Read failed: "
               ++ (
                 Js.Exn.message(err')
-                |> Relude_Option.getOrElseLazy(_ => "No error")
+                |> Relude.Option.getOrElseLazy(_ => "No error")
               ),
             );
             onDone(Error(err'));
@@ -72,9 +72,9 @@ module IO = {
         )
       );
 
-  let writeFile: (string, string) => Relude_IO.t(unit, Js.Exn.t) =
+  let writeFile: (string, string) => Relude.IO.t(unit, Js.Exn.t) =
     (path, content) =>
-      Relude_IO.async(onDone =>
+      Relude.IO.async(onDone =>
         Native.writeFile(path, content, `utf8, err =>
           switch (Js.Null.toOption(err)) {
           | Some(err') =>
@@ -82,7 +82,7 @@ module IO = {
               "Write failed: "
               ++ (
                 Js.Exn.message(err')
-                |> Relude_Option.getOrElseLazy(_ => "No error")
+                |> Relude.Option.getOrElseLazy(_ => "No error")
               ),
             );
             onDone(Error(err'));
