@@ -3,24 +3,14 @@
   "description": "Alternative standard library (prelude) for ReasonML",
   "homepage": "https://github.com/reazen/relude",
   "bugs": "https://github.com/reazen/relude/issues",
-  "version": "0.66.1",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/reazen/relude.git"
   },
   "scripts": {
-    "clean": "esy mel clean",
-    "build": "esy mel build",
-    "watch": "esy mel build -w",
     "test": "jest",
-    "coverage": "npm run test",
-    "docs": "docsify serve ./docs",
-    "cleanbisect": "rm bisect*.coverage || true",
-    "cleanbuild": "npm run clean && npm run build",
-    "cleanwatch": "npm run clean && npm run watch",
-    "cleantest": "npm run cleanbuild && npm run test",
-    "cleancoverage": "npm run cleanbisect && BISECT_ENABLE=yes npm run cleanbuild && npm run coverage",
-    "releasebuild": "npm run cleancoverage"
+    "docs": "docsify serve ./docs"
   },
   "keywords": [
     "ReasonML",

@@ -3,13 +3,17 @@ create-switch:
 	opam switch create -y . --deps-only
 
 .PHONY: install
-install: ## Install development dependencies
+install:
 	yarn install --legacy-peer-deps
 	opam update
 	opam install -y .
 
 .PHONY: init
 init: create-switch install
+
+.PHONY: clean
+clean:
+	opam exec -- dune clean
 
 .PHONY: build
 build:
@@ -20,9 +24,18 @@ watch:
 	opam exec -- dune build @relude @test -w
 
 .PHONY: dev-tools
-dev-tools:
+dev-tools: ## Installs tools for development
 	opam install -y ocamlformat utop ocaml-lsp-server
 
 .PHONY: test
 test:
-	npm run test
+	yarn test
+
+.PHONY: test-coverage
+test-coverage:
+	yarn test --coverage
+
+.PHONY: docs
+test:
+	yarn docs
+
