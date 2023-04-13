@@ -17,8 +17,12 @@ build:
 
 .PHONY: watch
 watch:
-	opam exec -- dune build @relude -w
+	opam exec -- dune build @relude @test -w
 
 .PHONY: dev-tools
 dev-tools:
 	opam install -y ocamlformat utop ocaml-lsp-server
+
+.PHONY: test
+test:
+	npm run test
