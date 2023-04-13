@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Timer = Relude_Timer;
+module Timer = Relude.Timer;
 
 describe("Timer", () => {
   test("delay", () => {
@@ -13,7 +13,10 @@ describe("Timer", () => {
     };
 
     let wasRun1 = wasRun^;
-    Timer.delay(~delayMS=50, f) |> ignore;
+    let () = {
+      let _cleanup: unit => unit = Timer.delay(~delayMS=50, f);
+      ();
+    };
 
     Jest.advanceTimersByTime(40);
     let wasRun2 = wasRun^;
@@ -34,7 +37,10 @@ describe("Timer", () => {
     };
 
     let runCount1 = runCount^; // 0 (0 hits)
-    Timer.repeat(~delayMS=50, f) |> ignore;
+    let () = {
+      let _cleanup: unit => unit = Timer.repeat(~delayMS=50, f);
+      ();
+    };
 
     Jest.advanceTimersByTime(40); // 40 (0 hits)
     let runCount2 = runCount^;
@@ -65,7 +71,11 @@ describe("Timer", () => {
     };
 
     let runCount1 = runCount^; // 0 (0 hits)
-    Timer.repeatTimes(~delayMS=50, ~times=3, f) |> ignore;
+    let () = {
+      let _cleanup: unit => unit =
+        Timer.repeatTimes(~delayMS=50, ~times=3, f);
+      ();
+    };
 
     Jest.advanceTimersByTime(40); // 40 (0 hits)
     let runCount2 = runCount^;

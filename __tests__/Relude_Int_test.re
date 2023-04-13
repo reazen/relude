@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Int = Relude_Int;
+module Int = Relude.Int;
 
 describe("Int", () => {
   test("toFloat", () =>

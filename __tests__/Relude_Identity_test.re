@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Identity = Relude_Identity;
+module Identity = Relude.Identity;
 
 describe("Identity", () => {
   test("pure", () =>
@@ -29,14 +29,14 @@ describe("Identity", () => {
   );
 
   test("show", () =>
-    expect(Identity.show((module Relude_Int.Show), 5)) |> toEqual("5")
+    expect(Identity.show((module Relude.Int.Show), 5)) |> toEqual("5")
   );
 
   test("eq true", () =>
-    expect(Identity.eq((module Relude_Int.Eq), 5, 5)) |> toEqual(true)
+    expect(Identity.eq((module Relude.Int.Eq), 5, 5)) |> toEqual(true)
   );
 
   test("eq false", () =>
-    expect(Identity.eq((module Relude_Int.Eq), 5, 10)) |> toEqual(false)
+    expect(Identity.eq((module Relude.Int.Eq), 5, 10)) |> toEqual(false)
   );
 });

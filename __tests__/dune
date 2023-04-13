@@ -1,0 +1,8 @@
+(include_subdirs unqualified)
+
+(melange.emit
+ (target output)
+ (promote (until-clean))
+ (alias test)
+ (libraries melange jest bastet relude bisect)
+ (module_systems commonjs))

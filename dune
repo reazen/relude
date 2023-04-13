@@ -2,3 +2,23 @@
  (target output)
  (alias relude)
  (module_systems es6))
+
+(dirs :standard __tests__)
+
+(subdir
+ node_modules
+ (data_only_dirs bisect_ppx))
+
+(subdir
+ node_modules/bisect_ppx/src/runtime/js
+ (library
+  (melange.compile_flags :standard -w -20-21)
+  (name bisect)
+  (modes melange))
+ (copy_files# ../../common/*.ml{,i}))
+
+(subdir
+ node_modules/@glennsl/bs-jest/src
+ (library
+  (name jest)
+  (modes melange)))

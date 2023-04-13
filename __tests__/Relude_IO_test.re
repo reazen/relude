@@ -169,7 +169,7 @@ describe("IO basics", () => {
     |> IO.unsafeRunAsync(
          fun
          | Ok(ior) =>
-           onDone(expect(ior) |> toEqual(Relude_Ior_Type.Both(42, "a")))
+           onDone(expect(ior) |> toEqual(Relude.Ior.Both(42, "a")))
          | Error(_) => onDone(fail("Fail")),
        )
   );
@@ -178,8 +178,7 @@ describe("IO basics", () => {
     IO.align(IO.pure(42), IO.throw("e2"))
     |> IO.unsafeRunAsync(
          fun
-         | Ok(ior) =>
-           onDone(expect(ior) |> toEqual(Relude_Ior_Type.This(42)))
+         | Ok(ior) => onDone(expect(ior) |> toEqual(Relude.Ior.This(42)))
          | Error(_) => onDone(fail("Fail")),
        )
   );
@@ -188,8 +187,7 @@ describe("IO basics", () => {
     IO.align(IO.throw("e1"), IO.pure(99))
     |> IO.unsafeRunAsync(
          fun
-         | Ok(ior) =>
-           onDone(expect(ior) |> toEqual(Relude_Ior_Type.That(99)))
+         | Ok(ior) => onDone(expect(ior) |> toEqual(Relude.Ior.That(99)))
          | Error(_) => onDone(fail("Fail")),
        )
   );
@@ -206,9 +204,9 @@ describe("IO basics", () => {
   testAsync("alignWith pure pure", onDone => {
     let f =
       fun
-      | Relude_Ior_Type.This(a) => a
-      | Relude_Ior_Type.That(b) => int_of_string(b)
-      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.pure(42), IO.pure("99"))
     |> IO.unsafeRunAsync(
          fun
@@ -220,9 +218,9 @@ describe("IO basics", () => {
   testAsync("alignWith pure throw", onDone => {
     let f =
       fun
-      | Relude_Ior_Type.This(a) => a
-      | Relude_Ior_Type.That(b) => int_of_string(b)
-      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.pure(42), IO.throw("e2"))
     |> IO.unsafeRunAsync(
          fun
@@ -234,9 +232,9 @@ describe("IO basics", () => {
   testAsync("alignWith throw pure", onDone => {
     let f =
       fun
-      | Relude_Ior_Type.This(a) => a
-      | Relude_Ior_Type.That(b) => int_of_string(b)
-      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.throw("e1"), IO.pure("99"))
     |> IO.unsafeRunAsync(
          fun
@@ -248,9 +246,9 @@ describe("IO basics", () => {
   testAsync("alignWith throw throw", onDone => {
     let f =
       fun
-      | Relude_Ior_Type.This(a) => a
-      | Relude_Ior_Type.That(b) => int_of_string(b)
-      | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.throw("e1"), IO.throw("e2"))
     |> IO.unsafeRunAsync(
          fun
@@ -1355,7 +1353,7 @@ describe("IO mapError", () => {
 
   testAsync("throw mapError unsafeRunAsync", onDone =>
     IO.throw("this is a test")
-    |> IO.mapError(msg => Relude_Js_Exn.make(msg))
+    |> IO.mapError(msg => Relude.Js.Exn.make(msg))
     |> IO.unsafeRunAsync(
          fun
          | Ok(_a) => onDone(fail("Failed"))
@@ -3165,7 +3163,7 @@ describe("IO debounce", () => {
       IO.unsafeRunAsync(
         Result.fold(
           _ => "IO should not have failed" |> fail |> onDone,
-          Relude_Option.foldLazy(ignore, () =>
+          Relude.Option.foldLazy(ignore, () =>
             "IO should not have been run" |> fail |> onDone
           ),
         ),
@@ -3176,7 +3174,7 @@ describe("IO debounce", () => {
     debouncedIO() |> checkNonRunIO;
 
     debouncedIO()
-    |> IO.flatMap(Relude_Option.fold(IO.pure(None), debouncedIO))
+    |> IO.flatMap(Relude.Option.fold(IO.pure(None), debouncedIO))
     |> checkNonRunIO;
 
     debouncedIO()
@@ -3231,11 +3229,11 @@ describe("IO debounce", () => {
     debouncedIO() |> IO.unsafeRunAsync(ignore);
 
     debouncedIO()
-    |> IO.flatMap(Relude_Option.fold(IO.pure(None), debouncedIO))
+    |> IO.flatMap(Relude.Option.fold(IO.pure(None), debouncedIO))
     |> IO.unsafeRunAsync(ignore);
 
     debouncedIO()
-    |> IO.flatMap(Relude_Option.fold(IO.pure(None), debouncedIO))
+    |> IO.flatMap(Relude.Option.fold(IO.pure(None), debouncedIO))
     |> IO.flatMap(_ => IO.delay(300))
     |> IO.unsafeRunAsync(_ =>
          (
@@ -3513,9 +3511,9 @@ describe("IO FS examples", () => {
     >>= (_ => FS.IO.readFile(testFilePath))
     >>= (
       content =>
-        Relude_String.toNonWhitespace(content)
+        Relude.String.toNonWhitespace(content)
         |> IO.fromOption(_ =>
-             Relude_Js_Exn.make("Failed to get non-empty file content")
+             Relude.Js.Exn.make("Failed to get non-empty file content")
            )
     )
     >>= (content => IO.pure(expect(content) |> toEqual("IO Aff test")))

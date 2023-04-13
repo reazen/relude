@@ -97,7 +97,7 @@ module StorageAPI = {
   include StorageFWithKeyAndValue.FreeMonad.WithMonad(State.Monad);
 };
 
-describe("Relude_Free_Monad", () => {
+describe("Relude.Free_Monad", () => {
   describe("StorageAPI", () => {
     test("StorageState interpreter", () => {
       // This is our monadic program stored as our free monad

@@ -142,9 +142,9 @@ describe("Option", () => {
   testAll(
     "align",
     [
-      (Some(42), Some("a"), Some(Relude_Ior_Type.Both(42, "a"))),
-      (Some(42), None, Some(Relude_Ior_Type.This(42))),
-      (None, Some("a"), Some(Relude_Ior_Type.That("a"))),
+      (Some(42), Some("a"), Some(Relude.Ior.Both(42, "a"))),
+      (Some(42), None, Some(Relude.Ior.This(42))),
+      (None, Some("a"), Some(Relude.Ior.That("a"))),
       (None, None, None),
     ],
     ((fa, fb, expected)) => {
@@ -162,9 +162,9 @@ describe("Option", () => {
     ((fa, fb, expected)) => {
       let f =
         fun
-        | Relude_Ior_Type.This(a) => a
-        | Relude_Ior_Type.That(b) => int_of_string(b)
-        | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+        | Relude.Ior.This(a) => a
+        | Relude.Ior.That(b) => int_of_string(b)
+        | Relude.Ior.Both(a, b) => a + int_of_string(b);
       expect(Option.alignWith(f, fa, fb)) |> toEqual(expected);
     },
   );
@@ -178,7 +178,7 @@ describe("Option", () => {
   );
 
   test(">>=", () => {
-    let (>>=) = Relude_Option.Infix.(>>=);
+    let (>>=) = Relude.Option.Infix.(>>=);
     expect(Some(1) >>= (a => Some(a + 2))) |> toEqual(Some(3));
   });
 

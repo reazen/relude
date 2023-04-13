@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module IntSet = Relude_Set.WithOrd(Relude_Int.Ord);
+module IntSet = Relude.Set.WithOrd(Relude.Int.Ord);
 
 describe("Set", () => {
   test("length of empty set", () =>

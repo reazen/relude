@@ -13,7 +13,7 @@ init: create-switch install
 
 .PHONY: build
 build:
-	opam exec -- dune build @relude
+	opam exec -- dune build @relude @test --display short
 
 .PHONY: watch
 watch:
