@@ -3,5 +3,5 @@
 (melange.emit
  (target output)
  (alias test)
- (libraries melange jest bastet relude bisect)
+ (libraries melange jest bastet relude)
  (module_systems commonjs))

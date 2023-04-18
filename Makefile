@@ -24,7 +24,7 @@ watch:
 	opam exec -- dune build @relude @test -w
 
 .PHONY: dev-tools
-dev-tools: ## Installs tools for development
+dev-tools:
 	opam install -y ocamlformat utop ocaml-lsp-server
 
 .PHONY: test
