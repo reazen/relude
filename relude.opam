@@ -25,6 +25,7 @@ build: [
   [
     "dune"
     "build"
+    "--debug-dependency-path"
     "-p"
     name
     "-j"
