@@ -4,4 +4,5 @@
  (name relude)
  (public_name relude)
  (libraries bastet)
- (modes melange))
+ (modes melange)
+ (preprocess (pps melange.ppx)))
