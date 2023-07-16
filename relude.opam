@@ -15,7 +15,6 @@ depends: [
   "reason" {>= "3.8.1" & < "4.0.0"}
   "odoc" {>= "1.5.0" & with-doc}
   "dune" {dev}
-  "melange-compiler-libs" {dev}
   "melange" {dev}
   "bastet" {dev}
 ]
