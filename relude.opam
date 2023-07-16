@@ -13,7 +13,6 @@ bug-reports: "https://github.com/reazen/relude/issues"
 depends: [
   "ocaml" {>= "4.14.0" & < "5.0.0"}
   "reason" {>= "3.8.1" & < "4.0.0"}
-  "bisect_ppx" {>= "2.1.0"}
   "odoc" {>= "1.5.0" & with-doc}
   "dune" {dev}
   "melange-compiler-libs" {dev}
@@ -36,5 +35,5 @@ build: [
   ]
 ]
 pin-depends: [
-  [ "bastet.dev" "git+https://github.com/johnhaley81/bastet.git#cd4039376ebc70bb7f033c6470e9a29bda3e8d01" ]
+  [ "bastet.dev" "git+https://github.com/johnhaley81/bastet.git#1872140038d075e3d7516266537a19cfc3ca7a20" ]
 ]
