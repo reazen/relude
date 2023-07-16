@@ -36,8 +36,5 @@ build: [
   ]
 ]
 pin-depends: [
-  [ "dune.dev" "git+https://github.com/ocaml/dune.git#66573762f28b84268cf04c3c46d0deaef9945316" ]
-  [ "melange-compiler-libs.dev" "git+https://github.com/melange-re/melange-compiler-libs.git#7263bea2285499f5da857f2bb374345a5178791e" ]
-  [ "melange.dev" "git+https://github.com/melange-re/melange.git#4df18aaa5468391c4b190ebc5d4c3ba38698a565" ]
   [ "bastet.dev" "git+https://github.com/jchavarri/bastet.git#501134d7377d066542bc80bc3b56463e7af1ffdc" ]
 ]
