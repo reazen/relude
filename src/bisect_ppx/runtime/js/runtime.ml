@@ -28,7 +28,7 @@ let write_coverage_data () =
 let reset_coverage_data =
   Bisect_common.reset_counters
 
-let node_at_exit = [%bs.raw {|
+let node_at_exit = [%mel.raw {|
   function (callback) {
     if (typeof process !== 'undefined' && typeof process.on !== 'undefined')
       process.on("exit", callback);
