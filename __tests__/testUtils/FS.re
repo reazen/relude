@@ -3,20 +3,18 @@ Fs.Native wraps a few functions from the node.js fs module with little to no
 modification to the fs API.
 */
 module Native = {
-  let dirname: option(string) = [%bs.node __dirname];
+  let dirname: option(string) = [%mel.node __dirname];
   let dirnameOrDot = Js.Option.getWithDefault(".", dirname);
 
-  [@bs.val] [@bs.module "fs"] [@warning "-103"]
-  external readFileSync:
-    (string, [ | `hex | `utf8 | `ascii]) => string =
+  [@mel.module "fs"] [@warning "-103"]
+  external readFileSync: (string, [ | `hex | `utf8 | `ascii]) => string =
     "readFileSync";
 
-  [@bs.val] [@bs.module "fs"]
-  external writeFileSync:
-    (string, string, [ | `hex | `utf8 | `ascii]) => unit =
+  [@mel.module "fs"]
+  external writeFileSync: (string, string, [ | `hex | `utf8 | `ascii]) => unit =
     "writeFileSync";
 
-  [@bs.val] [@bs.module "fs"]
+  [@mel.module "fs"]
   external readFile:
     (
       string,
@@ -26,14 +24,9 @@ module Native = {
     unit =
     "readFile";
 
-  [@bs.val] [@bs.module "fs"]
+  [@mel.module "fs"]
   external writeFile:
-    (
-      string,
-      string,
-      [ | `hex | `utf8 | `ascii],
-      Js.null(Js.Exn.t) => unit
-    ) =>
+    (string, string, [ | `hex | `utf8 | `ascii], Js.null(Js.Exn.t) => unit) =>
     unit =
     "writeFile";
 };
