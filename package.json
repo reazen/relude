@@ -22,7 +22,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@glennsl/bs-jest": "^0.7.0",
+    "jest": "^26.5.2",
     "docsify-cli": "~4.4.0"
   },
   "dependencies": {
