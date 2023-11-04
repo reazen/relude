@@ -42,9 +42,3 @@ jobs:
 
       - name: Run tests
         run: make test-coverage
-
-      - name: Coveralls
-        run: bisect-ppx-report send-to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PULL_REQUEST_NUMBER: ${{ github.event.number }}
