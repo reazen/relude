@@ -8,9 +8,3 @@
 (subdir
  node_modules
  (data_only_dirs bisect_ppx))
-
-(subdir
- node_modules/@glennsl/bs-jest/src
- (library
-  (name jest)
-  (modes melange)))
