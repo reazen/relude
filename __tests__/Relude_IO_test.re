@@ -2,7 +2,7 @@ open Jest;
 open Expect;
 open! Relude.Globals;
 
-let throwJSError: unit => int = [%bs.raw
+let throwJSError: unit => int = [%mel.raw
   {| function() { throw new Error("Error from JS"); } |}
 ];
 

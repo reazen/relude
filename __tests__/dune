@@ -3,5 +3,7 @@
 (melange.emit
  (target output)
  (alias test)
- (libraries melange jest bastet relude)
+ (libraries melange melange-jest.jest melange.node bastet relude)
+ (preprocess
+  (pps melange.ppx))
  (module_systems commonjs))
