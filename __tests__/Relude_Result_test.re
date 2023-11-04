@@ -93,7 +93,7 @@ describe("Result", () => {
   test("alignWith Ok Ok", () => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
+      | Relude.Ior.This(a) => a
       | That(b) => int_of_string(b)
       | Both(a, b) => a + int_of_string(b);
     expect(Result.alignWith(f, Result.ok(42), Result.ok("99")))
@@ -103,7 +103,7 @@ describe("Result", () => {
   test("alignWith Ok Error", () => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
+      | Relude.Ior.This(a) => a
       | That(b) => int_of_string(b)
       | Both(a, b) => a + int_of_string(b);
     expect(Result.alignWith(f, Result.ok(42), Result.error("99")))
@@ -113,7 +113,7 @@ describe("Result", () => {
   test("alignWith Error Ok", () => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
+      | Relude.Ior.This(a) => a
       | That(b) => int_of_string(b)
       | Both(a, b) => a + int_of_string(b);
     expect(Result.alignWith(f, Result.error(42), Result.ok("99")))
@@ -123,7 +123,7 @@ describe("Result", () => {
   test("alignWith Error Ok", () => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
+      | Relude.Ior.This(a) => a
       | That(b) => int_of_string(b)
       | Both(a, b) => a + int_of_string(b);
     expect(Result.alignWith(f, Result.error("a"), Result.error("b")))

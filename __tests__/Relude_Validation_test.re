@@ -332,17 +332,17 @@ describe("Validation", () => {
       (
         Validation.ok(42),
         Validation.ok("a"),
-        Validation.ok(Relude.Ior_Type.Both(42, "a")),
+        Validation.ok(Relude.Ior.Both(42, "a")),
       ),
       (
         Validation.ok(42),
         Validation.error("fail2"),
-        Validation.ok(Relude.Ior_Type.This(42)),
+        Validation.ok(Relude.Ior.This(42)),
       ),
       (
         Validation.error("fail1"),
         Validation.ok("a"),
-        Validation.ok(Relude.Ior_Type.That("a")),
+        Validation.ok(Relude.Ior.That("a")),
       ),
       (
         Validation.error("fail1"),
@@ -372,9 +372,9 @@ describe("Validation", () => {
     ((inputA, inputB, expected)) => {
       let f =
         fun
-        | Relude.Ior_Type.This(a) => a
-        | Relude.Ior_Type.That(b) => int_of_string(b)
-        | Relude.Ior_Type.Both(a, b) => a + int_of_string(b);
+        | Relude.Ior.This(a) => a
+        | Relude.Ior.That(b) => int_of_string(b)
+        | Relude.Ior.Both(a, b) => a + int_of_string(b);
       let actual =
         Validation.alignWithWithAppendErrors(
           (a, b) => a ++ b,

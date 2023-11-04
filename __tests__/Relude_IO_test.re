@@ -169,7 +169,7 @@ describe("IO basics", () => {
     |> IO.unsafeRunAsync(
          fun
          | Ok(ior) =>
-           onDone(expect(ior) |> toEqual(Relude.Ior_Type.Both(42, "a")))
+           onDone(expect(ior) |> toEqual(Relude.Ior.Both(42, "a")))
          | Error(_) => onDone(fail("Fail")),
        )
   );
@@ -179,7 +179,7 @@ describe("IO basics", () => {
     |> IO.unsafeRunAsync(
          fun
          | Ok(ior) =>
-           onDone(expect(ior) |> toEqual(Relude.Ior_Type.This(42)))
+           onDone(expect(ior) |> toEqual(Relude.Ior.This(42)))
          | Error(_) => onDone(fail("Fail")),
        )
   );
@@ -189,7 +189,7 @@ describe("IO basics", () => {
     |> IO.unsafeRunAsync(
          fun
          | Ok(ior) =>
-           onDone(expect(ior) |> toEqual(Relude.Ior_Type.That(99)))
+           onDone(expect(ior) |> toEqual(Relude.Ior.That(99)))
          | Error(_) => onDone(fail("Fail")),
        )
   );
@@ -206,9 +206,9 @@ describe("IO basics", () => {
   testAsync("alignWith pure pure", onDone => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
-      | Relude.Ior_Type.That(b) => int_of_string(b)
-      | Relude.Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.pure(42), IO.pure("99"))
     |> IO.unsafeRunAsync(
          fun
@@ -220,9 +220,9 @@ describe("IO basics", () => {
   testAsync("alignWith pure throw", onDone => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
-      | Relude.Ior_Type.That(b) => int_of_string(b)
-      | Relude.Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.pure(42), IO.throw("e2"))
     |> IO.unsafeRunAsync(
          fun
@@ -234,9 +234,9 @@ describe("IO basics", () => {
   testAsync("alignWith throw pure", onDone => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
-      | Relude.Ior_Type.That(b) => int_of_string(b)
-      | Relude.Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.throw("e1"), IO.pure("99"))
     |> IO.unsafeRunAsync(
          fun
@@ -248,9 +248,9 @@ describe("IO basics", () => {
   testAsync("alignWith throw throw", onDone => {
     let f =
       fun
-      | Relude.Ior_Type.This(a) => a
-      | Relude.Ior_Type.That(b) => int_of_string(b)
-      | Relude.Ior_Type.Both(a, b) => a + int_of_string(b);
+      | Relude.Ior.This(a) => a
+      | Relude.Ior.That(b) => int_of_string(b)
+      | Relude.Ior.Both(a, b) => a + int_of_string(b);
     IO.alignWith(f, IO.throw("e1"), IO.throw("e2"))
     |> IO.unsafeRunAsync(
          fun
