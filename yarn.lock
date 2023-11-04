@@ -867,11 +867,6 @@ binary-extensions@^2.0.0:
   resolved "https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
-bisect_ppx@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.npmjs.org/bisect_ppx/-/bisect_ppx-2.7.1.tgz"
-  integrity sha512-e8gRgfhmCptiyGGov+54Acah+rc+svm0yc/26mn+M6CCNDADufVLMgRaG1uw3LAHm/PFPy+zGFAKMwd6lD2O2g==
-
 boxen@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/boxen/-/boxen-4.2.0.tgz"

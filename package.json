@@ -25,16 +25,10 @@
     "jest": "^26.5.2",
     "docsify-cli": "~4.4.0"
   },
-  "dependencies": {
-    "bisect_ppx": "^2.7.1"
-  },
   "jest": {
     "verbose": false,
     "testMatch": [
       "<rootDir>/_build/default/__tests__/output/__tests__/**/*_test.[jt]s?(x)"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/_build/default/__tests__/output/node_modules/relude/bisect_ppx/runtime/js/jest.js"
     ]
   }
 }
