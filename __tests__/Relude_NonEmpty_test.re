@@ -148,25 +148,25 @@ describe("NonEmpty.List", () => {
 
   test("eq tail", () => {
     let ne = NonEmpty.List.make(1, [2, 3]);
-    expect(NonEmpty.List.eq((module Relude_Int.Eq), ne, ne))
+    expect(NonEmpty.List.eq((module Relude.Int.Eq), ne, ne))
     |> toEqual(true);
   });
 
   test("eq head", () => {
     let ne1 = NonEmpty.List.make(0, [2, 3]);
     let ne2 = NonEmpty.List.make(1, [2, 3]);
-    expect(NonEmpty.List.eq((module Relude_Int.Eq), ne1, ne2))
+    expect(NonEmpty.List.eq((module Relude.Int.Eq), ne1, ne2))
     |> toEqual(false);
   });
 
   test("show", () => {
     let ne = NonEmpty.List.make(1, [2, 3]);
-    expect(NonEmpty.List.show((module Relude_Int.Show), ne))
+    expect(NonEmpty.List.show((module Relude.Int.Show), ne))
     |> toEqual("[!1, 2, 3!]");
   });
 
   module NonEmptyListWithOption =
-    NonEmpty.List.WithApplicative(Relude_Option.Applicative);
+    NonEmpty.List.WithApplicative(Relude.Option.Applicative);
 
   test("traverse option", () =>
     expect(
@@ -271,12 +271,12 @@ describe("NonEmpty.Array", () => {
 
   test("show", () => {
     let ne = NonEmpty.Array.make(1, [|2, 3|]);
-    expect(NonEmpty.Array.show((module Relude_Int.Show), ne))
+    expect(NonEmpty.Array.show((module Relude.Int.Show), ne))
     |> toEqual("[!1, 2, 3!]");
   });
 
   module NonEmptyArrayWithOption =
-    NonEmpty.Array.WithApplicative(Relude_Option.Applicative);
+    NonEmpty.Array.WithApplicative(Relude.Option.Applicative);
 
   test("traverse option", () =>
     expect(

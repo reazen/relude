@@ -111,7 +111,7 @@ module Month = {
 
 open Month;
 
-describe("Relude_Extensions_Enum", () => {
+describe("Relude.Extensions_Enum", () => {
   testAll(
     "fromToAsList",
     [
@@ -200,7 +200,7 @@ describe("Relude_Extensions_Enum", () => {
   );
 });
 
-describe("Relude_Extensions_BoundedEnum", () => {
+describe("Relude.Extensions_BoundedEnum", () => {
   testAll(
     "fromThenToAsList",
     [
@@ -260,11 +260,11 @@ describe("Relude_Extensions_BoundedEnum", () => {
       expect(actual) |> toEqual(expected);
     },
   );
-  describe("Relude_Extensions_BoundedEnum", () => {
+  describe("Relude.Extensions_BoundedEnum", () => {
     let show = Show.show;
-    let parseOrd = inverseMapOrd(~ordA=(module Relude_String.Ord), show);
+    let parseOrd = inverseMapOrd(~ordA=(module Relude.String.Ord), show);
     let parseOrdBy = inverseMapOrdBy(Relude.String.compare, show);
-    let parseEq = inverseMapEq(~eqA=(module Relude_String.Eq), show);
+    let parseEq = inverseMapEq(~eqA=(module Relude.String.Eq), show);
     let parseEqBy = inverseMapEqBy(Relude.String.eq, show);
     let parseString = inverseMapString(show);
 

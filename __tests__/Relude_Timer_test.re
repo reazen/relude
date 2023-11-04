@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Timer = Relude_Timer;
+module Timer = Relude.Timer;
 
 describe("Timer", () => {
   test("delay", () => {

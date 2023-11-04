@@ -105,7 +105,7 @@ let validateUser =
   SchemaValidate.foldFree(User.schema);
 };
 
-describe("Relude_Free_Applicative", () => {
+describe("Relude.Free_Applicative", () => {
   test("validateUser success", () =>
     expect(validateUser("Andy", "White", "101"))
     |> toEqual(

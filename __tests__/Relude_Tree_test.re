@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 open! Relude.Globals;
-open Relude_Tree;
+open Relude.Tree;
 
 let testTree1 = Tree.make(1, [Tree.pure(2), Tree.pure(3)]);
 
@@ -296,7 +296,7 @@ describe("Tree", () => {
   });
 
   test("traverse", () => {
-    module TreeOption = Tree.WithApplicative(Relude_Option.Applicative);
+    module TreeOption = Tree.WithApplicative(Relude.Option.Applicative);
     let actual =
       TreeOption.Traversable.traverse(
         a => Some(a + 100),
@@ -307,7 +307,7 @@ describe("Tree", () => {
   });
 
   test("sequence", () => {
-    module TreeOption = Tree.WithApplicative(Relude_Option.Applicative);
+    module TreeOption = Tree.WithApplicative(Relude.Option.Applicative);
     let actual =
       TreeOption.Traversable.sequence(
         Tree.make(Some(1), [Tree.pure(Some(2)), Tree.pure(Some(3))]),
@@ -336,7 +336,7 @@ describe("Tree", () => {
   );
 
   test("Show", () => {
-    module Show = Tree.Show(Relude_Int.Show);
+    module Show = Tree.Show(Relude.Int.Show);
     expect(testTree1 |> Show.show)
     |> toEqual("Tree 1 [Tree 2 [], Tree 3 []]");
   });

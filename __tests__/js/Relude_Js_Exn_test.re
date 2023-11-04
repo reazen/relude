@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module Exn = Relude_Js_Exn;
+module Exn = Relude.Js_Exn;
 
 describe("Js.Exn", () => {
   test("make", () => {

@@ -1,11 +1,11 @@
 open Jest;
 open Expect;
 
-module NonEmptyList = Relude_NonEmpty.List;
-module String = Relude_String;
-module Result = Relude_Result;
-module Option = Relude_Option;
-module Validation = Relude_Validation;
+module NonEmptyList = Relude.NonEmpty.List;
+module String = Relude.String;
+module Result = Relude.Result;
+module Option = Relude.Option;
+module Validation = Relude.Validation;
 
 module Error = {
   type t =
@@ -332,17 +332,17 @@ describe("Validation", () => {
       (
         Validation.ok(42),
         Validation.ok("a"),
-        Validation.ok(Relude_Ior_Type.Both(42, "a")),
+        Validation.ok(Relude.Ior_Type.Both(42, "a")),
       ),
       (
         Validation.ok(42),
         Validation.error("fail2"),
-        Validation.ok(Relude_Ior_Type.This(42)),
+        Validation.ok(Relude.Ior_Type.This(42)),
       ),
       (
         Validation.error("fail1"),
         Validation.ok("a"),
-        Validation.ok(Relude_Ior_Type.That("a")),
+        Validation.ok(Relude.Ior_Type.That("a")),
       ),
       (
         Validation.error("fail1"),
@@ -372,9 +372,9 @@ describe("Validation", () => {
     ((inputA, inputB, expected)) => {
       let f =
         fun
-        | Relude_Ior_Type.This(a) => a
-        | Relude_Ior_Type.That(b) => int_of_string(b)
-        | Relude_Ior_Type.Both(a, b) => a + int_of_string(b);
+        | Relude.Ior_Type.This(a) => a
+        | Relude.Ior_Type.That(b) => int_of_string(b)
+        | Relude.Ior_Type.Both(a, b) => a + int_of_string(b);
       let actual =
         Validation.alignWithWithAppendErrors(
           (a, b) => a ++ b,

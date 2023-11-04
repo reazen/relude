@@ -1,8 +1,8 @@
 open Jest;
 open Expect;
 
-module NonEmptyList = Relude_NonEmpty.List;
-module Ior = Relude_Ior;
+module NonEmptyList = Relude.NonEmpty.List;
+module Ior = Relude.Ior;
 open Ior;
 
 module That = {

@@ -1,8 +1,8 @@
 open Jest;
 open Expect;
 
-module Timer = Relude_Timer;
-module Debounce = Relude_Debounce;
+module Timer = Relude.Timer;
+module Debounce = Relude.Debounce;
 
 describe("Debounce", () => {
   test("debounce (leading=false)", () => {
