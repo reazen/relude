@@ -3,7 +3,7 @@
 (library
  (name relude)
  (public_name relude)
- (libraries bastet melange.node)
+ (libraries bastet melange.node melange.belt)
  (modes melange)
  (preprocess
   (pps melange.ppx)))
