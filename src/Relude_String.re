@@ -548,7 +548,7 @@ If [n1] is greater than [n2], [slice()] returns the empty string.
 */
 let slice: (int, int, string) => string =
   (fromIndex, toIndex, input) =>
-    Js.String.slice(~from=fromIndex, ~to_=toIndex, input);
+    Js.String.slice(~start=fromIndex, ~end_=toIndex, input);
 
 /**
 [sliceToEnd(n, str)] returns the substring of [str] starting at character [n] to
@@ -566,7 +566,7 @@ returns the empty string.
 ]}
 */
 let sliceToEnd: (int, string) => string =
-  (fromIndex, str) => Js.String.sliceToEnd(~from=fromIndex, str);
+  (fromIndex, str) => Js.String.slice(~start=fromIndex, str);
 
 /**
 [splitArray(delimiter, str)] splits the given [str] at every occurrence of
