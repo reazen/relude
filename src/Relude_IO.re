@@ -1449,7 +1449,7 @@ completing with a unit value.
 let delay: 'e. int => t(unit, 'e) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Ok()), millis) |> ignore
+      Js.Global.setTimeout(~f=_ => onDone(Ok()), millis) |> ignore
     );
 
 /**
@@ -1459,7 +1459,7 @@ before completing with a unit value.
 let delayWithVoid: int => t(unit, Relude_Void.t) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Ok()), millis) |> ignore
+      Js.Global.setTimeout(~f=_ => onDone(Ok()), millis) |> ignore
     );
 
 /**
@@ -1572,7 +1572,7 @@ let throttle:
     let currentlyThrottled = ref(false);
     let startThrottle = () => {
       currentlyThrottled := true;
-      Js.Global.setTimeout(() => currentlyThrottled := false, intervalMs)
+      Js.Global.setTimeout(~f=() => currentlyThrottled := false, intervalMs)
       |> ignore;
     };
 

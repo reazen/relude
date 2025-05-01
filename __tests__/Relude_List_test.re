@@ -1002,7 +1002,7 @@ describe("List", () => {
 
     let io4 =
       IO.async(onDone =>
-        Js.Global.setTimeout(() => onDone(Ok(4)), 0) |> ignore
+        Js.Global.setTimeout(~f=() => onDone(Ok(4)), 0) |> ignore
       );
     let io5 = io4 |> IO.map(four => four + 1);
 

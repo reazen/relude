@@ -6,7 +6,7 @@ Delays the invocation of a function by [delayMS] milliseconds, and returns a
 function to cancel the scheduled call.
 */
 let delay = (~delayMS: int, f: unit => unit): (unit => unit) => {
-  let timerId = Js.Global.setTimeout(f, delayMS);
+  let timerId = Js.Global.setTimeout(~f, delayMS);
   () => {
     Js.Global.clearTimeout(timerId);
   };
@@ -17,7 +17,7 @@ Repeats a function every [delayMS] milliseconds, and returns a function to
 cancel the repeat.
 */
 let repeat = (~delayMS: int, f: unit => unit): (unit => unit) => {
-  let timerId = Js.Global.setInterval(f, delayMS);
+  let timerId = Js.Global.setInterval(~f, delayMS);
   () => {
     Js.Global.clearInterval(timerId);
   };
@@ -37,13 +37,14 @@ let repeatTimes =
   timerId :=
     Some(
       Js.Global.setInterval(
-        () => {
-          f();
-          callCount := callCount^ + 1;
-          if (callCount^ == times) {
-            cancel();
-          };
-        },
+        ~f=
+          () => {
+            f();
+            callCount := callCount^ + 1;
+            if (callCount^ == times) {
+              cancel();
+            };
+          },
         delayMS,
       ),
     );
