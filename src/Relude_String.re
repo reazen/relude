@@ -250,8 +250,8 @@ range of the size of the string (too high or negative), [None] is returned.
 ]}
 */
 let charCodeAt: (int, string) => option(int) =
-  (i, str) => {
-    let code = Js.String.charCodeAt(i, str);
+  (index, str) => {
+    let code = Js.String.charCodeAt(~index, str);
     Relude_Float.isNaN(code) ? None : Some(int_of_float(code));
   };
 
@@ -373,7 +373,7 @@ becoming the new value of the accumulator. When all characters have been
 processed, the return value is the value of the accumulator.
 
 {[
-  let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(0, chStr))};
+  let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(~index=0, chStr))};
   foldLeft( (acc, chStr) => {acc + valueOfChar(chStr)}, 0, "abc") == 97 + 98 + 99;
   foldLeft( (acc, chStr) => {acc ++ "-" ++ chStr}, "", "abc") == "-a-b-c";
 ]}
@@ -390,7 +390,7 @@ new value of the accumulator. When all characters have been processed, the
 return value is the value of the accumulator.
 
 {[
-  let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(0, chStr))};
+  let valueOfChar = (chStr) => {int_of_float(Js.String.charCodeAt(~index=0, chStr))};
   foldRight( (chStr, acc) => {acc + valueOfChar(chStr)}, 0, "abc") == 97 + 98 + 99;
   foldRight( (chStr, acc) => {acc ++ "-" ++ chStr}, "", "abc") == "-c-b-a";
 ]}
@@ -455,7 +455,7 @@ module Set = Relude_Set.WithOrd(Ord);
 ]}
 */
 let endsWith = (~search: string, input: string): bool =>
-  Js.String.endsWith(search, input);
+  Js.String.endsWith(~suffix=search, input);
 
 /**
 [startsWith(~search, input)] returns [true] if [input] starts with the
@@ -469,7 +469,7 @@ characters in [search]; [false] otherwise.
 ]}
 */
 let startsWith = (~search: string, input: string): bool =>
-  Js.String.startsWith(search, input);
+  Js.String.startsWith(~prefix=search, input);
 
 /**
 [contains(~search, input)] returns [true] if [search] appears anywhere in
@@ -483,7 +483,7 @@ let startsWith = (~search: string, input: string): bool =>
 ]}
 */
 let contains = (~search: string, input: string): bool =>
-  Js.String.includes(search, input);
+  Js.String.includes(~search, input);
 
 /**
 [indexOf(test, str)] returns [Some(n)], where [n] is the starting position of
@@ -498,7 +498,7 @@ return value is [None].
 ]}
 */
 let indexOf = (~search: string, input: string): option(int) => {
-  let index = Js.String.indexOf(search, input);
+  let index = Js.String.indexOf(~search, input);
   if (index < 0) {
     None;
   } else {
@@ -519,7 +519,7 @@ return value is [false].
 ]}
 */
 let lastIndexOf = (~search: string, input: string): option(int) => {
-  let index = Js.String.lastIndexOf(search, input);
+  let index = Js.String.lastIndexOf(~search, input);
   if (index < 0) {
     None;
   } else {
@@ -580,7 +580,7 @@ let sliceToEnd: (int, string) => string =
 ]}
 */
 let splitArray = (~delimiter: string, input: string): array(string) =>
-  Js.String.split(delimiter, input);
+  Js.String.split(~sep=delimiter, input);
 
 /**
 [String.splitAsArray] is an alias for {!val:splitArray}.
@@ -692,7 +692,7 @@ with [newValue] in [str], returning a new string.
 */
 let replaceFirst =
     (~search: string, ~replaceWith: string, input: string): string =>
-  Js.String.replace(search, replaceWith, input);
+  Js.String.replace(~search, ~replacement=replaceWith, input);
 
 /**
 [replaceEach(target, newValue, str)]replaces each occurrence of [target] with
@@ -724,7 +724,7 @@ pattern.
 */
 let replaceRegex =
     (~search: Js.Re.t, ~replaceWith: string, input: string): string =>
-  Js.String.replaceByRe(search, replaceWith, input);
+  Js.String.replaceByRe(~regexp=search, ~replacement=replaceWith, input);
 
 /**
 [removeFirst(target, str)] returns a new string with the first occurrence of
