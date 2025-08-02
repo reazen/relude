@@ -1,16 +1,14 @@
-(lang dune 3.8)
+(lang dune 3.12)
 
-
- ; (action-plugin 0.1)
 (using melange 0.1)
 
 (name relude)
 
 (license "MIT")
 
-(maintainers <your_name>)
+(maintainers "Michael Martin" "Andy White")
 
-(authors <your_name>)
+(authors "Michael Martin" "Andy White")
 
 (homepage https://github.com/reazen/relude)
 
@@ -18,13 +16,15 @@
 
 (package
  (name relude)
- (synopsis "Relude")
- (description "Alternative standard library (prelude) for ReasonML"))
-
- ; (tags
- ;  ("category theory" "abstract algebra" "algebra" "cats"))
- ; (depends
- ;  (ocaml (>= 4.14))
- ;  (bisect_ppx (and (>= 2.1.0)))
- ;  (odoc (and (>= 1.5.0) :with-doc))
- ;  (dune (>= 2.0.1))))
+ (synopsis "Alternative standard library (prelude) for ReasonML")
+ (description "Relude is a ReasonML/OCaml standard library replacement (prelude) written in ReasonML, targeting compilation to JavaScript via the Melange compiler. It provides typeclass-style abstractions inspired by Haskell, PureScript, Elm, and Scala cats/scalaz ecosystems.")
+ (depends
+  (ocaml (>= 5.1.0))
+  (dune (>= 3.12))
+  (melange (>= 5.1.0))
+  (mel-bastet)
+  (alcotest :dev)
+  (qcheck :dev)
+  (bisect_ppx :dev)
+  (odoc (and (>= 1.5.0) :with-doc)))
+ (tags ("ReasonML" "Melange" "functional programming" "prelude" "standard library")))
