@@ -29,14 +29,17 @@ dev-tools:
 
 .PHONY: test
 test:
+	opam exec -- dune build @test
 	yarn test
 
 .PHONY: test-watch
 test-watch:
+	opam exec -- dune build @test
 	yarn test --watch
 
 .PHONY: test-coverage
 test-coverage:
+	opam exec -- dune build @test
 	yarn test --coverage
 
 .PHONY: docs
