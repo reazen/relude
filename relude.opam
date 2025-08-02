@@ -24,6 +24,7 @@ depends: [
   "ocaml" {>= "5.3.0"}
   "dune" {>= "3.12"}
   "melange" {>= "5.1.0"}
+  "reason"
   "mel-bastet"
   "melange-jest" {dev}
   "bisect_ppx" {dev}
