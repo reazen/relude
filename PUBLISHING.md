@@ -20,7 +20,10 @@ The repository must have an `OPAM_PUBLISH_TOKEN` secret configured with:
    - Configures git credentials for GitHub operations
    - Publishes to opam using `opam publish --no-confirmation --tag=<version> .`
 
-2. **Validation**: On every CI run (including PRs), the workflow validates the opam file to catch issues early.
+2. **Validation & Dry Run**: On every CI run (including PRs), the workflow:
+   - Validates the opam file using `opam lint`
+   - Runs a dry run of the publishing process to ensure it would work
+   - Creates a temporary tag and tests `opam publish --dry-run`
 
 ## Manual Publishing
 
@@ -44,12 +47,39 @@ Repository maintainers need to:
 2. Add it as a repository secret named `OPAM_PUBLISH_TOKEN`
 3. Ensure the token has permission to create pull requests
 
-## Opam File Validation
+## Opam File Validation & Dry Run Testing
 
-The `relude.opam` file is automatically validated on every CI run. To validate locally:
+The `relude.opam` file and publishing process are automatically tested on every CI run:
 
+### Validation
 ```bash
 opam lint relude.opam
+```
+
+### Dry Run Testing
+On every non-release CI run, the workflow performs a comprehensive validation of the publishing process:
+- Installs the `opam-publish` plugin
+- Verifies package metadata can be read with `opam show --raw .`
+- Validates required opam file fields (homepage, bug-reports, synopsis)
+- Checks git repository state
+- Confirms publishing prerequisites without actually submitting
+
+To test locally:
+```bash
+# Install opam-publish plugin
+opam install opam-publish
+
+# Test package metadata
+opam show --raw .
+
+# Validate required fields
+grep -q "^homepage:" relude.opam && 
+grep -q "^bug-reports:" relude.opam && 
+grep -q "^synopsis:" relude.opam && 
+echo "✅ Required fields present"
+
+# Check git state
+git rev-parse --verify HEAD
 ```
 
 ## Release Process
