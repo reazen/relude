@@ -15,8 +15,8 @@ depends: [
   "reason" {>= "3.10.0"}
   "odoc" {>= "1.5.0" & with-doc}
   "dune" {>= "3.8"}
-  "melange" {>= "2.0.0"}
-  "bastet" {dev}
+  "melange" {>= "5.1.0"}
+  "mel-bastet" {dev}
   "melange-jest" {>= "0.1.0"}
 ]
 build: [
@@ -35,5 +35,5 @@ build: [
   ]
 ]
 pin-depends: [
-  [ "bastet.dev" "git+https://github.com/johnhaley81/bastet.git#6c8f53a9da55254691df49bddf96b279b38be204" ]
+  [ "mel-bastet.dev" "git+https://github.com/johnhaley81/mel-bastet.git" ]
 ]

@@ -11,7 +11,7 @@ where it made sense for each library to install its own set of dependencies.  Th
 
 However, in a statically-typed language, this doesn't work so well, because the compiler seeks to align the shared types across modules and libraries.  E.g. if two libraries `A` and `B` depend on some module `C`, the compiler will expect to find a single version of the library `C`, so that it can compile `A` and `B` with the same types exposed by `C`.  If this were not the case, it would be difficult for libraries to work together with the same shared types.
 
-We use peer dependencies in all `Relude` libraries, so that the top-level host library or application can ultimately control what single version of each dependency is installed.  E.g. `Relude` depends on `bs-bastet` as a peer dependency, so any library using `Relude` must also explicitly install `bs-bastet`, as it won't be installed automatically with `Relude`.
+We use peer dependencies in all `Relude` libraries, so that the top-level host library or application can ultimately control what single version of each dependency is installed.  E.g. `Relude` depends on `mel-bastet` as a peer dependency, so any library using `Relude` must also explicitly install `mel-bastet`, as it won't be installed automatically with `Relude`.
 
 ## What's the difference between `Relude.Result` and `Belt.Result`, `Relude.Option` and OCaml stdlib `option`, `Relude.Js.Json` and `Js.Json`, etc.?
 
@@ -27,7 +27,7 @@ If you are trying to compile and get an error like:
 This has type array(t) but somewhere wanted Bastet.Array.Foldable.t(string)`
 ```
 
-you likely need to add `bs-bastet` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because Melange is not able to find the types defined in the `Bastet_js` module, so it can't determine that `array(t)` is the same type as `Bastet.Array.Foldable.t(string)`.
+you likely need to add `mel-bastet` to your `bs-dependencies` in your `bsconfig.json` file.  This error occurs because Melange is not able to find the types defined in the `Bastet_js` module, so it can't determine that `array(t)` is the same type as `Bastet.Array.Foldable.t(string)`.
 
 Because we are not using .rei interface files, we are not able to abstract these types away for functions that get included into our implementation modules.  (See .rei topic below).
 

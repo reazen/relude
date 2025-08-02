@@ -16,7 +16,7 @@ found in most modern pure functional languages, but our goal is to make the
 library as easy-to-use as a library like [Lodash](https://lodash.com/docs)
 for those who don't know or care about the underlying abstractions. This is
 made possible by OCaml's module system and the foundational work that has
-gone into [bs-bastet](https://github.com/Risto-Stevcev/bs-bastet), on
+gone into [mel-bastet](https://github.com/johnhaley81/mel-bastet), on
 which much of Relude is based.
 
 The API of Relude is inspired by [PureScript's Prelude](https://pursuit.purescript.org/packages/purescript-prelude), as well as other FP ecosystems including Scala, Haskell, and Elm.

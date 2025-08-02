@@ -4,7 +4,7 @@
 
 `Relude` currently works with ReasonML, so the main focus has been on JavaScript-based platforms, like the browser or Node.js.  We would like to one day support native OCaml/ReasonML native, but we are not there yet.
 
-The core typeclass interfaces used in `Relude` come from the library [bs-bastet](https://github.com/Risto-Stevcev/bs-bastet).
+The core typeclass interfaces used in `Relude` come from the library [mel-bastet](https://github.com/johnhaley81/mel-bastet).
 
 ## Opinions
 
@@ -22,11 +22,11 @@ Also, building our own standard library allows us to build out a set of addition
 
 ## Typeclass module types (interfaces)
 
-`Relude` uses many of the typeclass interface definitions and implementations provided by `bs-bastet`, while also adding some of it's own typeclasses.  Using the typeclass module types from [Bastet.Interface](https://github.com/Risto-Stevcev/bastet/blob/master/bastet/src/Interface.re) allows us to gain compatibility with any other libraries which happen to use the same typeclass signatures "for free."  E.g. if something implements a `MONAD` in another library, it should be compatible with any of the utiltiies provided by `Relude`, which use the `MONAD` module type.
+`Relude` uses many of the typeclass interface definitions and implementations provided by `mel-bastet`, while also adding some of it's own typeclasses.  Using the typeclass module types from [Bastet.Interface](https://github.com/johnhaley81/mel-bastet/blob/master/bastet/src/Interface.re) allows us to gain compatibility with any other libraries which happen to use the same typeclass signatures "for free."  E.g. if something implements a `MONAD` in another library, it should be compatible with any of the utiltiies provided by `Relude`, which use the `MONAD` module type.
 
 ## Typeclass modules (instances or implementations)
 
-`Relude` also uses many of the actual typeclass instances (or implementations) provided by `bs-bastet`, while also providing some of our own.
+`Relude` also uses many of the actual typeclass instances (or implementations) provided by `mel-bastet`, while also providing some of our own.
 
 ## Extensions and infix operators
 
