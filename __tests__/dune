@@ -1,9 +1,0 @@
-(include_subdirs unqualified)
-
-(melange.emit
- (target output)
- (alias test)
- (libraries melange melange-jest.jest melange.node mel-bastet relude)
- (preprocess
-  (pps melange.ppx))
- (module_systems commonjs))

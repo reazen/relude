@@ -7,8 +7,8 @@ Relude is a **ReasonML/OCaml** standard library replacement ("prelude") written 
 ## Tech Stack
 - Language: ReasonML/OCaml (targeting JavaScript via Melange)
 - Build System: Dune 3.12+
-- Package Manager: opam 2.1+
-- Testing: Alcotest (native OCaml testing)
+- Package Manager: opam 2.1+ (dev tools) + yarn (testing)
+- Testing: Jest via melange-jest (JavaScript-based testing)
 - Formatter: refmt (ReasonML formatter)
 - Documentation: odoc + docsify
 - Core Dependencies: mel-bastet (typeclass library)
@@ -35,6 +35,7 @@ Relude is a **ReasonML/OCaml** standard library replacement ("prelude") written 
 ### Prerequisites
 
 - OCaml/ReasonML toolchain via opam
+- Node.js and yarn for testing
 - Melange compiler
 
 ### Setup
@@ -147,9 +148,9 @@ node_modules/              # JavaScript dependencies (git-ignored)
 - Format with line breaks at column 80
 
 ## Testing Guidelines
-- Uses Alcotest for testing (native OCaml testing)
-- Test files follow naming pattern `test_*.re`  
-- Tests are run with `dune runtest` or `make test`
+- Uses Jest via melange-jest for testing (JavaScript-based)
+- Test files follow naming pattern `*_test.re` in `__tests__/` directory
+- Tests are run with `yarn test` or `make test`
 - Write unit tests for all public functions
 - Test edge cases and error conditions
 - Keep tests simple and focused
@@ -177,15 +178,17 @@ let test_function () =
   input_value |> Module.function_name |> check int "test description" expected_value
 ```
 
-### Alcotest Testing Patterns
+### Jest Testing Patterns
 
 ```reason
-let test_function_name = () =>
-  input_value |> Module.function_name |> Alcotest.check(expected_type, "test description", expected_value);
+open Jest;
+open Expect;
 
-let suite = [
-  ("test name", `Quick, test_function_name),
-];
+describe("Module", () => {
+  test("function description", () =>
+    input_value |> Module.function_name |> expect |> toEqual(expected_value)
+  );
+});
 ```
 
 ### Common Workflows
@@ -193,10 +196,9 @@ let suite = [
 #### Adding a New Module
 
 1. Create the module file in `src/Relude_ModuleName.re`
-2. Add corresponding test file in `test/test_modulename.re`
-3. Export the module in `src/Relude.re`  
-4. Add test suite to `test/test_runner.re`
-5. Update documentation if needed
+2. Add corresponding test file in `__tests__/Relude_ModuleName_test.re`
+3. Export the module in `src/Relude.re`
+4. Update documentation if needed
 
 #### Implementing Typeclass Instances
 
@@ -236,9 +238,10 @@ Ensure all required dependencies are properly installed via opam and yarn.
 
 ## Dependencies Management
 - **mel-bastet**: Core typeclass interfaces and implementations
+- **melange-jest**: Jest bindings for ReasonML (dev)
 - **bisect_ppx**: Code coverage (dev)
-- **alcotest**: Testing framework (dev)
-- **qcheck**: Property-based testing (dev)
+- **jest**: Testing framework via npm (dev)
+- **docsify-cli**: Documentation server via npm (dev)
 
 ### Dune Configuration Patterns
 

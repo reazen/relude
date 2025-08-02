@@ -4,6 +4,7 @@ create-switch:
 
 .PHONY: install
 install:
+	yarn install
 	opam update
 	opam install -y .
 
@@ -28,15 +29,15 @@ dev-tools:
 
 .PHONY: test
 test:
-	opam exec -- dune runtest
+	yarn test
 
 .PHONY: test-watch
 test-watch:
-	opam exec -- dune runtest -w
+	yarn test --watch
 
 .PHONY: test-coverage
 test-coverage:
-	opam exec -- dune runtest --instrument-with bisect_ppx
+	yarn test --coverage
 
 .PHONY: docs
 docs:
@@ -44,5 +45,5 @@ docs:
 
 .PHONY: docs-serve
 docs-serve:
-	cd docs && python3 -m http.server 3000
+	yarn docs
 
