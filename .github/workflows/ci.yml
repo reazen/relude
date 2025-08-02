@@ -16,7 +16,7 @@ jobs:
         node-version:
           - 18.x
         ocaml-compiler:
-          - 5.1.x
+          - 5.3.x
 
     runs-on: ${{ matrix.system }}
 
