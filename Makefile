@@ -4,7 +4,7 @@ create-switch:
 
 .PHONY: install
 install:
-	yarn install --legacy-peer-deps
+	yarn install
 	opam update
 	opam install -y .
 

@@ -4,14 +4,6 @@
 
 `Relude` does **not** currently support compiling with native ReasonML/OCaml (i.e. via esy nor dune). There is [an issue open](https://github.com/reazen/relude/issues/133) to track progress.
 
-## Why does `Relude` use peer dependencies for everything, rather than hard production dependencies?
-
-The way that `npm` installs dependencies was designed specifically for the JavaScript ecosystem,
-where it made sense for each library to install its own set of dependencies.  That way, each dependency could be installed with some level of confidence that it would work with its own set of dependencies, and not be affected by other libraries installing other likely incompatible versions of the same dependencies.
-
-However, in a statically-typed language, this doesn't work so well, because the compiler seeks to align the shared types across modules and libraries.  E.g. if two libraries `A` and `B` depend on some module `C`, the compiler will expect to find a single version of the library `C`, so that it can compile `A` and `B` with the same types exposed by `C`.  If this were not the case, it would be difficult for libraries to work together with the same shared types.
-
-We use peer dependencies in all `Relude` libraries, so that the top-level host library or application can ultimately control what single version of each dependency is installed.  E.g. `Relude` depends on `mel-bastet` as a peer dependency, so any library using `Relude` must also explicitly install `mel-bastet`, as it won't be installed automatically with `Relude`.
 
 ## What's the difference between `Relude.Result` and `Belt.Result`, `Relude.Option` and OCaml stdlib `option`, `Relude.Js.Json` and `Js.Json`, etc.?
 
