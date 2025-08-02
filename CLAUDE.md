@@ -155,16 +155,36 @@ node_modules/              # JavaScript dependencies (git-ignored)
 - Keep tests simple and focused
 - Coverage reports available with `make test-coverage`
 
+### ReasonML Syntax Guidelines
+**IMPORTANT**: Always use ReasonML syntax, never OCaml syntax in this codebase.
+
+**ReasonML (CORRECT):**
+```reason
+let myFunction = (param1, param2) => {
+  param1 |> someOperation |> anotherOperation(param2);
+};
+
+let testFunction = () =>
+  inputValue |> Module.functionName |> Alcotest.check(Alcotest.int, "test description", expectedValue);
+```
+
+**OCaml (INCORRECT - DO NOT USE):**
+```ocaml
+let my_function param1 param2 =
+  param1 |> some_operation |> another_operation param2
+
+let test_function () =
+  input_value |> Module.function_name |> check int "test description" expected_value
+```
+
 ### Alcotest Testing Patterns
 
 ```reason
-open Alcotest;
-
-let test_function_name () =
-  input_value |> Module.function_name |> check expected_type "test description" expected_value;
+let test_function_name = () =>
+  input_value |> Module.function_name |> Alcotest.check(expected_type, "test description", expected_value);
 
 let suite = [
-  ("test name", `Quick, test_function_name);
+  ("test name", `Quick, test_function_name),
 ];
 ```
 

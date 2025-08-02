@@ -22,9 +22,8 @@
   (ocaml (>= 5.1.0))
   (dune (>= 3.12))
   (melange (>= 5.1.0))
-  (mel-bastet)
-  (alcotest :dev)
-  (qcheck :dev)
+  "mel-bastet"
+  (melange-jest :dev)
   (bisect_ppx :dev)
   (odoc (and (>= 1.5.0) :with-doc)))
  (tags ("ReasonML" "Melange" "functional programming" "prelude" "standard library")))

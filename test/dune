@@ -1,8 +1,9 @@
-(executable
- (name test_runner)
- (libraries relude alcotest qcheck)
- (modes exe))
+(melange.emit
+ (target output)
+ (libraries relude melange-jest.jest)
+ (modules test_array test_runner))
 
 (rule
  (alias runtest)
- (action (run ./test_runner.exe)))
+ (deps output/test/test_runner.js)
+ (action (run node output/test/test_runner.js)))
