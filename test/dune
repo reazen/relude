@@ -1,0 +1,8 @@
+(executable
+ (name test_runner)
+ (libraries relude alcotest qcheck)
+ (modes exe))
+
+(rule
+ (alias runtest)
+ (action (run ./test_runner.exe)))

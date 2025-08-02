@@ -8,10 +8,12 @@ abstractions inspired by Haskell, PureScript, Elm, and Scala cats/scalaz ecosyst
 maintainer: [
   "Michael Martin"
   "Andy White"
+  "John Haley"
 ]
 authors: [
   "Michael Martin"
   "Andy White"
+  "John Haley"
 ]
 license: "MIT"
 tags: ["ReasonML" "Melange" "functional programming" "prelude" "standard library"]

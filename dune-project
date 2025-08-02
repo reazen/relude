@@ -6,9 +6,9 @@
 
 (license "MIT")
 
-(maintainers "Michael Martin" "Andy White")
+(maintainers "Michael Martin" "Andy White" "John Haley")
 
-(authors "Michael Martin" "Andy White")
+(authors "Michael Martin" "Andy White" "John Haley")
 
 (homepage https://github.com/reazen/relude)
 
