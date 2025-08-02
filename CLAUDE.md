@@ -6,9 +6,9 @@ Relude is a **ReasonML/OCaml** standard library replacement ("prelude") written 
 
 ## Tech Stack
 - Language: ReasonML/OCaml (targeting JavaScript via Melange)
-- Build System: Dune 3.8+
+- Build System: Dune 3.12+
 - Package Manager: opam 2.1+
-- Testing: Jest (JavaScript-based testing)
+- Testing: Alcotest (native OCaml testing)
 - Formatter: refmt (ReasonML formatter)
 - Documentation: odoc + docsify
 - Core Dependencies: mel-bastet (typeclass library)
@@ -35,7 +35,6 @@ Relude is a **ReasonML/OCaml** standard library replacement ("prelude") written 
 ### Prerequisites
 
 - OCaml/ReasonML toolchain via opam
-- Node.js and yarn
 - Melange compiler
 
 ### Setup
@@ -48,9 +47,9 @@ make create-switch
 # Install dependencies
 make install
 
-# Install development tools (ocamlformat, merlin, etc.)
+# Install development tools with dev dependencies
 make dev-tools
-# OR manually: opam install ocamlformat merlin ocaml-lsp-server
+# OR manually: opam install . --with-dev-setup
 
 # Update shell environment
 eval $(opam env)
@@ -100,11 +99,10 @@ src/                       # Core library modules
 ├── js/                    # JavaScript interop utilities
 └── dune                   # Dune build configuration
 
-__tests__/                 # Test suites using Jest
-├── Relude_*_test.re       # Test files
-├── extensions/            # Extension tests
-├── js/                    # JavaScript interop tests
-└── testUtils/             # Test utilities
+test/                      # Test suites using Alcotest  
+├── test_*.re              # Test files
+├── test_runner.re         # Main test executable
+└── dune                   # Test configuration
 
 docs/                      # Documentation source
 ├── *.md                   # Documentation files
@@ -149,22 +147,36 @@ node_modules/              # JavaScript dependencies (git-ignored)
 - Format with line breaks at column 80
 
 ## Testing Guidelines
-- Uses Jest for testing (JavaScript-based)
-- Test files follow naming pattern `*_test.re`
-- Tests are compiled to `_build/default/__tests__/output/__tests__/`
+- Uses Alcotest for testing (native OCaml testing)
+- Test files follow naming pattern `test_*.re`  
+- Tests are run with `dune runtest` or `make test`
 - Write unit tests for all public functions
 - Test edge cases and error conditions
 - Keep tests simple and focused
 - Coverage reports available with `make test-coverage`
+
+### Alcotest Testing Patterns
+
+```reason
+open Alcotest;
+
+let test_function_name () =
+  input_value |> Module.function_name |> check expected_type "test description" expected_value;
+
+let suite = [
+  ("test name", `Quick, test_function_name);
+];
+```
 
 ### Common Workflows
 
 #### Adding a New Module
 
 1. Create the module file in `src/Relude_ModuleName.re`
-2. Add corresponding test file in `__tests__/Relude_ModuleName_test.re`
-3. Export the module in `src/Relude.re`
-4. Update documentation if needed
+2. Add corresponding test file in `test/test_modulename.re`
+3. Export the module in `src/Relude.re`  
+4. Add test suite to `test/test_runner.re`
+5. Update documentation if needed
 
 #### Implementing Typeclass Instances
 
@@ -205,8 +217,8 @@ Ensure all required dependencies are properly installed via opam and yarn.
 ## Dependencies Management
 - **mel-bastet**: Core typeclass interfaces and implementations
 - **bisect_ppx**: Code coverage (dev)
-- **jest**: Testing framework (dev)
-- **docsify-cli**: Documentation server (dev)
+- **alcotest**: Testing framework (dev)
+- **qcheck**: Property-based testing (dev)
 
 ### Dune Configuration Patterns
 

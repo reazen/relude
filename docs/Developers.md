@@ -44,14 +44,11 @@ Specifically:
 In order to build `Relude`, after cloning, run:
 
 ```sh
-# Install Relude's dependencies (mel-bastet, bisect_ppx)
-> yarn
+# Create opam switch and install dependencies
+> make init
 
-# esy, to grab OCaml, Reason syntax (which depends on `npm install -g esy`)
-> esy
-
-# the actual build/watch of Relude itself
-> yarn cleanbuild
+# Install development tools
+> make dev-tools
 ```
 
 From there, use the following scripts to build/clean/test the project:
@@ -59,70 +56,57 @@ From there, use the following scripts to build/clean/test the project:
 ```sh
 # Clean
 
-> npm run clean
+> make clean
 
 # Build
 
-> npm run build
+> make build
 
 # Watch
 
-> npm run watch
+> make watch
 
 # Test
 
-> npm run test
+> make test
+
+# Test with watch mode
+
+> make test-watch
 
 # Coverage
 # The coverage files are .gitignore'd, so you must run this
 # command locally to view the detailed coverage reports.
 
-> npm run coverage && open _coverage/index.html
+> make test-coverage
 
-# Docs (run local server):
+# Docs (build documentation):
 
-> npm run docs
+> make docs
 
-# Clean & build
-> npm run cleanbuild
+# Docs (serve documentation locally):
 
-# Clean & watch
-> npm run cleanwatch
+> make docs-serve
 
-# Clean & test
-> npm run cleantest
-
-# Clean & coverage
-> npm run cleancoverage && open _coverage/index.html
-
-# Release build
-# This does not publish the release, it just makes sure various build artifacts (.js, .rei, etc.) are built or re-generated from scratch
-# This should be used before we go to publish a release to make sure the release is clean
-
-> npm run releasebuild
 ```
 
-## Publishing to npm
+## Publishing to opam
 
-We currently do this by hand:
+We publish to the opam repository by hand:
 
 ```sh
-# Run the release build to generate all release artifacts
+# Run tests and build to ensure everything works
 
-> npm run releasebuild
+> make test
+> make build
 
-# Bump the version, update package.json, and create the git tag
+# Create a release tag
 
-> npm version major|minor|patch
-
-# Push git commit and tags to upstream/origin
-
+> git tag v2.x.x
 > git push upstream --follow-tags
 > git push origin --follow-tags
 
-# Publish the new version to npm
-
-> npm publish
+# Submit to opam-repository (follow opam packaging guidelines)
 
 # Go to GitHub and create a new release
 ```
