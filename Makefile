@@ -4,7 +4,6 @@ create-switch:
 
 .PHONY: install
 install:
-	yarn install
 	opam update
 	opam install -y .
 
@@ -17,25 +16,33 @@ clean:
 
 .PHONY: build
 build:
-	opam exec -- dune build @relude @test --display short
+	opam exec -- dune build @relude --display short
 
 .PHONY: watch
 watch:
-	opam exec -- dune build @relude @test -w
+	opam exec -- dune build @relude -w
 
 .PHONY: dev-tools
 dev-tools:
-	opam install -y ocamlformat utop ocaml-lsp-server
+	opam install . --with-dev-setup
 
 .PHONY: test
 test:
-	yarn test
+	opam exec -- dune runtest
+
+.PHONY: test-watch
+test-watch:
+	opam exec -- dune runtest -w
 
 .PHONY: test-coverage
 test-coverage:
-	yarn test --coverage
+	opam exec -- dune runtest --instrument-with bisect_ppx
 
 .PHONY: docs
 docs:
-	yarn docs
+	opam exec -- dune build @doc
+
+.PHONY: docs-serve
+docs-serve:
+	cd docs && python3 -m http.server 3000
 
