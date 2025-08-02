@@ -40,6 +40,8 @@ jobs:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-disable-sandboxing: true
           opam-depext: false
+        env:
+          OPAM_DEPEXT_PACKAGES: ""
 
       - name: make install
         run: make install
