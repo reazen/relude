@@ -43,5 +43,7 @@
   Relude_Tuple_test
   Relude_Unit_test
   Relude_Validation_test
-  Relude_WriterT_test)
+  Relude_WriterT_test
+  ; testUtils modules
+  FS)
  (preprocess (pps melange.ppx)))
