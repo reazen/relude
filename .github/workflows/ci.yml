@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         system:
-          - ubuntu-latest
+          - ubuntu-22.04
         node-version:
           - 18.x
         ocaml-compiler:
