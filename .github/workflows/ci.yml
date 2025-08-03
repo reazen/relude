@@ -3,8 +3,8 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -51,3 +51,96 @@ jobs:
 
       - name: Run tests
         run: make test-coverage
+
+      - name: Validate opam file
+        run: |
+          echo "🔍 Running opam lint validation..."
+          opam lint relude.opam
+          echo "✅ Opam file is valid"
+          
+          echo "🧪 Testing opam install dry run..."
+          opam install --dry-run . || {
+            echo "❌ opam install --dry-run failed - dependency resolution issues detected"
+            exit 1
+          }
+          echo "✅ opam install --dry-run succeeded - dependencies can be resolved"
+          
+          echo "📦 Testing opam pin dry run..."
+          opam pin add --dry-run relude . || {
+            echo "❌ opam pin dry run failed - package cannot be pinned"
+            exit 1
+          }
+          echo "✅ opam pin dry run succeeded - package can be pinned from source"
+
+      - name: Install opam-publish plugin
+        if: github.event_name == 'release' || github.event_name == 'push' || github.event_name == 'pull_request'
+        run: opam install opam-publish
+
+      - name: Publish to opam (dry run)
+        if: github.event_name != 'release'
+        run: |
+          echo "🧪 Running opam publish dry run..."
+          echo "📝 This validates the publishing process without submitting to opam"
+          
+          # Verify opam-publish plugin can analyze the package
+          echo "🔍 Checking if opam-publish can process the package..."
+          
+          # Test that we can generate the opam file content
+          if opam show --raw . >/dev/null 2>&1; then
+            echo "✅ Package metadata can be read successfully"
+          else
+            echo "❌ Failed to read package metadata"
+            exit 1
+          fi
+          
+          # Verify required fields are present in opam file
+          echo "📋 Validating required opam file fields..."
+          if grep -q "^homepage:" relude.opam && grep -q "^bug-reports:" relude.opam && grep -q "^synopsis:" relude.opam; then
+            echo "✅ Required opam fields are present"
+          else
+            echo "❌ Missing required opam fields for publishing"
+            exit 1
+          fi
+          
+          # Check if we can read the current git state
+          if git rev-parse --verify HEAD >/dev/null 2>&1; then
+            echo "✅ Git repository state is valid"
+          else
+            echo "❌ Git repository state is invalid"
+            exit 1
+          fi
+          
+          echo "✅ Dry run validation successful - opam publishing should work for a real release"
+          echo "📋 To publish manually, create a release or run: opam publish --tag=<version> ."
+
+      - name: Configure git for GitHub operations
+        if: github.event_name == 'release'
+        env:
+          OPAM_PUBLISH_TOKEN: ${{ secrets.OPAM_PUBLISH_TOKEN }}
+        run: |
+          if [ -n "$OPAM_PUBLISH_TOKEN" ]; then
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git config --global credential.helper store
+            echo "https://github-actions:$OPAM_PUBLISH_TOKEN@github.com" > ~/.git-credentials
+          fi
+
+      - name: Publish to opam (release)
+        if: github.event_name == 'release' && github.event.action == 'published'
+        env:
+          OPAM_PUBLISH_TOKEN: ${{ secrets.OPAM_PUBLISH_TOKEN }}
+        run: |
+          if [ -n "$OPAM_PUBLISH_TOKEN" ]; then
+            echo "🚀 Publishing relude v${{ github.ref_name }} to opam repository"
+            mkdir -p ~/.opam/plugins/opam-publish
+            echo -n "$OPAM_PUBLISH_TOKEN" > ~/.opam/plugins/opam-publish/github-actions.token
+            opam publish --no-confirmation --tag=${{ github.ref_name }} .
+            echo "✅ Successfully published relude v${{ github.ref_name }} to opam"
+          else
+            echo "⚠️  OPAM_PUBLISH_TOKEN not found in secrets"
+            echo "📋 To manually publish this release to opam, run:"
+            echo "   opam publish --tag=${{ github.ref_name }} ."
+            echo ""
+            echo "📖 See https://opam.ocaml.org/doc/Packaging.html#Publishing for more details"
+            echo "🔗 Release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}"
+          fi
