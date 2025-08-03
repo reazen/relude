@@ -56,8 +56,23 @@ jobs:
 
       - name: Validate opam file
         run: |
+          echo "🔍 Running opam lint validation..."
           opam lint relude.opam
           echo "✅ Opam file is valid"
+          
+          echo "🧪 Testing opam install dry run..."
+          opam install --dry-run . || {
+            echo "❌ opam install --dry-run failed - dependency resolution issues detected"
+            exit 1
+          }
+          echo "✅ opam install --dry-run succeeded - dependencies can be resolved"
+          
+          echo "📦 Testing opam pin dry run..."
+          opam pin add --dry-run relude . || {
+            echo "❌ opam pin dry run failed - package cannot be pinned"
+            exit 1
+          }
+          echo "✅ opam pin dry run succeeded - package can be pinned from source"
 
       - name: Install opam-publish plugin
         if: github.event_name == 'release' || github.event_name == 'push' || github.event_name == 'pull_request'
