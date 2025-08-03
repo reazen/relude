@@ -20,6 +20,7 @@ tags: ["ReasonML" "Melange" "functional programming" "prelude" "standard library
 homepage: "https://github.com/reazen/relude"
 doc: "https://reazen.github.io/relude"
 bug-reports: "https://github.com/reazen/relude/issues"
+dev-repo: "git+https://github.com/reazen/relude.git"
 depends: [
   "ocaml" {>= "5.3.0"}
   "dune" {>= "3.12"}
@@ -44,7 +45,4 @@ build: [
     "@runtest" {with-test}
     "@doc" {with-doc}
   ]
-]
-pin-depends: [
-  [ "mel-bastet.dev" "git+https://github.com/johnhaley81/mel-bastet.git" ]
 ]

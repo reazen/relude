@@ -136,7 +136,7 @@ jobs:
             echo -n "$OPAM_PUBLISH_TOKEN" > ~/.opam/plugins/opam-publish/github-actions.token
             # Configure opam-publish to use HTTPS instead of SSH
             git config --global url."https://github.com/".insteadOf "git@github.com:"
-            opam publish --no-confirmation --tag=${{ github.ref_name }} .
+            opam publish --no-confirmation --no-browser --tag=${{ github.ref_name }} .
             echo "✅ Successfully published relude v${{ github.ref_name }} to opam"
           else
             echo "⚠️  OPAM_PUBLISH_TOKEN not found in secrets"
