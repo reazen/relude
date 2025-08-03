@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Similar to result, but has an Applicative instance that collects the errors

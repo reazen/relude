@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 module RWSResult = {
   type t('a, 's, 'w) =

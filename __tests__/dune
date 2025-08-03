@@ -1,0 +1,49 @@
+(melange.emit
+ (target output)
+ (alias test)
+ (libraries relude melange-jest.jest)
+ (modules
+  ; Main test files
+  Relude_Array_test
+  Relude_AsyncData_test
+  Relude_AsyncResult_test
+  Relude_Bool_test
+  Relude_ContT_test
+  Relude_Debounce_test
+  Relude_Decimal_test
+  Relude_Eq_test
+  Relude_Float_test
+  Relude_Free_Applicative_test
+  Relude_Free_Monad_test
+  Relude_Function_test
+  Relude_HList_test
+  Relude_HMap_test
+  Relude_IO_test
+  Relude_Identity_test
+  Relude_Int_test
+  Relude_Ior_test
+  Relude_ListZipper_test
+  Relude_List_test
+  Relude_Map_test
+  Relude_NonEmpty_test
+  Relude_OptionT_test
+  Relude_Option_test
+  Relude_Ord_test
+  Relude_RIO_test
+  Relude_ReaderT_test
+  Relude_ResultT_test
+  Relude_Result_test
+  Relude_Set_test
+  Relude_StateT_test
+  Relude_String_test
+  Relude_Throttle_test
+  Relude_Timer_test
+  Relude_TreeZipper_test
+  Relude_Tree_test
+  Relude_Tuple_test
+  Relude_Unit_test
+  Relude_Validation_test
+  Relude_WriterT_test
+  ; testUtils modules
+  FS)
+ (preprocess (pps melange.ppx)))

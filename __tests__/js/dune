@@ -1,0 +1,9 @@
+(melange.emit
+ (target output)
+ (alias test)
+ (libraries relude melange-jest.jest)
+ (modules
+  Relude_Js_Exn_test
+  Relude_Js_Json_test
+  Relude_Js_Promise_test)
+ (preprocess (pps melange.ppx)))

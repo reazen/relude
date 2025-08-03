@@ -21,7 +21,7 @@ module Field = {
       validator: validator >> Result.map(f),
     };
 
-  module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+  module Functor: Bastet.Interface.FUNCTOR with type t('a) = t('a) = {
     type nonrec t('a) = t('a);
     let map = map;
   };
@@ -105,7 +105,7 @@ let validateUser =
   SchemaValidate.foldFree(User.schema);
 };
 
-describe("Relude_Free_Applicative", () => {
+describe("Relude.Free_Applicative", () => {
   test("validateUser success", () =>
     expect(validateUser("Andy", "White", "101"))
     |> toEqual(

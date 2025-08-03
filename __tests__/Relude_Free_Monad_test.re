@@ -19,11 +19,11 @@ module StorageF = {
     };
 
   module WithKeyAndValue =
-         (K: BsBastet.Interface.TYPE, V: BsBastet.Interface.TYPE) => {
+         (K: Bastet.Interface.TYPE, V: Bastet.Interface.TYPE) => {
     type nonrec t('a) = t(K.t, V.t, 'a);
 
     // With the key/value types locked-in, we can define our functor
-    module Functor: BsBastet.Interface.FUNCTOR with type t('a) = t('a) = {
+    module Functor: Bastet.Interface.FUNCTOR with type t('a) = t('a) = {
       type nonrec t('a) = t('a);
       let map = map;
     };
@@ -97,7 +97,7 @@ module StorageAPI = {
   include StorageFWithKeyAndValue.FreeMonad.WithMonad(State.Monad);
 };
 
-describe("Relude_Free_Monad", () => {
+describe("Relude.Free_Monad", () => {
   describe("StorageAPI", () => {
     test("StorageState interpreter", () => {
       // This is our monadic program stored as our free monad

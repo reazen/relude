@@ -888,7 +888,7 @@ describe("TreeZipper", () => {
              `Right(1),
              `Down(1),
            ],
-           (l, v) => l |> Relude_List.append(v),
+           (l, v) => l |> Relude.List.append(v),
            [],
          );
     let expectedZipper =
@@ -935,7 +935,7 @@ describe("TreeZipper", () => {
 
   test("findInFocus", () => {
     let actual = testTree1 |> fromTree |> findInFocus(a => a == 1);
-    let expected = testTree1 |> fromTree |> Relude_Option.pure; // 1
+    let expected = testTree1 |> fromTree |> Relude.Option.pure; // 1
     let actual2 = testTree1 |> fromTree |> findInFocus(a => a == 0);
     let expected2 = None;
     expect((actual, actual2)) |> toEqual((expected, expected2));

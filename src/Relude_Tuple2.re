@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Constructs a tuple-2 from 2 values

@@ -3,20 +3,18 @@ Fs.Native wraps a few functions from the node.js fs module with little to no
 modification to the fs API.
 */
 module Native = {
-  let dirname: option(string) = [%bs.node __dirname];
-  let dirnameOrDot = Js.Option.getWithDefault(".", dirname);
+  let dirname: option(string) = [%mel.node __dirname];
+  let dirnameOrDot = Belt.Option.getWithDefault(dirname, ".");
 
-  [@bs.val] [@bs.module "fs"] [@warning "-103"]
-  external readFileSync:
-    (string, [ | `hex | `utf8 | `ascii]) => string =
+  [@mel.module "fs"] [@warning "-103"]
+  external readFileSync: (string, [ | `hex | `utf8 | `ascii]) => string =
     "readFileSync";
 
-  [@bs.val] [@bs.module "fs"]
-  external writeFileSync:
-    (string, string, [ | `hex | `utf8 | `ascii]) => unit =
+  [@mel.module "fs"]
+  external writeFileSync: (string, string, [ | `hex | `utf8 | `ascii]) => unit =
     "writeFileSync";
 
-  [@bs.val] [@bs.module "fs"]
+  [@mel.module "fs"]
   external readFile:
     (
       string,
@@ -26,14 +24,9 @@ module Native = {
     unit =
     "readFile";
 
-  [@bs.val] [@bs.module "fs"]
+  [@mel.module "fs"]
   external writeFile:
-    (
-      string,
-      string,
-      [ | `hex | `utf8 | `ascii],
-      Js.null(Js.Exn.t) => unit
-    ) =>
+    (string, string, [ | `hex | `utf8 | `ascii], Js.null(Js.Exn.t) => unit) =>
     unit =
     "writeFile";
 };
@@ -46,16 +39,16 @@ by IO.
 */
 module IO = {
   // Read a file with no accomodation for errors
-  let readFileSync: string => Relude_IO.t(string, Js.Exn.t) =
-    path => Relude_IO.triesJS(() => Native.readFileSync(path, `utf8));
+  let readFileSync: string => Relude.IO.t(string, Js.Exn.t) =
+    path => Relude.IO.triesJS(() => Native.readFileSync(path, `utf8));
 
-  let writeFileSync: (string, string) => Relude_IO.t(unit, Js.Exn.t) =
+  let writeFileSync: (string, string) => Relude.IO.t(unit, Js.Exn.t) =
     (path, content) =>
-      Relude_IO.triesJS(() => Native.writeFileSync(path, content, `utf8));
+      Relude.IO.triesJS(() => Native.writeFileSync(path, content, `utf8));
 
-  let readFile: string => Relude_IO.t(string, Js.Exn.t) =
+  let readFile: string => Relude.IO.t(string, Js.Exn.t) =
     path =>
-      Relude_IO.async(onDone =>
+      Relude.IO.async(onDone =>
         Native.readFile(path, `utf8, (err, content) =>
           switch (Js.Null.toOption(err), content) {
           | (Some(err'), _) =>
@@ -63,7 +56,7 @@ module IO = {
               "Read failed: "
               ++ (
                 Js.Exn.message(err')
-                |> Relude_Option.getOrElseLazy(_ => "No error")
+                |> Relude.Option.getOrElseLazy(_ => "No error")
               ),
             );
             onDone(Error(err'));
@@ -72,9 +65,9 @@ module IO = {
         )
       );
 
-  let writeFile: (string, string) => Relude_IO.t(unit, Js.Exn.t) =
+  let writeFile: (string, string) => Relude.IO.t(unit, Js.Exn.t) =
     (path, content) =>
-      Relude_IO.async(onDone =>
+      Relude.IO.async(onDone =>
         Native.writeFile(path, content, `utf8, err =>
           switch (Js.Null.toOption(err)) {
           | Some(err') =>
@@ -82,7 +75,7 @@ module IO = {
               "Write failed: "
               ++ (
                 Js.Exn.message(err')
-                |> Relude_Option.getOrElseLazy(_ => "No error")
+                |> Relude.Option.getOrElseLazy(_ => "No error")
               ),
             );
             onDone(Error(err'));

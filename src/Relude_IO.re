@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 open Relude_Function.Infix;
 
 [@ocaml.text
@@ -827,7 +827,7 @@ let tapError: 'a 'e. ('e => unit, t('a, 'e)) => t('a, 'e) =
 
 /**
 Handles an error of types ['e1] from an [IO.t('a, 'e1)] and converts it into a
-new [IO.t('a, 'e1)] value. This is much like [flatMap]/[bind] but works for
+new [IO.t('a, 'e2)] value. This is much like [flatMap]/[bind] but works for
 the error channel of the [IO].
 */
 let rec catchError:
@@ -1449,7 +1449,7 @@ completing with a unit value.
 let delay: 'e. int => t(unit, 'e) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Ok()), millis) |> ignore
+      Js.Global.setTimeout(~f=_ => onDone(Ok()), millis) |> ignore
     );
 
 /**
@@ -1459,7 +1459,7 @@ before completing with a unit value.
 let delayWithVoid: int => t(unit, Relude_Void.t) =
   millis =>
     async(onDone =>
-      Js.Global.setTimeout(_ => onDone(Ok()), millis) |> ignore
+      Js.Global.setTimeout(~f=_ => onDone(Ok()), millis) |> ignore
     );
 
 /**
@@ -1572,7 +1572,7 @@ let throttle:
     let currentlyThrottled = ref(false);
     let startThrottle = () => {
       currentlyThrottled := true;
-      Js.Global.setTimeout(() => currentlyThrottled := false, intervalMs)
+      Js.Global.setTimeout(~f=() => currentlyThrottled := false, intervalMs)
       |> ignore;
     };
 

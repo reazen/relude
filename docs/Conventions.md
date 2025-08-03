@@ -22,7 +22,7 @@ The main benefits of `|>` is that there is no compiler magic involved (it's an o
 
 See the [typeclasses](typeclasses/Introduction.md) section of the documentation for more information about typeclasses.
 
-[bs-bastet](https://github.com/Risto-Stevcev/bs-bastet) provides many of the typeclass interfaces/signatures (module types) and typeclass instances (implementations).  `Relude` adds the concept of typeclass extensions, which are module functors that you can use to gain access to functions and modules for free by providing an instance of a typeclass signature.
+[mel-bastet](https://github.com/johnhaley81/mel-bastet) provides many of the typeclass interfaces/signatures (module types) and typeclass instances (implementations).  `Relude` adds the concept of typeclass extensions, which are module functors that you can use to gain access to functions and modules for free by providing an instance of a typeclass signature.
 
 ## Extensions
 

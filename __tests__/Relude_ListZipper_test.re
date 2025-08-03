@@ -307,13 +307,13 @@ describe("ListZipper", () => {
   );
 
   test("isAtItemBy", () =>
-    expect(LZ.make([2, 1], 3, []) |> LZ.isAtItemBy(Relude_Int.Eq.eq, 3))
+    expect(LZ.make([2, 1], 3, []) |> LZ.isAtItemBy(Relude.Int.Eq.eq, 3))
     |> toEqual(true)
   );
 
   test("isAtItem", () =>
     expect(
-      LZ.make([2, 1], 3, []) |> LZ.isAtItem((module Relude_Int.Eq), 3),
+      LZ.make([2, 1], 3, []) |> LZ.isAtItem((module Relude.Int.Eq), 3),
     )
     |> toEqual(true)
   );
@@ -549,21 +549,21 @@ describe("ListZipper", () => {
 
   test("findItemLeftBy", () =>
     expect(
-      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItemLeftBy(Relude_Int.Eq.eq, 1),
+      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItemLeftBy(Relude.Int.Eq.eq, 1),
     )
     |> toEqual(Some(LZ.make([], 1, [2, 3, 4, 5])))
   );
 
   test("findItemRightBy", () =>
     expect(
-      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItemRightBy(Relude_Int.Eq.eq, 5),
+      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItemRightBy(Relude.Int.Eq.eq, 5),
     )
     |> toEqual(Some(LZ.make([4, 3, 2, 1], 5, [])))
   );
 
   test("findItemBy", () =>
     expect(
-      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItemBy(Relude_Int.Eq.eq, 5),
+      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItemBy(Relude.Int.Eq.eq, 5),
     )
     |> toEqual(Some(LZ.make([4, 3, 2, 1], 5, [])))
   );
@@ -571,7 +571,7 @@ describe("ListZipper", () => {
   test("findItemLeft", () =>
     expect(
       LZ.make([2, 1], 3, [4, 5])
-      |> LZ.findItemLeft((module Relude_Int.Eq), 1),
+      |> LZ.findItemLeft((module Relude.Int.Eq), 1),
     )
     |> toEqual(Some(LZ.make([], 1, [2, 3, 4, 5])))
   );
@@ -579,14 +579,14 @@ describe("ListZipper", () => {
   test("findItemRight", () =>
     expect(
       LZ.make([2, 1], 3, [4, 5])
-      |> LZ.findItemRight((module Relude_Int.Eq), 5),
+      |> LZ.findItemRight((module Relude.Int.Eq), 5),
     )
     |> toEqual(Some(LZ.make([4, 3, 2, 1], 5, [])))
   );
 
   test("findItem", () =>
     expect(
-      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItem((module Relude_Int.Eq), 5),
+      LZ.make([2, 1], 3, [4, 5]) |> LZ.findItem((module Relude.Int.Eq), 5),
     )
     |> toEqual(Some(LZ.make([4, 3, 2, 1], 5, [])))
   );

@@ -1,4 +1,4 @@
-open BsBastet.Interface;
+open Bastet.Interface;
 
 /**
 Creates an OptionT monad with the given outer Monad

@@ -109,7 +109,7 @@ describe("HMap", () => {
     // each value into a string.
     let intKey = HMapS.Key.create(("key1", string_of_int));
     let stringKey = HMapS.Key.create(("key2", a => a));
-    let floatKey = HMapS.Key.create(("key3", Js.Float.toString));
+    let floatKey = HMapS.Key.create(("key3", Belt.Float.toString));
 
     let map =
       HMapS.empty
@@ -138,7 +138,7 @@ describe("HMap", () => {
     // each value into a string.
     let intKey = HMapS.Key.create(("key1", string_of_int));
     let stringKey = HMapS.Key.create(("key2", a => a));
-    let floatKey = HMapS.Key.create(("key3", Js.Float.toString));
+    let floatKey = HMapS.Key.create(("key3", Belt.Float.toString));
 
     let map =
       HMapS.empty
@@ -153,8 +153,8 @@ describe("HMap", () => {
          // Use keyMeta to extract the key info - in this case our label, and the 'a => string function
          // that got embedded in the key
          let (label, show) = HMapS.Key.keyMeta(k);
-         array |> Js.Array.unshift(show(v)) |> ignore;
-         array |> Js.Array.unshift(label) |> ignore;
+         Js.Array.unshift(~value=show(v), array) |> ignore;
+         Js.Array.unshift(~value=label, array) |> ignore;
        });
 
     expect(array) |> toEqual([|"key3", "42.3", "key2", "hi", "key1", "5"|]);
@@ -166,7 +166,7 @@ describe("HMap", () => {
     // each value into a string.
     let intKey = HMapS.Key.create(("key1", string_of_int));
     let stringKey = HMapS.Key.create(("key2", a => a));
-    let floatKey = HMapS.Key.create(("key3", Js.Float.toString));
+    let floatKey = HMapS.Key.create(("key3", Belt.Float.toString));
 
     let map =
       HMapS.empty
@@ -192,7 +192,7 @@ describe("HMap", () => {
     // each value into a string.
     let intKey = HMapS.Key.create(("key1", string_of_int));
     let stringKey = HMapS.Key.create(("key2", a => a));
-    let floatKey = HMapS.Key.create(("key3", Js.Float.toString));
+    let floatKey = HMapS.Key.create(("key3", Belt.Float.toString));
 
     let map =
       HMapS.empty
@@ -218,7 +218,7 @@ describe("HMap", () => {
     // each value into a string.
     let intKey = HMapS.Key.create(("key1", string_of_int));
     let stringKey = HMapS.Key.create(("key2", a => a));
-    let floatKey = HMapS.Key.create(("key3", Js.Float.toString));
+    let floatKey = HMapS.Key.create(("key3", Belt.Float.toString));
 
     let map =
       HMapS.empty

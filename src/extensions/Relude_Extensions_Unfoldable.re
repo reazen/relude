@@ -1,3 +1,3 @@
-module UnfoldableExtensions = (U: BsBastet.Interface.UNFOLDABLE) => {};
+module UnfoldableExtensions = (U: Bastet.Interface.UNFOLDABLE) => {};
 
-module UnfoldableInfix = (U: BsBastet.Interface.UNFOLDABLE) => {};
+module UnfoldableInfix = (U: Bastet.Interface.UNFOLDABLE) => {};

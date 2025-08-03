@@ -48,21 +48,21 @@ module Month = {
     | 12 => Some(Dec)
     | _ => None;
 
-  module Eq: BsBastet.Interface.EQ with type t = t =
+  module Eq: Bastet.Interface.EQ with type t = t =
     Int.EqBy({
       type a = t;
       type b = int;
       let f = toInt1Based;
     });
 
-  module Ord: BsBastet.Interface.ORD with type t = t =
+  module Ord: Bastet.Interface.ORD with type t = t =
     Int.OrdBy({
       type a = t;
       type b = int;
       let f = toInt1Based;
     });
 
-  module Bounded: BsBastet.Interface.BOUNDED with type t = t = {
+  module Bounded: Bastet.Interface.BOUNDED with type t = t = {
     include Ord;
     let bottom = Jan;
     let top = Dec;
@@ -85,7 +85,7 @@ module Month = {
     let fromEnum = toInt1Based;
   };
 
-  module Show: BsBastet.Interface.SHOW with type t = t = {
+  module Show: Bastet.Interface.SHOW with type t = t = {
     type nonrec t = t;
     let show: t => string =
       fun
@@ -111,7 +111,7 @@ module Month = {
 
 open Month;
 
-describe("Relude_Extensions_Enum", () => {
+describe("Relude.Extensions_Enum", () => {
   testAll(
     "fromToAsList",
     [
@@ -200,7 +200,7 @@ describe("Relude_Extensions_Enum", () => {
   );
 });
 
-describe("Relude_Extensions_BoundedEnum", () => {
+describe("Relude.Extensions_BoundedEnum", () => {
   testAll(
     "fromThenToAsList",
     [
@@ -260,11 +260,11 @@ describe("Relude_Extensions_BoundedEnum", () => {
       expect(actual) |> toEqual(expected);
     },
   );
-  describe("Relude_Extensions_BoundedEnum", () => {
+  describe("Relude.Extensions_BoundedEnum", () => {
     let show = Show.show;
-    let parseOrd = inverseMapOrd(~ordA=(module Relude_String.Ord), show);
+    let parseOrd = inverseMapOrd(~ordA=(module Relude.String.Ord), show);
     let parseOrdBy = inverseMapOrdBy(Relude.String.compare, show);
-    let parseEq = inverseMapEq(~eqA=(module Relude_String.Eq), show);
+    let parseEq = inverseMapEq(~eqA=(module Relude.String.Eq), show);
     let parseEqBy = inverseMapEqBy(Relude.String.eq, show);
     let parseString = inverseMapString(show);
 

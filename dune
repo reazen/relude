@@ -1,4 +1,10 @@
+(melange.emit
+ (target output)
+ (alias relude)
+ (module_systems es6))
+
 (dirs :standard __tests__)
-;;;;{BSB GENERATED: NO EDIT
-(include dune.mel)
-;;;;BSB GENERATED: NO EDIT}
+
+(subdir
+ node_modules
+ (data_only_dirs bisect_ppx))
