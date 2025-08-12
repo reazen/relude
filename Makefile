@@ -42,8 +42,17 @@ test-coverage:
 	opam exec -- dune build @test
 	yarn test --coverage
 
+.PHONY: inject-docs
+inject-docs:
+	node scripts/inject-docs.js
+
 .PHONY: docs
-docs:
+docs: inject-docs
+	opam exec -- dune build @doc
+	node scripts/inject-docs.js --cleanup
+
+.PHONY: docs-no-inject
+docs-no-inject:
 	opam exec -- dune build @doc
 
 .PHONY: docs-serve
