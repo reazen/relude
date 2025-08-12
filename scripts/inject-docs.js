@@ -7,11 +7,11 @@
  * from extension modules lose their documentation when included via
  * ReasonML's `include` statement.
  * 
- * The script:
- * 1. Parses extension modules to extract function documentation
- * 2. Identifies target modules that include extension functionality
- * 3. Injects documentation comments before the include statements
- * 4. Creates temporary files for documentation generation
+ * Features:
+ * - Auto-discovery of documented functions (no hardcoded lists)
+ * - Dynamic detection of extension modules and their targets
+ * - Robust pattern matching for various function signatures
+ * - Safe backup/restore mechanism
  */
 
 const fs = require('fs');
@@ -22,81 +22,154 @@ const SRC_DIR = path.join(__dirname, '..', 'src');
 const EXTENSIONS_DIR = path.join(SRC_DIR, 'extensions');
 const BACKUP_DIR = path.join(__dirname, '..', '_docs_backup');
 
-// Extension modules and their target modules
-const EXTENSION_CONFIG = {
-  'Relude_Extensions_Foldable.re': {
-    functions: [
-      'any', 'all', 'containsBy', 'contains', 'indexOfBy', 'indexOf',
-      'minBy', 'min', 'maxBy', 'max', 'countBy', 'length', 'size', 'count',
-      'forEach', 'forEachWithIndex', 'find', 'findWithIndex', 'toList', 'foldMap'
-    ],
-    targets: [
-      'src/list/Relude_List_Instances.re',
-      'src/array/Relude_Array_Instances.re',
-      'src/option/Relude_Option_Instances.re',
-      'src/Relude_Result.re',
-      'src/Relude_Tree.re',
-      'src/Relude_NonEmpty.re',
-      'src/Relude_SequenceZipper.re'
-    ],
-    includePattern: /^\s*include\s+Relude_Extensions_Foldable\.FoldableExtensions\s*\(\s*\w+\s*\)\s*;/gm
-  }
-};
-
 /**
- * Extracts function documentation from extension module source
+ * Auto-discovers documented functions in an extension module
+ * @param {string} extensionFilePath - Path to the extension module file
+ * @returns {Map<string, object>} Map of function name to documentation info
  */
-function extractFunctionDocs(extensionFilePath) {
+function autoDiscoverFunctions(extensionFilePath) {
   const content = fs.readFileSync(extensionFilePath, 'utf8');
   const functionDocs = new Map();
 
-  // Pattern to match function documentation + definition
-  const docPattern = /\/\*\*[\s\S]*?\*\/\s*let\s+(\w+)\s*:/g;
+  // More robust pattern to match function documentation + definition
+  // Captures multi-line signatures and various patterns
+  const docPattern = /\/\*\*([\s\S]*?)\*\/\s*let\s+(\w+)\s*:[\s\S]*?(?:=|;)/g;
   
   let match;
   while ((match = docPattern.exec(content)) !== null) {
-    const functionName = match[1];
-    const fullMatch = match[0];
+    const functionName = match[2];
+    const docComment = match[1];
     
-    // Extract just the documentation comment
-    const docMatch = fullMatch.match(/\/\*\*[\s\S]*?\*\//);
-    if (docMatch) {
-      functionDocs.set(functionName, docMatch[0]);
-    }
+    // Clean up the documentation comment
+    const cleanDoc = docComment
+      .replace(/^\s*\*\s?/gm, '') // Remove leading * from each line
+      .trim();
+    
+    functionDocs.set(functionName, {
+      name: functionName,
+      documentation: cleanDoc,
+      raw: `/**${match[1]}*/`
+    });
   }
 
   return functionDocs;
 }
 
 /**
- * Generates documentation injection comment for a function
+ * Auto-discovers which modules include a specific extension
+ * @param {string} extensionModuleName - Name of the extension module (e.g., 'Foldable')
+ * @returns {Array<string>} List of file paths that include this extension
  */
-function generateDocInjection(functionName, originalDoc) {
-  // Clean up the original documentation and add attribution
-  const cleanDoc = originalDoc
-    .replace(/\/\*\*/, '/**')
-    .replace(/\*\//, `
+function autoDiscoverTargets(extensionModuleName) {
+  const targets = [];
   
-  @see <Relude_Extensions_Foldable.html#${functionName}> Original documentation
-  */`);
-
-  return `
-${cleanDoc}
-let ${functionName}: 'a. ('a => bool, F.t('a)) => bool;
-`;
+  // Common directories where modules might include extensions
+  const searchDirs = [
+    path.join(SRC_DIR, 'list'),
+    path.join(SRC_DIR, 'array'),
+    path.join(SRC_DIR, 'option'),
+    SRC_DIR // Root src directory
+  ];
+  
+  // Pattern to match include statements for this extension
+  const includePattern = new RegExp(
+    `include\\s+Relude_Extensions_${extensionModuleName}\\.\\w+Extensions\\s*\\(`,
+    'g'
+  );
+  
+  function searchDirectory(dir) {
+    if (!fs.existsSync(dir)) return;
+    
+    const items = fs.readdirSync(dir);
+    for (const item of items) {
+      const fullPath = path.join(dir, item);
+      const stat = fs.statSync(fullPath);
+      
+      if (stat.isFile() && item.endsWith('.re')) {
+        const content = fs.readFileSync(fullPath, 'utf8');
+        if (includePattern.test(content)) {
+          const relativePath = path.relative(path.join(__dirname, '..'), fullPath);
+          targets.push(relativePath);
+        }
+      }
+    }
+  }
+  
+  searchDirs.forEach(searchDirectory);
+  return [...new Set(targets)]; // Remove duplicates
 }
 
 /**
- * Injects documentation into target module
+ * Builds extension configuration dynamically
+ * @returns {Object} Configuration object with auto-discovered extensions and targets
  */
-function injectDocumentation(targetFilePath, extensionConfig, functionDocs) {
+function buildExtensionConfig() {
+  const config = {};
+  
+  // Find all extension modules in the extensions directory
+  const extensionFiles = fs.readdirSync(EXTENSIONS_DIR)
+    .filter(file => file.startsWith('Relude_Extensions_') && file.endsWith('.re'));
+  
+  for (const extensionFile of extensionFiles) {
+    const extensionPath = path.join(EXTENSIONS_DIR, extensionFile);
+    
+    // Extract the extension type name (e.g., 'Foldable' from 'Relude_Extensions_Foldable.re')
+    const extensionType = extensionFile
+      .replace('Relude_Extensions_', '')
+      .replace('.re', '');
+    
+    // Auto-discover functions
+    const functionDocs = autoDiscoverFunctions(extensionPath);
+    const functionNames = Array.from(functionDocs.keys());
+    
+    // Skip if no documented functions found
+    if (functionNames.length === 0) {
+      console.log(`  Skipping ${extensionFile} - no documented functions found`);
+      continue;
+    }
+    
+    // Auto-discover target modules
+    const targets = autoDiscoverTargets(extensionType);
+    
+    // Skip if no targets found
+    if (targets.length === 0) {
+      console.log(`  Skipping ${extensionFile} - no target modules found`);
+      continue;
+    }
+    
+    // Build include pattern for this extension
+    const includePattern = new RegExp(
+      `^\\s*include\\s+Relude_Extensions_${extensionType}\\.\\w+Extensions\\s*\\(\\s*\\w+\\s*\\)\\s*;`,
+      'gm'
+    );
+    
+    config[extensionFile] = {
+      functions: functionNames,
+      functionDocs: functionDocs,
+      targets: targets,
+      includePattern: includePattern,
+      extensionType: extensionType
+    };
+    
+    console.log(`  ✓ Discovered ${extensionFile}:`);
+    console.log(`    - ${functionNames.length} documented functions`);
+    console.log(`    - ${targets.length} target modules`);
+  }
+  
+  return config;
+}
+
+/**
+ * Generates documentation injection for target module
+ */
+function injectDocumentation(targetFilePath, extensionConfig) {
   const content = fs.readFileSync(targetFilePath, 'utf8');
   
   // Find the include statement for this extension
   const includeMatch = content.match(extensionConfig.includePattern);
   
   if (!includeMatch) {
-    console.log(`  Warning: No include statement found in ${targetFilePath}`);
+    console.log(`    Warning: No include statement found in ${targetFilePath}`);
     return content;
   }
 
@@ -105,28 +178,18 @@ function injectDocumentation(targetFilePath, extensionConfig, functionDocs) {
   // Generate comprehensive documentation block for all included functions
   let functionDocsText = '';
   
-  for (const functionName of extensionConfig.functions) {
-    const doc = functionDocs.get(functionName);
-    if (doc) {
-      // Clean up the documentation
-      const cleanDoc = doc
-        .replace(/\/\*\*\s*\n?/, '') // Remove opening /**
-        .replace(/\s*\*\/\s*$/, '') // Remove closing */
-        .replace(/^\s*\*\s?/gm, '') // Remove leading * from each line
-        .trim();
-
-      functionDocsText += `
- * 
- * {b ${functionName}}: ${cleanDoc}`;
-    }
+  for (const [functionName, docInfo] of extensionConfig.functionDocs.entries()) {
+    // Format each function's documentation properly
+    const lines = docInfo.documentation.split('\n');
+    const formattedDoc = lines[0]; // Just use the first line for brevity
+    functionDocsText += `\n * - ${functionName}: ${formattedDoc}`;
   }
 
-  // Create a comprehensive documentation block
-  const documentationBlock = `
-/**
- * The following functions are provided by including Foldable extensions:${functionDocsText}
+  // Create a comprehensive documentation block with proper formatting
+  const documentationBlock = `/**
+ * The following functions are provided by including ${extensionConfig.extensionType} extensions:${functionDocsText}
  * 
- * @see <Relude_Extensions_Foldable.html> Complete documentation for all extension functions
+ * @see Complete documentation in Relude_Extensions_${extensionConfig.extensionType}
  */`;
 
   // Insert documentation before the include statement
@@ -150,7 +213,7 @@ function createBackups(filesToModify) {
 
   fs.mkdirSync(BACKUP_DIR, { recursive: true });
   
-  console.log('Creating backups of original source files...\n');
+  console.log('\nCreating backups of original source files...');
   
   for (const filePath of filesToModify) {
     const relativePath = path.relative(path.join(__dirname, '..'), filePath);
@@ -175,7 +238,7 @@ function restoreBackups() {
     return;
   }
   
-  console.log('Restoring original source files...\n');
+  console.log('\nRestoring original source files...');
   
   function restoreRecursive(backupDir, baseDir) {
     const items = fs.readdirSync(backupDir);
@@ -199,78 +262,60 @@ function restoreBackups() {
 }
 
 /**
- * Injects documentation into source files in place
- */
-function injectDocumentationInPlace() {
-  console.log('Injecting documentation into target modules...\n');
-
-  const filesToModify = [];
-
-  for (const [extensionFile, config] of Object.entries(EXTENSION_CONFIG)) {
-    const extensionPath = path.join(EXTENSIONS_DIR, extensionFile);
-    
-    console.log(`Processing extension: ${extensionFile}`);
-    
-    // Extract function documentation from extension
-    const functionDocs = extractFunctionDocs(extensionPath);
-    console.log(`  Found documentation for ${functionDocs.size} functions`);
-
-    // Process each target module
-    for (const targetFile of config.targets) {
-      const targetPath = path.join(__dirname, '..', targetFile);
-      
-      console.log(`  Processing target: ${targetFile}`);
-      
-      if (!fs.existsSync(targetPath)) {
-        console.log(`    Warning: Target file not found: ${targetPath}`);
-        continue;
-      }
-
-      filesToModify.push(targetPath);
-    }
-    
-    console.log('');
-  }
-
-  // Create backups before modifying
-  createBackups(filesToModify);
-  
-  // Now inject documentation into each file
-  for (const [extensionFile, config] of Object.entries(EXTENSION_CONFIG)) {
-    const extensionPath = path.join(EXTENSIONS_DIR, extensionFile);
-    const functionDocs = extractFunctionDocs(extensionPath);
-
-    for (const targetFile of config.targets) {
-      const targetPath = path.join(__dirname, '..', targetFile);
-      
-      if (fs.existsSync(targetPath)) {
-        // Inject documentation and write back to original location
-        const injectedContent = injectDocumentation(targetPath, config, functionDocs);
-        fs.writeFileSync(targetPath, injectedContent);
-        
-        console.log(`    ✓ Injected documentation into ${targetFile}`);
-      }
-    }
-  }
-}
-
-/**
  * Main execution function
  */
 function main() {
   console.log('Documentation Injection Script');
-  console.log('=============================\n');
+  console.log('==============================\n');
 
   try {
-    // Inject documentation into source files
-    injectDocumentationInPlace();
+    console.log('Auto-discovering extension modules and targets...\n');
+    
+    // Build configuration dynamically
+    const extensionConfig = buildExtensionConfig();
+    
+    if (Object.keys(extensionConfig).length === 0) {
+      console.log('No extension modules with documented functions found.');
+      return;
+    }
+    
+    console.log('\nInjecting documentation into target modules...\n');
+    
+    // Collect all files to modify
+    const filesToModify = new Set();
+    for (const config of Object.values(extensionConfig)) {
+      for (const target of config.targets) {
+        filesToModify.add(path.join(__dirname, '..', target));
+      }
+    }
+    
+    // Create backups before modifying
+    createBackups(Array.from(filesToModify));
+    
+    // Inject documentation into each file
+    console.log('\nProcessing injections...');
+    for (const [extensionFile, config] of Object.entries(extensionConfig)) {
+      console.log(`\n  Extension: ${extensionFile}`);
+      
+      for (const targetFile of config.targets) {
+        const targetPath = path.join(__dirname, '..', targetFile);
+        
+        if (fs.existsSync(targetPath)) {
+          // Inject documentation and write back
+          const injectedContent = injectDocumentation(targetPath, config);
+          fs.writeFileSync(targetPath, injectedContent);
+          
+          console.log(`    ✓ Injected into ${targetFile}`);
+        }
+      }
+    }
     
     console.log('\n✅ Documentation injection completed successfully!');
     console.log('Source files have been temporarily modified with injected documentation.');
     console.log('Build documentation now, then run this script with --cleanup to restore originals.');
     
   } catch (error) {
-    console.error('❌ Error during documentation injection:', error.message);
+    console.error('\n❌ Error during documentation injection:', error.message);
     console.error(error.stack);
     
     // Try to restore backups on error
@@ -320,11 +365,11 @@ if (require.main === module) {
 }
 
 module.exports = {
-  extractFunctionDocs,
+  autoDiscoverFunctions,
+  autoDiscoverTargets,
+  buildExtensionConfig,
   injectDocumentation,
-  injectDocumentationInPlace,
-  cleanup,
+  createBackups,
   restoreBackups,
-  BACKUP_DIR,
-  EXTENSION_CONFIG
+  cleanup
 };
