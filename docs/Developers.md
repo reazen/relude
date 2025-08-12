@@ -6,7 +6,31 @@ We welcome contributions, bug fixes, features requests (or implementations), doc
 
 ### Documentation
 
-One way you can help is by improving the quality of documentation. We aim for consistency within our docs. For the best output, doc comments in code should look like:
+One way you can help is by improving the quality of documentation. We aim for consistency within our docs.
+
+#### Documentation Injection for Extension Modules
+
+Relude uses a documentation injection system to work around an odoc limitation where documentation is lost when using `include` statements with module functors. The `scripts/inject-docs.js` script automatically:
+
+- **Auto-discovers** documented functions from extension modules
+- **Dynamically detects** which modules include these extensions  
+- **Temporarily injects** documentation comments during the build process
+- **Preserves** original files with a backup/restore mechanism
+
+This ensures that functions from extension modules (like `Relude_Extensions_Foldable`) have proper documentation in the generated HTML, even when included via functor application.
+
+To test the documentation injection:
+```sh
+# Run the documentation injection test suite
+> node scripts/test-inject-docs.js
+
+# Build docs with injection (automatically runs during `make docs`)
+> make docs
+```
+
+#### Documentation Style Guidelines
+
+For the best output, doc comments in code should look like:
 
 ```reason
 /**
