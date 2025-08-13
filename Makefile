@@ -46,10 +46,14 @@ test-coverage:
 inject-docs:
 	node scripts/inject-docs.js
 
+.PHONY: restore-docs
+restore-docs:
+	node scripts/inject-docs.js --restore
+
 .PHONY: docs
 docs: inject-docs
 	opam exec -- dune build @doc
-	node scripts/inject-docs.js --cleanup
+	$(MAKE) restore-docs
 
 .PHONY: docs-no-inject
 docs-no-inject:

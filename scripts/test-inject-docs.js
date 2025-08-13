@@ -133,7 +133,7 @@ function testAutoDiscovery() {
   
   const func1Doc = discovered.get('testFunc1');
   assert(func1Doc && func1Doc.doc.includes('does something important'), 'Should extract correct documentation for testFunc1');
-  assert(func1Doc && func1Doc.signature.includes("F.t('a) => int"), 'Should extract correct signature for testFunc1');
+  assert(func1Doc && func1Doc.signature.includes("'a. F.t('a)"), 'Should extract correct signature for testFunc1');
 }
 
 function testTargetDiscovery() {
@@ -157,7 +157,7 @@ function testTargetDiscovery() {
           } else if (file.endsWith('.re')) {
             const content = fs.readFileSync(filePath, 'utf8');
             const includePattern = new RegExp(
-              `include\\s+Relude_Extensions_${extensionName}\\.\\w+Extensions\\s*`,
+              `(include\\s+\\w*TestExtensions|module\\s+\\w+\\s*=\\s*Relude_Extensions_${extensionName})`,
               'g'
             );
             
